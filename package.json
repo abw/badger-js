@@ -1,0 +1,33 @@
+{
+  "name": "badger-js",
+  "version": "1.0.0",
+  "description": "Component based framework and utility modules",
+  "type": "module",
+  "main": "dist/badger.cjs.js",
+  "module": "dist/badger.esm.js",
+  "browser": "dist/badger.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "Xtest": "node test/hello.js",
+    "test": "ava",
+    "pretest": "pnpm run build"
+  },
+  "keywords": [
+    "badger",
+    "project",
+    "framework",
+    "utility"
+  ],
+  "author": "Andy Wardley",
+  "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
+    "ava": "^4.3.0",
+    "rollup": "^1.29.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
