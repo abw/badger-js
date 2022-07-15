@@ -1,6 +1,5 @@
 import test from 'ava';
-import path from 'path';
-import { dir, file, bin } from '../../src/Badger.js'
+import { file, bin } from '../../src/Badger.js'
 
 // current directory where this script is located
 const thisDir = bin(import.meta.url);
