@@ -797,7 +797,7 @@
     "__docId__": 59,
     "kind": "file",
     "name": "src/Badger/Config.js",
-    "content": "import { dir, requiredParams, fail } from '../Badger.js'\n\nconst defaults = {\n  codecs: 'yaml json',\n};\n\nclass Config {\n  constructor(params={}) {\n    const options = { ...defaults, ...params };\n    const [rootDir] = requiredParams(options, 'dir');\n    this.root  = dir(root, { codec });\n    this.codec = codec;\n  }\n  path(uri) {\n    return uri.toLowerCase() + '.' + this.codec;\n  }\n  file(uri) {\n    return this.root.file(this.path(uri));\n  }\n  exists(uri) {\n    return this.file(uri).exists();\n  }\n  config(uri) {\n    const file = this.file(uri);\n    return file.exists().then(\n      exists => exists\n        ? file.read()\n        : fail(\"Missing configuration file: \" + file.path())\n    )\n  }\n}\n\nexport default Config\n",
+    "content": "import { dir, fail, allParams, anyParams } from '../Badger.js'\n\nconst defaults = {\n  codecs: 'yaml json',\n};\n\nclass Config {\n  constructor(params={}) {\n    const options = { ...defaults, ...params };\n    const [rootDir] = allParams(options, 'dir');\n    const [codec, codecs] = anyParams(options, 'codec codecs');\n\n    this.dir    = dir(root);\n    this.codecs = codecs || [codec];\n\n    console.log('dir: ', this.dir);\n    console.log('codecs: ', this.codecs.dir);\n\n  }\n  path(uri) {\n    return uri.toLowerCase() + '.' + this.codec;\n  }\n  file(uri) {\n    return this.root.file(this.path(uri));\n  }\n  exists(uri) {\n    return this.file(uri).exists();\n  }\n  config(uri) {\n    const file = this.file(uri);\n    return file.exists().then(\n      exists => exists\n        ? file.read()\n        : fail(\"Missing configuration file: \" + file.path())\n    )\n  }\n}\n\nexport default Config\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Config.js",
     "access": "public",
@@ -858,13 +858,13 @@
   {
     "__docId__": 63,
     "kind": "member",
-    "name": "root",
+    "name": "dir",
     "memberof": "src/Badger/Config.js~Config",
     "static": false,
-    "longname": "src/Badger/Config.js~Config#root",
+    "longname": "src/Badger/Config.js~Config#dir",
     "access": "public",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 13,
     "undocument": true,
     "type": {
       "types": [
@@ -875,13 +875,13 @@
   {
     "__docId__": 64,
     "kind": "member",
-    "name": "codec",
+    "name": "codecs",
     "memberof": "src/Badger/Config.js~Config",
     "static": false,
-    "longname": "src/Badger/Config.js~Config#codec",
+    "longname": "src/Badger/Config.js~Config#codecs",
     "access": "public",
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 14,
     "undocument": true,
     "type": {
       "types": [
@@ -900,7 +900,7 @@
     "longname": "src/Badger/Config.js~Config#path",
     "access": "public",
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 20,
     "undocument": true,
     "params": [
       {
@@ -927,7 +927,7 @@
     "longname": "src/Badger/Config.js~Config#file",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 23,
     "undocument": true,
     "params": [
       {
@@ -954,7 +954,7 @@
     "longname": "src/Badger/Config.js~Config#exists",
     "access": "public",
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 26,
     "undocument": true,
     "params": [
       {
@@ -981,7 +981,7 @@
     "longname": "src/Badger/Config.js~Config#config",
     "access": "public",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 29,
     "undocument": true,
     "params": [
       {
@@ -1001,7 +1001,7 @@
     "__docId__": 69,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
-    "content": "import fs from 'fs'\n//import fsx from 'fs-extra'\nimport path from 'path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../../Badger.js';\n\nclass Directory extends Path {\n  file(name, options) {\n    return file(this.relativePath(name), this.options(options));\n  }\n  directory(path, options) {\n    return dir(this.relativePath(path), this.options(options));\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  parent(options) {\n    return this.directory('..', options);\n  }\n  read() {\n    return fs.readdirSync(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Boolean} true (empty) or false (not empty).\n   */\n  isEmpty() {\n    return this.read().length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Boolean} true (not empty) or false (empty).\n   */\n  notEmpty() {\n    return ! this.isEmpty();\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Object} the Directory object\n   */\n  empty(options={}) {\n    if (this.exists() && this.notEmpty()) {\n      fs.rmSync(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Object} the Directory object\n   */\n  mkdir(options={}) {\n    fs.mkdirSync(this.path(), options);\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Object} the Directory object\n   */\n  rmdir(options={}) {\n    if (options.empty) {\n        this.empty(options);\n    }\n    if (this.exists()) {\n      fs.rmdirSync(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Object} the Directory object\n   */\n  create(options={ recursive: true }) {\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Object} the Directory object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    return this.rmdir(options);\n  }\n\n  mustExist(options={}) {\n    if (this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    else {\n      return fail(\"Directory does not exist: \", this.path());\n    }\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility functions to create a directory object from a path (dir), to\n// represent the current working directory (cwd) or the path from a\n// source module (moduleDir).  All can take optional options.\n//---------------------------------------------------------------------\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\nexport const bin = (url, opts) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    opts\n  );\n}\n\nexport default Directory\n",
+    "content": "import fs from 'fs'\nimport path from 'path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\n\nclass Directory extends Path {\n  file(name, options) {\n    return file(this.relativePath(name), this.options(options));\n  }\n  directory(path, options) {\n    return dir(this.relativePath(path), this.options(options));\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  parent(options) {\n    return this.directory('..', options);\n  }\n  read() {\n    return fs.readdirSync(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Boolean} true (empty) or false (not empty).\n   */\n  isEmpty() {\n    return this.read().length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Boolean} true (not empty) or false (empty).\n   */\n  notEmpty() {\n    return ! this.isEmpty();\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Object} the `Directory` object\n   */\n  empty(options={}) {\n    if (this.exists() && this.notEmpty()) {\n      fs.rmSync(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  mkdir(options={}) {\n    fs.mkdirSync(this.path(), options);\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Object} the `Directory` object\n   */\n  rmdir(options={}) {\n    if (options.empty) {\n        this.empty(options);\n    }\n    if (this.exists()) {\n      fs.rmdirSync(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  create(options={ recursive: true }) {\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Object} the `Directory` object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  mustExist(options={}) {\n    if (this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    else {\n      return fail(\"Directory does not exist: \", this.path());\n    }\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility functions to create a directory object from a path (dir), to\n// represent the current working directory (cwd) or the path from a\n// source module (moduleDir).  All can take optional options.\n//---------------------------------------------------------------------\n/**\n * Function to create a new `Directory` object\n * @param {String} [path] - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new Directory object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new Directory object for the directory of a JS source file\n * @param {String} [url] - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Directory.js",
     "access": "public",
@@ -1021,27 +1021,47 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{dir}",
-    "description": null,
-    "lineNumber": 127,
-    "undocument": true,
+    "description": "Function to create a new `Directory` object",
+    "lineNumber": 141,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "directory path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1057,21 +1077,37 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{cwd}",
-    "description": null,
-    "lineNumber": 131,
-    "undocument": true,
+    "description": "Function to create a new Directory object for the current working directory",
+    "lineNumber": 151,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1087,27 +1123,47 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{bin}",
-    "description": null,
-    "lineNumber": 135,
-    "undocument": true,
+    "description": "Function to create a new Directory object for the directory of a JS source file",
+    "lineNumber": 162,
     "params": [
       {
-        "name": "url",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "url",
+        "description": "module url - from `import.meta.url`"
       },
       {
-        "name": "opts",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1122,7 +1178,7 @@
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "Directory",
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 7,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -1140,7 +1196,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#file",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 8,
     "undocument": true,
     "params": [
       {
@@ -1173,7 +1229,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#directory",
     "access": "public",
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 11,
     "undocument": true,
     "params": [
       {
@@ -1206,7 +1262,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#dir",
     "access": "public",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 14,
     "undocument": true,
     "params": [
       {
@@ -1234,7 +1290,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#parent",
     "access": "public",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 17,
     "undocument": true,
     "params": [
       {
@@ -1261,7 +1317,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#read",
     "access": "public",
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 20,
     "undocument": true,
     "params": [],
     "return": {
@@ -1281,7 +1337,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 29,
+    "lineNumber": 28,
     "return": {
       "nullable": null,
       "types": [
@@ -1303,7 +1359,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 37,
+    "lineNumber": 36,
     "return": {
       "nullable": null,
       "types": [
@@ -1325,7 +1381,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 48,
+    "lineNumber": 47,
     "params": [
       {
         "nullable": null,
@@ -1364,7 +1420,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1378,7 +1434,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 61,
+    "lineNumber": 60,
     "params": [
       {
         "nullable": null,
@@ -1407,7 +1463,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1421,7 +1477,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 74,
+    "lineNumber": 73,
     "params": [
       {
         "nullable": null,
@@ -1470,7 +1526,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1484,7 +1540,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 90,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -1515,7 +1571,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1529,7 +1585,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 102,
+    "lineNumber": 101,
     "params": [
       {
         "nullable": null,
@@ -1584,7 +1640,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
@@ -1597,31 +1653,64 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mustExist",
     "access": "public",
-    "description": null,
-    "lineNumber": 106,
-    "undocument": true,
+    "description": "Assert that a directory exists and optionally create it",
+    "lineNumber": 113,
     "params": [
       {
-        "name": "options",
-        "optional": true,
+        "nullable": null,
         "types": [
-          "{}"
+          "Object"
         ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.create",
+        "description": "create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.mkdir",
+        "description": "create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.recursive",
+        "description": "when used with `mkdir`, creates any intermediate directories"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the `Directory` object"
     }
   },
   {
     "__docId__": 87,
     "kind": "file",
     "name": "src/Badger/Filesystem/File.js",
-    "content": "import path from 'path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../../Badger.js'\nimport { readFile, writeFile } from 'fs/promises'\n\nclass File extends Path {\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility function to create a file object from a path and optional\n// options.\n//---------------------------------------------------------------------\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
+    "content": "import path from 'path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile } from 'fs/promises'\n\nclass File extends Path {\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility function to create a file object from a path and optional\n// options.\n//---------------------------------------------------------------------\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/File.js",
     "access": "public",
@@ -1996,962 +2085,7 @@
     }
   },
   {
-    "__docId__": 107,
-    "kind": "file",
-    "name": "src/Badger/Filesystem/index.js",
-    "content": "export * from './Path.js'\nexport * from './File.js'\nexport * from './Directory.js'\n",
-    "static": true,
-    "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/index.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 108,
-    "kind": "class",
-    "name": "Path",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~Path",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "{Path}",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "interface": false
-  },
-  {
-    "__docId__": 109,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true
-  },
-  {
-    "__docId__": 110,
-    "kind": "member",
-    "name": "state",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#state",
-    "access": "public",
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{\"path\": *, \"options\": *}"
-      ]
-    }
-  },
-  {
-    "__docId__": 111,
-    "kind": "method",
-    "name": "path",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#path",
-    "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 112,
-    "kind": "method",
-    "name": "relativePath",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#relativePath",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "params": [
-      {
-        "name": "parts",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 113,
-    "kind": "method",
-    "name": "options",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#options",
-    "access": "public",
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "{...undefined: Object, ...options: Object}"
-      ]
-    }
-  },
-  {
-    "__docId__": 114,
-    "kind": "method",
-    "name": "exists",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#exists",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 115,
-    "kind": "method",
-    "name": "stats",
-    "memberof": "src/Badger/Filesystem/index.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Path#stats",
-    "access": "public",
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 116,
-    "kind": "function",
-    "name": "file",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~file",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "{file}",
-    "description": null,
-    "lineNumber": 34,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 117,
-    "kind": "class",
-    "name": "File",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~File",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "File",
-    "description": null,
-    "lineNumber": 7,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "src/Badger/Filesystem/Path.js~Path"
-    ]
-  },
-  {
-    "__docId__": 118,
-    "kind": "method",
-    "name": "directory",
-    "memberof": "src/Badger/Filesystem/index.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~File#directory",
-    "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 119,
-    "kind": "method",
-    "name": "dir",
-    "memberof": "src/Badger/Filesystem/index.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~File#dir",
-    "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 120,
-    "kind": "method",
-    "name": "read",
-    "memberof": "src/Badger/Filesystem/index.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~File#read",
-    "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 121,
-    "kind": "method",
-    "name": "write",
-    "memberof": "src/Badger/Filesystem/index.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~File#write",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [
-      {
-        "name": "data",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 122,
-    "kind": "function",
-    "name": "dir",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~dir",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "{dir}",
-    "description": null,
-    "lineNumber": 127,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 123,
-    "kind": "function",
-    "name": "cwd",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~cwd",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "{cwd}",
-    "description": null,
-    "lineNumber": 131,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 124,
-    "kind": "function",
-    "name": "bin",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~bin",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "{bin}",
-    "description": null,
-    "lineNumber": 135,
-    "undocument": true,
-    "params": [
-      {
-        "name": "url",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "opts",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 125,
-    "kind": "class",
-    "name": "Directory",
-    "memberof": "src/Badger/Filesystem/index.js",
-    "static": true,
-    "longname": "src/Badger/Filesystem/index.js~Directory",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Filesystem/index.js",
-    "importStyle": "Directory",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "src/Badger/Filesystem/Path.js~Path"
-    ]
-  },
-  {
-    "__docId__": 126,
-    "kind": "method",
-    "name": "file",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#file",
-    "access": "public",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true,
-    "params": [
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 127,
-    "kind": "method",
-    "name": "directory",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#directory",
-    "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 128,
-    "kind": "method",
-    "name": "dir",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#dir",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 129,
-    "kind": "method",
-    "name": "parent",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#parent",
-    "access": "public",
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 130,
-    "kind": "method",
-    "name": "read",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#read",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 131,
-    "kind": "method",
-    "name": "isEmpty",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#isEmpty",
-    "access": "public",
-    "description": "Determines if the directory is empty.",
-    "lineNumber": 29,
-    "return": {
-      "nullable": null,
-      "types": [
-        "Boolean"
-      ],
-      "spread": false,
-      "description": "true (empty) or false (not empty)."
-    },
-    "params": []
-  },
-  {
-    "__docId__": 132,
-    "kind": "method",
-    "name": "notEmpty",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#notEmpty",
-    "access": "public",
-    "description": "Determines if the directory is not empty.",
-    "lineNumber": 37,
-    "return": {
-      "nullable": null,
-      "types": [
-        "Boolean"
-      ],
-      "spread": false,
-      "description": "true (not empty) or false (empty)."
-    },
-    "params": []
-  },
-  {
-    "__docId__": 133,
-    "kind": "method",
-    "name": "empty",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#empty",
-    "access": "public",
-    "description": "Empty the directory.",
-    "lineNumber": 48,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.force",
-        "description": "force removal of files and directories"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.recursive",
-        "description": "recursively empty and delete sub-directories"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the Directory object"
-    }
-  },
-  {
-    "__docId__": 134,
-    "kind": "method",
-    "name": "mkdir",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#mkdir",
-    "access": "public",
-    "description": "Make the directory.",
-    "lineNumber": 61,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.recursive",
-        "description": "create intermediate directories"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the Directory object"
-    }
-  },
-  {
-    "__docId__": 135,
-    "kind": "method",
-    "name": "rmdir",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#rmdir",
-    "access": "public",
-    "description": "Remove the directory.",
-    "lineNumber": 74,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.empty",
-        "description": "delete items in directory"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.force",
-        "description": "force delete files and directories"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.recursive",
-        "description": "recursively delete sub-directories"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the Directory object"
-    }
-  },
-  {
-    "__docId__": 136,
-    "kind": "method",
-    "name": "create",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#create",
-    "access": "public",
-    "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 90,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "defaultValue": "true",
-        "defaultRaw": true,
-        "name": "options.recursive",
-        "description": "recursively create intermediate directories"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the Directory object"
-    }
-  },
-  {
-    "__docId__": 137,
-    "kind": "method",
-    "name": "destroy",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#destroy",
-    "access": "public",
-    "description": "Empty and delete the directory.",
-    "lineNumber": 102,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "defaultValue": "true",
-        "defaultRaw": true,
-        "name": "options.empty",
-        "description": "empty directory of any files and sub-directories"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "defaultValue": "true",
-        "defaultRaw": true,
-        "name": "options.recursive",
-        "description": "recursively delete sub-directories"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "defaultValue": "true",
-        "defaultRaw": true,
-        "name": "options.force",
-        "description": "force deletion of files and sub-directories"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the Directory object"
-    }
-  },
-  {
-    "__docId__": 138,
-    "kind": "method",
-    "name": "mustExist",
-    "memberof": "src/Badger/Filesystem/index.js~Directory",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger/Filesystem/index.js~Directory#mustExist",
-    "access": "public",
-    "description": null,
-    "lineNumber": 106,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 139,
+    "__docId__": 104,
     "kind": "file",
     "name": "src/Badger/Utils/Misc.js",
     "content": "export function isString(value) {\n  return typeof value === 'string';\n}\n\nexport function isArray(value) {\n  return Array.isArray(value);\n}\n\nexport function isFunction(value) {\n  return typeof value === 'function'\n}\n\nexport function isObject(value) {\n  return typeof value === \"object\"\n    && ! isArray(value)\n    && ! isNull(value);\n}\n\nexport function isUndefined(v) {\n  return typeof v === 'undefined';\n};\n\nexport function isNull(v) {\n  return v === null;\n};\n\nexport function hasValue(v) {\n  return ! (isUndefined(v) || isNull(v));\n}\n\nexport function haveValue(...args) {\n    return args.every( arg => hasValue(arg) );\n}\n\nexport function noValue(v) {\n  return ! hasValue(v);\n}\n\nexport function fail(...args) {\n  throw new Error(args.join(''));\n}\n",
@@ -2962,7 +2096,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 140,
+    "__docId__": 105,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -2992,7 +2126,7 @@
     }
   },
   {
-    "__docId__": 141,
+    "__docId__": 106,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3022,7 +2156,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 107,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3052,7 +2186,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 108,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3082,7 +2216,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 109,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3112,7 +2246,7 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 110,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3142,7 +2276,7 @@
     }
   },
   {
-    "__docId__": 146,
+    "__docId__": 111,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3172,7 +2306,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 112,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3203,7 +2337,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 113,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3233,7 +2367,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 114,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3260,7 +2394,7 @@
     "return": null
   },
   {
-    "__docId__": 150,
+    "__docId__": 115,
     "kind": "file",
     "name": "src/Badger/Utils/Params.js",
     "content": "import { hasValue, fail } from \"./Misc.js\";\nimport { joinListOr, splitList } from \"./Text.js\";\n\nexport function requiredParam(params={}, name) {\n  const value = params[name];\n  if (hasValue(value)) {\n    return value;\n  }\n  else {\n    fail(\"Missing value for required parameter: \", name);\n  }\n}\n\nexport function requiredParams(params={}, names) {\n  return splitList(names).map( name => requiredParam(params, name) );\n}\n\nexport function allParams(...args) {\n  return requiredParams(...args);\n}\n\nexport function anyParams(params, names) {\n  let found = false;\n  const nlist  = splitList(names);\n  const values = nlist.map(\n    name => {\n      const value = params[name];\n      if (hasValue(value)) {\n        found = true;\n      }\n      return value;\n    }\n  );\n  return found\n    ? values\n    : fail(\"Missing value for one of: \", joinListOr(nlist));\n}\n",
@@ -3271,7 +2405,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 151,
+    "__docId__": 116,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3310,7 +2444,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 117,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3349,7 +2483,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 118,
     "kind": "function",
     "name": "allParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3380,7 +2514,7 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 119,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3416,7 +2550,7 @@
     }
   },
   {
-    "__docId__": 155,
+    "__docId__": 120,
     "kind": "file",
     "name": "src/Badger/Utils/Text.js",
     "content": "import { isString, isArray } from \"./Misc.js\";\n\nexport function splitList(value) {\n  return isString(value) ? value.split(/,\\s*|\\s+/)\n    : isArray(value)  ? value\n    : [value];\n};\n\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n};\n\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n};\n\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n};\n\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\nexport function snakeUp(uri) {\n  return uri.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n",
@@ -3427,7 +2561,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 156,
+    "__docId__": 121,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3457,7 +2591,7 @@
     }
   },
   {
-    "__docId__": 157,
+    "__docId__": 122,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3505,7 +2639,7 @@
     }
   },
   {
-    "__docId__": 158,
+    "__docId__": 123,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3553,7 +2687,7 @@
     }
   },
   {
-    "__docId__": 159,
+    "__docId__": 124,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3601,7 +2735,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 125,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3631,7 +2765,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 126,
     "kind": "function",
     "name": "snakeUp",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3661,695 +2795,7 @@
     }
   },
   {
-    "__docId__": 165,
-    "kind": "file",
-    "name": "src/Badger/Utils/index.js",
-    "content": "export * from './Misc.js'\nexport * from './Params.js'\nexport * from './Text.js'\n",
-    "static": true,
-    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/index.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 166,
-    "kind": "function",
-    "name": "isString",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isString",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isString}",
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 167,
-    "kind": "function",
-    "name": "isArray",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isArray",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isArray}",
-    "description": null,
-    "lineNumber": 5,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 168,
-    "kind": "function",
-    "name": "isFunction",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isFunction",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isFunction}",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 169,
-    "kind": "function",
-    "name": "isObject",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isObject",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isObject}",
-    "description": null,
-    "lineNumber": 13,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 170,
-    "kind": "function",
-    "name": "isUndefined",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isUndefined",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isUndefined}",
-    "description": null,
-    "lineNumber": 19,
-    "undocument": true,
-    "params": [
-      {
-        "name": "v",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 171,
-    "kind": "function",
-    "name": "isNull",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isNull",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{isNull}",
-    "description": null,
-    "lineNumber": 23,
-    "undocument": true,
-    "params": [
-      {
-        "name": "v",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 172,
-    "kind": "function",
-    "name": "hasValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~hasValue",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{hasValue}",
-    "description": null,
-    "lineNumber": 27,
-    "undocument": true,
-    "params": [
-      {
-        "name": "v",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 173,
-    "kind": "function",
-    "name": "haveValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~haveValue",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{haveValue}",
-    "description": null,
-    "lineNumber": 31,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 174,
-    "kind": "function",
-    "name": "noValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~noValue",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{noValue}",
-    "description": null,
-    "lineNumber": 35,
-    "undocument": true,
-    "params": [
-      {
-        "name": "v",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 175,
-    "kind": "function",
-    "name": "fail",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~fail",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{fail}",
-    "description": null,
-    "lineNumber": 39,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 176,
-    "kind": "function",
-    "name": "requiredParam",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParam",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{requiredParam}",
-    "description": null,
-    "lineNumber": 4,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 177,
-    "kind": "function",
-    "name": "requiredParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParams",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{requiredParams}",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 178,
-    "kind": "function",
-    "name": "allParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~allParams",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{allParams}",
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 179,
-    "kind": "function",
-    "name": "anyParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~anyParams",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{anyParams}",
-    "description": null,
-    "lineNumber": 22,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 180,
-    "kind": "function",
-    "name": "splitList",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~splitList",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{splitList}",
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 181,
-    "kind": "function",
-    "name": "joinList",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinList",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{joinList}",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " ",
-        "defaultValue": " "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "*"
-        ],
-        "defaultRaw": "joint",
-        "defaultValue": "joint"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 182,
-    "kind": "function",
-    "name": "joinListAnd",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinListAnd",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{joinListAnd}",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": ", ",
-        "defaultValue": ", "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " and ",
-        "defaultValue": " and "
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 183,
-    "kind": "function",
-    "name": "joinListOr",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinListOr",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{joinListOr}",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": ", ",
-        "defaultValue": ", "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " or ",
-        "defaultValue": " or "
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 184,
-    "kind": "function",
-    "name": "capitalise",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~capitalise",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{capitalise}",
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
-    "params": [
-      {
-        "name": "word",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 185,
-    "kind": "function",
-    "name": "snakeUp",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~snakeUp",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Utils/index.js",
-    "importStyle": "{snakeUp}",
-    "description": null,
-    "lineNumber": 29,
-    "undocument": true,
-    "params": [
-      {
-        "name": "uri",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 186,
+    "__docId__": 127,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
     "content": "import path from 'path';\nimport { dir } from './Filesystem/Directory.js'\n\nexport class Workspace {\n  constructor(params={}) {\n    console.log('workspace constructor');\n  }\n  //file(name, options) {\n  //  return file(this.relativePath(name), this.options(options));\n  //}\n  //directory(path, options) {\n  //  return dir(this.relativePath(path), this.options(options));\n  //}\n}\n\nexport const workspace = opts => new Workspace(opts);\n\nexport default workspace;",
@@ -4360,7 +2806,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 187,
+    "__docId__": 128,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -4376,7 +2822,7 @@
     "interface": false
   },
   {
-    "__docId__": 188,
+    "__docId__": 129,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4390,7 +2836,7 @@
     "undocument": true
   },
   {
-    "__docId__": 189,
+    "__docId__": 130,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -4416,7 +2862,7 @@
     "return": null
   },
   {
-    "__docId__": 190,
+    "__docId__": 131,
     "kind": "file",
     "name": "src/Badger/hello.js",
     "content": "const hello = \"Hello Badger Fans!\"\n\nexport default hello",
@@ -4427,7 +2873,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 191,
+    "__docId__": 132,
     "kind": "variable",
     "name": "hello",
     "memberof": "src/Badger/hello.js",
@@ -4447,10 +2893,10 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 141,
     "kind": "file",
     "name": "src/Badger.js",
-    "content": "export * from './Badger/Codecs/index.js';\nexport * from './Badger/Filesystem/index.js';\nexport * from './Badger/Utils/index.js';\nexport * from './Badger/Workspace.js';\n\nimport { } from './Badger/hello.js';\nimport hello from './Badger/hello.js';\n\nconst sayHello = () => {\n  console.log(hello);\n}\n\nexport default sayHello;",
+    "content": "export * from './Badger/Codecs/index.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n\nimport { } from './Badger/hello.js';\nimport hello from './Badger/hello.js';\n\nconst sayHello = () => {\n  console.log(hello);\n}\n\nexport default sayHello;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger.js",
     "access": "public",
@@ -4458,7 +2904,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 203,
+    "__docId__": 142,
     "kind": "function",
     "name": "sayHello",
     "memberof": "src/Badger.js",
@@ -4471,13 +2917,13 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "sayHello",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 13,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 204,
+    "__docId__": 143,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -4497,7 +2943,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 144,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -4523,342 +2969,7 @@
     "return": null
   },
   {
-    "__docId__": 206,
-    "kind": "class",
-    "name": "Path",
-    "memberof": "src/Badger.js",
-    "static": true,
-    "longname": "src/Badger.js~Path",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger.js",
-    "importStyle": "{Path}",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "interface": false
-  },
-  {
-    "__docId__": 207,
-    "kind": "constructor",
-    "name": "constructor",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#constructor",
-    "access": "public",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true
-  },
-  {
-    "__docId__": 208,
-    "kind": "member",
-    "name": "state",
-    "memberof": "src/Badger.js~Path",
-    "static": false,
-    "longname": "src/Badger.js~Path#state",
-    "access": "public",
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
-    "type": {
-      "types": [
-        "{\"path\": *, \"options\": *}"
-      ]
-    }
-  },
-  {
-    "__docId__": 209,
-    "kind": "method",
-    "name": "path",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#path",
-    "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 210,
-    "kind": "method",
-    "name": "relativePath",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#relativePath",
-    "access": "public",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
-    "params": [
-      {
-        "name": "parts",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 211,
-    "kind": "method",
-    "name": "options",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#options",
-    "access": "public",
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "{...undefined: Object, ...options: Object}"
-      ]
-    }
-  },
-  {
-    "__docId__": 212,
-    "kind": "method",
-    "name": "exists",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#exists",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 213,
-    "kind": "method",
-    "name": "stats",
-    "memberof": "src/Badger.js~Path",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~Path#stats",
-    "access": "public",
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "params": [],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 214,
-    "kind": "function",
-    "name": "file",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~file",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger.js",
-    "importStyle": "{file}",
-    "description": null,
-    "lineNumber": 34,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 215,
-    "kind": "class",
-    "name": "File",
-    "memberof": "src/Badger.js",
-    "static": true,
-    "longname": "src/Badger.js~File",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger.js",
-    "importStyle": "File",
-    "description": null,
-    "lineNumber": 7,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "Path"
-    ]
-  },
-  {
-    "__docId__": 216,
-    "kind": "method",
-    "name": "directory",
-    "memberof": "src/Badger.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~File#directory",
-    "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 217,
-    "kind": "method",
-    "name": "dir",
-    "memberof": "src/Badger.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~File#dir",
-    "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
-    "params": [
-      {
-        "name": "args",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 218,
-    "kind": "method",
-    "name": "read",
-    "memberof": "src/Badger.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~File#read",
-    "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 219,
-    "kind": "method",
-    "name": "write",
-    "memberof": "src/Badger.js~File",
-    "generator": false,
-    "async": false,
-    "static": false,
-    "longname": "src/Badger.js~File#write",
-    "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "params": [
-      {
-        "name": "data",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 220,
+    "__docId__": 145,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -4871,7 +2982,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{dir}",
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 141,
     "undocument": true,
     "params": [
       {
@@ -4894,7 +3005,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 146,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -4907,7 +3018,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{cwd}",
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 151,
     "undocument": true,
     "params": [
       {
@@ -4924,7 +3035,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 147,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -4937,7 +3048,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{bin}",
     "description": null,
-    "lineNumber": 135,
+    "lineNumber": 162,
     "undocument": true,
     "params": [
       {
@@ -4947,7 +3058,7 @@
         ]
       },
       {
-        "name": "opts",
+        "name": "options",
         "types": [
           "*"
         ]
@@ -4960,7 +3071,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 148,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -4971,15 +3082,15 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "Directory",
     "description": null,
-    "lineNumber": 8,
+    "lineNumber": 7,
     "undocument": true,
     "interface": false,
     "extends": [
-      "Path"
+      "src/Path.js~Path"
     ]
   },
   {
-    "__docId__": 224,
+    "__docId__": 149,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -4989,7 +3100,7 @@
     "longname": "src/Badger.js~Directory#file",
     "access": "public",
     "description": null,
-    "lineNumber": 9,
+    "lineNumber": 8,
     "undocument": true,
     "params": [
       {
@@ -5012,7 +3123,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 150,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -5022,7 +3133,7 @@
     "longname": "src/Badger.js~Directory#directory",
     "access": "public",
     "description": null,
-    "lineNumber": 12,
+    "lineNumber": 11,
     "undocument": true,
     "params": [
       {
@@ -5045,7 +3156,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 151,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -5055,7 +3166,7 @@
     "longname": "src/Badger.js~Directory#dir",
     "access": "public",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 14,
     "undocument": true,
     "params": [
       {
@@ -5073,7 +3184,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 152,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -5083,7 +3194,7 @@
     "longname": "src/Badger.js~Directory#parent",
     "access": "public",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 17,
     "undocument": true,
     "params": [
       {
@@ -5100,7 +3211,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 153,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -5110,7 +3221,7 @@
     "longname": "src/Badger.js~Directory#read",
     "access": "public",
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 20,
     "undocument": true,
     "params": [],
     "return": {
@@ -5120,7 +3231,7 @@
     }
   },
   {
-    "__docId__": 229,
+    "__docId__": 154,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5130,7 +3241,7 @@
     "longname": "src/Badger.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 29,
+    "lineNumber": 28,
     "return": {
       "nullable": null,
       "types": [
@@ -5142,7 +3253,7 @@
     "params": []
   },
   {
-    "__docId__": 230,
+    "__docId__": 155,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5152,7 +3263,7 @@
     "longname": "src/Badger.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 37,
+    "lineNumber": 36,
     "return": {
       "nullable": null,
       "types": [
@@ -5164,7 +3275,7 @@
     "params": []
   },
   {
-    "__docId__": 231,
+    "__docId__": 156,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -5174,7 +3285,7 @@
     "longname": "src/Badger.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 48,
+    "lineNumber": 47,
     "params": [
       {
         "nullable": null,
@@ -5213,11 +3324,11 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 157,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -5227,7 +3338,7 @@
     "longname": "src/Badger.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 61,
+    "lineNumber": 60,
     "params": [
       {
         "nullable": null,
@@ -5256,11 +3367,11 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 158,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -5270,7 +3381,7 @@
     "longname": "src/Badger.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 74,
+    "lineNumber": 73,
     "params": [
       {
         "nullable": null,
@@ -5319,11 +3430,11 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
-    "__docId__": 234,
+    "__docId__": 159,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -5333,7 +3444,7 @@
     "longname": "src/Badger.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 90,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -5364,11 +3475,11 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 160,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -5378,7 +3489,7 @@
     "longname": "src/Badger.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 102,
+    "lineNumber": 101,
     "params": [
       {
         "nullable": null,
@@ -5433,11 +3544,11 @@
         "Object"
       ],
       "spread": false,
-      "description": "the Directory object"
+      "description": "the `Directory` object"
     }
   },
   {
-    "__docId__": 236,
+    "__docId__": 161,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -5446,8 +3557,336 @@
     "static": false,
     "longname": "src/Badger.js~Directory#mustExist",
     "access": "public",
+    "description": "Assert that a directory exists and optionally create it",
+    "lineNumber": 113,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.create",
+        "description": "create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.mkdir",
+        "description": "create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.recursive",
+        "description": "when used with `mkdir`, creates any intermediate directories"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the `Directory` object"
+    }
+  },
+  {
+    "__docId__": 162,
+    "kind": "function",
+    "name": "file",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~file",
+    "access": "public",
+    "export": true,
+    "importPath": "badger-js/src/Badger.js",
+    "importStyle": "{file}",
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 34,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 163,
+    "kind": "class",
+    "name": "File",
+    "memberof": "src/Badger.js",
+    "static": true,
+    "longname": "src/Badger.js~File",
+    "access": "public",
+    "export": true,
+    "importPath": "badger-js/src/Badger.js",
+    "importStyle": "File",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "src/Path.js~Path"
+    ]
+  },
+  {
+    "__docId__": 164,
+    "kind": "method",
+    "name": "directory",
+    "memberof": "src/Badger.js~File",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~File#directory",
+    "access": "public",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 165,
+    "kind": "method",
+    "name": "dir",
+    "memberof": "src/Badger.js~File",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~File#dir",
+    "access": "public",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 166,
+    "kind": "method",
+    "name": "read",
+    "memberof": "src/Badger.js~File",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~File#read",
+    "access": "public",
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "params": [
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 167,
+    "kind": "method",
+    "name": "write",
+    "memberof": "src/Badger.js~File",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~File#write",
+    "access": "public",
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 168,
+    "kind": "class",
+    "name": "Path",
+    "memberof": "src/Badger.js",
+    "static": true,
+    "longname": "src/Badger.js~Path",
+    "access": "public",
+    "export": true,
+    "importPath": "badger-js/src/Badger.js",
+    "importStyle": "{Path}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "__docId__": 169,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true
+  },
+  {
+    "__docId__": 170,
+    "kind": "member",
+    "name": "state",
+    "memberof": "src/Badger.js~Path",
+    "static": false,
+    "longname": "src/Badger.js~Path#state",
+    "access": "public",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"path\": *, \"options\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 171,
+    "kind": "method",
+    "name": "path",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#path",
+    "access": "public",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 172,
+    "kind": "method",
+    "name": "relativePath",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#relativePath",
+    "access": "public",
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "params": [
+      {
+        "name": "parts",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 173,
+    "kind": "method",
+    "name": "options",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#options",
+    "access": "public",
+    "description": null,
+    "lineNumber": 18,
     "undocument": true,
     "params": [
       {
@@ -5462,12 +3901,52 @@
     ],
     "return": {
       "types": [
+        "{...undefined: Object, ...options: Object}"
+      ]
+    }
+  },
+  {
+    "__docId__": 174,
+    "kind": "method",
+    "name": "exists",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#exists",
+    "access": "public",
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
         "*"
       ]
     }
   },
   {
-    "__docId__": 237,
+    "__docId__": 175,
+    "kind": "method",
+    "name": "stats",
+    "memberof": "src/Badger.js~Path",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger.js~Path#stats",
+    "access": "public",
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "params": [],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 176,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -5497,7 +3976,7 @@
     }
   },
   {
-    "__docId__": 238,
+    "__docId__": 177,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -5527,7 +4006,7 @@
     }
   },
   {
-    "__docId__": 239,
+    "__docId__": 178,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -5557,7 +4036,7 @@
     }
   },
   {
-    "__docId__": 240,
+    "__docId__": 179,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -5587,7 +4066,7 @@
     }
   },
   {
-    "__docId__": 241,
+    "__docId__": 180,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -5617,7 +4096,7 @@
     }
   },
   {
-    "__docId__": 242,
+    "__docId__": 181,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -5647,7 +4126,7 @@
     }
   },
   {
-    "__docId__": 243,
+    "__docId__": 182,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -5677,7 +4156,7 @@
     }
   },
   {
-    "__docId__": 244,
+    "__docId__": 183,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -5708,7 +4187,7 @@
     }
   },
   {
-    "__docId__": 245,
+    "__docId__": 184,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -5738,7 +4217,7 @@
     }
   },
   {
-    "__docId__": 246,
+    "__docId__": 185,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -5765,7 +4244,7 @@
     "return": null
   },
   {
-    "__docId__": 247,
+    "__docId__": 186,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -5804,7 +4283,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 187,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -5843,7 +4322,7 @@
     }
   },
   {
-    "__docId__": 249,
+    "__docId__": 188,
     "kind": "function",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -5874,7 +4353,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 189,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -5910,7 +4389,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 190,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -5940,7 +4419,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 191,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -5988,7 +4467,7 @@
     }
   },
   {
-    "__docId__": 253,
+    "__docId__": 192,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -6036,7 +4515,7 @@
     }
   },
   {
-    "__docId__": 254,
+    "__docId__": 193,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -6084,7 +4563,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 194,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -6114,7 +4593,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 195,
     "kind": "function",
     "name": "snakeUp",
     "memberof": "src/Badger.js",
@@ -6144,7 +4623,7 @@
     }
   },
   {
-    "__docId__": 257,
+    "__docId__": 196,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -6160,7 +4639,7 @@
     "interface": false
   },
   {
-    "__docId__": 258,
+    "__docId__": 197,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -6174,7 +4653,7 @@
     "undocument": true
   },
   {
-    "__docId__": 259,
+    "__docId__": 198,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",
@@ -6209,7 +4688,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"badger-js\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"browser\": \"dist/badger.umd.js\",\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"build-docs\": \"esdoc\",\n    \"serve-docs\": \"serve docs\",\n    \"Xtest\": \"node test/hello.js\",\n    \"test\": \"ava\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"author\": \"Andy Wardley\",\n  \"license\": \"ISC\",\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"rollup\": \"^1.29.0\"\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"dependencies\": {\n    \"fs-extra\": \"^10.1.0\",\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"badger-js\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"browser\": \"dist/badger.umd.js\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"build-docs\": \"esdoc\",\n    \"serve-docs\": \"serve docs\",\n    \"Xtest\": \"node test/hello.js\",\n    \"test\": \"ava\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"rollup\": \"^1.29.0\"\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"dependencies\": {\n    \"fs-extra\": \"^10.1.0\",\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,

@@ -18,12 +18,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "badger-js/src/badger/filesystem/index.js~directory",
-    "class/src/Badger/Filesystem/index.js~Directory.html",
-    "<span>Directory</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
-    "class"
-  ],
-  [
     "badger-js/src/badger.js~file",
     "class/src/Badger.js~File.html",
     "<span>File</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -36,12 +30,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "badger-js/src/badger/filesystem/index.js~file",
-    "class/src/Badger/Filesystem/index.js~File.html",
-    "<span>File</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
-    "class"
-  ],
-  [
     "badger-js/src/badger.js~path",
     "class/src/Badger.js~Path.html",
     "<span>Path</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -51,12 +39,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/filesystem/path.js~path",
     "class/src/Badger/Filesystem/Path.js~Path.html",
     "<span>Path</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Path.js</span>",
-    "class"
-  ],
-  [
-    "badger-js/src/badger/filesystem/index.js~path",
-    "class/src/Badger/Filesystem/index.js~Path.html",
-    "<span>Path</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
     "class"
   ],
   [
@@ -84,12 +66,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~allparams",
-    "function/index.html#static-function-allParams",
-    "<span>allParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~anyparams",
     "function/index.html#static-function-anyParams",
     "<span>anyParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -99,12 +75,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/params.js~anyparams",
     "function/index.html#static-function-anyParams",
     "<span>anyParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~anyparams",
-    "function/index.html#static-function-anyParams",
-    "<span>anyParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -120,12 +90,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/index.js~bin",
-    "function/index.html#static-function-bin",
-    "<span>bin</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~capitalise",
     "function/index.html#static-function-capitalise",
     "<span>capitalise</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -135,12 +99,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/text.js~capitalise",
     "function/index.html#static-function-capitalise",
     "<span>capitalise</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~capitalise",
-    "function/index.html#static-function-capitalise",
-    "<span>capitalise</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -192,12 +150,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/index.js~cwd",
-    "function/index.html#static-function-cwd",
-    "<span>cwd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger/codecs/json.js~decode",
     "function/index.html#static-function-decode",
     "<span>decode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Json.js</span>",
@@ -219,12 +171,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/filesystem/directory.js~dir",
     "function/index.html#static-function-dir",
     "<span>dir</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Directory.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/filesystem/index.js~dir",
-    "function/index.html#static-function-dir",
-    "<span>dir</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
     "function"
   ],
   [
@@ -252,12 +198,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~fail",
-    "function/index.html#static-function-fail",
-    "<span>fail</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~file",
     "function/index.html#static-function-file",
     "<span>file</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -267,12 +207,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/filesystem/file.js~file",
     "function/index.html#static-function-file",
     "<span>file</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/File.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/filesystem/index.js~file",
-    "function/index.html#static-function-file",
-    "<span>file</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/index.js</span>",
     "function"
   ],
   [
@@ -288,12 +222,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~hasvalue",
-    "function/index.html#static-function-hasValue",
-    "<span>hasValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~havevalue",
     "function/index.html#static-function-haveValue",
     "<span>haveValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -303,12 +231,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/misc.js~havevalue",
     "function/index.html#static-function-haveValue",
     "<span>haveValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~havevalue",
-    "function/index.html#static-function-haveValue",
-    "<span>haveValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -330,12 +252,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~isarray",
-    "function/index.html#static-function-isArray",
-    "<span>isArray</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~isfunction",
     "function/index.html#static-function-isFunction",
     "<span>isFunction</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -345,12 +261,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/misc.js~isfunction",
     "function/index.html#static-function-isFunction",
     "<span>isFunction</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~isfunction",
-    "function/index.html#static-function-isFunction",
-    "<span>isFunction</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -366,12 +276,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~isnull",
-    "function/index.html#static-function-isNull",
-    "<span>isNull</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~isobject",
     "function/index.html#static-function-isObject",
     "<span>isObject</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -381,12 +285,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/misc.js~isobject",
     "function/index.html#static-function-isObject",
     "<span>isObject</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~isobject",
-    "function/index.html#static-function-isObject",
-    "<span>isObject</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -402,12 +300,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~isstring",
-    "function/index.html#static-function-isString",
-    "<span>isString</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~isundefined",
     "function/index.html#static-function-isUndefined",
     "<span>isUndefined</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -417,12 +309,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/misc.js~isundefined",
     "function/index.html#static-function-isUndefined",
     "<span>isUndefined</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~isundefined",
-    "function/index.html#static-function-isUndefined",
-    "<span>isUndefined</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -438,12 +324,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~joinlist",
-    "function/index.html#static-function-joinList",
-    "<span>joinList</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~joinlistand",
     "function/index.html#static-function-joinListAnd",
     "<span>joinListAnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -453,12 +333,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/text.js~joinlistand",
     "function/index.html#static-function-joinListAnd",
     "<span>joinListAnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~joinlistand",
-    "function/index.html#static-function-joinListAnd",
-    "<span>joinListAnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -474,12 +348,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~joinlistor",
-    "function/index.html#static-function-joinListOr",
-    "<span>joinListOr</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~novalue",
     "function/index.html#static-function-noValue",
     "<span>noValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -489,12 +357,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/misc.js~novalue",
     "function/index.html#static-function-noValue",
     "<span>noValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~novalue",
-    "function/index.html#static-function-noValue",
-    "<span>noValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -510,12 +372,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~requiredparam",
-    "function/index.html#static-function-requiredParam",
-    "<span>requiredParam</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~requiredparams",
     "function/index.html#static-function-requiredParams",
     "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -525,12 +381,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/params.js~requiredparams",
     "function/index.html#static-function-requiredParams",
     "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~requiredparams",
-    "function/index.html#static-function-requiredParams",
-    "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -552,12 +402,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/utils/index.js~snakeup",
-    "function/index.html#static-function-snakeUp",
-    "<span>snakeUp</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
-    "function"
-  ],
-  [
     "badger-js/src/badger.js~splitlist",
     "function/index.html#static-function-splitList",
     "<span>splitList</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -567,12 +411,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/text.js~splitlist",
     "function/index.html#static-function-splitList",
     "<span>splitList</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger/utils/index.js~splitlist",
-    "function/index.html#static-function-splitList",
-    "<span>splitList</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/index.js</span>",
     "function"
   ],
   [
@@ -1050,9 +888,9 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/badger/config.js~config#codec",
-    "class/src/Badger/Config.js~Config.html#instance-member-codec",
-    "src/Badger/Config.js~Config#codec",
+    "src/badger/config.js~config#codecs",
+    "class/src/Badger/Config.js~Config.html#instance-member-codecs",
+    "src/Badger/Config.js~Config#codecs",
     "member"
   ],
   [
@@ -1066,6 +904,12 @@ window.esdocSearchIndex = [
     "class/src/Badger/Config.js~Config.html#instance-constructor-constructor",
     "src/Badger/Config.js~Config#constructor",
     "method"
+  ],
+  [
+    "src/badger/config.js~config#dir",
+    "class/src/Badger/Config.js~Config.html#instance-member-dir",
+    "src/Badger/Config.js~Config#dir",
+    "member"
   ],
   [
     "src/badger/config.js~config#exists",
@@ -1084,12 +928,6 @@ window.esdocSearchIndex = [
     "class/src/Badger/Config.js~Config.html#instance-method-path",
     "src/Badger/Config.js~Config#path",
     "method"
-  ],
-  [
-    "src/badger/config.js~config#root",
-    "class/src/Badger/Config.js~Config.html#instance-member-root",
-    "src/Badger/Config.js~Config#root",
-    "member"
   ],
   [
     "src/badger/filesystem/directory.js",
@@ -1254,156 +1092,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/filesystem/index.js",
-    "file/src/Badger/Filesystem/index.js.html",
-    "src/Badger/Filesystem/index.js",
-    "file"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#create",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-create",
-    "src/Badger/Filesystem/index.js~Directory#create",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#destroy",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-destroy",
-    "src/Badger/Filesystem/index.js~Directory#destroy",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#dir",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-dir",
-    "src/Badger/Filesystem/index.js~Directory#dir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#directory",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-directory",
-    "src/Badger/Filesystem/index.js~Directory#directory",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#empty",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-empty",
-    "src/Badger/Filesystem/index.js~Directory#empty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#file",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-file",
-    "src/Badger/Filesystem/index.js~Directory#file",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#isempty",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-isEmpty",
-    "src/Badger/Filesystem/index.js~Directory#isEmpty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#mkdir",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-mkdir",
-    "src/Badger/Filesystem/index.js~Directory#mkdir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#mustexist",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-mustExist",
-    "src/Badger/Filesystem/index.js~Directory#mustExist",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#notempty",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-notEmpty",
-    "src/Badger/Filesystem/index.js~Directory#notEmpty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#parent",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-parent",
-    "src/Badger/Filesystem/index.js~Directory#parent",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#read",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-read",
-    "src/Badger/Filesystem/index.js~Directory#read",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~directory#rmdir",
-    "class/src/Badger/Filesystem/index.js~Directory.html#instance-method-rmdir",
-    "src/Badger/Filesystem/index.js~Directory#rmdir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~file#dir",
-    "class/src/Badger/Filesystem/index.js~File.html#instance-method-dir",
-    "src/Badger/Filesystem/index.js~File#dir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~file#directory",
-    "class/src/Badger/Filesystem/index.js~File.html#instance-method-directory",
-    "src/Badger/Filesystem/index.js~File#directory",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~file#read",
-    "class/src/Badger/Filesystem/index.js~File.html#instance-method-read",
-    "src/Badger/Filesystem/index.js~File#read",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~file#write",
-    "class/src/Badger/Filesystem/index.js~File.html#instance-method-write",
-    "src/Badger/Filesystem/index.js~File#write",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#constructor",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-constructor-constructor",
-    "src/Badger/Filesystem/index.js~Path#constructor",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#exists",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-method-exists",
-    "src/Badger/Filesystem/index.js~Path#exists",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#options",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-method-options",
-    "src/Badger/Filesystem/index.js~Path#options",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#path",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-method-path",
-    "src/Badger/Filesystem/index.js~Path#path",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#relativepath",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-method-relativePath",
-    "src/Badger/Filesystem/index.js~Path#relativePath",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#state",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-member-state",
-    "src/Badger/Filesystem/index.js~Path#state",
-    "member"
-  ],
-  [
-    "src/badger/filesystem/index.js~path#stats",
-    "class/src/Badger/Filesystem/index.js~Path.html#instance-method-stats",
-    "src/Badger/Filesystem/index.js~Path#stats",
-    "method"
-  ],
-  [
     "src/badger/utils/misc.js",
     "file/src/Badger/Utils/Misc.js.html",
     "src/Badger/Utils/Misc.js",
@@ -1419,12 +1107,6 @@ window.esdocSearchIndex = [
     "src/badger/utils/text.js",
     "file/src/Badger/Utils/Text.js.html",
     "src/Badger/Utils/Text.js",
-    "file"
-  ],
-  [
-    "src/badger/utils/index.js",
-    "file/src/Badger/Utils/index.js.html",
-    "src/Badger/Utils/index.js",
     "file"
   ],
   [
