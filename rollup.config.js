@@ -5,6 +5,7 @@ import pkg from './package.json';
 // Silence circular dependency warnings
 const ignoreWarnings = {
   'Circular dependency: src/Badger/Filesystem/File.js -> src/Badger/Filesystem/Directory.js -> src/Badger/Filesystem/File.js': true,
+  'Circular dependency: src/Badger/Filesystem/Directory.js -> src/Badger/Filesystem/File.js -> src/Badger/Filesystem/Directory.js': true,
 };
 
 const onwarn = (warning, warn) => {

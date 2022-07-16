@@ -1001,7 +1001,7 @@
     "__docId__": 69,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
-    "content": "import fs from 'fs'\nimport path from 'path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\n\nclass Directory extends Path {\n  file(name, options) {\n    return file(this.relativePath(name), this.options(options));\n  }\n  directory(path, options) {\n    return dir(this.relativePath(path), this.options(options));\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  parent(options) {\n    return this.directory('..', options);\n  }\n  read() {\n    return fs.readdirSync(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Boolean} true (empty) or false (not empty).\n   */\n  isEmpty() {\n    return this.read().length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Boolean} true (not empty) or false (empty).\n   */\n  notEmpty() {\n    return ! this.isEmpty();\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Object} the `Directory` object\n   */\n  empty(options={}) {\n    if (this.exists() && this.notEmpty()) {\n      fs.rmSync(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  mkdir(options={}) {\n    fs.mkdirSync(this.path(), options);\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Object} the `Directory` object\n   */\n  rmdir(options={}) {\n    if (options.empty) {\n        this.empty(options);\n    }\n    if (this.exists()) {\n      fs.rmdirSync(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  create(options={ recursive: true }) {\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Object} the `Directory` object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Object} the `Directory` object\n   */\n  mustExist(options={}) {\n    if (this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    else {\n      return fail(\"Directory does not exist: \", this.path());\n    }\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility functions to create a directory object from a path (dir), to\n// represent the current working directory (cwd) or the path from a\n// source module (moduleDir).  All can take optional options.\n//---------------------------------------------------------------------\n/**\n * Function to create a new `Directory` object\n * @param {String} [path] - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new Directory object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new Directory object for the directory of a JS source file\n * @param {String} [url] - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the `Directory` object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
+    "content": "import fs from 'fs'\nimport path from 'path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\n\nclass Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} [path] - file path\n   * @param {Object} [options] - file configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} [path] - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {string[]} file and directory names\n   */\n  read() {\n    return fs.readdirSync(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Boolean} true (empty) or false (not empty).\n   */\n  isEmpty() {\n    return this.read().length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Boolean} true (not empty) or false (empty).\n   */\n  notEmpty() {\n    return ! this.isEmpty();\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Object} the {@link Directory} object\n   */\n  empty(options={}) {\n    if (this.exists() && this.notEmpty()) {\n      fs.rmSync(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Object} the {@link Directory} object\n   */\n  mkdir(options={}) {\n    fs.mkdirSync(this.path(), options);\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Object} the {@link Directory} object\n   */\n  rmdir(options={}) {\n    if (options.empty) {\n        this.empty(options);\n    }\n    if (this.exists()) {\n      fs.rmdirSync(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Object} the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Object} the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Object} the {@link Directory} object\n   */\n  mustExist(options={}) {\n    if (this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    else {\n      return fail(\"Directory does not exist: \", this.path());\n    }\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} [path] - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} [url] - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Directory.js",
     "access": "public",
@@ -1021,13 +1021,13 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{dir}",
-    "description": "Function to create a new `Directory` object",
-    "lineNumber": 141,
+    "description": "Function to create a new {@link Directory} object",
+    "lineNumber": 168,
     "params": [
       {
         "nullable": null,
         "types": [
-          "String"
+          "string"
         ],
         "spread": false,
         "optional": true,
@@ -1061,7 +1061,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1077,8 +1077,8 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{cwd}",
-    "description": "Function to create a new Directory object for the current working directory",
-    "lineNumber": 151,
+    "description": "Function to create a new {@link Directory} object for the current working directory",
+    "lineNumber": 178,
     "params": [
       {
         "nullable": null,
@@ -1107,7 +1107,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1123,13 +1123,13 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/Directory.js",
     "importStyle": "{bin}",
-    "description": "Function to create a new Directory object for the directory of a JS source file",
-    "lineNumber": 162,
+    "description": "Function to create a new {@link Directory} object for the directory of a JS source file",
+    "lineNumber": 189,
     "params": [
       {
         "nullable": null,
         "types": [
-          "String"
+          "string"
         ],
         "spread": false,
         "optional": true,
@@ -1163,7 +1163,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1195,27 +1195,47 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
+    "description": "Fetch a new {@link File} object for a file in the directory.",
+    "lineNumber": 15,
     "params": [
       {
-        "name": "name",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "file path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "file configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object"
     }
   },
   {
@@ -1228,27 +1248,47 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#directory",
     "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "Fetch a new {@link Directory} object for a sub-directory in the directory.",
+    "lineNumber": 26,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "directory path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1261,9 +1301,16 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "An alias for the {@link directory} method for lazy people",
+    "lineNumber": 34,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
+    },
     "params": [
       {
         "name": "args",
@@ -1272,12 +1319,7 @@
         ],
         "spread": true
       }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
+    ]
   },
   {
     "__docId__": 77,
@@ -1289,21 +1331,37 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#parent",
     "access": "public",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true,
+    "description": "Returns a new {@link Directory} object for the parent directory",
+    "lineNumber": 44,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object for the parent"
     }
   },
   {
@@ -1316,15 +1374,17 @@
     "static": false,
     "longname": "src/Badger/Filesystem/Directory.js~Directory#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 20,
-    "undocument": true,
-    "params": [],
+    "description": "Returns the names of the files and sub-directories in the directory",
+    "lineNumber": 52,
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
-    }
+        "string[]"
+      ],
+      "spread": false,
+      "description": "file and directory names"
+    },
+    "params": []
   },
   {
     "__docId__": 79,
@@ -1337,7 +1397,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 28,
+    "lineNumber": 60,
     "return": {
       "nullable": null,
       "types": [
@@ -1359,7 +1419,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 36,
+    "lineNumber": 68,
     "return": {
       "nullable": null,
       "types": [
@@ -1381,7 +1441,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 47,
+    "lineNumber": 79,
     "params": [
       {
         "nullable": null,
@@ -1420,7 +1480,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1434,7 +1494,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 60,
+    "lineNumber": 92,
     "params": [
       {
         "nullable": null,
@@ -1463,7 +1523,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1477,7 +1537,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 73,
+    "lineNumber": 105,
     "params": [
       {
         "nullable": null,
@@ -1526,7 +1586,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1540,7 +1600,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 89,
+    "lineNumber": 121,
     "params": [
       {
         "nullable": null,
@@ -1571,7 +1631,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1585,7 +1645,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 101,
+    "lineNumber": 133,
     "params": [
       {
         "nullable": null,
@@ -1640,7 +1700,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -1654,7 +1714,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mustExist",
     "access": "public",
     "description": "Assert that a directory exists and optionally create it",
-    "lineNumber": 113,
+    "lineNumber": 145,
     "params": [
       {
         "nullable": null,
@@ -1703,14 +1763,14 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
     "__docId__": 87,
     "kind": "file",
     "name": "src/Badger/Filesystem/File.js",
-    "content": "import path from 'path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile } from 'fs/promises'\n\nclass File extends Path {\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n  dir(...args) {\n    return this.directory(...args);\n  }\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n}\n\n//---------------------------------------------------------------------\n// Utility function to create a file object from a path and optional\n// options.\n//---------------------------------------------------------------------\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
+    "content": "import path from 'path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile } from 'fs/promises'\n\nclass File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {String|Object} the file content\n   * @example\n   * const text = file('myfile.txt').read();\n   * @example\n   * const data = file('myfile.json', { codec: 'json' }).read();\n   * @example\n   * const data = file('myfile.json').read({ codec: 'json' });\n   */\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} [data] - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} [path] - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/File.js",
     "access": "public",
@@ -1730,27 +1790,47 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Filesystem/File.js",
     "importStyle": "{file}",
-    "description": null,
-    "lineNumber": 34,
-    "undocument": true,
+    "description": "Function to create a new {@link File} object for a file",
+    "lineNumber": 74,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "file path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object"
     }
   },
   {
@@ -1782,21 +1862,37 @@
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#directory",
     "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
+    "description": "Returns a new {@link Directory} object for the parent directory of the file",
+    "lineNumber": 14,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object for the parent"
     }
   },
   {
@@ -1809,9 +1905,16 @@
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "An alias for the {@link directory} method for lazy people",
+    "lineNumber": 22,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the parent {@link Directory} object"
+    },
     "params": [
       {
         "name": "args",
@@ -1820,12 +1923,7 @@
         ],
         "spread": true
       }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
+    ]
   },
   {
     "__docId__": 92,
@@ -1837,21 +1935,43 @@
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "Reads the file content.  If a `codec` has been specified then the content is decoded.",
+    "examples": [
+      "const text = file('myfile.txt').read();",
+      "const data = file('myfile.json', { codec: 'json' }).read();",
+      "const data = file('myfile.json').read({ codec: 'json' });"
+    ],
+    "lineNumber": 38,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "String",
+        "Object"
+      ],
+      "spread": false,
+      "description": "the file content"
     }
   },
   {
@@ -1864,21 +1984,44 @@
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#write",
     "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
+    "description": "Writes the file content.  If a `codec` has been specified then the content will be encoded.",
+    "examples": [
+      "file('myfile.txt').write('Hello World');",
+      "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
+      "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
+    ],
+    "lineNumber": 58,
     "params": [
       {
-        "name": "data",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String",
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "data",
+        "description": "directory configuration options"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
@@ -2982,7 +3125,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{dir}",
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 168,
     "undocument": true,
     "params": [
       {
@@ -3018,7 +3161,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{cwd}",
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 178,
     "undocument": true,
     "params": [
       {
@@ -3048,7 +3191,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{bin}",
     "description": null,
-    "lineNumber": 162,
+    "lineNumber": 189,
     "undocument": true,
     "params": [
       {
@@ -3099,27 +3242,47 @@
     "static": false,
     "longname": "src/Badger.js~Directory#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
+    "description": "Fetch a new {@link File} object for a file in the directory.",
+    "lineNumber": 15,
     "params": [
       {
-        "name": "name",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "file path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "file configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object"
     }
   },
   {
@@ -3132,27 +3295,47 @@
     "static": false,
     "longname": "src/Badger.js~Directory#directory",
     "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "Fetch a new {@link Directory} object for a sub-directory in the directory.",
+    "lineNumber": 26,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "directory path"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3165,9 +3348,16 @@
     "static": false,
     "longname": "src/Badger.js~Directory#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "An alias for the {@link directory} method for lazy people",
+    "lineNumber": 34,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
+    },
     "params": [
       {
         "name": "args",
@@ -3176,12 +3366,7 @@
         ],
         "spread": true
       }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
+    ]
   },
   {
     "__docId__": 152,
@@ -3193,21 +3378,37 @@
     "static": false,
     "longname": "src/Badger.js~Directory#parent",
     "access": "public",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true,
+    "description": "Returns a new {@link Directory} object for the parent directory",
+    "lineNumber": 44,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object for the parent"
     }
   },
   {
@@ -3220,15 +3421,17 @@
     "static": false,
     "longname": "src/Badger.js~Directory#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 20,
-    "undocument": true,
-    "params": [],
+    "description": "Returns the names of the files and sub-directories in the directory",
+    "lineNumber": 52,
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
-    }
+        "string[]"
+      ],
+      "spread": false,
+      "description": "file and directory names"
+    },
+    "params": []
   },
   {
     "__docId__": 154,
@@ -3241,7 +3444,7 @@
     "longname": "src/Badger.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 28,
+    "lineNumber": 60,
     "return": {
       "nullable": null,
       "types": [
@@ -3263,7 +3466,7 @@
     "longname": "src/Badger.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 36,
+    "lineNumber": 68,
     "return": {
       "nullable": null,
       "types": [
@@ -3285,7 +3488,7 @@
     "longname": "src/Badger.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 47,
+    "lineNumber": 79,
     "params": [
       {
         "nullable": null,
@@ -3324,7 +3527,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3338,7 +3541,7 @@
     "longname": "src/Badger.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 60,
+    "lineNumber": 92,
     "params": [
       {
         "nullable": null,
@@ -3367,7 +3570,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3381,7 +3584,7 @@
     "longname": "src/Badger.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 73,
+    "lineNumber": 105,
     "params": [
       {
         "nullable": null,
@@ -3430,7 +3633,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3444,7 +3647,7 @@
     "longname": "src/Badger.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 89,
+    "lineNumber": 121,
     "params": [
       {
         "nullable": null,
@@ -3475,7 +3678,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3489,7 +3692,7 @@
     "longname": "src/Badger.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 101,
+    "lineNumber": 133,
     "params": [
       {
         "nullable": null,
@@ -3544,7 +3747,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3558,7 +3761,7 @@
     "longname": "src/Badger.js~Directory#mustExist",
     "access": "public",
     "description": "Assert that a directory exists and optionally create it",
-    "lineNumber": 113,
+    "lineNumber": 145,
     "params": [
       {
         "nullable": null,
@@ -3607,7 +3810,7 @@
         "Object"
       ],
       "spread": false,
-      "description": "the `Directory` object"
+      "description": "the {@link Directory} object"
     }
   },
   {
@@ -3624,7 +3827,7 @@
     "importPath": "badger-js/src/Badger.js",
     "importStyle": "{file}",
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 74,
     "undocument": true,
     "params": [
       {
@@ -3675,21 +3878,37 @@
     "static": false,
     "longname": "src/Badger.js~File#directory",
     "access": "public",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
+    "description": "Returns a new {@link Directory} object for the parent directory of the file",
+    "lineNumber": 14,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object for the parent"
     }
   },
   {
@@ -3702,9 +3921,16 @@
     "static": false,
     "longname": "src/Badger.js~File#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "An alias for the {@link directory} method for lazy people",
+    "lineNumber": 22,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the parent {@link Directory} object"
+    },
     "params": [
       {
         "name": "args",
@@ -3713,12 +3939,7 @@
         ],
         "spread": true
       }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
+    ]
   },
   {
     "__docId__": 166,
@@ -3730,21 +3951,43 @@
     "static": false,
     "longname": "src/Badger.js~File#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "Reads the file content.  If a `codec` has been specified then the content is decoded.",
+    "examples": [
+      "const text = file('myfile.txt').read();",
+      "const data = file('myfile.json', { codec: 'json' }).read();",
+      "const data = file('myfile.json').read({ codec: 'json' });"
+    ],
+    "lineNumber": 38,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "String",
+        "Object"
+      ],
+      "spread": false,
+      "description": "the file content"
     }
   },
   {
@@ -3757,21 +4000,44 @@
     "static": false,
     "longname": "src/Badger.js~File#write",
     "access": "public",
-    "description": null,
-    "lineNumber": 21,
-    "undocument": true,
+    "description": "Writes the file content.  If a `codec` has been specified then the content will be encoded.",
+    "examples": [
+      "file('myfile.txt').write('Hello World');",
+      "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
+      "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
+    ],
+    "lineNumber": 58,
     "params": [
       {
-        "name": "data",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String",
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "data",
+        "description": "directory configuration options"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {

@@ -91,20 +91,3 @@ test(
   )
 )
 
-// read/write YAML and JSON
-const rnum        = Math.floor(Math.random() * 1000);
-const string      = "I Wrote This!"
-const rwfile_yaml = tmpFiles.file('readwrite.yaml', { codec: 'yaml' });
-const rwfile_json = tmpFiles.file('readwrite.json', { codec: 'json' });
-test(
-  'write and read YAML data',
-  t => rwfile_yaml.write({ msg: string, random: rnum })
-    .then( file => file.read() )
-    .then( data => t.is(data.msg, string) && t.is(data.random, rnum) )
-)
-test(
-  'write and read JSON data',
-  t => rwfile_json.write({ msg: string, random: rnum })
-    .then( file => file.read() )
-    .then( data => t.is(data.msg, string) && t.is(data.random, rnum) )
-)
