@@ -25,7 +25,7 @@ export default [
     //  resolve(),
     //  commonjs()
     //],
-    external: ["js-yaml", "fs-extra", "path", "fs/promises"],
+    external: ["fs", "js-yaml", "fs-extra", "path", "fs/promises"],
     output: [
       {
         file: pkg.main,
