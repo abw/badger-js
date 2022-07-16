@@ -7,10 +7,16 @@ const testFiles = thisDir.dir('test_files');
 const testDir = testFiles.dir('test_dir');
 const subDir = testDir.dir('sub_directory');
 const tmpDir = testFiles.dir('tmp');
+const cloneDir = dir(testFiles);
 
 test.serial(
   'the test_files directory exists',
   t => t.is( testFiles.exists(), true)
+);
+
+test.serial(
+  'we can create a directory from an existing directory object',
+  t => t.is( cloneDir.path(), testFiles.path() )
 );
 
 test.serial(
@@ -121,3 +127,5 @@ test.serial(
     t.is( files[2], 'hello.yaml' )
   }
 );
+
+const tmpDir2 = dir(tmpDir);

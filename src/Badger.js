@@ -1,3 +1,4 @@
+export * from './Badger/Config.js';
 export * from './Badger/Codecs/index.js';
 export * from './Badger/Filesystem/Directory.js';
 export * from './Badger/Filesystem/File.js';

@@ -7,6 +7,10 @@ const defaultOptions = {
 
 export class Path {
   constructor(path, options={}) {
+    // allow path/file/directory to be constructed from an existing object
+    if (path instanceof Path) {
+      path = path.path();
+    }
     this.state = { path, options: { ...defaultOptions, ...options } };
   }
   path() {

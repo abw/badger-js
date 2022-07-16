@@ -18,7 +18,6 @@
     "dev": "rollup -c -w",
     "build-docs": "esdoc",
     "serve-docs": "serve docs",
-    "Xtest": "node test/hello.js",
     "test": "ava --serial",
     "pretest": "pnpm run build"
   },
