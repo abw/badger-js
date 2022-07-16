@@ -1,0 +1,944 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 929,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0,
+      "index": 0
+    },
+    "end": {
+      "line": 31,
+      "column": 0,
+      "index": 929
+    }
+  },
+  "errors": [],
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 929,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0,
+        "index": 0
+      },
+      "end": {
+        "line": 31,
+        "column": 0,
+        "index": 929
+      }
+    },
+    "sourceType": "module",
+    "interpreter": null,
+    "body": [
+      {
+        "type": "ImportDeclaration",
+        "start": 0,
+        "end": 28,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0,
+            "index": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 28,
+            "index": 28
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportDefaultSpecifier",
+            "start": 7,
+            "end": 11,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 7,
+                "index": 7
+              },
+              "end": {
+                "line": 1,
+                "column": 11,
+                "index": 11
+              }
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 7,
+              "end": 11,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 7,
+                  "index": 7
+                },
+                "end": {
+                  "line": 1,
+                  "column": 11,
+                  "index": 11
+                },
+                "identifierName": "json"
+              },
+              "name": "json"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 17,
+          "end": 28,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 17,
+              "index": 17
+            },
+            "end": {
+              "line": 1,
+              "column": 28,
+              "index": 28
+            }
+          },
+          "extra": {
+            "rawValue": "./Json.js",
+            "raw": "'./Json.js'"
+          },
+          "value": "./Json.js"
+        }
+      },
+      {
+        "type": "ImportDeclaration",
+        "start": 29,
+        "end": 57,
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0,
+            "index": 29
+          },
+          "end": {
+            "line": 2,
+            "column": 28,
+            "index": 57
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportDefaultSpecifier",
+            "start": 36,
+            "end": 40,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 7,
+                "index": 36
+              },
+              "end": {
+                "line": 2,
+                "column": 11,
+                "index": 40
+              }
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 36,
+              "end": 40,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 7,
+                  "index": 36
+                },
+                "end": {
+                  "line": 2,
+                  "column": 11,
+                  "index": 40
+                },
+                "identifierName": "yaml"
+              },
+              "name": "yaml"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 46,
+          "end": 57,
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 17,
+              "index": 46
+            },
+            "end": {
+              "line": 2,
+              "column": 28,
+              "index": 57
+            }
+          },
+          "extra": {
+            "rawValue": "./Yaml.js",
+            "raw": "'./Yaml.js'"
+          },
+          "value": "./Yaml.js"
+        },
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Codecs provide a consistent encode()/decode() interface for serialising\n * and de-serialising data.  This standard naming convention makes it possible\n * for the ../Filesystem/File.js module to support a \"codec\" option for\n * files. When this option is set the file.read() and file.write() methods\n * automatically handle the translation to and from the serialised format\n * using a codec object returned by the codec() function below.  The codec\n * name can be specified in any case, e.g. \"Yaml\", \"YAML\", \"yaml\", \"YaML\",\n * etc., and it will be converted to lower case.\n ",
+            "start": 59,
+            "end": 640,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0,
+                "index": 59
+              },
+              "end": {
+                "line": 13,
+                "column": 3,
+                "index": 640
+              }
+            }
+          },
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Lookup table for codecs\n ",
+            "start": 642,
+            "end": 676,
+            "loc": {
+              "start": {
+                "line": 15,
+                "column": 0,
+                "index": 642
+              },
+              "end": {
+                "line": 17,
+                "column": 3,
+                "index": 676
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 677,
+        "end": 716,
+        "loc": {
+          "start": {
+            "line": 18,
+            "column": 0,
+            "index": 677
+          },
+          "end": {
+            "line": 20,
+            "column": 2,
+            "index": 716
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 684,
+          "end": 716,
+          "loc": {
+            "start": {
+              "line": 18,
+              "column": 7,
+              "index": 684
+            },
+            "end": {
+              "line": 20,
+              "column": 2,
+              "index": 716
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 690,
+              "end": 715,
+              "loc": {
+                "start": {
+                  "line": 18,
+                  "column": 13,
+                  "index": 690
+                },
+                "end": {
+                  "line": 20,
+                  "column": 1,
+                  "index": 715
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 690,
+                "end": 696,
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 13,
+                    "index": 690
+                  },
+                  "end": {
+                    "line": 18,
+                    "column": 19,
+                    "index": 696
+                  },
+                  "identifierName": "codecs"
+                },
+                "name": "codecs"
+              },
+              "init": {
+                "type": "ObjectExpression",
+                "start": 699,
+                "end": 715,
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 22,
+                    "index": 699
+                  },
+                  "end": {
+                    "line": 20,
+                    "column": 1,
+                    "index": 715
+                  }
+                },
+                "properties": [
+                  {
+                    "type": "ObjectProperty",
+                    "start": 703,
+                    "end": 707,
+                    "loc": {
+                      "start": {
+                        "line": 19,
+                        "column": 2,
+                        "index": 703
+                      },
+                      "end": {
+                        "line": 19,
+                        "column": 6,
+                        "index": 707
+                      }
+                    },
+                    "method": false,
+                    "key": {
+                      "type": "Identifier",
+                      "start": 703,
+                      "end": 707,
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 2,
+                          "index": 703
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 6,
+                          "index": 707
+                        },
+                        "identifierName": "json"
+                      },
+                      "name": "json"
+                    },
+                    "computed": false,
+                    "shorthand": true,
+                    "value": {
+                      "type": "Identifier",
+                      "start": 703,
+                      "end": 707,
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 2,
+                          "index": 703
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 6,
+                          "index": 707
+                        },
+                        "identifierName": "json"
+                      },
+                      "name": "json"
+                    },
+                    "extra": {
+                      "shorthand": true
+                    }
+                  },
+                  {
+                    "type": "ObjectProperty",
+                    "start": 709,
+                    "end": 713,
+                    "loc": {
+                      "start": {
+                        "line": 19,
+                        "column": 8,
+                        "index": 709
+                      },
+                      "end": {
+                        "line": 19,
+                        "column": 12,
+                        "index": 713
+                      }
+                    },
+                    "method": false,
+                    "key": {
+                      "type": "Identifier",
+                      "start": 709,
+                      "end": 713,
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 8,
+                          "index": 709
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 12,
+                          "index": 713
+                        },
+                        "identifierName": "yaml"
+                      },
+                      "name": "yaml"
+                    },
+                    "computed": false,
+                    "shorthand": true,
+                    "value": {
+                      "type": "Identifier",
+                      "start": 709,
+                      "end": 713,
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 8,
+                          "index": 709
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 12,
+                          "index": 713
+                        },
+                        "identifierName": "yaml"
+                      },
+                      "name": "yaml"
+                    },
+                    "extra": {
+                      "shorthand": true
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Codecs provide a consistent encode()/decode() interface for serialising\n * and de-serialising data.  This standard naming convention makes it possible\n * for the ../Filesystem/File.js module to support a \"codec\" option for\n * files. When this option is set the file.read() and file.write() methods\n * automatically handle the translation to and from the serialised format\n * using a codec object returned by the codec() function below.  The codec\n * name can be specified in any case, e.g. \"Yaml\", \"YAML\", \"yaml\", \"YaML\",\n * etc., and it will be converted to lower case.\n ",
+              "start": 59,
+              "end": 640,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 0,
+                  "index": 59
+                },
+                "end": {
+                  "line": 13,
+                  "column": 3,
+                  "index": 640
+                }
+              }
+            },
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Lookup table for codecs\n ",
+              "start": 642,
+              "end": 676,
+              "loc": {
+                "start": {
+                  "line": 15,
+                  "column": 0,
+                  "index": 642
+                },
+                "end": {
+                  "line": 17,
+                  "column": 3,
+                  "index": 676
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Function to fetch a codec\n * @param {string} name - The title of the code, in any case, e.g. \"yaml\", \"YAML\", \"Yaml\"\n ",
+              "start": 718,
+              "end": 844,
+              "loc": {
+                "start": {
+                  "line": 22,
+                  "column": 0,
+                  "index": 718
+                },
+                "end": {
+                  "line": 25,
+                  "column": 3,
+                  "index": 844
+                }
+              }
+            }
+          ]
+        },
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Function to fetch a codec\n * @param {string} name - The title of the code, in any case, e.g. \"yaml\", \"YAML\", \"Yaml\"\n ",
+            "start": 718,
+            "end": 844,
+            "loc": {
+              "start": {
+                "line": 22,
+                "column": 0,
+                "index": 718
+              },
+              "end": {
+                "line": 25,
+                "column": 3,
+                "index": 844
+              }
+            }
+          }
+        ],
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Codecs provide a consistent encode()/decode() interface for serialising\n * and de-serialising data.  This standard naming convention makes it possible\n * for the ../Filesystem/File.js module to support a \"codec\" option for\n * files. When this option is set the file.read() and file.write() methods\n * automatically handle the translation to and from the serialised format\n * using a codec object returned by the codec() function below.  The codec\n * name can be specified in any case, e.g. \"Yaml\", \"YAML\", \"yaml\", \"YaML\",\n * etc., and it will be converted to lower case.\n ",
+            "start": 59,
+            "end": 640,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0,
+                "index": 59
+              },
+              "end": {
+                "line": 13,
+                "column": 3,
+                "index": 640
+              }
+            }
+          },
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Lookup table for codecs\n ",
+            "start": 642,
+            "end": 676,
+            "loc": {
+              "start": {
+                "line": 15,
+                "column": 0,
+                "index": 642
+              },
+              "end": {
+                "line": 17,
+                "column": 3,
+                "index": 676
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 845,
+        "end": 905,
+        "loc": {
+          "start": {
+            "line": 26,
+            "column": 0,
+            "index": 845
+          },
+          "end": {
+            "line": 28,
+            "column": 2,
+            "index": 905
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 852,
+          "end": 905,
+          "loc": {
+            "start": {
+              "line": 26,
+              "column": 7,
+              "index": 852
+            },
+            "end": {
+              "line": 28,
+              "column": 2,
+              "index": 905
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 858,
+              "end": 904,
+              "loc": {
+                "start": {
+                  "line": 26,
+                  "column": 13,
+                  "index": 858
+                },
+                "end": {
+                  "line": 28,
+                  "column": 1,
+                  "index": 904
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 858,
+                "end": 863,
+                "loc": {
+                  "start": {
+                    "line": 26,
+                    "column": 13,
+                    "index": 858
+                  },
+                  "end": {
+                    "line": 26,
+                    "column": 18,
+                    "index": 863
+                  },
+                  "identifierName": "codec"
+                },
+                "name": "codec"
+              },
+              "init": {
+                "type": "ArrowFunctionExpression",
+                "start": 866,
+                "end": 904,
+                "loc": {
+                  "start": {
+                    "line": 26,
+                    "column": 21,
+                    "index": 866
+                  },
+                  "end": {
+                    "line": 28,
+                    "column": 1,
+                    "index": 904
+                  }
+                },
+                "id": {
+                  "type": "Identifier",
+                  "start": 858,
+                  "end": 863,
+                  "loc": {
+                    "start": {
+                      "line": 26,
+                      "column": 13,
+                      "index": 858
+                    },
+                    "end": {
+                      "line": 26,
+                      "column": 18,
+                      "index": 863
+                    },
+                    "identifierName": "codec"
+                  },
+                  "name": "codec"
+                },
+                "generator": false,
+                "async": false,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "start": 866,
+                    "end": 870,
+                    "loc": {
+                      "start": {
+                        "line": 26,
+                        "column": 21,
+                        "index": 866
+                      },
+                      "end": {
+                        "line": 26,
+                        "column": 25,
+                        "index": 870
+                      },
+                      "identifierName": "name"
+                    },
+                    "name": "name"
+                  }
+                ],
+                "body": {
+                  "type": "MemberExpression",
+                  "start": 874,
+                  "end": 904,
+                  "loc": {
+                    "start": {
+                      "line": 26,
+                      "column": 29,
+                      "index": 874
+                    },
+                    "end": {
+                      "line": 28,
+                      "column": 1,
+                      "index": 904
+                    }
+                  },
+                  "object": {
+                    "type": "Identifier",
+                    "start": 874,
+                    "end": 880,
+                    "loc": {
+                      "start": {
+                        "line": 26,
+                        "column": 29,
+                        "index": 874
+                      },
+                      "end": {
+                        "line": 26,
+                        "column": 35,
+                        "index": 880
+                      },
+                      "identifierName": "codecs"
+                    },
+                    "name": "codecs"
+                  },
+                  "computed": true,
+                  "property": {
+                    "type": "CallExpression",
+                    "start": 884,
+                    "end": 902,
+                    "loc": {
+                      "start": {
+                        "line": 27,
+                        "column": 2,
+                        "index": 884
+                      },
+                      "end": {
+                        "line": 27,
+                        "column": 20,
+                        "index": 902
+                      }
+                    },
+                    "callee": {
+                      "type": "MemberExpression",
+                      "start": 884,
+                      "end": 900,
+                      "loc": {
+                        "start": {
+                          "line": 27,
+                          "column": 2,
+                          "index": 884
+                        },
+                        "end": {
+                          "line": 27,
+                          "column": 18,
+                          "index": 900
+                        }
+                      },
+                      "object": {
+                        "type": "Identifier",
+                        "start": 884,
+                        "end": 888,
+                        "loc": {
+                          "start": {
+                            "line": 27,
+                            "column": 2,
+                            "index": 884
+                          },
+                          "end": {
+                            "line": 27,
+                            "column": 6,
+                            "index": 888
+                          },
+                          "identifierName": "name"
+                        },
+                        "name": "name"
+                      },
+                      "computed": false,
+                      "property": {
+                        "type": "Identifier",
+                        "start": 889,
+                        "end": 900,
+                        "loc": {
+                          "start": {
+                            "line": 27,
+                            "column": 7,
+                            "index": 889
+                          },
+                          "end": {
+                            "line": 27,
+                            "column": 18,
+                            "index": 900
+                          },
+                          "identifierName": "toLowerCase"
+                        },
+                        "name": "toLowerCase"
+                      }
+                    },
+                    "arguments": []
+                  }
+                }
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Function to fetch a codec\n * @param {string} name - The title of the code, in any case, e.g. \"yaml\", \"YAML\", \"Yaml\"\n ",
+              "start": 718,
+              "end": 844,
+              "loc": {
+                "start": {
+                  "line": 22,
+                  "column": 0,
+                  "index": 718
+                },
+                "end": {
+                  "line": 25,
+                  "column": 3,
+                  "index": 844
+                }
+              }
+            }
+          ],
+          "trailingComments": []
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Function to fetch a codec\n * @param {string} name - The title of the code, in any case, e.g. \"yaml\", \"YAML\", \"Yaml\"\n ",
+            "start": 718,
+            "end": 844,
+            "loc": {
+              "start": {
+                "line": 22,
+                "column": 0,
+                "index": 718
+              },
+              "end": {
+                "line": 25,
+                "column": 3,
+                "index": 844
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportDefaultDeclaration",
+        "start": 907,
+        "end": 928,
+        "loc": {
+          "start": {
+            "line": 30,
+            "column": 0,
+            "index": 907
+          },
+          "end": {
+            "line": 30,
+            "column": 21,
+            "index": 928
+          }
+        },
+        "declaration": {
+          "type": "Identifier",
+          "start": 922,
+          "end": 928,
+          "loc": {
+            "start": {
+              "line": 30,
+              "column": 15,
+              "index": 922
+            },
+            "end": {
+              "line": 30,
+              "column": 21,
+              "index": 928
+            },
+            "identifierName": "codecs"
+          },
+          "name": "codecs",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      }
+    ],
+    "directives": []
+  },
+  "comments": [
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Codecs provide a consistent encode()/decode() interface for serialising\n * and de-serialising data.  This standard naming convention makes it possible\n * for the ../Filesystem/File.js module to support a \"codec\" option for\n * files. When this option is set the file.read() and file.write() methods\n * automatically handle the translation to and from the serialised format\n * using a codec object returned by the codec() function below.  The codec\n * name can be specified in any case, e.g. \"Yaml\", \"YAML\", \"yaml\", \"YaML\",\n * etc., and it will be converted to lower case.\n ",
+      "start": 59,
+      "end": 640,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0,
+          "index": 59
+        },
+        "end": {
+          "line": 13,
+          "column": 3,
+          "index": 640
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Lookup table for codecs\n ",
+      "start": 642,
+      "end": 676,
+      "loc": {
+        "start": {
+          "line": 15,
+          "column": 0,
+          "index": 642
+        },
+        "end": {
+          "line": 17,
+          "column": 3,
+          "index": 676
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Function to fetch a codec\n * @param {string} name - The title of the code, in any case, e.g. \"yaml\", \"YAML\", \"Yaml\"\n ",
+      "start": 718,
+      "end": 844,
+      "loc": {
+        "start": {
+          "line": 22,
+          "column": 0,
+          "index": 718
+        },
+        "end": {
+          "line": 25,
+          "column": 3,
+          "index": 844
+        }
+      }
+    }
+  ]
+}
