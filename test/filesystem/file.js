@@ -4,10 +4,15 @@ import { file, bin } from '../../src/Badger.js'
 // current directory where this script is located
 const thisDir = bin(import.meta.url);
 const testFiles = thisDir.dir('test_files');
+const tmpFiles = testFiles.dir('tmp');
 
 test(
   'the test_files directory exists',
   t => t.is( testFiles.exists(), true)
+);
+test(
+  'create the tmp sub-directory',
+  t => t.is( tmpFiles.mustExist({ create: true }), tmpFiles )
 );
 
 // simple text file accessed using file() method of directory
@@ -89,8 +94,8 @@ test(
 // read/write YAML and JSON
 const rnum        = Math.floor(Math.random() * 1000);
 const string      = "I Wrote This!"
-const rwfile_yaml = testFiles.file('readwrite.yaml', { codec: 'yaml' });
-const rwfile_json = testFiles.file('readwrite.json', { codec: 'json' });
+const rwfile_yaml = tmpFiles.file('readwrite.yaml', { codec: 'yaml' });
+const rwfile_json = tmpFiles.file('readwrite.json', { codec: 'json' });
 test(
   'write and read YAML data',
   t => rwfile_yaml.write({ msg: string, random: rnum })

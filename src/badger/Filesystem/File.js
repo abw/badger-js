@@ -1,8 +1,8 @@
 import path from 'path'
 import Path from './Path.js'
-import { codec } from '../Codecs/index.js'
-import { readFile, writeFile } from 'fs/promises'
 import { dir } from './Directory.js'
+import { codec } from '../../Badger.js'
+import { readFile, writeFile } from 'fs/promises'
 
 class File extends Path {
   directory(options) {
