@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path';
 import Path from './Path.js'
 import { file } from './File.js'
-import { fail } from '../../Badger.js';
+import { fail } from '../Utils/index.js';
 
 class Directory extends Path {
   file(name, options) {
