@@ -31,7 +31,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~File.html">File</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-allParams">allParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bin">bin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-capitalise">capitalise</a></span></span></li>
@@ -55,9 +54,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParam">requiredParam</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParams">requiredParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sayHello">sayHello</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeUp">snakeUp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToCamel">snakeToCamel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToStudly">snakeToStudly</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitList">splitList</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allParams">allParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codecs">codecs</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Workspace.js~Workspace.html">Workspace</a></span></span></li>
@@ -88,7 +89,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isString">isString</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-isUndefined">isUndefined</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noValue">noValue</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-allParams">allParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParam">requiredParam</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParams">requiredParams</a></span></span></li>
@@ -96,8 +96,10 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinList">joinList</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListAnd">joinListAnd</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListOr">joinListOr</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeUp">snakeUp</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToCamel">snakeToCamel</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToStudly">snakeToStudly</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitList">splitList</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allParams">allParams</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -106,6 +108,15 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { hasValue, fail } from "./Misc.js";
 import { joinListOr, splitList } from "./Text.js";
 
+/**
+ * Assert than a parameter object contains an item with a defined/non-null value
+ * @param {Object} [params={}] - parameters object
+ * @param {String} [name] - parameter that must be included
+ * @return {any} the parameter value
+ * @throws {Error} if the parameter is not defined or null
+ * @example
+ * const foo = requiredParam({ foo: 10 }, 'foo');
+ */
 export function requiredParam(params={}, name) {
   const value = params[name];
   if (hasValue(value)) {
@@ -116,14 +127,33 @@ export function requiredParam(params={}, name) {
   }
 }
 
+/**
+ * Assert than a parameter object contains all specified item with a defined/non-null value
+ * @param {Object} [params={}] - parameters object
+ * @param {Array|String} [names] - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})
+ * @return {Array} the parameter values
+ * @throws {Error} if any parameter is not defined or null
+ * @example
+ * const [foo, bar] = requiredParams({ foo: 10, bar: 20 }, 'foo bar');
+ */
 export function requiredParams(params={}, names) {
   return splitList(names).map( name =&gt; requiredParam(params, name) );
 }
 
-export function allParams(...args) {
-  return requiredParams(...args);
-}
+/**
+ * An alias for {@link requiredParams} for people who don't like typing long names (and for symmetry with {@link anyParams}))
+ */
+export const allParams=requiredParams;
 
+/**
+ * Assert than a parameter object contains any of the specified items with a defined/non-null value
+ * @param {Object} [params={}] - parameters object
+ * @param {Array|String} [names] - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})
+ * @return {Array} the parameter values
+ * @throws {Error} if any parameter is not defined or null
+ * @example
+ * const [foo, bar] = anyParams({ foo: 10, wiz: 99 }, 'foo bar');
+ */
 export function anyParams(params, names) {
   let found = false;
   const nlist  = splitList(names);

@@ -31,7 +31,7 @@ test(
   }
 );
 
-// allParams() is a wrapper around requiredParams()
+// allParams() is an alias for requiredParams()
 test(
   'allParams with all values',
   t => {

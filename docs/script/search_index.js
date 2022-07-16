@@ -55,15 +55,15 @@ window.esdocSearchIndex = [
   ],
   [
     "badger-js/src/badger.js~allparams",
-    "function/index.html#static-function-allParams",
+    "variable/index.html#static-variable-allParams",
     "<span>allParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
-    "function"
+    "variable"
   ],
   [
     "badger-js/src/badger/utils/params.js~allparams",
-    "function/index.html#static-function-allParams",
+    "variable/index.html#static-variable-allParams",
     "<span>allParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
-    "function"
+    "variable"
   ],
   [
     "badger-js/src/badger.js~anyparams",
@@ -390,15 +390,27 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger.js~snakeup",
-    "function/index.html#static-function-snakeUp",
-    "<span>snakeUp</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "badger-js/src/badger.js~snaketocamel",
+    "function/index.html#static-function-snakeToCamel",
+    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~snakeup",
-    "function/index.html#static-function-snakeUp",
-    "<span>snakeUp</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "badger-js/src/badger/utils/text.js~snaketocamel",
+    "function/index.html#static-function-snakeToCamel",
+    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger.js~snaketostudly",
+    "function/index.html#static-function-snakeToStudly",
+    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/text.js~snaketostudly",
+    "function/index.html#static-function-snakeToStudly",
+    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [

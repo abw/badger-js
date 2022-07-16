@@ -1,6 +1,6 @@
 import test from 'ava';
 import {
-  capitalise, snakeUp,
+  capitalise, snakeToStudly, snakeToCamel,
   splitList, joinList, joinListAnd, joinListOr
 } from '../../src/Badger.js'
 
@@ -14,18 +14,32 @@ test(
   t => t.is(capitalise('FOO'), 'Foo')
 );
 
-// snakeUp
+// snakeToStudly
 test(
-  'snakeUp foo => Foo',
-  t => t.is(snakeUp('foo'), 'Foo')
+  'snakeToStudly foo => Foo',
+  t => t.is(snakeToStudly('foo'), 'Foo')
 );
 test(
-  'snakeUp foo_bar => FooBar',
-  t => t.is(snakeUp('foo_bar'), 'FooBar')
+  'snakeToStudly foo_bar => FooBar',
+  t => t.is(snakeToStudly('foo_bar'), 'FooBar')
 );
 test(
-  'snakeUp foo_bar/baz_waz => FooBar/BazWaz',
-  t => t.is(snakeUp('foo_bar/baz_waz'), 'FooBar/BazWaz')
+  'snakeToStudly foo_bar/baz_waz => FooBar/BazWaz',
+  t => t.is(snakeToStudly('foo_bar/baz_waz'), 'FooBar/BazWaz')
+);
+
+// snakeToCamel
+test(
+  'snakeToCamel foo => Foo',
+  t => t.is(snakeToCamel('foo'), 'foo')
+);
+test(
+  'snakeToCamel foo_bar => FooBar',
+  t => t.is(snakeToCamel('foo_bar'), 'fooBar')
+);
+test(
+  'snakeToCamel foo_bar/baz_waz => fooBar/BazWaz',
+  t => t.is(snakeToCamel('foo_bar/baz_waz'), 'fooBar/bazWaz')
 );
 
 // splitList
