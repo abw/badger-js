@@ -567,7 +567,7 @@
     "__docId__": 48,
     "kind": "file",
     "name": "src/Badger/Codecs/Json.js",
-    "content": "/**\n * Function to encode JSON\n * @param {string} data - The data to encode as JSON text\n */\nexport const encode = data => JSON.stringify(data);\n\n/**\n * Function to decode JSON\n * @param {string} json - The JSON text to decode\n */\nexport const decode = json => JSON.parse(json);\n\n/**\n * An object containing the JSON `encode` and `decode` functions\n */\nexport const codec = { encode, decode };\n\nexport default codec\n",
+    "content": "/**\n * Function to encode JSON\n * @param {Object} data - The data to encode as JSON text\n * @return {String} a JSON encoded string\n * @example\n * encode({ message: 'Hello World' })\n */\nexport const encode = data => JSON.stringify(data);\n\n/**\n * Function to decode JSON\n * @param {String} text - The JSON text to decode\n * @return {Object|Array} the decoded object or array\n * @example\n * decode(\"{ message: 'Hello World' }\")\n */\nexport const decode = text => JSON.parse(text);\n\n/**\n * An object containing the JSON `encode` and `decode` functions\n */\nexport const codec = { encode, decode };\n\nexport default codec\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Codecs/Json.js",
     "access": "public",
@@ -588,12 +588,15 @@
     "importPath": "badger-js/src/Badger/Codecs/Json.js",
     "importStyle": "{encode}",
     "description": "Function to encode JSON",
-    "lineNumber": 5,
+    "examples": [
+      "encode({ message: 'Hello World' })"
+    ],
+    "lineNumber": 8,
     "params": [
       {
         "nullable": null,
         "types": [
-          "string"
+          "Object"
         ],
         "spread": false,
         "optional": false,
@@ -601,7 +604,14 @@
         "description": "The data to encode as JSON text"
       }
     ],
-    "return": null
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": "a JSON encoded string"
+    }
   },
   {
     "__docId__": 50,
@@ -617,20 +627,31 @@
     "importPath": "badger-js/src/Badger/Codecs/Json.js",
     "importStyle": "{decode}",
     "description": "Function to decode JSON",
-    "lineNumber": 11,
+    "examples": [
+      "decode(\"{ message: 'Hello World' }\")"
+    ],
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
         "types": [
-          "string"
+          "String"
         ],
         "spread": false,
         "optional": false,
-        "name": "json",
+        "name": "text",
         "description": "The JSON text to decode"
       }
     ],
-    "return": null
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object",
+        "Array"
+      ],
+      "spread": false,
+      "description": "the decoded object or array"
+    }
   },
   {
     "__docId__": 51,
@@ -644,7 +665,7 @@
     "importPath": "badger-js/src/Badger/Codecs/Json.js",
     "importStyle": "{codec}",
     "description": "An object containing the JSON `encode` and `decode` functions",
-    "lineNumber": 16,
+    "lineNumber": 22,
     "type": {
       "types": [
         "{\"encode\": *, \"decode\": *}"
@@ -655,7 +676,7 @@
     "__docId__": 52,
     "kind": "file",
     "name": "src/Badger/Codecs/Yaml.js",
-    "content": "// simple wrapper around JSON load/dump\nimport yaml from 'js-yaml';\nexport const decode = text => yaml.load(text);\nexport const encode = data => yaml.dump(data);\nexport const codec = { encode, decode };\nexport default codec\n",
+    "content": "// simple wrapper around JSON load/dump\nimport yaml from 'js-yaml';\n\n/**\n * Function to encode YAML\n * @param {Object} data - The data to encode as YAML text\n * @return {String} a YAML encoded string\n * @example\n * encode({ message: 'Hello World' })\n */\nexport const encode = data => yaml.dump(data);\n\n/**\n * Function to decode YAML\n * @param {String} text - The YAML text to decode\n * @return {Object|Array} the decoded object or array\n * @example\n * decode(\"message: Hello World\")\n */\nexport const decode = text => yaml.load(text);\n\n/**\n * An object containing the YAML `encode` and `decode` functions\n */\nexport const codec = { encode, decode };\n\nexport default codec\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Codecs/Yaml.js",
     "access": "public",
@@ -664,32 +685,6 @@
   },
   {
     "__docId__": 53,
-    "kind": "function",
-    "name": "decode",
-    "memberof": "src/Badger/Codecs/Yaml.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Codecs/Yaml.js~decode",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/Codecs/Yaml.js",
-    "importStyle": "{decode}",
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
-    "params": [
-      {
-        "name": "text",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 54,
     "kind": "function",
     "name": "encode",
     "memberof": "src/Badger/Codecs/Yaml.js",
@@ -701,18 +696,71 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Codecs/Yaml.js",
     "importStyle": "{encode}",
-    "description": null,
-    "lineNumber": 4,
-    "undocument": true,
+    "description": "Function to encode YAML",
+    "examples": [
+      "encode({ message: 'Hello World' })"
+    ],
+    "lineNumber": 11,
     "params": [
       {
-        "name": "data",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": "The data to encode as YAML text"
       }
     ],
-    "return": null
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": "a YAML encoded string"
+    }
+  },
+  {
+    "__docId__": 54,
+    "kind": "function",
+    "name": "decode",
+    "memberof": "src/Badger/Codecs/Yaml.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Codecs/Yaml.js~decode",
+    "access": "public",
+    "export": true,
+    "importPath": "badger-js/src/Badger/Codecs/Yaml.js",
+    "importStyle": "{decode}",
+    "description": "Function to decode YAML",
+    "examples": [
+      "decode(\"message: Hello World\")"
+    ],
+    "lineNumber": 20,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "text",
+        "description": "The YAML text to decode"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object",
+        "Array"
+      ],
+      "spread": false,
+      "description": "the decoded object or array"
+    }
   },
   {
     "__docId__": 55,
@@ -725,9 +773,8 @@
     "export": true,
     "importPath": "badger-js/src/Badger/Codecs/Yaml.js",
     "importStyle": "{codec}",
-    "description": null,
-    "lineNumber": 5,
-    "undocument": true,
+    "description": "An object containing the YAML `encode` and `decode` functions",
+    "lineNumber": 25,
     "type": {
       "types": [
         "{\"encode\": *, \"decode\": *}"
@@ -3239,41 +3286,10 @@
     "return": null
   },
   {
-    "__docId__": 132,
-    "kind": "file",
-    "name": "src/Badger/hello.js",
-    "content": "const hello = \"Hello Badger Fans!\"\n\nexport default hello",
-    "static": true,
-    "longname": "/Users/abw/js/badger-js/src/Badger/hello.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 133,
-    "kind": "variable",
-    "name": "hello",
-    "memberof": "src/Badger/hello.js",
-    "static": true,
-    "longname": "src/Badger/hello.js~hello",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger/hello.js",
-    "importStyle": "hello",
-    "description": null,
-    "lineNumber": 1,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "__docId__": 142,
+    "__docId__": 140,
     "kind": "file",
     "name": "src/Badger.js",
-    "content": "export * from './Badger/Codecs/index.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n\nimport { } from './Badger/hello.js';\nimport hello from './Badger/hello.js';\n\nconst sayHello = () => {\n  console.log(hello);\n}\n\nexport default sayHello;",
+    "content": "export * from './Badger/Codecs/index.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger.js",
     "access": "public",
@@ -3281,26 +3297,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 143,
-    "kind": "function",
-    "name": "sayHello",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~sayHello",
-    "access": "public",
-    "export": true,
-    "importPath": "badger-js/src/Badger.js",
-    "importStyle": "sayHello",
-    "description": null,
-    "lineNumber": 13,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 144,
+    "__docId__": 141,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -3320,7 +3317,7 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 142,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -3346,7 +3343,7 @@
     "return": null
   },
   {
-    "__docId__": 146,
+    "__docId__": 143,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -3382,7 +3379,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 144,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -3412,7 +3409,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 145,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -3448,7 +3445,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 146,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -3467,7 +3464,7 @@
     ]
   },
   {
-    "__docId__": 150,
+    "__docId__": 147,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -3520,7 +3517,7 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 148,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -3573,7 +3570,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 149,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -3603,7 +3600,7 @@
     ]
   },
   {
-    "__docId__": 153,
+    "__docId__": 150,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -3646,7 +3643,7 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 151,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -3668,7 +3665,7 @@
     "params": []
   },
   {
-    "__docId__": 155,
+    "__docId__": 152,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -3690,7 +3687,7 @@
     "params": []
   },
   {
-    "__docId__": 156,
+    "__docId__": 153,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -3712,7 +3709,7 @@
     "params": []
   },
   {
-    "__docId__": 157,
+    "__docId__": 154,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -3765,7 +3762,7 @@
     }
   },
   {
-    "__docId__": 158,
+    "__docId__": 155,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -3808,7 +3805,7 @@
     }
   },
   {
-    "__docId__": 159,
+    "__docId__": 156,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -3871,7 +3868,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 157,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -3916,7 +3913,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 158,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -3985,7 +3982,7 @@
     }
   },
   {
-    "__docId__": 162,
+    "__docId__": 159,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -4048,7 +4045,7 @@
     }
   },
   {
-    "__docId__": 163,
+    "__docId__": 160,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger.js",
@@ -4084,7 +4081,7 @@
     }
   },
   {
-    "__docId__": 164,
+    "__docId__": 161,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -4103,7 +4100,7 @@
     ]
   },
   {
-    "__docId__": 165,
+    "__docId__": 162,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -4146,7 +4143,7 @@
     }
   },
   {
-    "__docId__": 166,
+    "__docId__": 163,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -4176,7 +4173,7 @@
     ]
   },
   {
-    "__docId__": 167,
+    "__docId__": 164,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -4225,7 +4222,7 @@
     }
   },
   {
-    "__docId__": 168,
+    "__docId__": 165,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -4281,7 +4278,7 @@
     }
   },
   {
-    "__docId__": 169,
+    "__docId__": 166,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger.js",
@@ -4297,7 +4294,7 @@
     "interface": false
   },
   {
-    "__docId__": 170,
+    "__docId__": 167,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Path",
@@ -4311,7 +4308,7 @@
     "undocument": true
   },
   {
-    "__docId__": 171,
+    "__docId__": 168,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Path",
@@ -4328,7 +4325,7 @@
     }
   },
   {
-    "__docId__": 172,
+    "__docId__": 169,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger.js~Path",
@@ -4348,7 +4345,7 @@
     }
   },
   {
-    "__docId__": 173,
+    "__docId__": 170,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger.js~Path",
@@ -4376,7 +4373,7 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 171,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger.js~Path",
@@ -4406,7 +4403,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 172,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger.js~Path",
@@ -4426,7 +4423,7 @@
     }
   },
   {
-    "__docId__": 176,
+    "__docId__": 173,
     "kind": "method",
     "name": "stats",
     "memberof": "src/Badger.js~Path",
@@ -4446,7 +4443,7 @@
     }
   },
   {
-    "__docId__": 177,
+    "__docId__": 174,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -4476,7 +4473,7 @@
     }
   },
   {
-    "__docId__": 178,
+    "__docId__": 175,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -4506,7 +4503,7 @@
     }
   },
   {
-    "__docId__": 179,
+    "__docId__": 176,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -4536,7 +4533,7 @@
     }
   },
   {
-    "__docId__": 180,
+    "__docId__": 177,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -4566,7 +4563,7 @@
     }
   },
   {
-    "__docId__": 181,
+    "__docId__": 178,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -4596,7 +4593,7 @@
     }
   },
   {
-    "__docId__": 182,
+    "__docId__": 179,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -4626,7 +4623,7 @@
     }
   },
   {
-    "__docId__": 183,
+    "__docId__": 180,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -4656,7 +4653,7 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 181,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -4687,7 +4684,7 @@
     }
   },
   {
-    "__docId__": 185,
+    "__docId__": 182,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -4717,7 +4714,7 @@
     }
   },
   {
-    "__docId__": 186,
+    "__docId__": 183,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -4744,7 +4741,7 @@
     "return": null
   },
   {
-    "__docId__": 187,
+    "__docId__": 184,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -4783,7 +4780,7 @@
     }
   },
   {
-    "__docId__": 188,
+    "__docId__": 185,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -4822,7 +4819,7 @@
     }
   },
   {
-    "__docId__": 189,
+    "__docId__": 186,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -4842,7 +4839,7 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 187,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -4878,7 +4875,7 @@
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 188,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -4908,7 +4905,7 @@
     }
   },
   {
-    "__docId__": 192,
+    "__docId__": 189,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -4956,7 +4953,7 @@
     }
   },
   {
-    "__docId__": 193,
+    "__docId__": 190,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -5004,7 +5001,7 @@
     }
   },
   {
-    "__docId__": 194,
+    "__docId__": 191,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -5052,7 +5049,7 @@
     }
   },
   {
-    "__docId__": 195,
+    "__docId__": 192,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -5082,7 +5079,7 @@
     }
   },
   {
-    "__docId__": 196,
+    "__docId__": 193,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger.js",
@@ -5112,7 +5109,7 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 194,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger.js",
@@ -5142,7 +5139,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 195,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -5158,7 +5155,7 @@
     "interface": false
   },
   {
-    "__docId__": 199,
+    "__docId__": 196,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -5172,7 +5169,7 @@
     "undocument": true
   },
   {
-    "__docId__": 200,
+    "__docId__": 197,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",
@@ -5199,7 +5196,7 @@
   },
   {
     "kind": "index",
-    "content": "# badger\n\nThis is an application toolkit for Javascript projects.",
+    "content": "# badger-js\n\nThis is an application toolkit for Javascript projects.  It provides a number of\nclasses and utility functions to make life easier.\n\nIt is loosely based around the [https://github.com/abw/Badger](Badger) toolkit for\nPerl.\n\nIt was written to help migrate some old Perl projects to Javascript.",
     "longname": "/Users/abw/js/badger-js/README.md",
     "name": "./README.md",
     "static": true,

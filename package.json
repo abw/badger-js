@@ -19,7 +19,7 @@
     "build-docs": "esdoc",
     "serve-docs": "serve docs",
     "Xtest": "node test/hello.js",
-    "test": "ava",
+    "test": "ava --serial",
     "pretest": "pnpm run build"
   },
   "keywords": [

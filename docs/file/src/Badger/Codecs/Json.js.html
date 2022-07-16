@@ -53,7 +53,6 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noValue">noValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParam">requiredParam</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParams">requiredParams</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-sayHello">sayHello</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToCamel">snakeToCamel</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-snakeToStudly">snakeToStudly</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitList">splitList</a></span></span></li>
@@ -63,7 +62,6 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Workspace.js~Workspace.html">Workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-hello">hello</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-codecs">Badger/Codecs</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decode">decode</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encode">encode</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decode">decode</a></span></span></li>
@@ -107,15 +105,21 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Codecs/Json.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
  * Function to encode JSON
- * @param {string} data - The data to encode as JSON text
+ * @param {Object} data - The data to encode as JSON text
+ * @return {String} a JSON encoded string
+ * @example
+ * encode({ message: 'Hello World' })
  */
 export const encode = data =&gt; JSON.stringify(data);
 
 /**
  * Function to decode JSON
- * @param {string} json - The JSON text to decode
+ * @param {String} text - The JSON text to decode
+ * @return {Object|Array} the decoded object or array
+ * @example
+ * decode("{ message: 'Hello World' }")
  */
-export const decode = json =&gt; JSON.parse(json);
+export const decode = text =&gt; JSON.parse(text);
 
 /**
  * An object containing the JSON `encode` and `decode` functions

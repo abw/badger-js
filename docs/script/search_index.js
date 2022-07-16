@@ -234,12 +234,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "badger-js/src/badger/hello.js~hello",
-    "variable/index.html#static-variable-hello",
-    "<span>hello</span> <span class=\"search-result-import-path\">badger-js/src/Badger/hello.js</span>",
-    "variable"
-  ],
-  [
     "badger-js/src/badger.js~isarray",
     "function/index.html#static-function-isArray",
     "<span>isArray</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -381,12 +375,6 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/params.js~requiredparams",
     "function/index.html#static-function-requiredParams",
     "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
-    "function"
-  ],
-  [
-    "badger-js/src/badger.js~sayhello",
-    "function/index.html#static-function-sayHello",
-    "<span>sayHello</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
     "function"
   ],
   [
@@ -1132,11 +1120,5 @@ window.esdocSearchIndex = [
     "class/src/Badger/Workspace.js~Workspace.html#instance-constructor-constructor",
     "src/Badger/Workspace.js~Workspace#constructor",
     "method"
-  ],
-  [
-    "src/badger/hello.js",
-    "file/src/Badger/hello.js.html",
-    "src/Badger/hello.js",
-    "file"
   ]
 ]
