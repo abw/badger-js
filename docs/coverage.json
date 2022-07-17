@@ -1,7 +1,7 @@
 {
-  "coverage": "51.53%",
-  "expectCount": 130,
-  "actualCount": 67,
+  "coverage": "47.33%",
+  "expectCount": 150,
+  "actualCount": 71,
   "files": {
     "src/Badger/Codecs/Json.js": {
       "expectCount": 3,
@@ -19,18 +19,17 @@
       "undocumentLines": []
     },
     "src/Badger/Config.js": {
-      "expectCount": 9,
+      "expectCount": 8,
       "actualCount": 0,
       "undocumentLines": [
-        3,
-        7,
-        8,
-        13,
-        14,
-        20,
-        23,
-        26,
-        29
+        6,
+        10,
+        11,
+        16,
+        17,
+        22,
+        33,
+        46
       ]
     },
     "src/Badger/Filesystem/Directory.js": {
@@ -48,23 +47,41 @@
       ]
     },
     "src/Badger/Filesystem/Path.js": {
-      "expectCount": 9,
+      "expectCount": 10,
       "actualCount": 0,
       "undocumentLines": [
-        4,
-        8,
-        9,
+        6,
         10,
-        12,
-        15,
-        18,
-        21,
-        24
+        11,
+        16,
+        19,
+        22,
+        25,
+        28,
+        37,
+        42
       ]
     },
+    "src/Badger/Utils/Color.js": {
+      "expectCount": 6,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        23,
+        38,
+        53
+      ]
+    },
+    "src/Badger/Utils/Debug.js": {
+      "expectCount": 2,
+      "actualCount": 2,
+      "undocumentLines": []
+    },
     "src/Badger/Utils/Misc.js": {
-      "expectCount": 10,
-      "actualCount": 10,
+      "expectCount": 12,
+      "actualCount": 12,
       "undocumentLines": []
     },
     "src/Badger/Utils/Params.js": {
@@ -87,25 +104,33 @@
       ]
     },
     "src/Badger.js": {
-      "expectCount": 57,
+      "expectCount": 67,
       "actualCount": 17,
       "undocumentLines": [
+        10,
+        11,
+        16,
+        17,
+        22,
+        33,
+        46,
         18,
         26,
-        168,
-        178,
+        179,
         189,
+        200,
         7,
         74,
         7,
-        8,
-        9,
         10,
-        12,
-        15,
-        18,
-        21,
-        24,
+        11,
+        16,
+        19,
+        22,
+        25,
+        28,
+        37,
+        42,
         6,
         15,
         24,
@@ -116,6 +141,8 @@
         71,
         80,
         89,
+        98,
+        105,
         13,
         32,
         39,

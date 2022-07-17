@@ -1,5 +1,7 @@
-import fs from 'fs'
 import path from 'path';
+import { stat } from 'fs/promises'
+import { rethrow } from '../Utils/Misc.js';
+import { addDebug } from '../Utils/Debug.js';
 
 const defaultOptions = {
   encoding: 'utf8'
@@ -12,6 +14,7 @@ export class Path {
       path = path.path();
     }
     this.state = { path, options: { ...defaultOptions, ...options } };
+    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);
   }
   path() {
     return this.state.path;
@@ -23,13 +26,23 @@ export class Path {
     return { ...this.state.options, ...options };
   }
   exists() {
-    return fs.existsSync(this.state.path);
+    return this.stat()
+      .then( stats => true )
+      .catch(
+        error => error.code === 'ENOENT'
+          ? false
+          : rethrow(error)
+      )
   }
-  stats() {
-    if (! this.state.stats) {
-      this.state.stats = fs.statSync(this.state.path);
-    }
-    return this.state.stats
+  stat() {
+    return stat(this.state.path).then(
+      stats => this.state.stats = stats
+    );
+  }
+  unstat() {
+    this.state.stats = undefined;
+    console.log('XXX unstat: ', this.state.stats);
+    return this;
   }
 }
 

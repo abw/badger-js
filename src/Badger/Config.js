@@ -41,24 +41,6 @@ export class Config {
     //    : fail("Missing configuration file: " + file.path())
     //)
   }
-  async configSync(uri) {
-    console.log('configSync: ', uri);
-
-    const file = this.file(uri);
-    if (! file) {
-      console.log('No file');
-      return { };
-    }
-    console.log('got file: ', file);
-    const data = file.read();
-    console.log('data: ', data);
-
-    return await data;
-
-    return file
-      ? await file.read()
-      : { };
-  }
 }
 
 export const config = options => new Config(options)

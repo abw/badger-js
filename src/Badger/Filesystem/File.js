@@ -45,7 +45,7 @@ class File extends Path {
 
   /**
    * Writes the file content.  If a `codec` has been specified then the content will be encoded.
-   * @param {String|Object} [data] - directory configuration options
+   * @param {String|Object} data - directory configuration options
    * @param {Object} [options] - directory configuration options
    * @param {Boolean} [options.codec] - codec for encoding/decoding file data
    * @example
@@ -66,7 +66,7 @@ class File extends Path {
 
 /**
  * Function to create a new {@link File} object for a file
- * @param {String} [path] - file path
+ * @param {String} path - file path
  * @param {Object} [options] - configuration options
  * @param {Boolean} [options.codec] - a codec for encoding/decoding files
  * @return {Object} the {@link File} object

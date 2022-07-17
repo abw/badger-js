@@ -1,0 +1,1739 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 2354,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0,
+      "index": 0
+    },
+    "end": {
+      "line": 60,
+      "column": 0,
+      "index": 2354
+    }
+  },
+  "errors": [],
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 2354,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0,
+        "index": 0
+      },
+      "end": {
+        "line": 60,
+        "column": 0,
+        "index": 2354
+      }
+    },
+    "sourceType": "module",
+    "interpreter": null,
+    "body": [
+      {
+        "type": "ImportDeclaration",
+        "start": 0,
+        "end": 42,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0,
+            "index": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 42,
+            "index": 42
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportSpecifier",
+            "start": 9,
+            "end": 15,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 9,
+                "index": 9
+              },
+              "end": {
+                "line": 1,
+                "column": 15,
+                "index": 15
+              }
+            },
+            "imported": {
+              "type": "Identifier",
+              "start": 9,
+              "end": 15,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 9,
+                  "index": 9
+                },
+                "end": {
+                  "line": 1,
+                  "column": 15,
+                  "index": 15
+                },
+                "identifierName": "escape"
+              },
+              "name": "escape"
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 9,
+              "end": 15,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 9,
+                  "index": 9
+                },
+                "end": {
+                  "line": 1,
+                  "column": 15,
+                  "index": 15
+                },
+                "identifierName": "escape"
+              },
+              "name": "escape"
+            }
+          },
+          {
+            "type": "ImportSpecifier",
+            "start": 17,
+            "end": 22,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 17,
+                "index": 17
+              },
+              "end": {
+                "line": 1,
+                "column": 22,
+                "index": 22
+              }
+            },
+            "imported": {
+              "type": "Identifier",
+              "start": 17,
+              "end": 22,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 17,
+                  "index": 17
+                },
+                "end": {
+                  "line": 1,
+                  "column": 22,
+                  "index": 22
+                },
+                "identifierName": "reset"
+              },
+              "name": "reset"
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 17,
+              "end": 22,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 17,
+                  "index": 17
+                },
+                "end": {
+                  "line": 1,
+                  "column": 22,
+                  "index": 22
+                },
+                "identifierName": "reset"
+              },
+              "name": "reset"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 30,
+          "end": 42,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 30,
+              "index": 30
+            },
+            "end": {
+              "line": 1,
+              "column": 42,
+              "index": 42
+            }
+          },
+          "extra": {
+            "rawValue": "./Color.js",
+            "raw": "'./Color.js'"
+          },
+          "value": "./Color.js"
+        }
+      },
+      {
+        "type": "ImportDeclaration",
+        "start": 43,
+        "end": 81,
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0,
+            "index": 43
+          },
+          "end": {
+            "line": 2,
+            "column": 38,
+            "index": 81
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportSpecifier",
+            "start": 52,
+            "end": 61,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 9,
+                "index": 52
+              },
+              "end": {
+                "line": 2,
+                "column": 18,
+                "index": 61
+              }
+            },
+            "imported": {
+              "type": "Identifier",
+              "start": 52,
+              "end": 61,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 9,
+                  "index": 52
+                },
+                "end": {
+                  "line": 2,
+                  "column": 18,
+                  "index": 61
+                },
+                "identifierName": "doNothing"
+              },
+              "name": "doNothing"
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 52,
+              "end": 61,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 9,
+                  "index": 52
+                },
+                "end": {
+                  "line": 2,
+                  "column": 18,
+                  "index": 61
+                },
+                "identifierName": "doNothing"
+              },
+              "name": "doNothing"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 69,
+          "end": 80,
+          "loc": {
+            "start": {
+              "line": 2,
+              "column": 26,
+              "index": 69
+            },
+            "end": {
+              "line": 2,
+              "column": 37,
+              "index": 80
+            }
+          },
+          "extra": {
+            "rawValue": "./Misc.js",
+            "raw": "'./Misc.js'"
+          },
+          "value": "./Misc.js"
+        },
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+            "start": 83,
+            "end": 1101,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0,
+                "index": 83
+              },
+              "end": {
+                "line": 24,
+                "column": 3,
+                "index": 1101
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 1102,
+        "end": 1417,
+        "loc": {
+          "start": {
+            "line": 25,
+            "column": 0,
+            "index": 1102
+          },
+          "end": {
+            "line": 37,
+            "column": 1,
+            "index": 1417
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "FunctionDeclaration",
+          "start": 1109,
+          "end": 1417,
+          "loc": {
+            "start": {
+              "line": 25,
+              "column": 7,
+              "index": 1109
+            },
+            "end": {
+              "line": 37,
+              "column": 1,
+              "index": 1417
+            }
+          },
+          "id": {
+            "type": "Identifier",
+            "start": 1118,
+            "end": 1126,
+            "loc": {
+              "start": {
+                "line": 25,
+                "column": 16,
+                "index": 1118
+              },
+              "end": {
+                "line": 25,
+                "column": 24,
+                "index": 1126
+              },
+              "identifierName": "Debugger"
+            },
+            "name": "Debugger"
+          },
+          "generator": false,
+          "async": false,
+          "params": [
+            {
+              "type": "Identifier",
+              "start": 1127,
+              "end": 1134,
+              "loc": {
+                "start": {
+                  "line": 25,
+                  "column": 25,
+                  "index": 1127
+                },
+                "end": {
+                  "line": 25,
+                  "column": 32,
+                  "index": 1134
+                },
+                "identifierName": "enabled"
+              },
+              "name": "enabled"
+            },
+            {
+              "type": "AssignmentPattern",
+              "start": 1136,
+              "end": 1145,
+              "loc": {
+                "start": {
+                  "line": 25,
+                  "column": 34,
+                  "index": 1136
+                },
+                "end": {
+                  "line": 25,
+                  "column": 43,
+                  "index": 1145
+                }
+              },
+              "left": {
+                "type": "Identifier",
+                "start": 1136,
+                "end": 1142,
+                "loc": {
+                  "start": {
+                    "line": 25,
+                    "column": 34,
+                    "index": 1136
+                  },
+                  "end": {
+                    "line": 25,
+                    "column": 40,
+                    "index": 1142
+                  },
+                  "identifierName": "prefix"
+                },
+                "name": "prefix"
+              },
+              "right": {
+                "type": "StringLiteral",
+                "start": 1143,
+                "end": 1145,
+                "loc": {
+                  "start": {
+                    "line": 25,
+                    "column": 41,
+                    "index": 1143
+                  },
+                  "end": {
+                    "line": 25,
+                    "column": 43,
+                    "index": 1145
+                  }
+                },
+                "extra": {
+                  "rawValue": "",
+                  "raw": "''"
+                },
+                "value": ""
+              }
+            },
+            {
+              "type": "Identifier",
+              "start": 1147,
+              "end": 1152,
+              "loc": {
+                "start": {
+                  "line": 25,
+                  "column": 45,
+                  "index": 1147
+                },
+                "end": {
+                  "line": 25,
+                  "column": 50,
+                  "index": 1152
+                },
+                "identifierName": "color"
+              },
+              "name": "color"
+            }
+          ],
+          "body": {
+            "type": "BlockStatement",
+            "start": 1154,
+            "end": 1417,
+            "loc": {
+              "start": {
+                "line": 25,
+                "column": 52,
+                "index": 1154
+              },
+              "end": {
+                "line": 37,
+                "column": 1,
+                "index": 1417
+              }
+            },
+            "body": [
+              {
+                "type": "ReturnStatement",
+                "start": 1158,
+                "end": 1415,
+                "loc": {
+                  "start": {
+                    "line": 26,
+                    "column": 2,
+                    "index": 1158
+                  },
+                  "end": {
+                    "line": 36,
+                    "column": 16,
+                    "index": 1415
+                  }
+                },
+                "argument": {
+                  "type": "ConditionalExpression",
+                  "start": 1165,
+                  "end": 1414,
+                  "loc": {
+                    "start": {
+                      "line": 26,
+                      "column": 9,
+                      "index": 1165
+                    },
+                    "end": {
+                      "line": 36,
+                      "column": 15,
+                      "index": 1414
+                    }
+                  },
+                  "test": {
+                    "type": "Identifier",
+                    "start": 1165,
+                    "end": 1172,
+                    "loc": {
+                      "start": {
+                        "line": 26,
+                        "column": 9,
+                        "index": 1165
+                      },
+                      "end": {
+                        "line": 26,
+                        "column": 16,
+                        "index": 1172
+                      },
+                      "identifierName": "enabled"
+                    },
+                    "name": "enabled"
+                  },
+                  "consequent": {
+                    "type": "ConditionalExpression",
+                    "start": 1179,
+                    "end": 1398,
+                    "loc": {
+                      "start": {
+                        "line": 27,
+                        "column": 6,
+                        "index": 1179
+                      },
+                      "end": {
+                        "line": 35,
+                        "column": 33,
+                        "index": 1398
+                      }
+                    },
+                    "test": {
+                      "type": "Identifier",
+                      "start": 1179,
+                      "end": 1185,
+                      "loc": {
+                        "start": {
+                          "line": 27,
+                          "column": 6,
+                          "index": 1179
+                        },
+                        "end": {
+                          "line": 27,
+                          "column": 12,
+                          "index": 1185
+                        },
+                        "identifierName": "prefix"
+                      },
+                      "name": "prefix"
+                    },
+                    "consequent": {
+                      "type": "ArrowFunctionExpression",
+                      "start": 1194,
+                      "end": 1364,
+                      "loc": {
+                        "start": {
+                          "line": 28,
+                          "column": 8,
+                          "index": 1194
+                        },
+                        "end": {
+                          "line": 34,
+                          "column": 9,
+                          "index": 1364
+                        }
+                      },
+                      "id": null,
+                      "generator": false,
+                      "async": false,
+                      "params": [
+                        {
+                          "type": "Identifier",
+                          "start": 1195,
+                          "end": 1201,
+                          "loc": {
+                            "start": {
+                              "line": 28,
+                              "column": 9,
+                              "index": 1195
+                            },
+                            "end": {
+                              "line": 28,
+                              "column": 15,
+                              "index": 1201
+                            },
+                            "identifierName": "format"
+                          },
+                          "name": "format"
+                        },
+                        {
+                          "type": "RestElement",
+                          "start": 1203,
+                          "end": 1210,
+                          "loc": {
+                            "start": {
+                              "line": 28,
+                              "column": 17,
+                              "index": 1203
+                            },
+                            "end": {
+                              "line": 28,
+                              "column": 24,
+                              "index": 1210
+                            }
+                          },
+                          "argument": {
+                            "type": "Identifier",
+                            "start": 1206,
+                            "end": 1210,
+                            "loc": {
+                              "start": {
+                                "line": 28,
+                                "column": 20,
+                                "index": 1206
+                              },
+                              "end": {
+                                "line": 28,
+                                "column": 24,
+                                "index": 1210
+                              },
+                              "identifierName": "args"
+                            },
+                            "name": "args"
+                          }
+                        }
+                      ],
+                      "body": {
+                        "type": "CallExpression",
+                        "start": 1223,
+                        "end": 1364,
+                        "loc": {
+                          "start": {
+                            "line": 29,
+                            "column": 8,
+                            "index": 1223
+                          },
+                          "end": {
+                            "line": 34,
+                            "column": 9,
+                            "index": 1364
+                          }
+                        },
+                        "callee": {
+                          "type": "MemberExpression",
+                          "start": 1223,
+                          "end": 1234,
+                          "loc": {
+                            "start": {
+                              "line": 29,
+                              "column": 8,
+                              "index": 1223
+                            },
+                            "end": {
+                              "line": 29,
+                              "column": 19,
+                              "index": 1234
+                            }
+                          },
+                          "object": {
+                            "type": "Identifier",
+                            "start": 1223,
+                            "end": 1230,
+                            "loc": {
+                              "start": {
+                                "line": 29,
+                                "column": 8,
+                                "index": 1223
+                              },
+                              "end": {
+                                "line": 29,
+                                "column": 15,
+                                "index": 1230
+                              },
+                              "identifierName": "console"
+                            },
+                            "name": "console"
+                          },
+                          "computed": false,
+                          "property": {
+                            "type": "Identifier",
+                            "start": 1231,
+                            "end": 1234,
+                            "loc": {
+                              "start": {
+                                "line": 29,
+                                "column": 16,
+                                "index": 1231
+                              },
+                              "end": {
+                                "line": 29,
+                                "column": 19,
+                                "index": 1234
+                              },
+                              "identifierName": "log"
+                            },
+                            "name": "log"
+                          }
+                        },
+                        "extra": {
+                          "trailingComma": 1353
+                        },
+                        "arguments": [
+                          {
+                            "type": "BinaryExpression",
+                            "start": 1246,
+                            "end": 1277,
+                            "loc": {
+                              "start": {
+                                "line": 30,
+                                "column": 10,
+                                "index": 1246
+                              },
+                              "end": {
+                                "line": 30,
+                                "column": 41,
+                                "index": 1277
+                              }
+                            },
+                            "left": {
+                              "type": "BinaryExpression",
+                              "start": 1246,
+                              "end": 1268,
+                              "loc": {
+                                "start": {
+                                  "line": 30,
+                                  "column": 10,
+                                  "index": 1246
+                                },
+                                "end": {
+                                  "line": 30,
+                                  "column": 32,
+                                  "index": 1268
+                                }
+                              },
+                              "left": {
+                                "type": "BinaryExpression",
+                                "start": 1246,
+                                "end": 1259,
+                                "loc": {
+                                  "start": {
+                                    "line": 30,
+                                    "column": 10,
+                                    "index": 1246
+                                  },
+                                  "end": {
+                                    "line": 30,
+                                    "column": 23,
+                                    "index": 1259
+                                  }
+                                },
+                                "left": {
+                                  "type": "StringLiteral",
+                                  "start": 1246,
+                                  "end": 1250,
+                                  "loc": {
+                                    "start": {
+                                      "line": 30,
+                                      "column": 10,
+                                      "index": 1246
+                                    },
+                                    "end": {
+                                      "line": 30,
+                                      "column": 14,
+                                      "index": 1250
+                                    }
+                                  },
+                                  "extra": {
+                                    "rawValue": "%s",
+                                    "raw": "'%s'"
+                                  },
+                                  "value": "%s"
+                                },
+                                "operator": "+",
+                                "right": {
+                                  "type": "Identifier",
+                                  "start": 1253,
+                                  "end": 1259,
+                                  "loc": {
+                                    "start": {
+                                      "line": 30,
+                                      "column": 17,
+                                      "index": 1253
+                                    },
+                                    "end": {
+                                      "line": 30,
+                                      "column": 23,
+                                      "index": 1259
+                                    },
+                                    "identifierName": "prefix"
+                                  },
+                                  "name": "prefix"
+                                }
+                              },
+                              "operator": "+",
+                              "right": {
+                                "type": "StringLiteral",
+                                "start": 1262,
+                                "end": 1268,
+                                "loc": {
+                                  "start": {
+                                    "line": 30,
+                                    "column": 26,
+                                    "index": 1262
+                                  },
+                                  "end": {
+                                    "line": 30,
+                                    "column": 32,
+                                    "index": 1268
+                                  }
+                                },
+                                "extra": {
+                                  "rawValue": "%s: ",
+                                  "raw": "'%s: '"
+                                },
+                                "value": "%s: "
+                              }
+                            },
+                            "operator": "+",
+                            "right": {
+                              "type": "Identifier",
+                              "start": 1271,
+                              "end": 1277,
+                              "loc": {
+                                "start": {
+                                  "line": 30,
+                                  "column": 35,
+                                  "index": 1271
+                                },
+                                "end": {
+                                  "line": 30,
+                                  "column": 41,
+                                  "index": 1277
+                                },
+                                "identifierName": "format"
+                              },
+                              "name": "format"
+                            }
+                          },
+                          {
+                            "type": "ConditionalExpression",
+                            "start": 1289,
+                            "end": 1315,
+                            "loc": {
+                              "start": {
+                                "line": 31,
+                                "column": 10,
+                                "index": 1289
+                              },
+                              "end": {
+                                "line": 31,
+                                "column": 36,
+                                "index": 1315
+                              }
+                            },
+                            "test": {
+                              "type": "Identifier",
+                              "start": 1289,
+                              "end": 1294,
+                              "loc": {
+                                "start": {
+                                  "line": 31,
+                                  "column": 10,
+                                  "index": 1289
+                                },
+                                "end": {
+                                  "line": 31,
+                                  "column": 15,
+                                  "index": 1294
+                                },
+                                "identifierName": "color"
+                              },
+                              "name": "color"
+                            },
+                            "consequent": {
+                              "type": "CallExpression",
+                              "start": 1297,
+                              "end": 1310,
+                              "loc": {
+                                "start": {
+                                  "line": 31,
+                                  "column": 18,
+                                  "index": 1297
+                                },
+                                "end": {
+                                  "line": 31,
+                                  "column": 31,
+                                  "index": 1310
+                                }
+                              },
+                              "callee": {
+                                "type": "Identifier",
+                                "start": 1297,
+                                "end": 1303,
+                                "loc": {
+                                  "start": {
+                                    "line": 31,
+                                    "column": 18,
+                                    "index": 1297
+                                  },
+                                  "end": {
+                                    "line": 31,
+                                    "column": 24,
+                                    "index": 1303
+                                  },
+                                  "identifierName": "escape"
+                                },
+                                "name": "escape"
+                              },
+                              "arguments": [
+                                {
+                                  "type": "Identifier",
+                                  "start": 1304,
+                                  "end": 1309,
+                                  "loc": {
+                                    "start": {
+                                      "line": 31,
+                                      "column": 25,
+                                      "index": 1304
+                                    },
+                                    "end": {
+                                      "line": 31,
+                                      "column": 30,
+                                      "index": 1309
+                                    },
+                                    "identifierName": "color"
+                                  },
+                                  "name": "color"
+                                }
+                              ]
+                            },
+                            "alternate": {
+                              "type": "StringLiteral",
+                              "start": 1313,
+                              "end": 1315,
+                              "loc": {
+                                "start": {
+                                  "line": 31,
+                                  "column": 34,
+                                  "index": 1313
+                                },
+                                "end": {
+                                  "line": 31,
+                                  "column": 36,
+                                  "index": 1315
+                                }
+                              },
+                              "extra": {
+                                "rawValue": "",
+                                "raw": "''"
+                              },
+                              "value": ""
+                            }
+                          },
+                          {
+                            "type": "CallExpression",
+                            "start": 1327,
+                            "end": 1334,
+                            "loc": {
+                              "start": {
+                                "line": 32,
+                                "column": 10,
+                                "index": 1327
+                              },
+                              "end": {
+                                "line": 32,
+                                "column": 17,
+                                "index": 1334
+                              }
+                            },
+                            "callee": {
+                              "type": "Identifier",
+                              "start": 1327,
+                              "end": 1332,
+                              "loc": {
+                                "start": {
+                                  "line": 32,
+                                  "column": 10,
+                                  "index": 1327
+                                },
+                                "end": {
+                                  "line": 32,
+                                  "column": 15,
+                                  "index": 1332
+                                },
+                                "identifierName": "reset"
+                              },
+                              "name": "reset"
+                            },
+                            "arguments": []
+                          },
+                          {
+                            "type": "SpreadElement",
+                            "start": 1346,
+                            "end": 1353,
+                            "loc": {
+                              "start": {
+                                "line": 33,
+                                "column": 10,
+                                "index": 1346
+                              },
+                              "end": {
+                                "line": 33,
+                                "column": 17,
+                                "index": 1353
+                              }
+                            },
+                            "argument": {
+                              "type": "Identifier",
+                              "start": 1349,
+                              "end": 1353,
+                              "loc": {
+                                "start": {
+                                  "line": 33,
+                                  "column": 13,
+                                  "index": 1349
+                                },
+                                "end": {
+                                  "line": 33,
+                                  "column": 17,
+                                  "index": 1353
+                                },
+                                "identifierName": "args"
+                              },
+                              "name": "args"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    "alternate": {
+                      "type": "CallExpression",
+                      "start": 1373,
+                      "end": 1398,
+                      "loc": {
+                        "start": {
+                          "line": 35,
+                          "column": 8,
+                          "index": 1373
+                        },
+                        "end": {
+                          "line": 35,
+                          "column": 33,
+                          "index": 1398
+                        }
+                      },
+                      "callee": {
+                        "type": "MemberExpression",
+                        "start": 1373,
+                        "end": 1389,
+                        "loc": {
+                          "start": {
+                            "line": 35,
+                            "column": 8,
+                            "index": 1373
+                          },
+                          "end": {
+                            "line": 35,
+                            "column": 24,
+                            "index": 1389
+                          }
+                        },
+                        "object": {
+                          "type": "MemberExpression",
+                          "start": 1373,
+                          "end": 1384,
+                          "loc": {
+                            "start": {
+                              "line": 35,
+                              "column": 8,
+                              "index": 1373
+                            },
+                            "end": {
+                              "line": 35,
+                              "column": 19,
+                              "index": 1384
+                            }
+                          },
+                          "object": {
+                            "type": "Identifier",
+                            "start": 1373,
+                            "end": 1380,
+                            "loc": {
+                              "start": {
+                                "line": 35,
+                                "column": 8,
+                                "index": 1373
+                              },
+                              "end": {
+                                "line": 35,
+                                "column": 15,
+                                "index": 1380
+                              },
+                              "identifierName": "console"
+                            },
+                            "name": "console"
+                          },
+                          "computed": false,
+                          "property": {
+                            "type": "Identifier",
+                            "start": 1381,
+                            "end": 1384,
+                            "loc": {
+                              "start": {
+                                "line": 35,
+                                "column": 16,
+                                "index": 1381
+                              },
+                              "end": {
+                                "line": 35,
+                                "column": 19,
+                                "index": 1384
+                              },
+                              "identifierName": "log"
+                            },
+                            "name": "log"
+                          }
+                        },
+                        "computed": false,
+                        "property": {
+                          "type": "Identifier",
+                          "start": 1385,
+                          "end": 1389,
+                          "loc": {
+                            "start": {
+                              "line": 35,
+                              "column": 20,
+                              "index": 1385
+                            },
+                            "end": {
+                              "line": 35,
+                              "column": 24,
+                              "index": 1389
+                            },
+                            "identifierName": "bind"
+                          },
+                          "name": "bind"
+                        }
+                      },
+                      "arguments": [
+                        {
+                          "type": "Identifier",
+                          "start": 1390,
+                          "end": 1397,
+                          "loc": {
+                            "start": {
+                              "line": 35,
+                              "column": 25,
+                              "index": 1390
+                            },
+                            "end": {
+                              "line": 35,
+                              "column": 32,
+                              "index": 1397
+                            },
+                            "identifierName": "console"
+                          },
+                          "name": "console"
+                        }
+                      ]
+                    }
+                  },
+                  "alternate": {
+                    "type": "Identifier",
+                    "start": 1405,
+                    "end": 1414,
+                    "loc": {
+                      "start": {
+                        "line": 36,
+                        "column": 6,
+                        "index": 1405
+                      },
+                      "end": {
+                        "line": 36,
+                        "column": 15,
+                        "index": 1414
+                      },
+                      "identifierName": "doNothing"
+                    },
+                    "name": "doNothing"
+                  }
+                }
+              }
+            ],
+            "directives": []
+          },
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+              "start": 83,
+              "end": 1101,
+              "loc": {
+                "start": {
+                  "line": 4,
+                  "column": 0,
+                  "index": 83
+                },
+                "end": {
+                  "line": 24,
+                  "column": 3,
+                  "index": 1101
+                }
+              }
+            }
+          ],
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+              "start": 1419,
+              "end": 2242,
+              "loc": {
+                "start": {
+                  "line": 39,
+                  "column": 0,
+                  "index": 1419
+                },
+                "end": {
+                  "line": 56,
+                  "column": 3,
+                  "index": 2242
+                }
+              }
+            }
+          ]
+        },
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+            "start": 1419,
+            "end": 2242,
+            "loc": {
+              "start": {
+                "line": 39,
+                "column": 0,
+                "index": 1419
+              },
+              "end": {
+                "line": 56,
+                "column": 3,
+                "index": 2242
+              }
+            }
+          }
+        ],
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+            "start": 83,
+            "end": 1101,
+            "loc": {
+              "start": {
+                "line": 4,
+                "column": 0,
+                "index": 83
+              },
+              "end": {
+                "line": 24,
+                "column": 3,
+                "index": 1101
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2243,
+        "end": 2353,
+        "loc": {
+          "start": {
+            "line": 57,
+            "column": 0,
+            "index": 2243
+          },
+          "end": {
+            "line": 59,
+            "column": 1,
+            "index": 2353
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "FunctionDeclaration",
+          "start": 2250,
+          "end": 2353,
+          "loc": {
+            "start": {
+              "line": 57,
+              "column": 7,
+              "index": 2250
+            },
+            "end": {
+              "line": 59,
+              "column": 1,
+              "index": 2353
+            }
+          },
+          "id": {
+            "type": "Identifier",
+            "start": 2259,
+            "end": 2267,
+            "loc": {
+              "start": {
+                "line": 57,
+                "column": 16,
+                "index": 2259
+              },
+              "end": {
+                "line": 57,
+                "column": 24,
+                "index": 2267
+              },
+              "identifierName": "addDebug"
+            },
+            "name": "addDebug"
+          },
+          "generator": false,
+          "async": false,
+          "params": [
+            {
+              "type": "Identifier",
+              "start": 2268,
+              "end": 2271,
+              "loc": {
+                "start": {
+                  "line": 57,
+                  "column": 25,
+                  "index": 2268
+                },
+                "end": {
+                  "line": 57,
+                  "column": 28,
+                  "index": 2271
+                },
+                "identifierName": "obj"
+              },
+              "name": "obj"
+            },
+            {
+              "type": "Identifier",
+              "start": 2273,
+              "end": 2280,
+              "loc": {
+                "start": {
+                  "line": 57,
+                  "column": 30,
+                  "index": 2273
+                },
+                "end": {
+                  "line": 57,
+                  "column": 37,
+                  "index": 2280
+                },
+                "identifierName": "enabled"
+              },
+              "name": "enabled"
+            },
+            {
+              "type": "AssignmentPattern",
+              "start": 2282,
+              "end": 2291,
+              "loc": {
+                "start": {
+                  "line": 57,
+                  "column": 39,
+                  "index": 2282
+                },
+                "end": {
+                  "line": 57,
+                  "column": 48,
+                  "index": 2291
+                }
+              },
+              "left": {
+                "type": "Identifier",
+                "start": 2282,
+                "end": 2288,
+                "loc": {
+                  "start": {
+                    "line": 57,
+                    "column": 39,
+                    "index": 2282
+                  },
+                  "end": {
+                    "line": 57,
+                    "column": 45,
+                    "index": 2288
+                  },
+                  "identifierName": "prefix"
+                },
+                "name": "prefix"
+              },
+              "right": {
+                "type": "StringLiteral",
+                "start": 2289,
+                "end": 2291,
+                "loc": {
+                  "start": {
+                    "line": 57,
+                    "column": 46,
+                    "index": 2289
+                  },
+                  "end": {
+                    "line": 57,
+                    "column": 48,
+                    "index": 2291
+                  }
+                },
+                "extra": {
+                  "rawValue": "",
+                  "raw": "''"
+                },
+                "value": ""
+              }
+            },
+            {
+              "type": "Identifier",
+              "start": 2293,
+              "end": 2298,
+              "loc": {
+                "start": {
+                  "line": 57,
+                  "column": 50,
+                  "index": 2293
+                },
+                "end": {
+                  "line": 57,
+                  "column": 55,
+                  "index": 2298
+                },
+                "identifierName": "color"
+              },
+              "name": "color"
+            }
+          ],
+          "body": {
+            "type": "BlockStatement",
+            "start": 2300,
+            "end": 2353,
+            "loc": {
+              "start": {
+                "line": 57,
+                "column": 57,
+                "index": 2300
+              },
+              "end": {
+                "line": 59,
+                "column": 1,
+                "index": 2353
+              }
+            },
+            "body": [
+              {
+                "type": "ExpressionStatement",
+                "start": 2306,
+                "end": 2351,
+                "loc": {
+                  "start": {
+                    "line": 58,
+                    "column": 4,
+                    "index": 2306
+                  },
+                  "end": {
+                    "line": 58,
+                    "column": 49,
+                    "index": 2351
+                  }
+                },
+                "expression": {
+                  "type": "AssignmentExpression",
+                  "start": 2306,
+                  "end": 2350,
+                  "loc": {
+                    "start": {
+                      "line": 58,
+                      "column": 4,
+                      "index": 2306
+                    },
+                    "end": {
+                      "line": 58,
+                      "column": 48,
+                      "index": 2350
+                    }
+                  },
+                  "operator": "=",
+                  "left": {
+                    "type": "MemberExpression",
+                    "start": 2306,
+                    "end": 2315,
+                    "loc": {
+                      "start": {
+                        "line": 58,
+                        "column": 4,
+                        "index": 2306
+                      },
+                      "end": {
+                        "line": 58,
+                        "column": 13,
+                        "index": 2315
+                      }
+                    },
+                    "object": {
+                      "type": "Identifier",
+                      "start": 2306,
+                      "end": 2309,
+                      "loc": {
+                        "start": {
+                          "line": 58,
+                          "column": 4,
+                          "index": 2306
+                        },
+                        "end": {
+                          "line": 58,
+                          "column": 7,
+                          "index": 2309
+                        },
+                        "identifierName": "obj"
+                      },
+                      "name": "obj"
+                    },
+                    "computed": false,
+                    "property": {
+                      "type": "Identifier",
+                      "start": 2310,
+                      "end": 2315,
+                      "loc": {
+                        "start": {
+                          "line": 58,
+                          "column": 8,
+                          "index": 2310
+                        },
+                        "end": {
+                          "line": 58,
+                          "column": 13,
+                          "index": 2315
+                        },
+                        "identifierName": "debug"
+                      },
+                      "name": "debug"
+                    }
+                  },
+                  "right": {
+                    "type": "CallExpression",
+                    "start": 2318,
+                    "end": 2350,
+                    "loc": {
+                      "start": {
+                        "line": 58,
+                        "column": 16,
+                        "index": 2318
+                      },
+                      "end": {
+                        "line": 58,
+                        "column": 48,
+                        "index": 2350
+                      }
+                    },
+                    "callee": {
+                      "type": "Identifier",
+                      "start": 2318,
+                      "end": 2326,
+                      "loc": {
+                        "start": {
+                          "line": 58,
+                          "column": 16,
+                          "index": 2318
+                        },
+                        "end": {
+                          "line": 58,
+                          "column": 24,
+                          "index": 2326
+                        },
+                        "identifierName": "Debugger"
+                      },
+                      "name": "Debugger"
+                    },
+                    "arguments": [
+                      {
+                        "type": "Identifier",
+                        "start": 2327,
+                        "end": 2334,
+                        "loc": {
+                          "start": {
+                            "line": 58,
+                            "column": 25,
+                            "index": 2327
+                          },
+                          "end": {
+                            "line": 58,
+                            "column": 32,
+                            "index": 2334
+                          },
+                          "identifierName": "enabled"
+                        },
+                        "name": "enabled"
+                      },
+                      {
+                        "type": "Identifier",
+                        "start": 2336,
+                        "end": 2342,
+                        "loc": {
+                          "start": {
+                            "line": 58,
+                            "column": 34,
+                            "index": 2336
+                          },
+                          "end": {
+                            "line": 58,
+                            "column": 40,
+                            "index": 2342
+                          },
+                          "identifierName": "prefix"
+                        },
+                        "name": "prefix"
+                      },
+                      {
+                        "type": "Identifier",
+                        "start": 2344,
+                        "end": 2349,
+                        "loc": {
+                          "start": {
+                            "line": 58,
+                            "column": 42,
+                            "index": 2344
+                          },
+                          "end": {
+                            "line": 58,
+                            "column": 47,
+                            "index": 2349
+                          },
+                          "identifierName": "color"
+                        },
+                        "name": "color"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "directives": []
+          },
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+              "start": 1419,
+              "end": 2242,
+              "loc": {
+                "start": {
+                  "line": 39,
+                  "column": 0,
+                  "index": 1419
+                },
+                "end": {
+                  "line": 56,
+                  "column": 3,
+                  "index": 2242
+                }
+              }
+            }
+          ],
+          "trailingComments": []
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+            "start": 1419,
+            "end": 2242,
+            "loc": {
+              "start": {
+                "line": 39,
+                "column": 0,
+                "index": 1419
+              },
+              "end": {
+                "line": 56,
+                "column": 3,
+                "index": 2242
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "directives": []
+  },
+  "comments": [
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+      "start": 83,
+      "end": 1101,
+      "loc": {
+        "start": {
+          "line": 4,
+          "column": 0,
+          "index": 83
+        },
+        "end": {
+          "line": 24,
+          "column": 3,
+          "index": 1101
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n ",
+      "start": 1419,
+      "end": 2242,
+      "loc": {
+        "start": {
+          "line": 39,
+          "column": 0,
+          "index": 1419
+        },
+        "end": {
+          "line": 56,
+          "column": 3,
+          "index": 2242
+        }
+      }
+    }
+  ]
+}

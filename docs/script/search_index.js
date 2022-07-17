@@ -1,9 +1,39 @@
 window.esdocSearchIndex = [
   [
+    "badger-js/src/badger/utils/color.js~ansicolors",
+    "variable/index.html#static-variable-ANSIColors",
+    "<span>ANSIColors</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "variable"
+  ],
+  [
+    "badger-js/src/badger/utils/color.js~ansiend",
+    "variable/index.html#static-variable-ANSIEnd",
+    "<span>ANSIEnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "variable"
+  ],
+  [
+    "badger-js/src/badger/utils/color.js~ansistart",
+    "variable/index.html#static-variable-ANSIStart",
+    "<span>ANSIStart</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "variable"
+  ],
+  [
+    "badger-js/src/badger.js~config",
+    "class/src/Badger.js~Config.html",
+    "<span>Config</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "class"
+  ],
+  [
     "badger-js/src/badger/config.js~config",
     "class/src/Badger/Config.js~Config.html",
     "<span>Config</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Config.js</span>",
     "class"
+  ],
+  [
+    "badger-js/src/badger/utils/debug.js~debugger",
+    "function/index.html#static-function-Debugger",
+    "<span>Debugger</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Debug.js</span>",
+    "function"
   ],
   [
     "badger-js/src/badger.js~directory",
@@ -52,6 +82,12 @@ window.esdocSearchIndex = [
     "class/src/Badger/Workspace.js~Workspace.html",
     "<span>Workspace</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Workspace.js</span>",
     "class"
+  ],
+  [
+    "badger-js/src/badger/utils/debug.js~adddebug",
+    "function/index.html#static-function-addDebug",
+    "<span>addDebug</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Debug.js</span>",
+    "function"
   ],
   [
     "badger-js/src/badger.js~allparams",
@@ -138,6 +174,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "badger-js/src/badger.js~config",
+    "function/index.html#static-function-config",
+    "<span>config</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/config.js~config",
+    "function/index.html#static-function-config",
+    "<span>config</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Config.js</span>",
+    "function"
+  ],
+  [
     "badger-js/src/badger.js~cwd",
     "function/index.html#static-function-cwd",
     "<span>cwd</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
@@ -174,6 +222,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "badger-js/src/badger.js~donothing",
+    "function/index.html#static-function-doNothing",
+    "<span>doNothing</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/misc.js~donothing",
+    "function/index.html#static-function-doNothing",
+    "<span>doNothing</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "function"
+  ],
+  [
     "badger-js/src/badger/codecs/json.js~encode",
     "function/index.html#static-function-encode",
     "<span>encode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Json.js</span>",
@@ -183,6 +243,18 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/codecs/yaml.js~encode",
     "function/index.html#static-function-encode",
     "<span>encode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Yaml.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/color.js~escape",
+    "function/index.html#static-function-escape",
+    "<span>escape</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/color.js~escapecode",
+    "function/index.html#static-function-escapeCode",
+    "<span>escapeCode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
     "function"
   ],
   [
@@ -375,6 +447,24 @@ window.esdocSearchIndex = [
     "badger-js/src/badger/utils/params.js~requiredparams",
     "function/index.html#static-function-requiredParams",
     "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/color.js~reset",
+    "function/index.html#static-function-reset",
+    "<span>reset</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger.js~rethrow",
+    "function/index.html#static-function-rethrow",
+    "<span>rethrow</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "function"
+  ],
+  [
+    "badger-js/src/badger/utils/misc.js~rethrow",
+    "function/index.html#static-function-rethrow",
+    "<span>rethrow</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
@@ -714,6 +804,36 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger.js~config#codecs",
+    "class/src/Badger.js~Config.html#instance-member-codecs",
+    "src/Badger.js~Config#codecs",
+    "member"
+  ],
+  [
+    "src/badger.js~config#config",
+    "class/src/Badger.js~Config.html#instance-method-config",
+    "src/Badger.js~Config#config",
+    "method"
+  ],
+  [
+    "src/badger.js~config#constructor",
+    "class/src/Badger.js~Config.html#instance-constructor-constructor",
+    "src/Badger.js~Config#constructor",
+    "method"
+  ],
+  [
+    "src/badger.js~config#dir",
+    "class/src/Badger.js~Config.html#instance-member-dir",
+    "src/Badger.js~Config#dir",
+    "member"
+  ],
+  [
+    "src/badger.js~config#file",
+    "class/src/Badger.js~Config.html#instance-method-file",
+    "src/Badger.js~Config#file",
+    "method"
+  ],
+  [
     "src/badger.js~directory#create",
     "class/src/Badger.js~Directory.html#instance-method-create",
     "src/Badger.js~Directory#create",
@@ -846,15 +966,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~path#stat",
+    "class/src/Badger.js~Path.html#instance-method-stat",
+    "src/Badger.js~Path#stat",
+    "method"
+  ],
+  [
     "src/badger.js~path#state",
     "class/src/Badger.js~Path.html#instance-member-state",
     "src/Badger.js~Path#state",
     "member"
   ],
   [
-    "src/badger.js~path#stats",
-    "class/src/Badger.js~Path.html#instance-method-stats",
-    "src/Badger.js~Path#stats",
+    "src/badger.js~path#unstat",
+    "class/src/Badger.js~Path.html#instance-method-unstat",
+    "src/Badger.js~Path#unstat",
     "method"
   ],
   [
@@ -912,21 +1038,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/badger/config.js~config#exists",
-    "class/src/Badger/Config.js~Config.html#instance-method-exists",
-    "src/Badger/Config.js~Config#exists",
-    "method"
-  ],
-  [
     "src/badger/config.js~config#file",
     "class/src/Badger/Config.js~Config.html#instance-method-file",
     "src/Badger/Config.js~Config#file",
-    "method"
-  ],
-  [
-    "src/badger/config.js~config#path",
-    "class/src/Badger/Config.js~Config.html#instance-method-path",
-    "src/Badger/Config.js~Config#path",
     "method"
   ],
   [
@@ -1080,16 +1194,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger/filesystem/path.js~path#stat",
+    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-stat",
+    "src/Badger/Filesystem/Path.js~Path#stat",
+    "method"
+  ],
+  [
     "src/badger/filesystem/path.js~path#state",
     "class/src/Badger/Filesystem/Path.js~Path.html#instance-member-state",
     "src/Badger/Filesystem/Path.js~Path#state",
     "member"
   ],
   [
-    "src/badger/filesystem/path.js~path#stats",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-stats",
-    "src/Badger/Filesystem/Path.js~Path#stats",
+    "src/badger/filesystem/path.js~path#unstat",
+    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-unstat",
+    "src/Badger/Filesystem/Path.js~Path#unstat",
     "method"
+  ],
+  [
+    "src/badger/utils/color.js",
+    "file/src/Badger/Utils/Color.js.html",
+    "src/Badger/Utils/Color.js",
+    "file"
+  ],
+  [
+    "src/badger/utils/debug.js",
+    "file/src/Badger/Utils/Debug.js.html",
+    "src/Badger/Utils/Debug.js",
+    "file"
   ],
   [
     "src/badger/utils/misc.js",

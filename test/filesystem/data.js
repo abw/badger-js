@@ -8,11 +8,11 @@ const tmpFiles = testFiles.dir('tmp');
 
 test.serial(
   'the test_files directory exists',
-  t => t.is( testFiles.exists(), true)
+  async t => t.is( await testFiles.exists(), true)
 );
 test.serial(
   'create the tmp sub-directory',
-  t => t.is( tmpFiles.mustExist({ create: true }), tmpFiles )
+  async t => t.is( await tmpFiles.mustExist({ create: true }), true )
 );
 
 // read/write YAML and JSON
