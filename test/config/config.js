@@ -34,12 +34,17 @@ test.serial(
 );
 
 test.serial(
-  'read the wibble config',
+  'read the wibble config with defaults',
   async t => {
-    const data = await cfg.config('wibble');
-    console.log('wibble data: ', data);
-
-    t.is( data.name, 'Conga' )
+    const data = await cfg.config('wibble', { name: 'wobble' });
+    t.is( data.name, 'wobble' )
   }
 );
 
+test.serial(
+  'read the wibble config',
+  async t => {
+    const error = await t.throwsAsync( () => cfg.config('wibble') );
+    t.is(error.message, "No configuration file for wibble")
+  }
+);
