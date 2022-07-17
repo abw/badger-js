@@ -2,5 +2,5 @@
 
 This is the manual for the `badger` Javascript toolkit.
 
-[Getting Started](getting_started.html)
+[Getting Started](manual/getting_started.html)
 
