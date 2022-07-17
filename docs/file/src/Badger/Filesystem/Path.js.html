@@ -1,12 +1,12 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/Badger/Filesystem/Path.js | badger-js</title>
+  <title data-ice="title">src/Badger/Filesystem/Path.js | @abw/badger-js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -118,8 +118,8 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Filesystem/Path.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import path from 'path';
-import { stat } from 'fs/promises'
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import path from 'node:path';
+import { stat } from 'node:fs/promises'
 import { rethrow } from '../Utils/Misc.js';
 import { addDebug } from '../Utils/Debug.js';
 
@@ -145,19 +145,20 @@ export class Path {
   options(options={}) {
     return { ...this.state.options, ...options };
   }
-  exists() {
-    return this.stat()
-      .then( stats =&gt; true )
-      .catch(
-        error =&gt; error.code === 'ENOENT'
-          ? false
-          : rethrow(error)
-      )
+  async exists() {
+    try {
+      await this.stat();
+      return true;
+    }
+    catch (error) {
+      return error.code === 'ENOENT'
+        ? false
+        : rethrow(error);
+    }
   }
-  stat() {
-    return stat(this.state.path).then(
-      stats =&gt; this.state.stats = stats
-    );
+  async stat() {
+    const stats = await stat(this.state.path);
+    return this.state.stats = stats;
   }
   unstat() {
     this.state.stats = undefined;

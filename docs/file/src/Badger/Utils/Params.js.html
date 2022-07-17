@@ -1,12 +1,12 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/Badger/Utils/Params.js | badger-js</title>
+  <title data-ice="title">src/Badger/Utils/Params.js | @abw/badger-js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -122,7 +122,7 @@
 import { joinListOr, splitList } from "./Text.js";
 
 /**
- * Assert than a parameter object contains an item with a defined/non-null value
+ * Assert that a parameter object contains an item with a defined/non-null value
  * @param {Object} params={} - parameters object
  * @param {String} name - parameter that must be included
  * @return {any} the parameter value
@@ -141,7 +141,7 @@ export function requiredParam(params={}, name) {
 }
 
 /**
- * Assert than a parameter object contains all specified item with a defined/non-null value
+ * Assert that a parameter object contains all specified item with a defined/non-null value
  * @param {Object} params={} - parameters object
  * @param {Array|String} names - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})
  * @return {Array} the parameter values
@@ -159,7 +159,7 @@ export function requiredParams(params={}, names) {
 export const allParams=requiredParams;
 
 /**
- * Assert than a parameter object contains any of the specified items with a defined/non-null value
+ * Assert that a parameter object contains any of the specified items with a defined/non-null value
  * @param {Object} params={} - parameters object
  * @param {Array|String} names - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})
  * @return {Array} the parameter values

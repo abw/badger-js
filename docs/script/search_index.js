@@ -1,518 +1,518 @@
 window.esdocSearchIndex = [
   [
-    "badger-js/src/badger/utils/color.js~ansicolors",
+    "@abw/badger-js/src/badger/utils/color.js~ansicolors",
     "variable/index.html#static-variable-ANSIColors",
-    "<span>ANSIColors</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>ANSIColors</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/utils/color.js~ansiend",
+    "@abw/badger-js/src/badger/utils/color.js~ansiend",
     "variable/index.html#static-variable-ANSIEnd",
-    "<span>ANSIEnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>ANSIEnd</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/utils/color.js~ansistart",
+    "@abw/badger-js/src/badger/utils/color.js~ansistart",
     "variable/index.html#static-variable-ANSIStart",
-    "<span>ANSIStart</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>ANSIStart</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger.js~config",
+    "@abw/badger-js/src/badger.js~config",
     "class/src/Badger.js~Config.html",
-    "<span>Config</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/config.js~config",
+    "@abw/badger-js/src/badger/config.js~config",
     "class/src/Badger/Config.js~Config.html",
-    "<span>Config</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Config.js</span>",
+    "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Config.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/utils/debug.js~debugger",
+    "@abw/badger-js/src/badger/utils/debug.js~debugger",
     "function/index.html#static-function-Debugger",
-    "<span>Debugger</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Debug.js</span>",
+    "<span>Debugger</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Debug.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~directory",
+    "@abw/badger-js/src/badger.js~directory",
     "class/src/Badger.js~Directory.html",
-    "<span>Directory</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>Directory</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/filesystem/directory.js~directory",
+    "@abw/badger-js/src/badger/filesystem/directory.js~directory",
     "class/src/Badger/Filesystem/Directory.js~Directory.html",
-    "<span>Directory</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Directory.js</span>",
+    "<span>Directory</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/Directory.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger.js~file",
+    "@abw/badger-js/src/badger.js~file",
     "class/src/Badger.js~File.html",
-    "<span>File</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>File</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/filesystem/file.js~file",
+    "@abw/badger-js/src/badger/filesystem/file.js~file",
     "class/src/Badger/Filesystem/File.js~File.html",
-    "<span>File</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/File.js</span>",
+    "<span>File</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/File.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger.js~path",
+    "@abw/badger-js/src/badger.js~path",
     "class/src/Badger.js~Path.html",
-    "<span>Path</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>Path</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/filesystem/path.js~path",
+    "@abw/badger-js/src/badger/filesystem/path.js~path",
     "class/src/Badger/Filesystem/Path.js~Path.html",
-    "<span>Path</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Path.js</span>",
+    "<span>Path</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/Path.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger.js~workspace",
+    "@abw/badger-js/src/badger.js~workspace",
     "class/src/Badger.js~Workspace.html",
-    "<span>Workspace</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/workspace.js~workspace",
+    "@abw/badger-js/src/badger/workspace.js~workspace",
     "class/src/Badger/Workspace.js~Workspace.html",
-    "<span>Workspace</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Workspace.js</span>",
+    "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Workspace.js</span>",
     "class"
   ],
   [
-    "badger-js/src/badger/utils/debug.js~adddebug",
+    "@abw/badger-js/src/badger/utils/debug.js~adddebug",
     "function/index.html#static-function-addDebug",
-    "<span>addDebug</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Debug.js</span>",
+    "<span>addDebug</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Debug.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~allparams",
+    "@abw/badger-js/src/badger.js~allparams",
     "variable/index.html#static-variable-allParams",
-    "<span>allParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>allParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/utils/params.js~allparams",
+    "@abw/badger-js/src/badger/utils/params.js~allparams",
     "variable/index.html#static-variable-allParams",
-    "<span>allParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
+    "<span>allParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Params.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger.js~anyparams",
+    "@abw/badger-js/src/badger.js~anyparams",
     "function/index.html#static-function-anyParams",
-    "<span>anyParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>anyParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/params.js~anyparams",
+    "@abw/badger-js/src/badger/utils/params.js~anyparams",
     "function/index.html#static-function-anyParams",
-    "<span>anyParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
+    "<span>anyParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Params.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~bin",
+    "@abw/badger-js/src/badger.js~bin",
     "function/index.html#static-function-bin",
-    "<span>bin</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/directory.js~bin",
+    "@abw/badger-js/src/badger/filesystem/directory.js~bin",
     "function/index.html#static-function-bin",
-    "<span>bin</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Directory.js</span>",
+    "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/Directory.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~capitalise",
+    "@abw/badger-js/src/badger.js~capitalise",
     "function/index.html#static-function-capitalise",
-    "<span>capitalise</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>capitalise</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~capitalise",
+    "@abw/badger-js/src/badger/utils/text.js~capitalise",
     "function/index.html#static-function-capitalise",
-    "<span>capitalise</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>capitalise</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~codec",
+    "@abw/badger-js/src/badger.js~codec",
     "function/index.html#static-function-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/codecs/json.js~codec",
+    "@abw/badger-js/src/badger/codecs/json.js~codec",
     "variable/index.html#static-variable-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Json.js</span>",
+    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Json.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/codecs/yaml.js~codec",
+    "@abw/badger-js/src/badger/codecs/yaml.js~codec",
     "variable/index.html#static-variable-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Yaml.js</span>",
+    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Yaml.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/codecs/index.js~codec",
+    "@abw/badger-js/src/badger/codecs/index.js~codec",
     "function/index.html#static-function-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/index.js</span>",
+    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/index.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~codecs",
+    "@abw/badger-js/src/badger.js~codecs",
     "variable/index.html#static-variable-codecs",
-    "<span>codecs</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>codecs</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger/codecs/index.js~codecs",
+    "@abw/badger-js/src/badger/codecs/index.js~codecs",
     "variable/index.html#static-variable-codecs",
-    "<span>codecs</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/index.js</span>",
+    "<span>codecs</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/index.js</span>",
     "variable"
   ],
   [
-    "badger-js/src/badger.js~config",
+    "@abw/badger-js/src/badger.js~config",
     "function/index.html#static-function-config",
-    "<span>config</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>config</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/config.js~config",
+    "@abw/badger-js/src/badger/config.js~config",
     "function/index.html#static-function-config",
-    "<span>config</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Config.js</span>",
+    "<span>config</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Config.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~cwd",
+    "@abw/badger-js/src/badger.js~cwd",
     "function/index.html#static-function-cwd",
-    "<span>cwd</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>cwd</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/directory.js~cwd",
+    "@abw/badger-js/src/badger/filesystem/directory.js~cwd",
     "function/index.html#static-function-cwd",
-    "<span>cwd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Directory.js</span>",
+    "<span>cwd</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/Directory.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/codecs/json.js~decode",
+    "@abw/badger-js/src/badger/codecs/json.js~decode",
     "function/index.html#static-function-decode",
-    "<span>decode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Json.js</span>",
+    "<span>decode</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Json.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/codecs/yaml.js~decode",
+    "@abw/badger-js/src/badger/codecs/yaml.js~decode",
     "function/index.html#static-function-decode",
-    "<span>decode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Yaml.js</span>",
+    "<span>decode</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Yaml.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~dir",
+    "@abw/badger-js/src/badger.js~dir",
     "function/index.html#static-function-dir",
-    "<span>dir</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>dir</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/directory.js~dir",
+    "@abw/badger-js/src/badger/filesystem/directory.js~dir",
     "function/index.html#static-function-dir",
-    "<span>dir</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/Directory.js</span>",
+    "<span>dir</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/Directory.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~donothing",
+    "@abw/badger-js/src/badger.js~donothing",
     "function/index.html#static-function-doNothing",
-    "<span>doNothing</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>doNothing</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~donothing",
+    "@abw/badger-js/src/badger/utils/misc.js~donothing",
     "function/index.html#static-function-doNothing",
-    "<span>doNothing</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>doNothing</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/codecs/json.js~encode",
+    "@abw/badger-js/src/badger/codecs/json.js~encode",
     "function/index.html#static-function-encode",
-    "<span>encode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Json.js</span>",
+    "<span>encode</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Json.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/codecs/yaml.js~encode",
+    "@abw/badger-js/src/badger/codecs/yaml.js~encode",
     "function/index.html#static-function-encode",
-    "<span>encode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Codecs/Yaml.js</span>",
+    "<span>encode</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Codecs/Yaml.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/color.js~escape",
+    "@abw/badger-js/src/badger/utils/color.js~escape",
     "function/index.html#static-function-escape",
-    "<span>escape</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>escape</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/color.js~escapecode",
+    "@abw/badger-js/src/badger/utils/color.js~escapecode",
     "function/index.html#static-function-escapeCode",
-    "<span>escapeCode</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>escapeCode</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~fail",
+    "@abw/badger-js/src/badger.js~fail",
     "function/index.html#static-function-fail",
-    "<span>fail</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~fail",
+    "@abw/badger-js/src/badger/utils/misc.js~fail",
     "function/index.html#static-function-fail",
-    "<span>fail</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~file",
+    "@abw/badger-js/src/badger.js~file",
     "function/index.html#static-function-file",
-    "<span>file</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>file</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/filesystem/file.js~file",
+    "@abw/badger-js/src/badger/filesystem/file.js~file",
     "function/index.html#static-function-file",
-    "<span>file</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Filesystem/File.js</span>",
+    "<span>file</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Filesystem/File.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~hasvalue",
+    "@abw/badger-js/src/badger.js~hasvalue",
     "function/index.html#static-function-hasValue",
-    "<span>hasValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>hasValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~hasvalue",
+    "@abw/badger-js/src/badger/utils/misc.js~hasvalue",
     "function/index.html#static-function-hasValue",
-    "<span>hasValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>hasValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~havevalue",
+    "@abw/badger-js/src/badger.js~havevalue",
     "function/index.html#static-function-haveValue",
-    "<span>haveValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~havevalue",
+    "@abw/badger-js/src/badger/utils/misc.js~havevalue",
     "function/index.html#static-function-haveValue",
-    "<span>haveValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isarray",
+    "@abw/badger-js/src/badger.js~isarray",
     "function/index.html#static-function-isArray",
-    "<span>isArray</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isArray</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isarray",
+    "@abw/badger-js/src/badger/utils/misc.js~isarray",
     "function/index.html#static-function-isArray",
-    "<span>isArray</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isArray</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isfunction",
+    "@abw/badger-js/src/badger.js~isfunction",
     "function/index.html#static-function-isFunction",
-    "<span>isFunction</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isfunction",
+    "@abw/badger-js/src/badger/utils/misc.js~isfunction",
     "function/index.html#static-function-isFunction",
-    "<span>isFunction</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isnull",
+    "@abw/badger-js/src/badger.js~isnull",
     "function/index.html#static-function-isNull",
-    "<span>isNull</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isnull",
+    "@abw/badger-js/src/badger/utils/misc.js~isnull",
     "function/index.html#static-function-isNull",
-    "<span>isNull</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isobject",
+    "@abw/badger-js/src/badger.js~isobject",
     "function/index.html#static-function-isObject",
-    "<span>isObject</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isObject</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isobject",
+    "@abw/badger-js/src/badger/utils/misc.js~isobject",
     "function/index.html#static-function-isObject",
-    "<span>isObject</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isObject</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isstring",
+    "@abw/badger-js/src/badger.js~isstring",
     "function/index.html#static-function-isString",
-    "<span>isString</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isString</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isstring",
+    "@abw/badger-js/src/badger/utils/misc.js~isstring",
     "function/index.html#static-function-isString",
-    "<span>isString</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isString</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~isundefined",
+    "@abw/badger-js/src/badger.js~isundefined",
     "function/index.html#static-function-isUndefined",
-    "<span>isUndefined</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~isundefined",
+    "@abw/badger-js/src/badger/utils/misc.js~isundefined",
     "function/index.html#static-function-isUndefined",
-    "<span>isUndefined</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~joinlist",
+    "@abw/badger-js/src/badger.js~joinlist",
     "function/index.html#static-function-joinList",
-    "<span>joinList</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>joinList</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~joinlist",
+    "@abw/badger-js/src/badger/utils/text.js~joinlist",
     "function/index.html#static-function-joinList",
-    "<span>joinList</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>joinList</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~joinlistand",
+    "@abw/badger-js/src/badger.js~joinlistand",
     "function/index.html#static-function-joinListAnd",
-    "<span>joinListAnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~joinlistand",
+    "@abw/badger-js/src/badger/utils/text.js~joinlistand",
     "function/index.html#static-function-joinListAnd",
-    "<span>joinListAnd</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~joinlistor",
+    "@abw/badger-js/src/badger.js~joinlistor",
     "function/index.html#static-function-joinListOr",
-    "<span>joinListOr</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~joinlistor",
+    "@abw/badger-js/src/badger/utils/text.js~joinlistor",
     "function/index.html#static-function-joinListOr",
-    "<span>joinListOr</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~novalue",
+    "@abw/badger-js/src/badger.js~novalue",
     "function/index.html#static-function-noValue",
-    "<span>noValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~novalue",
+    "@abw/badger-js/src/badger/utils/misc.js~novalue",
     "function/index.html#static-function-noValue",
-    "<span>noValue</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~requiredparam",
+    "@abw/badger-js/src/badger.js~requiredparam",
     "function/index.html#static-function-requiredParam",
-    "<span>requiredParam</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>requiredParam</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/params.js~requiredparam",
+    "@abw/badger-js/src/badger/utils/params.js~requiredparam",
     "function/index.html#static-function-requiredParam",
-    "<span>requiredParam</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
+    "<span>requiredParam</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Params.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~requiredparams",
+    "@abw/badger-js/src/badger.js~requiredparams",
     "function/index.html#static-function-requiredParams",
-    "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>requiredParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/params.js~requiredparams",
+    "@abw/badger-js/src/badger/utils/params.js~requiredparams",
     "function/index.html#static-function-requiredParams",
-    "<span>requiredParams</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Params.js</span>",
+    "<span>requiredParams</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Params.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/color.js~reset",
+    "@abw/badger-js/src/badger/utils/color.js~reset",
     "function/index.html#static-function-reset",
-    "<span>reset</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Color.js</span>",
+    "<span>reset</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Color.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~rethrow",
+    "@abw/badger-js/src/badger.js~rethrow",
     "function/index.html#static-function-rethrow",
-    "<span>rethrow</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/misc.js~rethrow",
+    "@abw/badger-js/src/badger/utils/misc.js~rethrow",
     "function/index.html#static-function-rethrow",
-    "<span>rethrow</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Misc.js</span>",
+    "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Misc.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~snaketocamel",
+    "@abw/badger-js/src/badger.js~snaketocamel",
     "function/index.html#static-function-snakeToCamel",
-    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~snaketocamel",
+    "@abw/badger-js/src/badger/utils/text.js~snaketocamel",
     "function/index.html#static-function-snakeToCamel",
-    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~snaketostudly",
+    "@abw/badger-js/src/badger.js~snaketostudly",
     "function/index.html#static-function-snakeToStudly",
-    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~snaketostudly",
+    "@abw/badger-js/src/badger/utils/text.js~snaketostudly",
     "function/index.html#static-function-snakeToStudly",
-    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~splitlist",
+    "@abw/badger-js/src/badger.js~splitlist",
     "function/index.html#static-function-splitList",
-    "<span>splitList</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/utils/text.js~splitlist",
+    "@abw/badger-js/src/badger/utils/text.js~splitlist",
     "function/index.html#static-function-splitList",
-    "<span>splitList</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Utils/Text.js</span>",
+    "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Utils/Text.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger.js~workspace",
+    "@abw/badger-js/src/badger.js~workspace",
     "function/index.html#static-function-workspace",
-    "<span>workspace</span> <span class=\"search-result-import-path\">badger-js/src/Badger.js</span>",
+    "<span>workspace</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger.js</span>",
     "function"
   ],
   [
-    "badger-js/src/badger/workspace.js~workspace",
+    "@abw/badger-js/src/badger/workspace.js~workspace",
     "function/index.html#static-function-workspace",
-    "<span>workspace</span> <span class=\"search-result-import-path\">badger-js/src/Badger/Workspace.js</span>",
+    "<span>workspace</span> <span class=\"search-result-import-path\">@abw/badger-js/src/Badger/Workspace.js</span>",
     "function"
   ],
   [
@@ -804,12 +804,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/badger.js~config#codecs",
-    "class/src/Badger.js~Config.html#instance-member-codecs",
-    "src/Badger.js~Config#codecs",
-    "member"
-  ],
-  [
     "src/badger.js~config#config",
     "class/src/Badger.js~Config.html#instance-method-config",
     "src/Badger.js~Config#config",
@@ -822,16 +816,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~config#dir",
-    "class/src/Badger.js~Config.html#instance-member-dir",
-    "src/Badger.js~Config#dir",
-    "member"
-  ],
-  [
     "src/badger.js~config#file",
     "class/src/Badger.js~Config.html#instance-method-file",
     "src/Badger.js~Config#file",
     "method"
+  ],
+  [
+    "src/badger.js~config#state",
+    "class/src/Badger.js~Config.html#instance-member-state",
+    "src/Badger.js~Config#state",
+    "member"
   ],
   [
     "src/badger.js~directory#create",
@@ -984,10 +978,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~workspace#config",
+    "class/src/Badger.js~Workspace.html#instance-method-config",
+    "src/Badger.js~Workspace#config",
+    "method"
+  ],
+  [
+    "src/badger.js~workspace#configdir",
+    "class/src/Badger.js~Workspace.html#instance-method-configDir",
+    "src/Badger.js~Workspace#configDir",
+    "method"
+  ],
+  [
     "src/badger.js~workspace#constructor",
     "class/src/Badger.js~Workspace.html#instance-constructor-constructor",
     "src/Badger.js~Workspace#constructor",
     "method"
+  ],
+  [
+    "src/badger.js~workspace#dir",
+    "class/src/Badger.js~Workspace.html#instance-method-dir",
+    "src/Badger.js~Workspace#dir",
+    "method"
+  ],
+  [
+    "src/badger.js~workspace#state",
+    "class/src/Badger.js~Workspace.html#instance-member-state",
+    "src/Badger.js~Workspace#state",
+    "member"
   ],
   [
     "src/badger/codecs/json.js",
@@ -1014,12 +1032,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/badger/config.js~config#codecs",
-    "class/src/Badger/Config.js~Config.html#instance-member-codecs",
-    "src/Badger/Config.js~Config#codecs",
-    "member"
-  ],
-  [
     "src/badger/config.js~config#config",
     "class/src/Badger/Config.js~Config.html#instance-method-config",
     "src/Badger/Config.js~Config#config",
@@ -1032,16 +1044,16 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/config.js~config#dir",
-    "class/src/Badger/Config.js~Config.html#instance-member-dir",
-    "src/Badger/Config.js~Config#dir",
-    "member"
-  ],
-  [
     "src/badger/config.js~config#file",
     "class/src/Badger/Config.js~Config.html#instance-method-file",
     "src/Badger/Config.js~Config#file",
     "method"
+  ],
+  [
+    "src/badger/config.js~config#state",
+    "class/src/Badger/Config.js~Config.html#instance-member-state",
+    "src/Badger/Config.js~Config#state",
+    "member"
   ],
   [
     "src/badger/filesystem/directory.js",
@@ -1248,9 +1260,33 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/workspace.js~workspace#config",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-config",
+    "src/Badger/Workspace.js~Workspace#config",
+    "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#configdir",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-configDir",
+    "src/Badger/Workspace.js~Workspace#configDir",
+    "method"
+  ],
+  [
     "src/badger/workspace.js~workspace#constructor",
     "class/src/Badger/Workspace.js~Workspace.html#instance-constructor-constructor",
     "src/Badger/Workspace.js~Workspace#constructor",
     "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#dir",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-dir",
+    "src/Badger/Workspace.js~Workspace#dir",
+    "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#state",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-member-state",
+    "src/Badger/Workspace.js~Workspace#state",
+    "member"
   ]
 ]

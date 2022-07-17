@@ -1,12 +1,12 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">src/Badger/Config.js | badger-js</title>
+  <title data-ice="title">src/Badger/Config.js | @abw/badger-js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -119,9 +119,10 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Config.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { dir } from './Filesystem/Directory.js'
-import { fail } from './Utils/Misc.js'
 import { allParams, anyParams } from './Utils/Params.js'
 import { splitList } from './Utils/Text.js'
+import { fail } from './Utils/Misc.js';
+import { addDebug } from './Utils/Debug.js';
 
 const defaults = {
   codecs: 'yaml json',
@@ -133,33 +134,32 @@ export class Config {
     const [rootDir] = allParams(options, 'dir');
     const [codec, codecs] = anyParams(options, 'codec codecs');
 
-    this.dir    = dir(rootDir);
-    this.codecs = splitList(codecs) || [codec];
+    this.state = {
+      dir:    dir(rootDir),
+      codecs: splitList(codecs) || [codec],
+    }
 
-    // console.log('dir: ', this.dir);
-    // console.log('codecs: ', this.codecs);
+    addDebug(this, options.debug, options.debugPrefix, options.debugColor);
+    this.debug('root dir: ', this.state.dir.path());
+    this.debug('codecs: ', this.state.codecs);
   }
-  file(uri) {
-    for (let codec of this.codecs) {
-      // const path = this.path(uri, codec);
+  async file(uri) {
+    for (let codec of this.state.codecs) {
       const path = uri + '.' + codec;
-      const file = this.dir.file(path, { codec });
-      if (file.exists()) {
+      const file = this.state.dir.file(path, { codec });
+      this.debug('looking for config file: ', file.path());
+      if (await file.exists()) {
+        this.debug('config file exists: ', file.path());
         return file;
       }
     }
     return undefined;
   }
-  config(uri) {
-    const file = this.file(uri);
+  async config(uri, defaults) {
+    const file = await this.file(uri);
     return file
-      ? file.read()
-      : { };
-    //return file.exists().then(
-    //  exists =&gt; exists
-    //    ? file.read()
-    //    : fail("Missing configuration file: " + file.path())
-    //)
+      ? await file.read()
+      : (defaults || fail("No configuration file for " + uri))
   }
 }
 

@@ -1,12 +1,12 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">src/Badger/Utils/Text.js | badger-js</title>
+  <title data-ice="title">src/Badger/Utils/Text.js | @abw/badger-js</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger-js"><meta property="twitter:description" content="Component based framework and utility modules"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -132,10 +132,12 @@
  * const strings = splitList('one, two, three')
  */
 export function splitList(value) {
-  return isString(value) ? value.split(/,\s*|\s+/)
-    : isArray(value)  ? value
-    : [value];
-};
+  return isString(value)
+    ? value.split(/,\s*|\s+/)
+    : isArray(value)
+      ? value
+      : [value];
+}
 
 /**
  * Join an Array into a single string
@@ -156,7 +158,7 @@ export function joinList(array, joint=' ', lastJoint=joint) {
   return copy.length
     ? [copy.join(joint), last].join(lastJoint)
     : last;
-};
+}
 
 /**
  * Join an Array into a single string using commas for delimiters and ` and ` for the final item
@@ -169,7 +171,7 @@ export function joinList(array, joint=' ', lastJoint=joint) {
  */
 export function joinListAnd(array, joint=', ', lastJoint=' and ') {
   return joinList(array, joint, lastJoint);
-};
+}
 
 /**
  * Join an Array into a single string using commas for delimiters and ` or ` for the final item
@@ -182,7 +184,7 @@ export function joinListAnd(array, joint=', ', lastJoint=' and ') {
  */
 export function joinListOr(array, joint=', ', lastJoint=' or ') {
   return joinList(array, joint, lastJoint);
-};
+}
 
 /**
  * Capitalise a string by converting the first character to upper case and other characters to lower case
