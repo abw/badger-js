@@ -41,7 +41,7 @@ export default [
     //  resolve(),
     //  commonjs()
     //],
-    external: ["fs", "js-yaml", "fs-extra", "path", "fs/promises"],
+    external: ["node:fs", "node:path", "node:process", "node:fs/promises", "js-yaml"],
     onwarn,
     output: [
       {

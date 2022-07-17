@@ -1,5 +1,5 @@
-import path from 'path';
-import { stat } from 'fs/promises'
+import path from 'node:path';
+import { stat } from 'node:fs/promises'
 import { rethrow } from '../Utils/Misc.js';
 import { addDebug } from '../Utils/Debug.js';
 

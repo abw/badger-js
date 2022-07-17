@@ -1,8 +1,8 @@
-import path from 'path'
+import path from 'node:path'
 import Path from './Path.js'
 import { dir } from './Directory.js'
 import { codec } from '../Codecs/index.js'
-import { readFile, writeFile } from 'fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 
 class File extends Path {
   /**

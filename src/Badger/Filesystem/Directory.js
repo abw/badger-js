@@ -3,7 +3,7 @@ import path from 'node:path';
 import Path from './Path.js'
 import { file } from './File.js'
 import { fail } from '../Utils/Misc.js';
-import { rm, mkdir, rmdir, readdir } from 'fs/promises'
+import { rm, mkdir, rmdir, readdir } from 'node:fs/promises'
 
 class Directory extends Path {
   /**
