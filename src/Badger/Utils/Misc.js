@@ -43,7 +43,7 @@ export function isObject(value) {
  */
 export function isUndefined(value) {
   return typeof value === 'undefined';
-};
+}
 
 /**
  * Determines if a value is `null`
@@ -52,7 +52,7 @@ export function isUndefined(value) {
  */
 export function isNull(value) {
   return value === null;
-};
+}
 
 /**
  * Determines if a value is defined and not null
@@ -69,7 +69,7 @@ export function hasValue(value) {
  * @return {Boolean} true if all values are not `undefined` or `null`
  */
 export function haveValue(...values) {
-    return values.every( value => hasValue(value) );
+  return values.every( value => hasValue(value) );
 }
 
 /**

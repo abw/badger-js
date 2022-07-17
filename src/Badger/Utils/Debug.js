@@ -55,5 +55,5 @@ export function Debugger(enabled, prefix='', color) {
  * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })
  */
 export function addDebug(obj, enabled, prefix='', color) {
-    obj.debug = Debugger(enabled, prefix, color);
+  obj.debug = Debugger(enabled, prefix, color);
 }

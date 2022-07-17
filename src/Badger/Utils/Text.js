@@ -12,10 +12,12 @@ import { isString, isArray } from "./Misc.js";
  * const strings = splitList('one, two, three')
  */
 export function splitList(value) {
-  return isString(value) ? value.split(/,\s*|\s+/)
-    : isArray(value)  ? value
-    : [value];
-};
+  return isString(value)
+    ? value.split(/,\s*|\s+/)
+    : isArray(value)
+      ? value
+      : [value];
+}
 
 /**
  * Join an Array into a single string
@@ -36,7 +38,7 @@ export function joinList(array, joint=' ', lastJoint=joint) {
   return copy.length
     ? [copy.join(joint), last].join(lastJoint)
     : last;
-};
+}
 
 /**
  * Join an Array into a single string using commas for delimiters and ` and ` for the final item
@@ -49,7 +51,7 @@ export function joinList(array, joint=' ', lastJoint=joint) {
  */
 export function joinListAnd(array, joint=', ', lastJoint=' and ') {
   return joinList(array, joint, lastJoint);
-};
+}
 
 /**
  * Join an Array into a single string using commas for delimiters and ` or ` for the final item
@@ -62,7 +64,7 @@ export function joinListAnd(array, joint=', ', lastJoint=' and ') {
  */
 export function joinListOr(array, joint=', ', lastJoint=' or ') {
   return joinList(array, joint, lastJoint);
-};
+}
 
 /**
  * Capitalise a string by converting the first character to upper case and other characters to lower case

@@ -1,5 +1,4 @@
 import { dir } from './Filesystem/Directory.js'
-import { fail } from './Utils/Misc.js'
 import { allParams, anyParams } from './Utils/Params.js'
 import { splitList } from './Utils/Text.js'
 

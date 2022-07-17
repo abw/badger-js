@@ -1,8 +1,5 @@
-import path from 'path';
-import { dir } from './Filesystem/Directory.js'
-
 export class Workspace {
-  constructor(params={}) {
+  constructor() {
     console.log('workspace constructor');
   }
   //file(name, options) {
