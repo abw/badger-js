@@ -1,0 +1,119 @@
+<!DOCTYPE html><html><head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../">
+  <title data-ice="title">Manual | @abw/badger</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<body class="layout-container manual-root" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  <a href="./manual/index.html" data-ice="manualHeaderLink">Manual</a>
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/abw/badger-js"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div class="manual-toc-root">
+  
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/getting_started.html"><a href="manual/getting_started.html" data-ice="link">Getting Started</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#file-utilities" data-ice="link">File Utilities</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/getting_started.html"><a href="manual/getting_started.html#codecs" data-ice="link">Codecs</a></li>
+</ul>
+  </div>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="getting-started">Getting Started</h1><p>The <code>badger</code> toolkit provides a range of classes and utility
+functions for server-side Javascript using Node.js.</p>
+<p>There is no particular rhyme or reason as to what's included
+or excluded from the toolkit.  It contains the kind of things
+that I've found to be useful to help build and manage
+non-trivial software projects.</p>
+<h2 id="file-utilities">File Utilities</h2><p>Let's start with the file utilities.  Say you've got a script
+in your project which needs to read a file from a different
+directory.</p>
+<p>Let's assume that the script is <code>bin/hello.js</code> and you want
+to read the contents of the file in <code>data/hello.txt</code>.  The
+<code>bin</code> function accepts the URL of the source file which you
+can get from <code>import.meta.url</code> and returns an object
+representing the directory that it's in.  Note that this will
+always be the same directory regardless of where you run the
+script from.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
+
+// current directory where this script is located
+const thisDir = bin(import.meta.url);</code></code></pre>
+<p>The <code>parent()</code> method returns the parent directory and on that
+we can call the <code>directory()</code> (or <code>dir()</code> for short) method to access a
+directory beneath that.  In this case, we're going for the <code>data</code>
+directory.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// directory where the data file is located
+const dataDir = thisDir.parent().dir('data');</code></code></pre>
+<p>We can then access the <code>hello.txt</code> file in that directory and
+read the file content using the <code>read()</code> method.  This returns
+a Promise which will fulfull with the file content.  Add a
+<code>.then()</code> handler to do something with the content.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">dataDir.file('hello.txt').read().then(
+  text =&gt; console.log(text)
+)</code></code></pre>
+<p>We can chain all those function/method calls together like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
+
+bin(import.meta.url)
+  .parent()
+  .dir('data')
+  .file('hello.txt')
+  .read()
+  .then( text =&gt; console.log(text) )</code></code></pre>
+<p>For further information see the documentation for the
+<a href="/class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> and
+<a href="/class/src/Badger/Filesystem/File.js~File">File</a> modules.</p>
+<h2 id="codecs">Codecs</h2><p>Codecs are used to encode and decode data to and from serialised text.  The badger toolkit comes with two built-in codecs for <code>json</code> and <code>yaml</code> files.</p>
+<p>Suppose that we have a YAML file in the data directory that we
+want to read.</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">name:   Brian
+animal: Badger</code></code></pre>
+<p>All we have to do is add the <code>{ codec: "yaml" }</code>
+options to the <code>file()</code> method.  The <code>read()</code> method will then
+automatically decode the</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
+
+bin(import.meta.url)
+  .parent()
+  .directory('data')
+  .file('animal.yaml', { codec: 'yaml' })
+  .read().then(
+    data =&gt; console.log(data.name, 'is a', data.animal)
+  )</code></code></pre>
+<p>This prints the string "Brian is a Badger" to the console.</p>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+
+
+</body></html>
