@@ -4,6 +4,7 @@ import { bin } from '../../src/Badger.js'
 // current directory where this script is located
 const thisDir = bin(import.meta.url);
 const testFiles = thisDir.dir('test_files');
+// const testDir = testFiles.dir('test_dir', { debug: true, debugPrefix: 'test_dir > ', debugColor: 'red'});
 const testDir = testFiles.dir('test_dir');
 const subDir = testDir.dir('sub_directory');
 
@@ -51,6 +52,14 @@ test.serial(
     await subDir.mkdir({ recursive: true });
     t.is( await testDir.exists(), true)
     t.is( await subDir.exists(), true)
+  }
+);
+
+test.serial(
+  'sub_directory should be empty',
+  async t => {
+    const empty = await subDir.isEmpty();
+    t.is( empty, true)
   }
 );
 

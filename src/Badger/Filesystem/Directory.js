@@ -1,4 +1,5 @@
-import path from 'path';
+import process from 'node:process';
+import path from 'node:path';
 import Path from './Path.js'
 import { file } from './File.js'
 import { fail } from '../Utils/Misc.js';
@@ -53,31 +54,29 @@ class Directory extends Path {
    * Returns the names of the files and sub-directories in the directory
    * @return {Promise} fulfills with an array of the file and directory names
    */
-  read() {
+  async read() {
     this.debug("read()");
-    return readdir(this.path());
+    return await readdir(this.path());
   }
 
   /**
    * Determines if the directory is empty.
    * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).
    */
-  isEmpty() {
+  async isEmpty() {
     this.debug("isEmpty()");
-    return this.read().then(
-      entries => entries.length === 0
-    );
+    const entries = await this.read();
+    return entries.length === 0;
   }
 
   /**
    * Determines if the directory is not empty.
    * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).
    */
-  notEmpty() {
+  async notEmpty() {
     this.debug("notEmpty()");
-    return this.isEmpty().then(
-      empty => ! empty
-    );
+    const empty = await this.isEmpty();
+    return !empty;
   }
 
   /**
@@ -87,12 +86,12 @@ class Directory extends Path {
    * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories
    * @return {Promise} fulfills to the {@link Directory} object
    */
-  empty(options={}) {
+  async empty(options={}) {
     this.debug("empty(%o)", options);
-    return this.exists()
-      .then( exists  => exists && this.isEmpty() )
-      .then( isEmpty => isEmpty || rm(this.path(), options) )
-      .then( () => this );
+    if (await this.exists() && await this.notEmpty()) {
+      await rm(this.path(), options);
+    }
+    return this;
   }
 
   /**
@@ -101,11 +100,13 @@ class Directory extends Path {
    * @param {Boolean} [options.recursive] - create intermediate directories
    * @return {Promise} fulfills to the {@link Directory} object
    */
-  mkdir(options={}) {
+  async mkdir(options={}) {
     this.debug("mkdir(%o)", options);
-    return this.exists()
-      .then( exists => exists || mkdir(this.path(), options) )
-      .then( () => this );
+    const exists = await this.exists();
+    if (! exists) {
+      await mkdir(this.path(), options);
+    }
+    return this;
   }
 
   /**
@@ -116,12 +117,15 @@ class Directory extends Path {
    * @param {Boolean} [options.recursive] - recursively delete sub-directories
    * @return {Promise} fulfills to the {@link Directory} object
    */
-  rmdir(options={}) {
+  async rmdir(options={}) {
     this.debug("rmdir(%o)", options);
-    return (options.empty ? this.empty(options) : Promise.resolve(true))
-        .then( () => this.exists() )
-        .then( exists => exists && rmdir(this.path()) )
-        .then( () => this );
+    if (options.empty) {
+      await this.empty(options);
+    }
+    if (await this.exists()) {
+      await rmdir(this.path());
+    }
+    return this;
   }
 
   /**
@@ -156,16 +160,18 @@ class Directory extends Path {
    * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories
    * @return {Promise} fulfills to the {@link Directory} object
    */
-  mustExist(options={}) {
+  async mustExist(options={}) {
     this.debug("mustExist(%o)", options);
-    return this.exists()
-      .then(
-        exists =>
-          exists         ? this :
-          options.mkdir  ? this.mkdir(options) :
-          options.create ? this.create() :
-          fail("Directory does not exist: ", this.path())
-      )
+    if (await this.exists()) {
+      return this;
+    }
+    if (options.mkdir) {
+      return this.mkdir(options);
+    }
+    if (options.create) {
+      return this.create();
+    }
+    fail("Directory does not exist: ", this.path());
   }
 }
 

@@ -4,7 +4,7 @@ import { dir, bin } from '../../src/Badger.js'
 // current directory where this script is located
 const thisDir = bin(import.meta.url);
 const testFiles = thisDir.dir('test_files');
-const testDir = testFiles.dir('test_dir', { debug: true, debugPrefix: 'test_dir', debugColor: { bg: 'blue', fg: 'bright yellow' }});
+const testDir = testFiles.dir('test_dir');
 const subDir = testDir.dir('sub_directory');
 const tmpDir = testFiles.dir('tmp');
 const cloneDir = dir(testFiles);
@@ -57,7 +57,6 @@ test.serial(
   async t => t.is( await testDir.mustExist(), testDir)
 );
 
-/*
 test.serial(
   'delete the test_dir directory',
   async t => {
@@ -151,5 +150,3 @@ test.serial(
     t.is( files[2], 'hello.yaml' )
   }
 );
-
-*/

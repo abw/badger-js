@@ -12,7 +12,7 @@ test.serial(
 );
 test.serial(
   'create the tmp sub-directory',
-  async t => t.is( await tmpFiles.mustExist({ create: true }), true )
+  async t => t.is( await tmpFiles.mustExist({ create: true }), tmpFiles )
 );
 
 // read/write YAML and JSON

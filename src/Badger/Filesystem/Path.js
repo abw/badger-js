@@ -25,19 +25,20 @@ export class Path {
   options(options={}) {
     return { ...this.state.options, ...options };
   }
-  exists() {
-    return this.stat()
-      .then( stats => true )
-      .catch(
-        error => error.code === 'ENOENT'
-          ? false
-          : rethrow(error)
-      )
+  async exists() {
+    try {
+      await this.stat();
+      return true;
+    }
+    catch (error) {
+      return error.code === 'ENOENT'
+        ? false
+        : rethrow(error);
+    }
   }
-  stat() {
-    return stat(this.state.path).then(
-      stats => this.state.stats = stats
-    );
+  async stat() {
+    const stats = await stat(this.state.path);
+    return this.state.stats = stats;
   }
   unstat() {
     this.state.stats = undefined;
