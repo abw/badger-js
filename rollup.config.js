@@ -1,5 +1,6 @@
-//import resolve from '@rollup/plugin-node-resolve';
-//import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import { terser } from 'rollup-plugin-terser'
 import pkg from './package.json';
 
 // Silence circular dependency warnings
@@ -37,22 +38,28 @@ export default [
   // CommonJS (for Node) and ES module (for bundlers) build.
   {
     input: 'src/Badger.js',
-    //plugins: [
-    //  resolve(),
-    //  commonjs()
-    //],
+    plugins: [
+      resolve({
+        extensions: ['.js', '.jsx'],
+      }),
+      commonjs()
+    ],
     external: ["node:fs", "node:path", "node:process", "node:fs/promises", "js-yaml"],
     onwarn,
     output: [
       {
         file: pkg.main,
         format: 'cjs',
-        exports: 'named'
+        sourcemap: true,
+        exports: 'named',
+        plugins: [terser()]
       },
       {
         file: pkg.module,
         format: 'es',
-        exports: 'named'
+        sourcemap: true,
+        exports: 'named',
+        plugins: [terser()]
       }
     ]
   }
