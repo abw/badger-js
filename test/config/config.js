@@ -8,7 +8,7 @@ const cfg = config({ dir: cfgDir })
 
 test.serial(
   'the config directory is set',
-  t => t.is( cfg.dir.path(), cfgDir.path() )
+  t => t.is( cfg.state.dir.path(), cfgDir.path() )
 );
 
 test.serial(

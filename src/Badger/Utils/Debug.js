@@ -27,7 +27,7 @@ export function Debugger(enabled, prefix='', color) {
     ? prefix
       ? (format, ...args) =>
         console.log(
-          '%s' + prefix + '%s: ' + format,
+          '%s' + prefix + '%s' + format,
           color ? escape(color) : '',
           reset(),
           ...args,

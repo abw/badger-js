@@ -30,8 +30,6 @@ export const escapeCode = (str, base=0) => {
     const shade = pair.length ? pair.shift() : 'dark';
     codes.push(ANSIColors[shade])
   }
-  console.log('%s => %s', str, codes.join(';'));
-
   return ANSIStart + codes.join(';') + ANSIEnd;
 }
 
