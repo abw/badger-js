@@ -1,5 +1,5 @@
 {
-  "name": "badger-js",
+  "name": "@abw/badger-js",
   "version": "1.0.0",
   "description": "Component based framework and utility modules",
   "type": "module",
@@ -16,8 +16,9 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "build-docs": "esdoc",
-    "serve-docs": "serve docs",
+    "lint": "eslint 'src/**/*'",
+    "docs:build": "esdoc",
+    "docs:serve": "serve docs",
     "test": "ava --serial",
     "pretest": "pnpm run build"
   },
@@ -36,6 +37,7 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.1.3",
     "ava": "^4.3.0",
+    "eslint": "^8.20.0",
     "rollup": "^1.29.0"
   },
   "files": [
