@@ -106,7 +106,7 @@ export function snakeToStudly(snake) {
  */
 export function snakeToCamel(snake) {
   return snake.split('/').map(
-    // each segment can be like foo_bar which we convert to FooBar
+    // each segment can be like foo_bar which we convert to fooBar
     segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')
   ).join('/');
 }
