@@ -2,7 +2,7 @@ import path from 'node:path'
 import Path from './Path.js'
 import { dir } from './Directory.js'
 import { codec } from '../Codecs/index.js'
-import { readFile, writeFile } from 'node:fs/promises'
+import { readFile, writeFile, rm } from 'node:fs/promises'
 
 class File extends Path {
   /**
@@ -61,6 +61,11 @@ class File extends Path {
       ? codec(opts.codec).encode(data)
       : data;
     return writeFile(this.state.path, text, opts).then( () => this );
+  }
+
+  async delete(options) {
+    await rm(this.state.path, options);
+    return this;
   }
 }
 
