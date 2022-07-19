@@ -6,4 +6,5 @@ export * from './Badger/Filesystem/Path.js';
 export * from './Badger/Utils/Misc.js';
 export * from './Badger/Utils/Params.js';
 export * from './Badger/Utils/Text.js';
+export * from './Badger/Library.js';
 export * from './Badger/Workspace.js';
