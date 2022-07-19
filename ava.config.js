@@ -1,5 +1,7 @@
 export default {
   "files": [
-    "test/**/*"
+    "test/**/*",
+    "!test/library/test_libs",
+    "!test/workspace/test_space/libs"
   ]
 }
