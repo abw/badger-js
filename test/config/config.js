@@ -48,3 +48,12 @@ test.serial(
     t.is(error.message, "No configuration file for wibble")
   }
 );
+
+test.serial(
+  'read the pouch.js config',
+  async t => {
+    const data = await cfg.config('pouch');
+    t.is( data.pouch, 'frusset' )
+    t.is( data.message, 'You have pleasantly wibbled my frusset pouch' )
+  }
+);
