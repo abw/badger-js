@@ -42,7 +42,7 @@ export class Library {
         const exists = await file.exists();
         if (exists) {
           const load   = await import(file.path());
-          this.debug('loaded %s as', file.path(), load);
+          this.debug('loaded %s as', file.path());
           return load;
         }
       }

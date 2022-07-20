@@ -1,6 +1,6 @@
 import { dir } from "./Filesystem/Directory.js";
 import { requiredParam } from "./Utils/Params.js";
-import { hasValue } from "./Utils/Misc.js";
+import { fail, hasValue } from "./Utils/Misc.js";
 import { addDebug } from "./Utils/Debug.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
@@ -55,7 +55,7 @@ export class Workspace {
       ? this.state.configDir(path, options)
       : this.state.configDir;
   }
-  config(uri, defaults) {
+  async config(uri, defaults) {
     this.debug("config(%s, %o)", uri, defaults);
     return hasValue(uri)
       ? this.state.config.config(uri, defaults)
@@ -64,8 +64,16 @@ export class Workspace {
   async lib(uri) {
     return this.state.library.lib(uri);
   }
+  async component(uri, props) {
+    const config  = await this.config(uri, {});
+    const lib     = await this.lib(uri);
+    const compcls = lib.default || fail("No default export from component library: ", uri);
+    const comp = new compcls(this, { ...config, ...props });
+    // this.debug("created component ", uri)
+    return comp;
+  }
 }
 
 export const workspace = props => new Workspace(props);
 
-export default workspace;
+export default Workspace;
