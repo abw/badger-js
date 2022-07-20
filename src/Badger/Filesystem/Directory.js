@@ -5,6 +5,10 @@ import { file } from './File.js'
 import { fail } from '../Utils/Misc.js';
 import { rm, mkdir, rmdir, readdir } from 'node:fs/promises'
 
+/**
+ * The Directory class implements a wrapper around a filesystem
+ * directory.
+ */
 class Directory extends Path {
   /**
    * Fetch a new {@link File} object for a file in the directory.

@@ -1,7 +1,7 @@
 {
-  "coverage": "37.62%",
+  "coverage": "46.39%",
   "expectCount": 194,
-  "actualCount": 73,
+  "actualCount": 90,
   "files": {
     "src/Badger/Codecs/Json.js": {
       "expectCount": 3,
@@ -44,33 +44,22 @@
     },
     "src/Badger/Filesystem/Directory.js": {
       "expectCount": 17,
-      "actualCount": 16,
-      "undocumentLines": [
-        8
-      ]
+      "actualCount": 17,
+      "undocumentLines": []
     },
     "src/Badger/Filesystem/File.js": {
       "expectCount": 7,
-      "actualCount": 5,
+      "actualCount": 6,
       "undocumentLines": [
-        7,
-        66
+        70
       ]
     },
     "src/Badger/Filesystem/Path.js": {
       "expectCount": 10,
-      "actualCount": 0,
+      "actualCount": 8,
       "undocumentLines": [
         6,
-        10,
-        11,
-        16,
-        19,
-        22,
-        25,
-        28,
-        39,
-        43
+        27
       ]
     },
     "src/Badger/Library.js": {
@@ -138,7 +127,7 @@
     },
     "src/Badger.js": {
       "expectCount": 88,
-      "actualCount": 17,
+      "actualCount": 24,
       "undocumentLines": [
         3,
         4,
@@ -153,22 +142,15 @@
         26,
         38,
         46,
-        185,
-        195,
-        206,
-        8,
-        79,
-        7,
-        66,
-        10,
+        189,
+        199,
+        210,
+        12,
+        83,
         11,
-        16,
-        19,
-        22,
-        25,
-        28,
-        39,
-        43,
+        70,
+        14,
+        27,
         12,
         13,
         19,

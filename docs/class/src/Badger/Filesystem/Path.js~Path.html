@@ -124,13 +124,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Path} from '<span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber10">@abw/badger/src/Badger/Filesystem/Path.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Path} from '<span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber14">@abw/badger/src/Badger/Filesystem/Path.js</a></span>'</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber10">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber14">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -150,7 +150,9 @@
 
   
   
-  
+  <div class="description" data-ice="description"><p>The Path class implements a base class for the <span><a href="class/src/Badger/Filesystem/File.js~File.html">File</a></span> and <span><a href="class/src/Badger/Filesystem/Directory.js~Directory.html">Directory</a></span>
+classes.  It implements the common functionality for representing a filesystem path.</p>
+</div>
   
 
   
@@ -182,13 +184,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-constructor-constructor">constructor</a></span></span><span class="code" data-ice="signature">()</span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-constructor-constructor">constructor</a></span></span><span class="code" data-ice="signature">(path: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Constructor for filesystem paths.</p>
+</div>
       </div>
     </td>
     <td>
@@ -252,13 +255,14 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-exists">exists</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-exists">exists</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Method to assert that the path exists.</p>
+</div>
       </div>
     </td>
     <td>
@@ -280,13 +284,15 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-options">options</a></span></span><span class="code" data-ice="signature">(options: {}): {...undefined: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, ...options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>}</span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-options">options</a></span></span><span class="code" data-ice="signature">(options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Internal method to merge any options with the pre-defined options passed to the
+constructor.</p>
+</div>
       </div>
     </td>
     <td>
@@ -308,13 +314,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-path">path</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-path">path</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Accessor method to return the filesystem path.</p>
+</div>
       </div>
     </td>
     <td>
@@ -336,13 +343,14 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-relativePath">relativePath</a></span></span><span class="code" data-ice="signature">(parts: ...<span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-relativePath">relativePath</a></span></span><span class="code" data-ice="signature">(parts: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Create a path relative to the current path.</p>
+</div>
       </div>
     </td>
     <td>
@@ -364,13 +372,14 @@
           
           <span data-ice="async">async</span>
           
-          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-stat">stat</a></span></span><span class="code" data-ice="signature">(): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html#instance-method-stat">stat</a></span></span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Method to fetch stats for the path.</p>
+</div>
       </div>
     </td>
     <td>
@@ -398,7 +407,8 @@
       <div>
         
         
-        
+        <div data-ice="description"><p>Method to clear internal cache of path stats (subject to change)</p>
+</div>
       </div>
     </td>
     <td>
@@ -424,25 +434,70 @@
     
     
     
-    <span class="code" data-ice="name">constructor</span><span class="code" data-ice="signature">()</span>
+    <span class="code" data-ice="name">constructor</span><span class="code" data-ice="signature">(path: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber11">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
-
-  
-
-  <div data-ice="properties">
+  <div data-ice="description"><p>Constructor for filesystem paths.</p>
 </div>
 
   
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">path</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>file path</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">options</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>configuration options</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" class="code" data-depth="1">options.codec</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>codec for encoding/decoding file data</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>the <span><a href="class/src/Badger/Filesystem/Path.js~Path.html">Path</a></span> object</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -474,7 +529,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber27">source</a></span></span>
     </span>
   </h3>
 
@@ -516,18 +571,19 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">exists</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="code" data-ice="name">exists</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber28">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber74">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Method to assert that the path exists.</p>
+</div>
 
   
 
@@ -539,8 +595,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>fulfills with <code>true</code> if the path exists or rejects if the path doesn't</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -556,7 +613,17 @@
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const p = new Path('/path/to/here')
+p.exists()
+  .then( console.log('path exists') )
+  .catch( console.log('path does not exist') )</code></pre>
+    </div>
+</div>
 
   
 
@@ -571,18 +638,20 @@
     
     
     
-    <span class="code" data-ice="name">options</span><span class="code" data-ice="signature">(options: {}): {...undefined: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, ...options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>}</span>
+    <span class="code" data-ice="name">options</span><span class="code" data-ice="signature">(options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber25">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Internal method to merge any options with the pre-defined options passed to the
+constructor.  Options passed as arguments will take precedence.</p>
+</div>
 
   
 
@@ -596,10 +665,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">options</td>
-      <td data-ice="type" class="code">{}</td>
-      <td data-ice="appendix"><ul><li>optional</li>
-<li>default: {}</li></ul></td>
-      <td data-ice="description"></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>new options</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -611,8 +680,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType">{...undefined: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, ...options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>}</td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>the merged options</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -628,7 +698,15 @@
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const p = new Path('/path/to/here', { option1: 'hello' })
+const q = p.options({ option2: 'world' })  // -&gt; { option1: 'hello', options2: 'world' }</code></pre>
+    </div>
+</div>
 
   
 
@@ -643,18 +721,19 @@
     
     
     
-    <span class="code" data-ice="name">path</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="code" data-ice="name">path</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber19">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber35">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Accessor method to return the filesystem path.</p>
+</div>
 
   
 
@@ -666,8 +745,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>the filesystem path</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -698,18 +778,19 @@
     
     
     
-    <span class="code" data-ice="name">relativePath</span><span class="code" data-ice="signature">(parts: ...<span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">relativePath</span><span class="code" data-ice="signature">(parts: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber22">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber48">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Create a path relative to the current path.</p>
+</div>
 
   
 
@@ -723,9 +804,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">parts</td>
-      <td data-ice="type" class="code">...<span>*</span></td>
+      <td data-ice="type" class="code"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>part(s) of the filesystem path</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -737,8 +819,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>the new path</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -754,7 +837,16 @@
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const p = new Path('/path/to/here')
+const q = p.relativePath('there')          // -&gt; /path/to/here/there
+const r = p.relativePath('and', 'there')   // -&gt; /path/to/here/and/there</code></pre>
+    </div>
+</div>
 
   
 
@@ -769,18 +861,20 @@
     
     <span data-ice="async">async</span>
     
-    <span class="code" data-ice="name">stat</span><span class="code" data-ice="signature">(): <span>*</span></span>
+    <span class="code" data-ice="name">stat</span><span class="code" data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber39">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber96">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Method to fetch stats for the path.  Uses the <code>stat</code> function from <code>node:fs/promises</code>.
+Stats are cached internally (subject to change)</p>
+</div>
 
   
 
@@ -792,8 +886,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>fulfills with path stats returned from the <code>stat</code> function</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -809,7 +904,17 @@
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const p = new Path('/path/to/here')
+p.stat()
+  .then( stats =&gt; console.log('path stats:', stats) )
+  .catch( console.log('path does not exist') )</code></pre>
+    </div>
+</div>
 
   
 
@@ -828,14 +933,15 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/Path.js.html#lineNumber104">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Method to clear internal cache of path stats (subject to change)</p>
+</div>
 
   
 

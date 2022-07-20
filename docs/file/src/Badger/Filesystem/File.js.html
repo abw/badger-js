@@ -130,6 +130,10 @@ import { dir } from './Directory.js'
 import { codec } from '../Codecs/index.js'
 import { readFile, writeFile, rm } from 'node:fs/promises'
 
+/**
+ * The File class implements a wrapper around a filesystem
+ * file.
+ */
 class File extends Path {
   /**
    * Returns a new {@link Directory} object for the parent directory of the file
