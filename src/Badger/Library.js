@@ -2,7 +2,7 @@ import { dir as fsdir } from "./Filesystem/Directory.js";
 import { requiredParam } from "./Utils/Params.js";
 import { addDebug } from "./Utils/Debug.js";
 import { splitList } from "./Utils/Text.js";
-import { fail } from "../Badger.js";
+import { fail } from "./Utils/Misc.js";
 
 const defaults = {
   dir: ['lib','library','src','components'],
