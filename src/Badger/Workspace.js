@@ -66,8 +66,9 @@ export class Workspace {
   }
   async component(uri, props) {
     const config  = await this.config(uri, {});
-    const lib     = await this.lib(uri);
-    const compcls = lib.default || fail("No default export from component library: ", uri);
+    const lib     = await this.lib(config.component?.library || uri);
+    const exp     = config.component?.export || 'default';
+    const compcls = lib[exp] || fail("No '", exp, "' export from component library: ", uri);
     const comp = new compcls(this, { ...config, ...props });
     // this.debug("created component ", uri)
     return comp;

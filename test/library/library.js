@@ -46,3 +46,11 @@ test(
     t.is( error.message, "Library not found: four" )
   }
 );
+test(
+  'the library can load five/six',
+  async t => {
+    const fiveSix = await testLib.lib('five/six');
+    t.is( fiveSix.five, 5 )
+    t.is( fiveSix.six, 6 )
+  }
+);

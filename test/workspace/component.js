@@ -50,3 +50,11 @@ test(
     t.is( await comp1.messages(), 'Hello World!, K Thx Bye!' );
   }
 );
+
+test(
+  'fetch component3 which has a custom component library and export',
+  async t => {
+    const comp3 = await testSpace.component('Component3');
+    t.is( await comp3.message(), 'Three is the magic number' );
+  }
+);
