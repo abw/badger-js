@@ -27,9 +27,11 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Config.html">Config</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Config.html">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Directory.html">Directory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~File.html">File</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
@@ -53,6 +55,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinList">joinList</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListAnd">joinListAnd</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListOr">joinListOr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noValue">noValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParam">requiredParam</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParams">requiredParams</a></span></span></li>
@@ -63,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allParams">allParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codecs">codecs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Library.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Workspace.js~Workspace.html">Workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-codecs">Badger/Codecs</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decode">decode</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encode">encode</a></span></span></li>
@@ -766,13 +772,15 @@ passed as the first argument as the <code>debug</code> function.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-escape">escape</a></span></span><span class="code" data-ice="signature">(c: {}): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-escape">escape</a></span></span><span class="code" data-ice="signature">(colors: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Returns an ANSI escape code for a color string or combination of foreground and
+background colors.</p>
+</div>
       </div>
     </td>
     <td>
@@ -794,13 +802,14 @@ passed as the first argument as the <code>debug</code> function.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-escapeCode">escapeCode</a></span></span><span class="code" data-ice="signature">(str: <span>*</span>, base: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-escapeCode">escapeCode</a></span></span><span class="code" data-ice="signature">(color: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, base: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Returns an ANSI escape code for a color string.</p>
+</div>
       </div>
     </td>
     <td>
@@ -1536,6 +1545,62 @@ passed as the first argument as the <code>debug</code> function.</p>
           
           
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-joinListOr">joinListOr</a></span></span><span class="code" data-ice="signature">(array: <span>*</span>, joint: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, lastJoint: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -3750,18 +3815,20 @@ passed as the first argument as the <code>debug</code> function.</p>
     
     
     
-    <span class="code" data-ice="name">escape</span><span class="code" data-ice="signature">(c: {}): <span>*</span></span>
+    <span class="code" data-ice="name">escape</span><span class="code" data-ice="signature">(colors: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber65">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {escape} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber36">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {escape} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber65">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
   
   
-  
+  <div data-ice="description"><p>Returns an ANSI escape code for a color string or combination of foreground and
+background colors.</p>
+</div>
 
   
 
@@ -3774,11 +3841,25 @@ passed as the first argument as the <code>debug</code> function.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">c</td>
-      <td data-ice="type" class="code">{}</td>
-      <td data-ice="appendix"><ul><li>optional</li>
-<li>default: {}</li></ul></td>
-      <td data-ice="description"></td>
+      <td data-ice="name" class="code" data-depth="0">colors</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>either a simple color name or object contain foreground and background colors</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" class="code" data-depth="1">colors.fg</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>foreground color</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" class="code" data-depth="1">colors.fg</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>background color</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -3790,8 +3871,9 @@ passed as the first argument as the <code>debug</code> function.</p>
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>ANSI escape code string</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -3807,7 +3889,22 @@ passed as the first argument as the <code>debug</code> function.</p>
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escape('red')</code></pre>
+    </div>
+<div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escape('bright red')</code></pre>
+    </div>
+<div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escape({ fg: 'bright yellow', bg: 'blue' })</code></pre>
+    </div>
+</div>
 
   
 
@@ -3822,18 +3919,22 @@ passed as the first argument as the <code>debug</code> function.</p>
     
     
     
-    <span class="code" data-ice="name">escapeCode</span><span class="code" data-ice="signature">(str: <span>*</span>, base: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>): <span>*</span></span>
+    <span class="code" data-ice="name">escapeCode</span><span class="code" data-ice="signature">(color: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, base: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {escapeCode} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber23">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {escapeCode} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber38">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
   
   
-  
+  <div data-ice="description"><p>Returns an ANSI escape code for a color string.  This can be a single color
+name, e.g. <code>red</code>, <code>green</code>, etc., or a color prefixed with <code>bright</code> or <code>dark</code>,
+e.g. <code>bright red</code>, <code>dark green</code>, etc.  An optional section argument can be
+set to <code>fg</code> (default) to set a foreground color or <code>bg</code> for a background color.</p>
+</div>
 
   
 
@@ -3846,17 +3947,19 @@ passed as the first argument as the <code>debug</code> function.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">str</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="name" class="code" data-depth="0">color</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>color name with optional modifier prefix</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">base</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"><ul><li>optional</li>
-<li>default: 0</li></ul></td>
-      <td data-ice="description"></td>
+<li>default: 'fg'</li></ul></td>
+      <td data-ice="description"><p><code>fg</code> or <code>bg</code> to set foreground or background color respectively</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -3868,8 +3971,9 @@ passed as the first argument as the <code>debug</code> function.</p>
     <table>
       <tbody>
         <tr>
-          <td class="return-type code" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>ANSI escape code string</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -3885,7 +3989,22 @@ passed as the first argument as the <code>debug</code> function.</p>
 
   
 
-  
+  <div data-ice="example">
+    <h4>Example:</h4>
+    
+  <div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escapeCode('red')</code></pre>
+    </div>
+<div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escapeCode('bright red')</code></pre>
+    </div>
+<div class="example-doc" data-ice="exampleDoc">
+      
+      <pre class="prettyprint source-code"><code data-ice="exampleCode">const str = escapeCode('bright red', 'bg')</code></pre>
+    </div>
+</div>
 
   
 
@@ -4035,11 +4154,11 @@ passed as the first argument as the <code>debug</code> function.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/File.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Filesystem/File.js.html#lineNumber79">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {file} from '<span><a href="file/src/Badger/Filesystem/File.js.html#lineNumber74">@abw/badger/src/Badger/Filesystem/File.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {file} from '<span><a href="file/src/Badger/Filesystem/File.js.html#lineNumber79">@abw/badger/src/Badger/Filesystem/File.js</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to create a new <span><a href="class/src/Badger/Filesystem/File.js~File.html">File</a></span> object for a file</p>
@@ -4123,11 +4242,11 @@ passed as the first argument as the <code>debug</code> function.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber79">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {file} from '<span><a href="file/src/Badger.js.html#lineNumber74">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {file} from '<span><a href="file/src/Badger.js.html#lineNumber79">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
   
   
   
@@ -5903,6 +6022,124 @@ passed as the first argument as the <code>debug</code> function.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-library">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">library</span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Badger/Library.js.html#lineNumber54">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {library} from '<span><a href="file/src/Badger/Library.js.html#lineNumber54">@abw/badger/src/Badger/Library.js</a></span>'</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">props</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-library">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">library</span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber54">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {library} from '<span><a href="file/src/Badger.js.html#lineNumber54">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">props</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-noValue">
     <span class="access" data-ice="access">public</span>
     
@@ -6415,11 +6652,11 @@ passed as the first argument as the <code>debug</code> function.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber51">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Utils/Color.js.html#lineNumber77">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {reset} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber51">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {reset} from '<span><a href="file/src/Badger/Utils/Color.js.html#lineNumber77">@abw/badger/src/Badger/Utils/Color.js</a></span>'</code></pre></div>
   
   
   
@@ -7061,11 +7298,11 @@ passed as the first argument as the <code>debug</code> function.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Workspace.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Workspace.js.html#lineNumber78">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {workspace} from '<span><a href="file/src/Badger/Workspace.js.html#lineNumber49">@abw/badger/src/Badger/Workspace.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {workspace} from '<span><a href="file/src/Badger/Workspace.js.html#lineNumber78">@abw/badger/src/Badger/Workspace.js</a></span>'</code></pre></div>
   
   
   
@@ -7120,11 +7357,11 @@ passed as the first argument as the <code>debug</code> function.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber78">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {workspace} from '<span><a href="file/src/Badger.js.html#lineNumber49">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {workspace} from '<span><a href="file/src/Badger.js.html#lineNumber78">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
   
   
   

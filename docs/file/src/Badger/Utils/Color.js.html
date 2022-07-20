@@ -27,9 +27,11 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Config.html">Config</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Config.html">Config</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Directory.html">Directory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~File.html">File</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
@@ -53,6 +55,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinList">joinList</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListAnd">joinListAnd</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinListOr">joinListOr</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-noValue">noValue</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParam">requiredParam</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-requiredParams">requiredParams</a></span></span></li>
@@ -63,9 +66,12 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-allParams">allParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codecs">codecs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger">Badger</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Component.js~Component.html">Component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Config.js~Config.html">Config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Library.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Workspace.js~Workspace.html">Workspace</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-codecs">Badger/Codecs</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-decode">decode</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encode">encode</a></span></span></li>
@@ -140,9 +146,24 @@ export const ANSIColors = {
   bg:      40,
 };
 
-export const escapeCode = (str, base=0) =&gt; {
+/**
+ * Returns an ANSI escape code for a color string.  This can be a single color
+ * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,
+ * e.g. `bright red`, `dark green`, etc.  An optional section argument can be
+ * set to `fg` (default) to set a foreground color or `bg` for a background color.
+ * @param {String} color - color name with optional modifier prefix
+ * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively
+ * @return {String} ANSI escape code string
+ * @example
+ * const str = escapeCode('red')
+ * @example
+ * const str = escapeCode('bright red')
+ * @example
+ * const str = escapeCode('bright red', 'bg')
+ */
+export const escapeCode = (color, base='fg') =&gt; {
   let   codes = [ ];
-  let   pair  = str.split(/ /, 2);
+  let   pair  = color.split(/ /, 2);
   const hue   = pair.pop();
   const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];
   codes.push(code);
@@ -153,11 +174,22 @@ export const escapeCode = (str, base=0) =&gt; {
   return ANSIStart + codes.join(';') + ANSIEnd;
 }
 
-export const escape = (c={}) =&gt; {
-  // color c can be specified as a string (e.g. 'red') which is shorthand
-  // for an object containing 'fg' (e.g. { fg: 'red' }) and/or 'bg' for
-  // foreground and background colors respectively
-  const col = isObject(c) ? c : { fg: c };
+/**
+ * Returns an ANSI escape code for a color string or combination of foreground and
+ * background colors.
+ * @param {String|Object} colors - either a simple color name or object contain foreground and background colors
+ * @param {String} [colors.fg] - foreground color
+ * @param {String} [colors.fg] - background color
+ * @return {String} ANSI escape code string
+ * @example
+ * const str = escape('red')
+ * @example
+ * const str = escape('bright red')
+ * @example
+ * const str = escape({ fg: 'bright yellow', bg: 'blue' })
+ */
+export const escape = (colors={}) =&gt; {
+  const col = isObject(colors) ? colors : { fg: colors };
   let escapes = [ ];
   if (col.bg) {
     escapes.push(escapeCode(col.bg, 'bg'));

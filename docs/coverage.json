@@ -1,7 +1,7 @@
 {
-  "coverage": "45.22%",
-  "expectCount": 157,
-  "actualCount": 71,
+  "coverage": "37.62%",
+  "expectCount": 194,
+  "actualCount": 73,
   "files": {
     "src/Badger/Codecs/Json.js": {
       "expectCount": 3,
@@ -17,6 +17,17 @@
       "expectCount": 2,
       "actualCount": 2,
       "undocumentLines": []
+    },
+    "src/Badger/Component.js": {
+      "expectCount": 5,
+      "actualCount": 0,
+      "undocumentLines": [
+        3,
+        4,
+        5,
+        6,
+        10
+      ]
     },
     "src/Badger/Config.js": {
       "expectCount": 7,
@@ -39,10 +50,11 @@
       ]
     },
     "src/Badger/Filesystem/File.js": {
-      "expectCount": 6,
+      "expectCount": 7,
       "actualCount": 5,
       "undocumentLines": [
-        7
+        7,
+        66
       ]
     },
     "src/Badger/Filesystem/Path.js": {
@@ -61,16 +73,28 @@
         43
       ]
     },
+    "src/Badger/Library.js": {
+      "expectCount": 8,
+      "actualCount": 0,
+      "undocumentLines": [
+        7,
+        12,
+        13,
+        19,
+        24,
+        28,
+        35,
+        54
+      ]
+    },
     "src/Badger/Utils/Color.js": {
       "expectCount": 6,
-      "actualCount": 0,
+      "actualCount": 2,
       "undocumentLines": [
         3,
         4,
         5,
-        23,
-        36,
-        51
+        77
       ]
     },
     "src/Badger/Utils/Debug.js": {
@@ -94,37 +118,48 @@
       "undocumentLines": []
     },
     "src/Badger/Workspace.js": {
-      "expectCount": 8,
+      "expectCount": 13,
       "actualCount": 0,
       "undocumentLines": [
-        7,
-        12,
-        13,
-        19,
-        29,
-        35,
-        41,
-        49
+        8,
+        15,
+        16,
+        24,
+        34,
+        40,
+        44,
+        48,
+        52,
+        58,
+        64,
+        67,
+        78
       ]
     },
     "src/Badger.js": {
-      "expectCount": 70,
+      "expectCount": 88,
       "actualCount": 17,
       "undocumentLines": [
+        3,
+        4,
+        5,
+        6,
+        10,
+        18,
+        26,
         11,
         12,
         17,
         26,
         38,
         46,
-        18,
-        26,
         185,
         195,
         206,
         8,
-        74,
+        79,
         7,
+        66,
         10,
         11,
         16,
@@ -134,6 +169,13 @@
         28,
         39,
         43,
+        12,
+        13,
+        19,
+        24,
+        28,
+        35,
+        54,
         6,
         15,
         24,
@@ -157,13 +199,18 @@
         78,
         91,
         107,
-        12,
-        13,
-        19,
-        29,
-        35,
-        41,
-        49
+        15,
+        16,
+        24,
+        34,
+        40,
+        44,
+        48,
+        52,
+        58,
+        64,
+        67,
+        78
       ]
     }
   }

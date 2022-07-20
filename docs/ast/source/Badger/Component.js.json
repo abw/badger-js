@@ -1,0 +1,1056 @@
+{
+  "type": "File",
+  "start": 0,
+  "end": 347,
+  "loc": {
+    "start": {
+      "line": 1,
+      "column": 0,
+      "index": 0
+    },
+    "end": {
+      "line": 15,
+      "column": 24,
+      "index": 347
+    }
+  },
+  "errors": [],
+  "program": {
+    "type": "Program",
+    "start": 0,
+    "end": 347,
+    "loc": {
+      "start": {
+        "line": 1,
+        "column": 0,
+        "index": 0
+      },
+      "end": {
+        "line": 15,
+        "column": 24,
+        "index": 347
+      }
+    },
+    "sourceType": "module",
+    "interpreter": null,
+    "body": [
+      {
+        "type": "ImportDeclaration",
+        "start": 0,
+        "end": 44,
+        "loc": {
+          "start": {
+            "line": 1,
+            "column": 0,
+            "index": 0
+          },
+          "end": {
+            "line": 1,
+            "column": 44,
+            "index": 44
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportSpecifier",
+            "start": 9,
+            "end": 17,
+            "loc": {
+              "start": {
+                "line": 1,
+                "column": 9,
+                "index": 9
+              },
+              "end": {
+                "line": 1,
+                "column": 17,
+                "index": 17
+              }
+            },
+            "imported": {
+              "type": "Identifier",
+              "start": 9,
+              "end": 17,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 9,
+                  "index": 9
+                },
+                "end": {
+                  "line": 1,
+                  "column": 17,
+                  "index": 17
+                },
+                "identifierName": "addDebug"
+              },
+              "name": "addDebug"
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 9,
+              "end": 17,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 9,
+                  "index": 9
+                },
+                "end": {
+                  "line": 1,
+                  "column": 17,
+                  "index": 17
+                },
+                "identifierName": "addDebug"
+              },
+              "name": "addDebug"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 25,
+          "end": 43,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 25,
+              "index": 25
+            },
+            "end": {
+              "line": 1,
+              "column": 43,
+              "index": 43
+            }
+          },
+          "extra": {
+            "rawValue": "./Utils/Debug.js",
+            "raw": "\"./Utils/Debug.js\""
+          },
+          "value": "./Utils/Debug.js"
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 46,
+        "end": 321,
+        "loc": {
+          "start": {
+            "line": 3,
+            "column": 0,
+            "index": 46
+          },
+          "end": {
+            "line": 13,
+            "column": 1,
+            "index": 321
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "ClassDeclaration",
+          "start": 53,
+          "end": 321,
+          "loc": {
+            "start": {
+              "line": 3,
+              "column": 7,
+              "index": 53
+            },
+            "end": {
+              "line": 13,
+              "column": 1,
+              "index": 321
+            }
+          },
+          "id": {
+            "type": "Identifier",
+            "start": 59,
+            "end": 68,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 13,
+                "index": 59
+              },
+              "end": {
+                "line": 3,
+                "column": 22,
+                "index": 68
+              },
+              "identifierName": "Component"
+            },
+            "name": "Component"
+          },
+          "superClass": null,
+          "body": {
+            "type": "ClassBody",
+            "start": 69,
+            "end": 321,
+            "loc": {
+              "start": {
+                "line": 3,
+                "column": 23,
+                "index": 69
+              },
+              "end": {
+                "line": 13,
+                "column": 1,
+                "index": 321
+              }
+            },
+            "body": [
+              {
+                "type": "ClassMethod",
+                "start": 73,
+                "end": 268,
+                "loc": {
+                  "start": {
+                    "line": 4,
+                    "column": 2,
+                    "index": 73
+                  },
+                  "end": {
+                    "line": 9,
+                    "column": 3,
+                    "index": 268
+                  }
+                },
+                "static": false,
+                "key": {
+                  "type": "Identifier",
+                  "start": 73,
+                  "end": 84,
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 2,
+                      "index": 73
+                    },
+                    "end": {
+                      "line": 4,
+                      "column": 13,
+                      "index": 84
+                    },
+                    "identifierName": "constructor"
+                  },
+                  "name": "constructor"
+                },
+                "computed": false,
+                "kind": "constructor",
+                "id": null,
+                "generator": false,
+                "async": false,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "start": 85,
+                    "end": 94,
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 14,
+                        "index": 85
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 23,
+                        "index": 94
+                      },
+                      "identifierName": "workspace"
+                    },
+                    "name": "workspace"
+                  },
+                  {
+                    "type": "AssignmentPattern",
+                    "start": 96,
+                    "end": 104,
+                    "loc": {
+                      "start": {
+                        "line": 4,
+                        "column": 25,
+                        "index": 96
+                      },
+                      "end": {
+                        "line": 4,
+                        "column": 33,
+                        "index": 104
+                      }
+                    },
+                    "left": {
+                      "type": "Identifier",
+                      "start": 96,
+                      "end": 101,
+                      "loc": {
+                        "start": {
+                          "line": 4,
+                          "column": 25,
+                          "index": 96
+                        },
+                        "end": {
+                          "line": 4,
+                          "column": 30,
+                          "index": 101
+                        },
+                        "identifierName": "props"
+                      },
+                      "name": "props"
+                    },
+                    "right": {
+                      "type": "ObjectExpression",
+                      "start": 102,
+                      "end": 104,
+                      "loc": {
+                        "start": {
+                          "line": 4,
+                          "column": 31,
+                          "index": 102
+                        },
+                        "end": {
+                          "line": 4,
+                          "column": 33,
+                          "index": 104
+                        }
+                      },
+                      "properties": []
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "BlockStatement",
+                  "start": 106,
+                  "end": 268,
+                  "loc": {
+                    "start": {
+                      "line": 4,
+                      "column": 35,
+                      "index": 106
+                    },
+                    "end": {
+                      "line": 9,
+                      "column": 3,
+                      "index": 268
+                    }
+                  },
+                  "body": [
+                    {
+                      "type": "ExpressionStatement",
+                      "start": 112,
+                      "end": 139,
+                      "loc": {
+                        "start": {
+                          "line": 5,
+                          "column": 4,
+                          "index": 112
+                        },
+                        "end": {
+                          "line": 5,
+                          "column": 31,
+                          "index": 139
+                        }
+                      },
+                      "expression": {
+                        "type": "AssignmentExpression",
+                        "start": 112,
+                        "end": 138,
+                        "loc": {
+                          "start": {
+                            "line": 5,
+                            "column": 4,
+                            "index": 112
+                          },
+                          "end": {
+                            "line": 5,
+                            "column": 30,
+                            "index": 138
+                          }
+                        },
+                        "operator": "=",
+                        "left": {
+                          "type": "MemberExpression",
+                          "start": 112,
+                          "end": 126,
+                          "loc": {
+                            "start": {
+                              "line": 5,
+                              "column": 4,
+                              "index": 112
+                            },
+                            "end": {
+                              "line": 5,
+                              "column": 18,
+                              "index": 126
+                            }
+                          },
+                          "object": {
+                            "type": "ThisExpression",
+                            "start": 112,
+                            "end": 116,
+                            "loc": {
+                              "start": {
+                                "line": 5,
+                                "column": 4,
+                                "index": 112
+                              },
+                              "end": {
+                                "line": 5,
+                                "column": 8,
+                                "index": 116
+                              }
+                            }
+                          },
+                          "computed": false,
+                          "property": {
+                            "type": "Identifier",
+                            "start": 117,
+                            "end": 126,
+                            "loc": {
+                              "start": {
+                                "line": 5,
+                                "column": 9,
+                                "index": 117
+                              },
+                              "end": {
+                                "line": 5,
+                                "column": 18,
+                                "index": 126
+                              },
+                              "identifierName": "workspace"
+                            },
+                            "name": "workspace"
+                          }
+                        },
+                        "right": {
+                          "type": "Identifier",
+                          "start": 129,
+                          "end": 138,
+                          "loc": {
+                            "start": {
+                              "line": 5,
+                              "column": 21,
+                              "index": 129
+                            },
+                            "end": {
+                              "line": 5,
+                              "column": 30,
+                              "index": 138
+                            },
+                            "identifierName": "workspace"
+                          },
+                          "name": "workspace"
+                        }
+                      }
+                    },
+                    {
+                      "type": "ExpressionStatement",
+                      "start": 144,
+                      "end": 163,
+                      "loc": {
+                        "start": {
+                          "line": 6,
+                          "column": 4,
+                          "index": 144
+                        },
+                        "end": {
+                          "line": 6,
+                          "column": 23,
+                          "index": 163
+                        }
+                      },
+                      "expression": {
+                        "type": "AssignmentExpression",
+                        "start": 144,
+                        "end": 162,
+                        "loc": {
+                          "start": {
+                            "line": 6,
+                            "column": 4,
+                            "index": 144
+                          },
+                          "end": {
+                            "line": 6,
+                            "column": 22,
+                            "index": 162
+                          }
+                        },
+                        "operator": "=",
+                        "left": {
+                          "type": "MemberExpression",
+                          "start": 144,
+                          "end": 154,
+                          "loc": {
+                            "start": {
+                              "line": 6,
+                              "column": 4,
+                              "index": 144
+                            },
+                            "end": {
+                              "line": 6,
+                              "column": 14,
+                              "index": 154
+                            }
+                          },
+                          "object": {
+                            "type": "ThisExpression",
+                            "start": 144,
+                            "end": 148,
+                            "loc": {
+                              "start": {
+                                "line": 6,
+                                "column": 4,
+                                "index": 144
+                              },
+                              "end": {
+                                "line": 6,
+                                "column": 8,
+                                "index": 148
+                              }
+                            }
+                          },
+                          "computed": false,
+                          "property": {
+                            "type": "Identifier",
+                            "start": 149,
+                            "end": 154,
+                            "loc": {
+                              "start": {
+                                "line": 6,
+                                "column": 9,
+                                "index": 149
+                              },
+                              "end": {
+                                "line": 6,
+                                "column": 14,
+                                "index": 154
+                              },
+                              "identifierName": "props"
+                            },
+                            "name": "props"
+                          }
+                        },
+                        "right": {
+                          "type": "Identifier",
+                          "start": 157,
+                          "end": 162,
+                          "loc": {
+                            "start": {
+                              "line": 6,
+                              "column": 17,
+                              "index": 157
+                            },
+                            "end": {
+                              "line": 6,
+                              "column": 22,
+                              "index": 162
+                            },
+                            "identifierName": "props"
+                          },
+                          "name": "props"
+                        }
+                      }
+                    },
+                    {
+                      "type": "ExpressionStatement",
+                      "start": 168,
+                      "end": 233,
+                      "loc": {
+                        "start": {
+                          "line": 7,
+                          "column": 4,
+                          "index": 168
+                        },
+                        "end": {
+                          "line": 7,
+                          "column": 69,
+                          "index": 233
+                        }
+                      },
+                      "expression": {
+                        "type": "CallExpression",
+                        "start": 168,
+                        "end": 232,
+                        "loc": {
+                          "start": {
+                            "line": 7,
+                            "column": 4,
+                            "index": 168
+                          },
+                          "end": {
+                            "line": 7,
+                            "column": 68,
+                            "index": 232
+                          }
+                        },
+                        "callee": {
+                          "type": "Identifier",
+                          "start": 168,
+                          "end": 176,
+                          "loc": {
+                            "start": {
+                              "line": 7,
+                              "column": 4,
+                              "index": 168
+                            },
+                            "end": {
+                              "line": 7,
+                              "column": 12,
+                              "index": 176
+                            },
+                            "identifierName": "addDebug"
+                          },
+                          "name": "addDebug"
+                        },
+                        "arguments": [
+                          {
+                            "type": "ThisExpression",
+                            "start": 177,
+                            "end": 181,
+                            "loc": {
+                              "start": {
+                                "line": 7,
+                                "column": 13,
+                                "index": 177
+                              },
+                              "end": {
+                                "line": 7,
+                                "column": 17,
+                                "index": 181
+                              }
+                            }
+                          },
+                          {
+                            "type": "MemberExpression",
+                            "start": 183,
+                            "end": 194,
+                            "loc": {
+                              "start": {
+                                "line": 7,
+                                "column": 19,
+                                "index": 183
+                              },
+                              "end": {
+                                "line": 7,
+                                "column": 30,
+                                "index": 194
+                              }
+                            },
+                            "object": {
+                              "type": "Identifier",
+                              "start": 183,
+                              "end": 188,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 19,
+                                  "index": 183
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 24,
+                                  "index": 188
+                                },
+                                "identifierName": "props"
+                              },
+                              "name": "props"
+                            },
+                            "computed": false,
+                            "property": {
+                              "type": "Identifier",
+                              "start": 189,
+                              "end": 194,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 25,
+                                  "index": 189
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 30,
+                                  "index": 194
+                                },
+                                "identifierName": "debug"
+                              },
+                              "name": "debug"
+                            }
+                          },
+                          {
+                            "type": "MemberExpression",
+                            "start": 196,
+                            "end": 213,
+                            "loc": {
+                              "start": {
+                                "line": 7,
+                                "column": 32,
+                                "index": 196
+                              },
+                              "end": {
+                                "line": 7,
+                                "column": 49,
+                                "index": 213
+                              }
+                            },
+                            "object": {
+                              "type": "Identifier",
+                              "start": 196,
+                              "end": 201,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 32,
+                                  "index": 196
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 37,
+                                  "index": 201
+                                },
+                                "identifierName": "props"
+                              },
+                              "name": "props"
+                            },
+                            "computed": false,
+                            "property": {
+                              "type": "Identifier",
+                              "start": 202,
+                              "end": 213,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 38,
+                                  "index": 202
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 49,
+                                  "index": 213
+                                },
+                                "identifierName": "debugPrefix"
+                              },
+                              "name": "debugPrefix"
+                            }
+                          },
+                          {
+                            "type": "MemberExpression",
+                            "start": 215,
+                            "end": 231,
+                            "loc": {
+                              "start": {
+                                "line": 7,
+                                "column": 51,
+                                "index": 215
+                              },
+                              "end": {
+                                "line": 7,
+                                "column": 67,
+                                "index": 231
+                              }
+                            },
+                            "object": {
+                              "type": "Identifier",
+                              "start": 215,
+                              "end": 220,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 51,
+                                  "index": 215
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 56,
+                                  "index": 220
+                                },
+                                "identifierName": "props"
+                              },
+                              "name": "props"
+                            },
+                            "computed": false,
+                            "property": {
+                              "type": "Identifier",
+                              "start": 221,
+                              "end": 231,
+                              "loc": {
+                                "start": {
+                                  "line": 7,
+                                  "column": 57,
+                                  "index": 221
+                                },
+                                "end": {
+                                  "line": 7,
+                                  "column": 67,
+                                  "index": 231
+                                },
+                                "identifierName": "debugColor"
+                              },
+                              "name": "debugColor"
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "type": "ExpressionStatement",
+                      "start": 238,
+                      "end": 264,
+                      "loc": {
+                        "start": {
+                          "line": 8,
+                          "column": 4,
+                          "index": 238
+                        },
+                        "end": {
+                          "line": 8,
+                          "column": 30,
+                          "index": 264
+                        }
+                      },
+                      "expression": {
+                        "type": "CallExpression",
+                        "start": 238,
+                        "end": 263,
+                        "loc": {
+                          "start": {
+                            "line": 8,
+                            "column": 4,
+                            "index": 238
+                          },
+                          "end": {
+                            "line": 8,
+                            "column": 29,
+                            "index": 263
+                          }
+                        },
+                        "callee": {
+                          "type": "MemberExpression",
+                          "start": 238,
+                          "end": 256,
+                          "loc": {
+                            "start": {
+                              "line": 8,
+                              "column": 4,
+                              "index": 238
+                            },
+                            "end": {
+                              "line": 8,
+                              "column": 22,
+                              "index": 256
+                            }
+                          },
+                          "object": {
+                            "type": "ThisExpression",
+                            "start": 238,
+                            "end": 242,
+                            "loc": {
+                              "start": {
+                                "line": 8,
+                                "column": 4,
+                                "index": 238
+                              },
+                              "end": {
+                                "line": 8,
+                                "column": 8,
+                                "index": 242
+                              }
+                            }
+                          },
+                          "computed": false,
+                          "property": {
+                            "type": "Identifier",
+                            "start": 243,
+                            "end": 256,
+                            "loc": {
+                              "start": {
+                                "line": 8,
+                                "column": 9,
+                                "index": 243
+                              },
+                              "end": {
+                                "line": 8,
+                                "column": 22,
+                                "index": 256
+                              },
+                              "identifierName": "initComponent"
+                            },
+                            "name": "initComponent"
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "type": "Identifier",
+                            "start": 257,
+                            "end": 262,
+                            "loc": {
+                              "start": {
+                                "line": 8,
+                                "column": 23,
+                                "index": 257
+                              },
+                              "end": {
+                                "line": 8,
+                                "column": 28,
+                                "index": 262
+                              },
+                              "identifierName": "props"
+                            },
+                            "name": "props"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "directives": []
+                }
+              },
+              {
+                "type": "ClassMethod",
+                "start": 271,
+                "end": 319,
+                "loc": {
+                  "start": {
+                    "line": 10,
+                    "column": 2,
+                    "index": 271
+                  },
+                  "end": {
+                    "line": 12,
+                    "column": 3,
+                    "index": 319
+                  }
+                },
+                "static": false,
+                "key": {
+                  "type": "Identifier",
+                  "start": 271,
+                  "end": 284,
+                  "loc": {
+                    "start": {
+                      "line": 10,
+                      "column": 2,
+                      "index": 271
+                    },
+                    "end": {
+                      "line": 10,
+                      "column": 15,
+                      "index": 284
+                    },
+                    "identifierName": "initComponent"
+                  },
+                  "name": "initComponent"
+                },
+                "computed": false,
+                "kind": "method",
+                "id": null,
+                "generator": false,
+                "async": false,
+                "params": [],
+                "body": {
+                  "type": "BlockStatement",
+                  "start": 287,
+                  "end": 319,
+                  "loc": {
+                    "start": {
+                      "line": 10,
+                      "column": 18,
+                      "index": 287
+                    },
+                    "end": {
+                      "line": 12,
+                      "column": 3,
+                      "index": 319
+                    }
+                  },
+                  "body": [],
+                  "directives": [],
+                  "innerComments": [
+                    {
+                      "type": "CommentLine",
+                      "value": " stub for subclasses",
+                      "start": 293,
+                      "end": 315,
+                      "loc": {
+                        "start": {
+                          "line": 11,
+                          "column": 4,
+                          "index": 293
+                        },
+                        "end": {
+                          "line": 11,
+                          "column": 26,
+                          "index": 315
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "Identifier",
+        "start": 323,
+        "end": 347,
+        "loc": {
+          "start": {
+            "line": 15,
+            "column": 0,
+            "index": 323
+          },
+          "end": {
+            "line": 15,
+            "column": 24,
+            "index": 347
+          }
+        },
+        "declaration": {
+          "type": "Identifier",
+          "start": 338,
+          "end": 347,
+          "loc": {
+            "start": {
+              "line": 15,
+              "column": 15,
+              "index": 338
+            },
+            "end": {
+              "line": 15,
+              "column": 24,
+              "index": 347
+            },
+            "identifierName": "Component"
+          },
+          "name": "Component"
+        },
+        "name": "_",
+        "leadingComments": [],
+        "trailingComments": []
+      }
+    ],
+    "directives": []
+  },
+  "comments": [
+    {
+      "type": "CommentLine",
+      "value": " stub for subclasses",
+      "start": 293,
+      "end": 315,
+      "loc": {
+        "start": {
+          "line": 11,
+          "column": 4,
+          "index": 293
+        },
+        "end": {
+          "line": 11,
+          "column": 26,
+          "index": 315
+        }
+      }
+    }
+  ]
+}

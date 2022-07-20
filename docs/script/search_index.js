@@ -18,6 +18,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger/src/badger.js~component",
+    "class/src/Badger.js~Component.html",
+    "<span>Component</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
+    "class"
+  ],
+  [
+    "@abw/badger/src/badger/component.js~component",
+    "class/src/Badger/Component.js~Component.html",
+    "<span>Component</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Component.js</span>",
+    "class"
+  ],
+  [
     "@abw/badger/src/badger.js~config",
     "class/src/Badger.js~Config.html",
     "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
@@ -57,6 +69,18 @@ window.esdocSearchIndex = [
     "@abw/badger/src/badger/filesystem/file.js~file",
     "class/src/Badger/Filesystem/File.js~File.html",
     "<span>File</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Filesystem/File.js</span>",
+    "class"
+  ],
+  [
+    "@abw/badger/src/badger.js~library",
+    "class/src/Badger.js~Library.html",
+    "<span>Library</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
+    "class"
+  ],
+  [
+    "@abw/badger/src/badger/library.js~library",
+    "class/src/Badger/Library.js~Library.html",
+    "<span>Library</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Library.js</span>",
     "class"
   ],
   [
@@ -411,6 +435,18 @@ window.esdocSearchIndex = [
     "@abw/badger/src/badger/utils/text.js~joinlistor",
     "function/index.html#static-function-joinListOr",
     "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Utils/Text.js</span>",
+    "function"
+  ],
+  [
+    "@abw/badger/src/badger.js~library",
+    "function/index.html#static-function-library",
+    "<span>library</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
+    "function"
+  ],
+  [
+    "@abw/badger/src/badger/library.js~library",
+    "function/index.html#static-function-library",
+    "<span>library</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Library.js</span>",
     "function"
   ],
   [
@@ -804,6 +840,30 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger.js~component#constructor",
+    "class/src/Badger.js~Component.html#instance-constructor-constructor",
+    "src/Badger.js~Component#constructor",
+    "method"
+  ],
+  [
+    "src/badger.js~component#initcomponent",
+    "class/src/Badger.js~Component.html#instance-method-initComponent",
+    "src/Badger.js~Component#initComponent",
+    "method"
+  ],
+  [
+    "src/badger.js~component#props",
+    "class/src/Badger.js~Component.html#instance-member-props",
+    "src/Badger.js~Component#props",
+    "member"
+  ],
+  [
+    "src/badger.js~component#workspace",
+    "class/src/Badger.js~Component.html#instance-member-workspace",
+    "src/Badger.js~Component#workspace",
+    "member"
+  ],
+  [
     "src/badger.js~config#config",
     "class/src/Badger.js~Config.html#instance-method-config",
     "src/Badger.js~Config#config",
@@ -906,6 +966,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~file#delete",
+    "class/src/Badger.js~File.html#instance-method-delete",
+    "src/Badger.js~File#delete",
+    "method"
+  ],
+  [
     "src/badger.js~file#dir",
     "class/src/Badger.js~File.html#instance-method-dir",
     "src/Badger.js~File#dir",
@@ -928,6 +994,36 @@ window.esdocSearchIndex = [
     "class/src/Badger.js~File.html#instance-method-write",
     "src/Badger.js~File#write",
     "method"
+  ],
+  [
+    "src/badger.js~library#constructor",
+    "class/src/Badger.js~Library.html#instance-constructor-constructor",
+    "src/Badger.js~Library#constructor",
+    "method"
+  ],
+  [
+    "src/badger.js~library#dirs",
+    "class/src/Badger.js~Library.html#instance-method-dirs",
+    "src/Badger.js~Library#dirs",
+    "method"
+  ],
+  [
+    "src/badger.js~library#dirsexist",
+    "class/src/Badger.js~Library.html#instance-method-dirsExist",
+    "src/Badger.js~Library#dirsExist",
+    "method"
+  ],
+  [
+    "src/badger.js~library#lib",
+    "class/src/Badger.js~Library.html#instance-method-lib",
+    "src/Badger.js~Library#lib",
+    "method"
+  ],
+  [
+    "src/badger.js~library#state",
+    "class/src/Badger.js~Library.html#instance-member-state",
+    "src/Badger.js~Library#state",
+    "member"
   ],
   [
     "src/badger.js~path#constructor",
@@ -978,6 +1074,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~workspace#component",
+    "class/src/Badger.js~Workspace.html#instance-method-component",
+    "src/Badger.js~Workspace#component",
+    "method"
+  ],
+  [
     "src/badger.js~workspace#config",
     "class/src/Badger.js~Workspace.html#instance-method-config",
     "src/Badger.js~Workspace#config",
@@ -1002,10 +1104,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~workspace#file",
+    "class/src/Badger.js~Workspace.html#instance-method-file",
+    "src/Badger.js~Workspace#file",
+    "method"
+  ],
+  [
+    "src/badger.js~workspace#lib",
+    "class/src/Badger.js~Workspace.html#instance-method-lib",
+    "src/Badger.js~Workspace#lib",
+    "method"
+  ],
+  [
+    "src/badger.js~workspace#read",
+    "class/src/Badger.js~Workspace.html#instance-method-read",
+    "src/Badger.js~Workspace#read",
+    "method"
+  ],
+  [
     "src/badger.js~workspace#state",
     "class/src/Badger.js~Workspace.html#instance-member-state",
     "src/Badger.js~Workspace#state",
     "member"
+  ],
+  [
+    "src/badger.js~workspace#write",
+    "class/src/Badger.js~Workspace.html#instance-method-write",
+    "src/Badger.js~Workspace#write",
+    "method"
   ],
   [
     "src/badger/codecs/json.js",
@@ -1024,6 +1150,36 @@ window.esdocSearchIndex = [
     "file/src/Badger/Codecs/index.js.html",
     "src/Badger/Codecs/index.js",
     "file"
+  ],
+  [
+    "src/badger/component.js",
+    "file/src/Badger/Component.js.html",
+    "src/Badger/Component.js",
+    "file"
+  ],
+  [
+    "src/badger/component.js~component#constructor",
+    "class/src/Badger/Component.js~Component.html#instance-constructor-constructor",
+    "src/Badger/Component.js~Component#constructor",
+    "method"
+  ],
+  [
+    "src/badger/component.js~component#initcomponent",
+    "class/src/Badger/Component.js~Component.html#instance-method-initComponent",
+    "src/Badger/Component.js~Component#initComponent",
+    "method"
+  ],
+  [
+    "src/badger/component.js~component#props",
+    "class/src/Badger/Component.js~Component.html#instance-member-props",
+    "src/Badger/Component.js~Component#props",
+    "member"
+  ],
+  [
+    "src/badger/component.js~component#workspace",
+    "class/src/Badger/Component.js~Component.html#instance-member-workspace",
+    "src/Badger/Component.js~Component#workspace",
+    "member"
   ],
   [
     "src/badger/config.js",
@@ -1146,6 +1302,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/filesystem/file.js~file#delete",
+    "class/src/Badger/Filesystem/File.js~File.html#instance-method-delete",
+    "src/Badger/Filesystem/File.js~File#delete",
+    "method"
+  ],
+  [
     "src/badger/filesystem/file.js~file#dir",
     "class/src/Badger/Filesystem/File.js~File.html#instance-method-dir",
     "src/Badger/Filesystem/File.js~File#dir",
@@ -1224,6 +1386,42 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger/library.js",
+    "file/src/Badger/Library.js.html",
+    "src/Badger/Library.js",
+    "file"
+  ],
+  [
+    "src/badger/library.js~library#constructor",
+    "class/src/Badger/Library.js~Library.html#instance-constructor-constructor",
+    "src/Badger/Library.js~Library#constructor",
+    "method"
+  ],
+  [
+    "src/badger/library.js~library#dirs",
+    "class/src/Badger/Library.js~Library.html#instance-method-dirs",
+    "src/Badger/Library.js~Library#dirs",
+    "method"
+  ],
+  [
+    "src/badger/library.js~library#dirsexist",
+    "class/src/Badger/Library.js~Library.html#instance-method-dirsExist",
+    "src/Badger/Library.js~Library#dirsExist",
+    "method"
+  ],
+  [
+    "src/badger/library.js~library#lib",
+    "class/src/Badger/Library.js~Library.html#instance-method-lib",
+    "src/Badger/Library.js~Library#lib",
+    "method"
+  ],
+  [
+    "src/badger/library.js~library#state",
+    "class/src/Badger/Library.js~Library.html#instance-member-state",
+    "src/Badger/Library.js~Library#state",
+    "member"
+  ],
+  [
     "src/badger/utils/color.js",
     "file/src/Badger/Utils/Color.js.html",
     "src/Badger/Utils/Color.js",
@@ -1260,6 +1458,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/workspace.js~workspace#component",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-component",
+    "src/Badger/Workspace.js~Workspace#component",
+    "method"
+  ],
+  [
     "src/badger/workspace.js~workspace#config",
     "class/src/Badger/Workspace.js~Workspace.html#instance-method-config",
     "src/Badger/Workspace.js~Workspace#config",
@@ -1284,9 +1488,33 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger/workspace.js~workspace#file",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-file",
+    "src/Badger/Workspace.js~Workspace#file",
+    "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#lib",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-lib",
+    "src/Badger/Workspace.js~Workspace#lib",
+    "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#read",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-read",
+    "src/Badger/Workspace.js~Workspace#read",
+    "method"
+  ],
+  [
     "src/badger/workspace.js~workspace#state",
     "class/src/Badger/Workspace.js~Workspace.html#instance-member-state",
     "src/Badger/Workspace.js~Workspace#state",
     "member"
+  ],
+  [
+    "src/badger/workspace.js~workspace#write",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-write",
+    "src/Badger/Workspace.js~Workspace#write",
+    "method"
   ]
 ]
