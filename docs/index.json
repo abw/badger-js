@@ -935,7 +935,7 @@
     "__docId__": 65,
     "kind": "file",
     "name": "src/Badger/Config.js",
-    "content": "import { dir } from './Filesystem/Directory.js'\nimport { allParams, anyParams } from './Utils/Params.js'\nimport { splitList } from './Utils/Text.js'\nimport { fail } from './Utils/Misc.js';\nimport { addDebug } from './Utils/Debug.js';\n\nconst defaults = {\n  codecs: 'yaml json',\n};\n\nexport class Config {\n  constructor(params={}) {\n    const options = { ...defaults, ...params };\n    const [rootDir] = allParams(options, 'dir');\n    const [codec, codecs] = anyParams(options, 'codec codecs');\n\n    this.state = {\n      dir:    dir(rootDir),\n      codecs: splitList(codecs) || [codec],\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', this.state.dir.path());\n    this.debug('codecs: ', this.state.codecs);\n  }\n  async file(uri) {\n    for (let codec of this.state.codecs) {\n      const path = uri + '.' + codec;\n      const file = this.state.dir.file(path, { codec });\n      this.debug('looking for config file: ', file.path());\n      if (await file.exists()) {\n        this.debug('config file exists: ', file.path());\n        return file;\n      }\n    }\n    return undefined;\n  }\n  async config(uri, defaults) {\n    const file = await this.file(uri);\n    return file\n      ? await file.read()\n      : (defaults || fail(\"No configuration file for \" + uri))\n  }\n}\n\nexport const config = options => new Config(options)\n\nexport default Config\n",
+    "content": "import { dir as fsDir } from './Filesystem/Directory.js'\nimport { splitList } from './Utils/Text.js'\nimport { doNothing, fail } from './Utils/Misc.js';\nimport { addDebug } from './Utils/Debug.js';\n\nconst defaults = {\n  codecs: 'yaml json',\n  jsExt:  'js mjs',\n};\n\n/**\n * The Config class implements an object which can load configuration\n * files from a configuration directory.  Files can be Javascript files\n * (with `.js` or `.mjs` extensions by default) or data files using any\n * of the standard codecs (`.yaml` or `.json` by default).\n */\nexport class Config {\n  /**\n   * Constructor for Config object.\n   * @param {String} dir - directory containing configuration files\n   * @param {Object} [options] - configuration options\n   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n   * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names\n   * @return {Object} the {@link Config} object\n   */\n  constructor(dir, options={}) {\n    const params = { ...defaults, ...options };\n    this.state = {\n      dir:    fsDir(dir),\n      codecs: splitList(params.codecs),\n      jsExt:  splitList(params.jsExt),\n    }\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', this.state.dir.path());\n    this.debug('codecs: ', this.state.codecs);\n  }\n\n  /**\n   * Internal method to locate the first config file with one of a number of file extensions.\n   * @param {String} uri - base part of filename\n   * @param {Array} [exts] - array of possible extensions\n   * @param {Function} [makeOptions] - optional function to generate options for a {@link File} object\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async firstFileWithExt(uri, exts, makeOptions=doNothing) {\n    for (let ext of exts) {\n      const path = uri + '.' + ext;\n      const file = this.state.dir.file(path, makeOptions(uri, ext));\n      this.debug('looking for config file: ', file.path());\n      if (await file.exists()) {\n        this.debug('config file exists: ', file.path());\n        return file;\n      }\n    }\n    return undefined;\n  }\n\n  /**\n   * Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async jsFile(uri) {\n    return await this.firstFileWithExt(uri, this.state.jsExt);\n  }\n\n  /**\n   * Internal method to locate a configuration file with one of the `codecs` extensions (`.yaml` or `.json` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async file(uri) {\n    return await this.firstFileWithExt(uri, this.state.codecs, (uri, codec) => ({ codec }));\n  }\n\n  /**\n   * Method to fetch configuration data from a file.  The file can be a Javascript file which should\n   * return the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\n   * If the file isn't found then the method returns the `defaults` data if provided, or throws an\n   * error if not.\n   * @param {String} uri - base part of filename\n   * @param {Object} [defaults] - default configuration options to be used if a file isn't found\n   * @return {Object} the configuration data loaded from the file\n   */\n  async config(uri, defaults) {\n    // first look for a JS file, e.g. <uri>.js, <uri>.mjs\n    const jsFile = await this.jsFile(uri);\n    if (jsFile) {\n      const load = await import(jsFile.path());\n      return load.default;\n    }\n    // then for a config file with a codec extension, e.g. <uri>.yaml, <uri>.yaml\n    const file = await this.file(uri);\n    if (file) {\n      return await file.read();\n    }\n    return defaults || fail(\"No configuration file for \" + uri);\n  }\n}\n\n/**\n * Function to create a new {@link Config} object for a file\n * @param {String} dir - directory containing configuration files\n * @param {Object} [options] - configuration options\n * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names\n * @return {Object} the {@link Config} object\n */\nexport const config = (dir, options) => new Config(dir, options)\n\nexport default Config\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Config.js",
     "access": "public",
@@ -954,11 +954,11 @@
     "importPath": "@abw/badger/src/Badger/Config.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 7,
+    "lineNumber": 6,
     "undocument": true,
     "type": {
       "types": [
-        "{\"codecs\": string}"
+        "{\"codecs\": string, \"jsExt\": string}"
       ]
     },
     "ignore": true
@@ -974,9 +974,8 @@
     "export": true,
     "importPath": "@abw/badger/src/Badger/Config.js",
     "importStyle": "{Config}",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "The Config class implements an object which can load configuration\nfiles from a configuration directory.  Files can be Javascript files\n(with `.js` or `.mjs` extensions by default) or data files using any\nof the standard codecs (`.yaml` or `.json` by default).",
+    "lineNumber": 17,
     "interface": false
   },
   {
@@ -989,9 +988,64 @@
     "static": false,
     "longname": "src/Badger/Config.js~Config#constructor",
     "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true
+    "description": "Constructor for Config object.",
+    "lineNumber": 26,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": "directory containing configuration files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'js mjs'",
+        "defaultRaw": "'js mjs'",
+        "name": "options.jsExt",
+        "description": "Array or comma/whitespace delimited string of Javascript file extensions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'yaml json'",
+        "defaultRaw": "'yaml json'",
+        "name": "options.codecs",
+        "description": "Array or comma/whitespace delimited string of codec names"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Config} object"
+    }
   },
   {
     "__docId__": 69,
@@ -1002,16 +1056,102 @@
     "longname": "src/Badger/Config.js~Config#state",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
-        "{\"dir\": *, \"codecs\": *}"
+        "{\"dir\": *, \"codecs\": *, \"jsExt\": *}"
       ]
     }
   },
   {
     "__docId__": 70,
+    "kind": "method",
+    "name": "firstFileWithExt",
+    "memberof": "src/Badger/Config.js~Config",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Badger/Config.js~Config#firstFileWithExt",
+    "access": "public",
+    "description": "Internal method to locate the first config file with one of a number of file extensions.",
+    "lineNumber": 45,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "exts",
+        "description": "array of possible extensions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "makeOptions",
+        "description": "optional function to generate options for a {@link File} object"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
+    }
+  },
+  {
+    "__docId__": 71,
+    "kind": "method",
+    "name": "jsFile",
+    "memberof": "src/Badger/Config.js~Config",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Badger/Config.js~Config#jsFile",
+    "access": "public",
+    "description": "Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)",
+    "lineNumber": 63,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
+    }
+  },
+  {
+    "__docId__": 72,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Config.js~Config",
@@ -1020,25 +1160,31 @@
     "static": false,
     "longname": "src/Badger/Config.js~Config#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 26,
-    "undocument": true,
+    "description": "Internal method to locate a configuration file with one of the `codecs` extensions (`.yaml` or `.json` by default)",
+    "lineNumber": 72,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
     }
   },
   {
-    "__docId__": 71,
+    "__docId__": 73,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Config.js~Config",
@@ -1047,31 +1193,41 @@
     "static": false,
     "longname": "src/Badger/Config.js~Config#config",
     "access": "public",
-    "description": null,
-    "lineNumber": 38,
-    "undocument": true,
+    "description": "Method to fetch configuration data from a file.  The file can be a Javascript file which should\nreturn the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\nIf the file isn't found then the method returns the `defaults` data if provided, or throws an\nerror if not.",
+    "lineNumber": 85,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
       },
       {
-        "name": "defaults",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "defaults",
+        "description": "default configuration options to be used if a file isn't found"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the configuration data loaded from the file"
     }
   },
   {
-    "__docId__": 72,
+    "__docId__": 74,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger/Config.js",
@@ -1083,21 +1239,67 @@
     "export": true,
     "importPath": "@abw/badger/src/Badger/Config.js",
     "importStyle": "{config}",
-    "description": null,
-    "lineNumber": 46,
-    "undocument": true,
+    "description": "Function to create a new {@link Config} object for a file",
+    "lineNumber": 109,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": "directory containing configuration files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'js mjs'",
+        "defaultRaw": "'js mjs'",
+        "name": "options.jsExt",
+        "description": "Array or comma/whitespace delimited string of Javascript file extensions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'yaml json'",
+        "defaultRaw": "'yaml json'",
+        "name": "options.codecs",
+        "description": "Array or comma/whitespace delimited string of codec names"
       }
     ],
-    "return": null
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Config} object"
+    }
   },
   {
-    "__docId__": 73,
+    "__docId__": 75,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
     "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nclass Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
@@ -1108,7 +1310,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 74,
+    "__docId__": 76,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger/Filesystem/Directory.js",
@@ -1164,7 +1366,7 @@
     }
   },
   {
-    "__docId__": 75,
+    "__docId__": 77,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger/Filesystem/Directory.js",
@@ -1210,7 +1412,7 @@
     }
   },
   {
-    "__docId__": 76,
+    "__docId__": 78,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger/Filesystem/Directory.js",
@@ -1266,7 +1468,7 @@
     }
   },
   {
-    "__docId__": 77,
+    "__docId__": 79,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger/Filesystem/Directory.js",
@@ -1284,7 +1486,7 @@
     ]
   },
   {
-    "__docId__": 78,
+    "__docId__": 80,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1337,7 +1539,7 @@
     }
   },
   {
-    "__docId__": 79,
+    "__docId__": 81,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1390,7 +1592,7 @@
     }
   },
   {
-    "__docId__": 80,
+    "__docId__": 82,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1425,7 +1627,7 @@
     ]
   },
   {
-    "__docId__": 81,
+    "__docId__": 83,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1468,7 +1670,7 @@
     }
   },
   {
-    "__docId__": 82,
+    "__docId__": 84,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1490,7 +1692,7 @@
     "params": []
   },
   {
-    "__docId__": 83,
+    "__docId__": 85,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1512,7 +1714,7 @@
     "params": []
   },
   {
-    "__docId__": 84,
+    "__docId__": 86,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1534,7 +1736,7 @@
     "params": []
   },
   {
-    "__docId__": 85,
+    "__docId__": 87,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1587,7 +1789,7 @@
     }
   },
   {
-    "__docId__": 86,
+    "__docId__": 88,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1630,7 +1832,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 89,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1693,7 +1895,7 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 90,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1738,7 +1940,7 @@
     }
   },
   {
-    "__docId__": 89,
+    "__docId__": 91,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1807,7 +2009,7 @@
     }
   },
   {
-    "__docId__": 90,
+    "__docId__": 92,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1870,7 +2072,7 @@
     }
   },
   {
-    "__docId__": 91,
+    "__docId__": 93,
     "kind": "file",
     "name": "src/Badger/Filesystem/File.js",
     "content": "import path from 'node:path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile, rm } from 'node:fs/promises'\n\n/**\n * The File class implements a wrapper around a filesystem\n * file.\n */\nclass File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {String|Object} the file content\n   * @example\n   * const text = file('myfile.txt').read();\n   * @example\n   * const data = file('myfile.json', { codec: 'json' }).read();\n   * @example\n   * const data = file('myfile.json').read({ codec: 'json' });\n   */\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n\n  async delete(options) {\n    await rm(this.state.path, options);\n    return this;\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} path - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
@@ -1881,7 +2083,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 92,
+    "__docId__": 94,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger/Filesystem/File.js",
@@ -1937,7 +2139,7 @@
     }
   },
   {
-    "__docId__": 93,
+    "__docId__": 95,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger/Filesystem/File.js",
@@ -1955,7 +2157,7 @@
     ]
   },
   {
-    "__docId__": 94,
+    "__docId__": 96,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -1998,7 +2200,7 @@
     }
   },
   {
-    "__docId__": 95,
+    "__docId__": 97,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2028,7 +2230,7 @@
     ]
   },
   {
-    "__docId__": 96,
+    "__docId__": 98,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2077,7 +2279,7 @@
     }
   },
   {
-    "__docId__": 97,
+    "__docId__": 99,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2133,7 +2335,7 @@
     }
   },
   {
-    "__docId__": 98,
+    "__docId__": 100,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2160,7 +2362,7 @@
     }
   },
   {
-    "__docId__": 99,
+    "__docId__": 101,
     "kind": "file",
     "name": "src/Badger/Filesystem/Path.js",
     "content": "import path from 'node:path';\nimport { stat } from 'node:fs/promises'\nimport { rethrow } from '../Utils/Misc.js';\nimport { addDebug } from '../Utils/Debug.js';\n\nconst defaultOptions = {\n  encoding: 'utf8'\n}\n\n/**\n * The Path class implements a base class for the {@link File} and {@link Directory}\n * classes.  It implements the common functionality for representing a filesystem path.\n */\nexport class Path {\n  /**\n   * Constructor for filesystem paths.\n   * @param {string} path - file path\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Path} object\n   */\n  constructor(path, options={}) {\n    // allow path/file/directory to be constructed from an existing object\n    if (path instanceof Path) {\n      path = path.path();\n    }\n    this.state = { path, options: { ...defaultOptions, ...options } };\n    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);\n  }\n\n  /**\n   * Accessor method to return the filesystem path.\n   * @return {String} the filesystem path\n   */\n  path() {\n    return this.state.path;\n  }\n\n  /**\n   * Create a path relative to the current path.\n   * @param {String[]} parts - part(s) of the filesystem path\n   * @return {String} the new path\n   * @example\n   * const p = new Path('/path/to/here')\n   * const q = p.relativePath('there')          // -> /path/to/here/there\n   * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there\n   */\n  relativePath(...parts) {\n    return path.join(this.state.path, ...parts);\n  }\n\n  /**\n   * Internal method to merge any options with the pre-defined options passed to the\n   * constructor.  Options passed as arguments will take precedence.\n   * @param {Object} options - new options\n   * @return {Object} the merged options\n   * @example\n   * const p = new Path('/path/to/here', { option1: 'hello' })\n   * const q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }\n   */\n  options(options={}) {\n    return { ...this.state.options, ...options };\n  }\n\n  /**\n   * Method to assert that the path exists.\n   * @return {Promise} fulfills with `true` if the path exists or rejects if the path doesn't\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.exists()\n   *   .then( console.log('path exists') )\n   *   .catch( console.log('path does not exist') )\n   */\n  async exists() {\n    try {\n      await this.stat();\n      return true;\n    }\n    catch (error) {\n      return error.code === 'ENOENT'\n        ? false\n        : rethrow(error);\n    }\n  }\n\n  /**\n   * Method to fetch stats for the path.  Uses the `stat` function from `node:fs/promises`.\n   * Stats are cached internally (subject to change)\n   * @return {Promise} fulfills with path stats returned from the `stat` function\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.stat()\n   *   .then( stats => console.log('path stats:', stats) )\n   *   .catch( console.log('path does not exist') )\n   */\n  async stat() {\n    const stats = await stat(this.state.path);\n    return this.state.stats = stats;\n  }\n\n  /**\n   * Method to clear internal cache of path stats (subject to change)\n   */\n  unstat() {\n    this.state.stats = undefined;\n    return this;\n  }\n}\n\nexport default Path\n",
@@ -2171,7 +2373,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 100,
+    "__docId__": 102,
     "kind": "variable",
     "name": "defaultOptions",
     "memberof": "src/Badger/Filesystem/Path.js",
@@ -2192,7 +2394,7 @@
     "ignore": true
   },
   {
-    "__docId__": 101,
+    "__docId__": 103,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger/Filesystem/Path.js",
@@ -2207,7 +2409,7 @@
     "interface": false
   },
   {
-    "__docId__": 102,
+    "__docId__": 104,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2260,7 +2462,7 @@
     }
   },
   {
-    "__docId__": 103,
+    "__docId__": 105,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2277,7 +2479,7 @@
     }
   },
   {
-    "__docId__": 104,
+    "__docId__": 106,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2299,7 +2501,7 @@
     "params": []
   },
   {
-    "__docId__": 105,
+    "__docId__": 107,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2335,7 +2537,7 @@
     }
   },
   {
-    "__docId__": 106,
+    "__docId__": 108,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2371,7 +2573,7 @@
     }
   },
   {
-    "__docId__": 107,
+    "__docId__": 109,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2396,7 +2598,7 @@
     "params": []
   },
   {
-    "__docId__": 108,
+    "__docId__": 110,
     "kind": "method",
     "name": "stat",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2421,7 +2623,7 @@
     "params": []
   },
   {
-    "__docId__": 109,
+    "__docId__": 111,
     "kind": "method",
     "name": "unstat",
     "memberof": "src/Badger/Filesystem/Path.js~Path",
@@ -2440,7 +2642,7 @@
     }
   },
   {
-    "__docId__": 110,
+    "__docId__": 112,
     "kind": "file",
     "name": "src/Badger/Library.js",
     "content": "import { dir as fsdir } from \"./Filesystem/Directory.js\";\nimport { requiredParam } from \"./Utils/Params.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { fail } from \"./Utils/Misc.js\";\n\nconst defaults = {\n  dir: ['lib','library','src','components'],\n  ext: ['js', 'mjs'],\n}\n\nexport class Library {\n  constructor(props={}) {\n    const root = fsdir(requiredParam(props, 'root'));\n    const dir  = props.directory || props.dir || props.dirs || defaults.dir;\n    const ext  = props.extension || props.ext || props.exts || defaults.ext;\n    const dirs = splitList(dir).map( dir => root.dir(dir) );  // resolve to root dir\n    const exts = splitList(ext).map( ext => ext.replace(/^\\./, '') ); // remove leading '.'\n    this.state = {\n      dirs, exts\n    }\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n  }\n  async dirs() {\n    return this.state.dirsExist\n      || ( this.state.dirsExist = await this.dirsExist() );\n  }\n  async dirsExist() {\n    const dirs = this.state.dirs;\n    const exists = await Promise.all(\n      dirs.map( d => d.exists() )\n    );\n    return dirs.filter((value, index) => exists[index]);\n  }\n  async lib(uri) {\n    const dirs = await this.dirs();\n    const exts = this.state.exts;\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const file = dir.file(uri + '.' + ext);\n        this.debug('looking for module %s as', uri, file.path());\n        const exists = await file.exists();\n        if (exists) {\n          const load   = await import(file.path());\n          this.debug('loaded %s as', file.path());\n          return load;\n        }\n      }\n    }\n    fail(\"Library not found: \", uri);\n  }\n}\n\nexport const library = props => new Library(props);\n\nexport default library;",
@@ -2451,7 +2653,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 111,
+    "__docId__": 113,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Library.js",
@@ -2472,7 +2674,7 @@
     "ignore": true
   },
   {
-    "__docId__": 112,
+    "__docId__": 114,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger/Library.js",
@@ -2488,7 +2690,7 @@
     "interface": false
   },
   {
-    "__docId__": 113,
+    "__docId__": 115,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Library.js~Library",
@@ -2502,7 +2704,7 @@
     "undocument": true
   },
   {
-    "__docId__": 114,
+    "__docId__": 116,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Library.js~Library",
@@ -2519,7 +2721,7 @@
     }
   },
   {
-    "__docId__": 115,
+    "__docId__": 117,
     "kind": "method",
     "name": "dirs",
     "memberof": "src/Badger/Library.js~Library",
@@ -2539,7 +2741,7 @@
     }
   },
   {
-    "__docId__": 116,
+    "__docId__": 118,
     "kind": "method",
     "name": "dirsExist",
     "memberof": "src/Badger/Library.js~Library",
@@ -2559,7 +2761,7 @@
     }
   },
   {
-    "__docId__": 117,
+    "__docId__": 119,
     "kind": "method",
     "name": "lib",
     "memberof": "src/Badger/Library.js~Library",
@@ -2586,7 +2788,7 @@
     }
   },
   {
-    "__docId__": 118,
+    "__docId__": 120,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger/Library.js",
@@ -2612,7 +2814,7 @@
     "return": null
   },
   {
-    "__docId__": 119,
+    "__docId__": 121,
     "kind": "file",
     "name": "src/Badger/Utils/Color.js",
     "content": "import { isObject } from \"./Misc.js\";\n\nexport const ANSIStart  = '\\u001B[';\nexport const ANSIEnd    = 'm';\nexport const ANSIColors = {\n  reset:    0,\n  bold:     1,\n  bright:   1,\n  dark:     2,\n  black:    0,\n  red:      1,\n  green:    2,\n  yellow:   3,\n  blue:     4,\n  magenta:  5,\n  cyan:     6,\n  grey:     7,\n  white:    8,\n  fg:      30,\n  bg:      40,\n};\n\n/**\n * Returns an ANSI escape code for a color string.  This can be a single color\n * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,\n * e.g. `bright red`, `dark green`, etc.  An optional section argument can be\n * set to `fg` (default) to set a foreground color or `bg` for a background color.\n * @param {String} color - color name with optional modifier prefix\n * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively\n * @return {String} ANSI escape code string\n * @example\n * const str = escapeCode('red')\n * @example\n * const str = escapeCode('bright red')\n * @example\n * const str = escapeCode('bright red', 'bg')\n */\nexport const escapeCode = (color, base='fg') => {\n  let   codes = [ ];\n  let   pair  = color.split(/ /, 2);\n  const hue   = pair.pop();\n  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];\n  codes.push(code);\n  if (pair.length) {\n    const shade = pair.length ? pair.shift() : 'dark';\n    codes.push(ANSIColors[shade])\n  }\n  return ANSIStart + codes.join(';') + ANSIEnd;\n}\n\n/**\n * Returns an ANSI escape code for a color string or combination of foreground and\n * background colors.\n * @param {String|Object} colors - either a simple color name or object contain foreground and background colors\n * @param {String} [colors.fg] - foreground color\n * @param {String} [colors.fg] - background color\n * @return {String} ANSI escape code string\n * @example\n * const str = escape('red')\n * @example\n * const str = escape('bright red')\n * @example\n * const str = escape({ fg: 'bright yellow', bg: 'blue' })\n */\nexport const escape = (colors={}) => {\n  const col = isObject(colors) ? colors : { fg: colors };\n  let escapes = [ ];\n  if (col.bg) {\n    escapes.push(escapeCode(col.bg, 'bg'));\n  }\n  if (col.fg) {\n    escapes.push(escapeCode(col.fg, 'fg'));\n  }\n  return escapes.join('');\n}\n\nexport const reset = () => escapeCode('reset')\n\n",
@@ -2623,7 +2825,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 120,
+    "__docId__": 122,
     "kind": "variable",
     "name": "ANSIStart",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2643,7 +2845,7 @@
     }
   },
   {
-    "__docId__": 121,
+    "__docId__": 123,
     "kind": "variable",
     "name": "ANSIEnd",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2663,7 +2865,7 @@
     }
   },
   {
-    "__docId__": 122,
+    "__docId__": 124,
     "kind": "variable",
     "name": "ANSIColors",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2683,7 +2885,7 @@
     }
   },
   {
-    "__docId__": 123,
+    "__docId__": 125,
     "kind": "function",
     "name": "escapeCode",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2736,7 +2938,7 @@
     }
   },
   {
-    "__docId__": 124,
+    "__docId__": 126,
     "kind": "function",
     "name": "escape",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2798,7 +3000,7 @@
     }
   },
   {
-    "__docId__": 125,
+    "__docId__": 127,
     "kind": "function",
     "name": "reset",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2817,7 +3019,7 @@
     "return": null
   },
   {
-    "__docId__": 126,
+    "__docId__": 128,
     "kind": "file",
     "name": "src/Badger/Utils/Debug.js",
     "content": "import { escape, reset } from './Color.js'\nimport { doNothing } from './Misc.js';\n\n/**\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function Debugger(enabled, prefix='', color) {\n  return enabled\n    ? prefix\n      ? (format, ...args) =>\n        console.log(\n          '%s' + prefix + '%s' + format,\n          color ? escape(color) : '',\n          reset(),\n          ...args,\n        )\n      : console.log.bind(console)\n    : doNothing;\n}\n\n/**\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function addDebug(obj, enabled, prefix='', color) {\n  obj.debug = Debugger(enabled, prefix, color);\n}\n",
@@ -2828,7 +3030,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 127,
+    "__docId__": 129,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -2911,7 +3113,7 @@
     }
   },
   {
-    "__docId__": 128,
+    "__docId__": 130,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -2997,7 +3199,7 @@
     "return": null
   },
   {
-    "__docId__": 129,
+    "__docId__": 131,
     "kind": "file",
     "name": "src/Badger/Utils/Misc.js",
     "content": "/**\n * Determines if a value is a string\n * @param {String} value - value to test\n * @return {Boolean} true if `value` is a string or false if not\n */\nexport function isString(value) {\n  return typeof value === 'string';\n}\n\n/**\n * Determines if a value is an array\n * @param {Array} value - value to test\n * @return {Boolean} true if `value` is an Array or false if not\n */\nexport function isArray(value) {\n  return Array.isArray(value);\n}\n\n/**\n * Determines if a value is a Function\n * @param {Function} value - value to test\n * @return {Boolean} true if `value` is a Function or false if not\n */\nexport function isFunction(value) {\n  return typeof value === 'function'\n}\n\n/**\n * Determines if a value is an Object (but not an Array)\n * @param {Object} value - value to test\n * @return {Boolean} true if `value` is an Object or false if not\n */\nexport function isObject(value) {\n  return typeof value === \"object\"\n    && ! isArray(value)\n    && ! isNull(value);\n}\n\n/**\n * Determines if a value is `undefined`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or false if not\n */\nexport function isUndefined(value) {\n  return typeof value === 'undefined';\n}\n\n/**\n * Determines if a value is `null`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `null` or false if not\n */\nexport function isNull(value) {\n  return value === null;\n}\n\n/**\n * Determines if a value is defined and not null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is not `undefined` or `null`\n */\nexport function hasValue(value) {\n  return ! (isUndefined(value) || isNull(value));\n}\n\n/**\n * Determines if all values are defined and not null\n * @param {any[]} values - values to test\n * @return {Boolean} true if all values are not `undefined` or `null`\n */\nexport function haveValue(...values) {\n  return values.every( value => hasValue(value) );\n}\n\n/**\n * Determines if a value is undefined or null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or `null`\n */\nexport function noValue(value) {\n  return ! hasValue(value);\n}\n\n/**\n * Throws a new Error object\n * @param {String[]} message - error message string(s)\n * @throws {Error}\n */\nexport function fail(...message) {\n  throw new Error(message.join(''));\n}\n\n/**\n * Re-throw an existing Error object\n * @param {Error} error - error object\n * @throws {Error}\n */\nexport function rethrow(error) {\n  throw error;\n}\n\n/**\n * Do nothing.  Nothing at all.\n */\nexport function doNothing() {\n  // speak again Cordelia\n}",
@@ -3008,7 +3210,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 130,
+    "__docId__": 132,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3044,7 +3246,7 @@
     }
   },
   {
-    "__docId__": 131,
+    "__docId__": 133,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3080,7 +3282,7 @@
     }
   },
   {
-    "__docId__": 132,
+    "__docId__": 134,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3116,7 +3318,7 @@
     }
   },
   {
-    "__docId__": 133,
+    "__docId__": 135,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3152,7 +3354,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 136,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3188,7 +3390,7 @@
     }
   },
   {
-    "__docId__": 135,
+    "__docId__": 137,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3224,7 +3426,7 @@
     }
   },
   {
-    "__docId__": 136,
+    "__docId__": 138,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3260,7 +3462,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 139,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3296,7 +3498,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 140,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3332,7 +3534,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 141,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3369,7 +3571,7 @@
     "return": null
   },
   {
-    "__docId__": 140,
+    "__docId__": 142,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3406,7 +3608,7 @@
     "return": null
   },
   {
-    "__docId__": 141,
+    "__docId__": 143,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3424,7 +3626,7 @@
     "return": null
   },
   {
-    "__docId__": 142,
+    "__docId__": 144,
     "kind": "file",
     "name": "src/Badger/Utils/Params.js",
     "content": "import { hasValue, fail } from \"./Misc.js\";\nimport { joinListOr, splitList } from \"./Text.js\";\n\n/**\n * Assert that a parameter object contains an item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {String} name - parameter that must be included\n * @return {any} the parameter value\n * @throws {Error} if the parameter is not defined or null\n * @example\n * const foo = requiredParam({ foo: 10 }, 'foo');\n */\nexport function requiredParam(params={}, name) {\n  const value = params[name];\n  if (hasValue(value)) {\n    return value;\n  }\n  else {\n    fail(\"Missing value for required parameter: \", name);\n  }\n}\n\n/**\n * Assert that a parameter object contains all specified item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = requiredParams({ foo: 10, bar: 20 }, 'foo bar');\n */\nexport function requiredParams(params={}, names) {\n  return splitList(names).map( name => requiredParam(params, name) );\n}\n\n/**\n * An alias for {@link requiredParams} for people who don't like typing long names (and for symmetry with {@link anyParams}))\n */\nexport const allParams=requiredParams;\n\n/**\n * Assert that a parameter object contains any of the specified items with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = anyParams({ foo: 10, wiz: 99 }, 'foo bar');\n */\nexport function anyParams(params, names) {\n  let found = false;\n  const nlist  = splitList(names);\n  const values = nlist.map(\n    name => {\n      const value = params[name];\n      if (hasValue(value)) {\n        found = true;\n      }\n      return value;\n    }\n  );\n  return found\n    ? values\n    : fail(\"Missing value for one of: \", joinListOr(nlist));\n}\n",
@@ -3435,7 +3637,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 143,
+    "__docId__": 145,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3494,7 +3696,7 @@
     ]
   },
   {
-    "__docId__": 144,
+    "__docId__": 146,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3554,7 +3756,7 @@
     ]
   },
   {
-    "__docId__": 145,
+    "__docId__": 147,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3573,7 +3775,7 @@
     }
   },
   {
-    "__docId__": 146,
+    "__docId__": 148,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -3633,7 +3835,7 @@
     ]
   },
   {
-    "__docId__": 147,
+    "__docId__": 149,
     "kind": "file",
     "name": "src/Badger/Utils/Text.js",
     "content": "import { isString, isArray } from \"./Misc.js\";\n\n/**\n * Split a comma/whitespace delimited string into an Array\n * @param {String} [value] - string to split\n * @return {Array} array of split strings\n * @example\n * const strings = splitList('one two three')\n * @example\n * const strings = splitList('one,two,three')\n * @example\n * const strings = splitList('one, two, three')\n */\nexport function splitList(value) {\n  return isString(value)\n    ? value.split(/,\\s*|\\s+/)\n    : isArray(value)\n      ? value\n      : [value];\n}\n\n/**\n * Join an Array into a single string\n * @param {Array} [array] - array to join\n * @param {String} [joint=' '] - delimiter to join strings\n * @param {String} [lastJoint=joint] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinList(['one', 'two', 'three']);   // one two three\n * @example\n * joinList(['one', 'two', 'three'], ', ');   // one, two, three\n * @example\n * joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three\n */\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` and ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' and '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListAnd(['one', 'two', 'three']);   // one, two and three\n */\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` or ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' or '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListOr(['one', 'two', 'three']);   // one, two or three\n */\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Capitalise a string by converting the first character to upper case and other characters to lower case\n * @param {String} [word] - word to capitalise\n * @return {String} capitalised string\n * @example\n * capitalise('badger');   // Badger\n * @example\n * capitalise('BADGER');   // Badger\n */\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\n/**\n * Convert a snake case string to studly caps\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToStudly('happy_badger_dance');   // HappyBadgerDance\n * @example\n * snakeToStudly('happy_badger/dance');   // HappyBadger/Dance\n */\nexport function snakeToStudly(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n\n/**\n * Convert a snake case string to camel case\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToCamel('happy_badger_dance');   // happyBadgerDance\n * @example\n * snakeToCamel('happy_badger/dance');   // happyBadger/dance\n */\nexport function snakeToCamel(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to fooBar\n    segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')\n  ).join('/');\n}\n",
@@ -3644,7 +3846,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 148,
+    "__docId__": 150,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3685,7 +3887,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 151,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3750,7 +3952,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 152,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3813,7 +4015,7 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 153,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3876,7 +4078,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 154,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3916,7 +4118,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 155,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3956,7 +4158,7 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 156,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger/Utils/Text.js",
@@ -3996,10 +4198,10 @@
     }
   },
   {
-    "__docId__": 155,
+    "__docId__": 157,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
-    "content": "import { dir } from \"./Filesystem/Directory.js\";\nimport { requiredParam } from \"./Utils/Params.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\nconst defaults = {\n  library: {\n  },\n  config: {\n    dir: 'config',\n  }\n}\nexport class Workspace {\n  constructor(props={}) {\n    const rootDir = dir(requiredParam(props, 'dir'));\n    const cfgDir  = rootDir.dir(props.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(props.config||{}), dir: cfgDir };\n    const config  = new Config(cfgOpts);\n    const libOpts = { ...defaults.library, ...(props.library||{}), root: rootDir };\n    const library = new Library(libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n  }\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir(path, options)\n      : this.state.configDir;\n  }\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n  async lib(uri) {\n    return this.state.library.lib(uri);\n  }\n  async component(uri, props) {\n    const config  = await this.config(uri, {});\n    const lib     = await this.lib(config.component?.library || uri);\n    const exp     = config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp = new compcls(this, { ...config, ...props });\n    // this.debug(\"created component \", uri)\n    return comp;\n  }\n}\n\nexport const workspace = props => new Workspace(props);\n\nexport default Workspace;",
+    "content": "import { dir } from \"./Filesystem/Directory.js\";\nimport { requiredParam } from \"./Utils/Params.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\nconst defaults = {\n  library: {\n  },\n  config: {\n    dir: 'config',\n  }\n}\nexport class Workspace {\n  constructor(props={}) {\n    const rootDir = dir(requiredParam(props, 'dir'));\n    const cfgDir  = rootDir.dir(props.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(props.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libOpts = { ...defaults.library, ...(props.library||{}), root: rootDir };\n    const library = new Library(libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n  }\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir(path, options)\n      : this.state.configDir;\n  }\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n  async lib(uri) {\n    return this.state.library.lib(uri);\n  }\n  async component(uri, props) {\n    const config  = await this.config(uri, {});\n    const lib     = await this.lib(config.component?.library || uri);\n    const exp     = config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp = new compcls(this, { ...config, ...props });\n    // this.debug(\"created component \", uri)\n    return comp;\n  }\n}\n\nexport const workspace = props => new Workspace(props);\n\nexport default Workspace;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Workspace.js",
     "access": "public",
@@ -4007,7 +4209,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 156,
+    "__docId__": 158,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -4028,7 +4230,7 @@
     "ignore": true
   },
   {
-    "__docId__": 157,
+    "__docId__": 159,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -4044,7 +4246,7 @@
     "interface": false
   },
   {
-    "__docId__": 158,
+    "__docId__": 160,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4058,7 +4260,7 @@
     "undocument": true
   },
   {
-    "__docId__": 159,
+    "__docId__": 161,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4075,7 +4277,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 162,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4108,7 +4310,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 163,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4141,7 +4343,7 @@
     }
   },
   {
-    "__docId__": 162,
+    "__docId__": 164,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4174,7 +4376,7 @@
     }
   },
   {
-    "__docId__": 163,
+    "__docId__": 165,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4213,7 +4415,7 @@
     }
   },
   {
-    "__docId__": 164,
+    "__docId__": 166,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4246,7 +4448,7 @@
     }
   },
   {
-    "__docId__": 165,
+    "__docId__": 167,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4279,7 +4481,7 @@
     }
   },
   {
-    "__docId__": 166,
+    "__docId__": 168,
     "kind": "method",
     "name": "lib",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4306,7 +4508,7 @@
     }
   },
   {
-    "__docId__": 167,
+    "__docId__": 169,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4339,7 +4541,7 @@
     }
   },
   {
-    "__docId__": 168,
+    "__docId__": 170,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -4365,7 +4567,7 @@
     "return": null
   },
   {
-    "__docId__": 180,
+    "__docId__": 182,
     "kind": "file",
     "name": "src/Badger.js",
     "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
@@ -4376,7 +4578,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 181,
+    "__docId__": 183,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -4392,7 +4594,7 @@
     "interface": false
   },
   {
-    "__docId__": 182,
+    "__docId__": 184,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -4406,7 +4608,7 @@
     "undocument": true
   },
   {
-    "__docId__": 183,
+    "__docId__": 185,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -4423,7 +4625,7 @@
     }
   },
   {
-    "__docId__": 184,
+    "__docId__": 186,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -4440,7 +4642,7 @@
     }
   },
   {
-    "__docId__": 185,
+    "__docId__": 187,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -4456,7 +4658,7 @@
     "return": null
   },
   {
-    "__docId__": 186,
+    "__docId__": 188,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -4476,7 +4678,7 @@
     }
   },
   {
-    "__docId__": 187,
+    "__docId__": 189,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -4502,7 +4704,7 @@
     "return": null
   },
   {
-    "__docId__": 188,
+    "__docId__": 190,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -4513,12 +4715,12 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{Config}",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 17,
     "undocument": true,
     "interface": false
   },
   {
-    "__docId__": 189,
+    "__docId__": 191,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -4527,12 +4729,67 @@
     "static": false,
     "longname": "src/Badger.js~Config#constructor",
     "access": "public",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true
+    "description": "Constructor for Config object.",
+    "lineNumber": 26,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": "directory containing configuration files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'js mjs'",
+        "defaultRaw": "'js mjs'",
+        "name": "options.jsExt",
+        "description": "Array or comma/whitespace delimited string of Javascript file extensions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "'yaml json'",
+        "defaultRaw": "'yaml json'",
+        "name": "options.codecs",
+        "description": "Array or comma/whitespace delimited string of codec names"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Config} object"
+    }
   },
   {
-    "__docId__": 190,
+    "__docId__": 192,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Config",
@@ -4540,16 +4797,102 @@
     "longname": "src/Badger.js~Config#state",
     "access": "public",
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
-        "{\"dir\": *, \"codecs\": *}"
+        "{\"dir\": *, \"codecs\": *, \"jsExt\": *}"
       ]
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 193,
+    "kind": "method",
+    "name": "firstFileWithExt",
+    "memberof": "src/Badger.js~Config",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Badger.js~Config#firstFileWithExt",
+    "access": "public",
+    "description": "Internal method to locate the first config file with one of a number of file extensions.",
+    "lineNumber": 45,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "exts",
+        "description": "array of possible extensions"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "makeOptions",
+        "description": "optional function to generate options for a {@link File} object"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
+    }
+  },
+  {
+    "__docId__": 194,
+    "kind": "method",
+    "name": "jsFile",
+    "memberof": "src/Badger.js~Config",
+    "generator": false,
+    "async": true,
+    "static": false,
+    "longname": "src/Badger.js~Config#jsFile",
+    "access": "public",
+    "description": "Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)",
+    "lineNumber": 63,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
+    }
+  },
+  {
+    "__docId__": 195,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -4558,25 +4901,31 @@
     "static": false,
     "longname": "src/Badger.js~Config#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 26,
-    "undocument": true,
+    "description": "Internal method to locate a configuration file with one of the `codecs` extensions (`.yaml` or `.json` by default)",
+    "lineNumber": 72,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object if it exists or `undefined` if not"
     }
   },
   {
-    "__docId__": 192,
+    "__docId__": 196,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -4585,31 +4934,41 @@
     "static": false,
     "longname": "src/Badger.js~Config#config",
     "access": "public",
-    "description": null,
-    "lineNumber": 38,
-    "undocument": true,
+    "description": "Method to fetch configuration data from a file.  The file can be a Javascript file which should\nreturn the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\nIf the file isn't found then the method returns the `defaults` data if provided, or throws an\nerror if not.",
+    "lineNumber": 85,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "base part of filename"
       },
       {
-        "name": "defaults",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "defaults",
+        "description": "default configuration options to be used if a file isn't found"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "the configuration data loaded from the file"
     }
   },
   {
-    "__docId__": 193,
+    "__docId__": 197,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -4622,9 +4981,15 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{config}",
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 109,
     "undocument": true,
     "params": [
+      {
+        "name": "dir",
+        "types": [
+          "*"
+        ]
+      },
       {
         "name": "options",
         "types": [
@@ -4635,7 +5000,7 @@
     "return": null
   },
   {
-    "__docId__": 194,
+    "__docId__": 198,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -4671,7 +5036,7 @@
     }
   },
   {
-    "__docId__": 195,
+    "__docId__": 199,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -4701,7 +5066,7 @@
     }
   },
   {
-    "__docId__": 196,
+    "__docId__": 200,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -4737,7 +5102,7 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 201,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -4756,7 +5121,7 @@
     ]
   },
   {
-    "__docId__": 198,
+    "__docId__": 202,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -4809,7 +5174,7 @@
     }
   },
   {
-    "__docId__": 199,
+    "__docId__": 203,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -4862,7 +5227,7 @@
     }
   },
   {
-    "__docId__": 200,
+    "__docId__": 204,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -4897,7 +5262,7 @@
     ]
   },
   {
-    "__docId__": 201,
+    "__docId__": 205,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -4940,7 +5305,7 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 206,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -4962,7 +5327,7 @@
     "params": []
   },
   {
-    "__docId__": 203,
+    "__docId__": 207,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -4984,7 +5349,7 @@
     "params": []
   },
   {
-    "__docId__": 204,
+    "__docId__": 208,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5006,7 +5371,7 @@
     "params": []
   },
   {
-    "__docId__": 205,
+    "__docId__": 209,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -5059,7 +5424,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 210,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -5102,7 +5467,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 211,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -5165,7 +5530,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 212,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -5210,7 +5575,7 @@
     }
   },
   {
-    "__docId__": 209,
+    "__docId__": 213,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -5279,7 +5644,7 @@
     }
   },
   {
-    "__docId__": 210,
+    "__docId__": 214,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -5342,7 +5707,7 @@
     }
   },
   {
-    "__docId__": 211,
+    "__docId__": 215,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger.js",
@@ -5378,7 +5743,7 @@
     }
   },
   {
-    "__docId__": 212,
+    "__docId__": 216,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -5397,7 +5762,7 @@
     ]
   },
   {
-    "__docId__": 213,
+    "__docId__": 217,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -5440,7 +5805,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 218,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -5470,7 +5835,7 @@
     ]
   },
   {
-    "__docId__": 215,
+    "__docId__": 219,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -5519,7 +5884,7 @@
     }
   },
   {
-    "__docId__": 216,
+    "__docId__": 220,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -5575,7 +5940,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 221,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger.js~File",
@@ -5602,7 +5967,7 @@
     }
   },
   {
-    "__docId__": 218,
+    "__docId__": 222,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger.js",
@@ -5618,7 +5983,7 @@
     "interface": false
   },
   {
-    "__docId__": 219,
+    "__docId__": 223,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Path",
@@ -5671,7 +6036,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 224,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Path",
@@ -5688,7 +6053,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 225,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger.js~Path",
@@ -5710,7 +6075,7 @@
     "params": []
   },
   {
-    "__docId__": 222,
+    "__docId__": 226,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger.js~Path",
@@ -5746,7 +6111,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 227,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger.js~Path",
@@ -5782,7 +6147,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 228,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger.js~Path",
@@ -5807,7 +6172,7 @@
     "params": []
   },
   {
-    "__docId__": 225,
+    "__docId__": 229,
     "kind": "method",
     "name": "stat",
     "memberof": "src/Badger.js~Path",
@@ -5832,7 +6197,7 @@
     "params": []
   },
   {
-    "__docId__": 226,
+    "__docId__": 230,
     "kind": "method",
     "name": "unstat",
     "memberof": "src/Badger.js~Path",
@@ -5851,7 +6216,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 231,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -5867,7 +6232,7 @@
     "interface": false
   },
   {
-    "__docId__": 228,
+    "__docId__": 232,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -5881,7 +6246,7 @@
     "undocument": true
   },
   {
-    "__docId__": 229,
+    "__docId__": 233,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Library",
@@ -5898,7 +6263,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 234,
     "kind": "method",
     "name": "dirs",
     "memberof": "src/Badger.js~Library",
@@ -5918,7 +6283,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 235,
     "kind": "method",
     "name": "dirsExist",
     "memberof": "src/Badger.js~Library",
@@ -5938,7 +6303,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 236,
     "kind": "method",
     "name": "lib",
     "memberof": "src/Badger.js~Library",
@@ -5965,7 +6330,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 237,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -5991,7 +6356,7 @@
     "return": null
   },
   {
-    "__docId__": 234,
+    "__docId__": 238,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -6021,7 +6386,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 239,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -6051,7 +6416,7 @@
     }
   },
   {
-    "__docId__": 236,
+    "__docId__": 240,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -6081,7 +6446,7 @@
     }
   },
   {
-    "__docId__": 237,
+    "__docId__": 241,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -6111,7 +6476,7 @@
     }
   },
   {
-    "__docId__": 238,
+    "__docId__": 242,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -6141,7 +6506,7 @@
     }
   },
   {
-    "__docId__": 239,
+    "__docId__": 243,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -6171,7 +6536,7 @@
     }
   },
   {
-    "__docId__": 240,
+    "__docId__": 244,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -6201,7 +6566,7 @@
     }
   },
   {
-    "__docId__": 241,
+    "__docId__": 245,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -6232,7 +6597,7 @@
     }
   },
   {
-    "__docId__": 242,
+    "__docId__": 246,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -6262,7 +6627,7 @@
     }
   },
   {
-    "__docId__": 243,
+    "__docId__": 247,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -6289,7 +6654,7 @@
     "return": null
   },
   {
-    "__docId__": 244,
+    "__docId__": 248,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger.js",
@@ -6315,7 +6680,7 @@
     "return": null
   },
   {
-    "__docId__": 245,
+    "__docId__": 249,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger.js",
@@ -6334,7 +6699,7 @@
     "return": null
   },
   {
-    "__docId__": 246,
+    "__docId__": 250,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -6373,7 +6738,7 @@
     }
   },
   {
-    "__docId__": 247,
+    "__docId__": 251,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -6412,7 +6777,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 252,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -6432,7 +6797,7 @@
     }
   },
   {
-    "__docId__": 249,
+    "__docId__": 253,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -6468,7 +6833,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 254,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -6498,7 +6863,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 255,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -6546,7 +6911,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 256,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -6594,7 +6959,7 @@
     }
   },
   {
-    "__docId__": 253,
+    "__docId__": 257,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -6642,7 +7007,7 @@
     }
   },
   {
-    "__docId__": 254,
+    "__docId__": 258,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -6672,7 +7037,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 259,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger.js",
@@ -6702,7 +7067,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 260,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger.js",
@@ -6732,7 +7097,7 @@
     }
   },
   {
-    "__docId__": 257,
+    "__docId__": 261,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -6748,7 +7113,7 @@
     "interface": false
   },
   {
-    "__docId__": 258,
+    "__docId__": 262,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -6762,7 +7127,7 @@
     "undocument": true
   },
   {
-    "__docId__": 259,
+    "__docId__": 263,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -6779,7 +7144,7 @@
     }
   },
   {
-    "__docId__": 260,
+    "__docId__": 264,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -6812,7 +7177,7 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 265,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -6845,7 +7210,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 266,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -6878,7 +7243,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 267,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -6917,7 +7282,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 268,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -6950,7 +7315,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 269,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -6983,7 +7348,7 @@
     }
   },
   {
-    "__docId__": 266,
+    "__docId__": 270,
     "kind": "method",
     "name": "lib",
     "memberof": "src/Badger.js~Workspace",
@@ -7010,7 +7375,7 @@
     }
   },
   {
-    "__docId__": 267,
+    "__docId__": 271,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -7043,7 +7408,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 272,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",

@@ -882,6 +882,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~config#firstfilewithext",
+    "class/src/Badger.js~Config.html#instance-method-firstFileWithExt",
+    "src/Badger.js~Config#firstFileWithExt",
+    "method"
+  ],
+  [
+    "src/badger.js~config#jsfile",
+    "class/src/Badger.js~Config.html#instance-method-jsFile",
+    "src/Badger.js~Config#jsFile",
+    "method"
+  ],
+  [
     "src/badger.js~config#state",
     "class/src/Badger.js~Config.html#instance-member-state",
     "src/Badger.js~Config#state",
@@ -1203,6 +1215,18 @@ window.esdocSearchIndex = [
     "src/badger/config.js~config#file",
     "class/src/Badger/Config.js~Config.html#instance-method-file",
     "src/Badger/Config.js~Config#file",
+    "method"
+  ],
+  [
+    "src/badger/config.js~config#firstfilewithext",
+    "class/src/Badger/Config.js~Config.html#instance-method-firstFileWithExt",
+    "src/Badger/Config.js~Config#firstFileWithExt",
+    "method"
+  ],
+  [
+    "src/badger/config.js~config#jsfile",
+    "class/src/Badger/Config.js~Config.html#instance-method-jsFile",
+    "src/Badger/Config.js~Config#jsFile",
     "method"
   ],
   [

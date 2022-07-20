@@ -142,8 +142,8 @@ export class Workspace {
   constructor(props={}) {
     const rootDir = dir(requiredParam(props, 'dir'));
     const cfgDir  = rootDir.dir(props.config?.dir || defaults.config.dir);
-    const cfgOpts = { ...defaults.config, ...(props.config||{}), dir: cfgDir };
-    const config  = new Config(cfgOpts);
+    const cfgOpts = { ...defaults.config, ...(props.config||{}) };
+    const config  = new Config(cfgDir, cfgOpts);
     const libOpts = { ...defaults.library, ...(props.library||{}), root: rootDir };
     const library = new Library(libOpts);
 

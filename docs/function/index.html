@@ -429,13 +429,14 @@ passed as the first argument as the <code>debug</code> function.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span><span class="code" data-ice="signature">(options: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span><span class="code" data-ice="signature">(dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Function to create a new <span><a href="class/src/Badger/Config.js~Config.html">Config</a></span> object for a file</p>
+</div>
       </div>
     </td>
     <td>
@@ -457,7 +458,7 @@ passed as the first argument as the <code>debug</code> function.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span><span class="code" data-ice="signature">(options: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-config">config</a></span></span><span class="code" data-ice="signature">(dir: <span>*</span>, options: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -2969,18 +2970,19 @@ passed as the first argument as the <code>debug</code> function.</p>
     
     
     
-    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">(options: <span>*</span>)</span>
+    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">(dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Config.js.html#lineNumber46">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Config.js.html#lineNumber109">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {config} from '<span><a href="file/src/Badger/Config.js.html#lineNumber46">@abw/badger/src/Badger/Config.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {config} from '<span><a href="file/src/Badger/Config.js.html#lineNumber109">@abw/badger/src/Badger/Config.js</a></span>'</code></pre></div>
   
   
-  
+  <div data-ice="description"><p>Function to create a new <span><a href="class/src/Badger/Config.js~Config.html">Config</a></span> object for a file</p>
+</div>
 
   
 
@@ -2993,17 +2995,54 @@ passed as the first argument as the <code>debug</code> function.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">options</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="name" class="code" data-depth="0">dir</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>directory containing configuration files</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">options</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>configuration options</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" class="code" data-depth="1">options.jsExt</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: 'js mjs'</li></ul></td>
+      <td data-ice="description"><p>Array or comma/whitespace delimited string of Javascript file extensions</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" class="code" data-depth="1">options.codecs</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: 'yaml json'</li></ul></td>
+      <td data-ice="description"><p>Array or comma/whitespace delimited string of codec names</p>
+</td>
     </tr>
 </tbody>
   </table>
 </div>
 </div>
 
-  
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>the <span><a href="class/src/Badger/Config.js~Config.html">Config</a></span> object</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 
@@ -3028,15 +3067,15 @@ passed as the first argument as the <code>debug</code> function.</p>
     
     
     
-    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">(options: <span>*</span>)</span>
+    <span class="code" data-ice="name">config</span><span class="code" data-ice="signature">(dir: <span>*</span>, options: <span>*</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber46">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber109">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {config} from '<span><a href="file/src/Badger.js.html#lineNumber46">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {config} from '<span><a href="file/src/Badger.js.html#lineNumber109">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
   
   
   
@@ -3052,6 +3091,12 @@ passed as the first argument as the <code>debug</code> function.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">dir</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">options</td>
       <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
