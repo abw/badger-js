@@ -20,9 +20,24 @@ export const ANSIColors = {
   bg:      40,
 };
 
-export const escapeCode = (str, base=0) => {
+/**
+ * Returns an ANSI escape code for a color string.  This can be a single color
+ * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,
+ * e.g. `bright red`, `dark green`, etc.  An optional section argument can be
+ * set to `fg` (default) to set a foreground color or `bg` for a background color.
+ * @param {String} color - color name with optional modifier prefix
+ * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively
+ * @return {String} ANSI escape code string
+ * @example
+ * const str = escapeCode('red')
+ * @example
+ * const str = escapeCode('bright red')
+ * @example
+ * const str = escapeCode('bright red', 'bg')
+ */
+export const escapeCode = (color, base='fg') => {
   let   codes = [ ];
-  let   pair  = str.split(/ /, 2);
+  let   pair  = color.split(/ /, 2);
   const hue   = pair.pop();
   const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];
   codes.push(code);
@@ -33,11 +48,22 @@ export const escapeCode = (str, base=0) => {
   return ANSIStart + codes.join(';') + ANSIEnd;
 }
 
-export const escape = (c={}) => {
-  // color c can be specified as a string (e.g. 'red') which is shorthand
-  // for an object containing 'fg' (e.g. { fg: 'red' }) and/or 'bg' for
-  // foreground and background colors respectively
-  const col = isObject(c) ? c : { fg: c };
+/**
+ * Returns an ANSI escape code for a color string or combination of foreground and
+ * background colors.
+ * @param {String|Object} colors - either a simple color name or object contain foreground and background colors
+ * @param {String} [colors.fg] - foreground color
+ * @param {String} [colors.fg] - background color
+ * @return {String} ANSI escape code string
+ * @example
+ * const str = escape('red')
+ * @example
+ * const str = escape('bright red')
+ * @example
+ * const str = escape({ fg: 'bright yellow', bg: 'blue' })
+ */
+export const escape = (colors={}) => {
+  const col = isObject(colors) ? colors : { fg: colors };
   let escapes = [ ];
   if (col.bg) {
     escapes.push(escapeCode(col.bg, 'bg'));
