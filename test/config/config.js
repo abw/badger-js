@@ -4,7 +4,7 @@ import { bin, config } from '../../src/Badger.js'
 // current directory where this script is located
 const thisDir = bin(import.meta.url);
 const cfgDir = thisDir.dir('config_dir');
-const cfg = config({ dir: cfgDir })
+const cfg = config(cfgDir)
 
 test.serial(
   'the config directory is set',

@@ -1,5 +1,4 @@
-import { dir } from './Filesystem/Directory.js'
-import { allParams } from './Utils/Params.js'
+import { dir as fsDir } from './Filesystem/Directory.js'
 import { splitList } from './Utils/Text.js'
 import { doNothing, fail } from './Utils/Misc.js';
 import { addDebug } from './Utils/Debug.js';
@@ -9,23 +8,40 @@ const defaults = {
   jsExt:  'js mjs',
 };
 
+/**
+ * The Config class implements an object which can load configuration
+ * files from a configuration directory.  Files can be Javascript files
+ * (with `.js` or `.mjs` extensions by default) or data files using any
+ * of the standard codecs (`.yaml` or `.json` by default).
+ */
 export class Config {
-  constructor(params={}) {
-    const options = { ...defaults, ...params };
-    const [rootDir] = allParams(options, 'dir');
-    const codecs = options.codecs;
-    const jsExt = options.jsExt;
-
+  /**
+   * Constructor for Config object.
+   * @param {String} dir - directory containing configuration files
+   * @param {Object} [options] - configuration options
+   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+   * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
+   * @return {Object} the {@link Config} object
+   */
+  constructor(dir, options={}) {
+    const params = { ...defaults, ...options };
     this.state = {
-      dir:    dir(rootDir),
-      codecs: splitList(codecs),
-      jsExt:  splitList(jsExt),
+      dir:    fsDir(dir),
+      codecs: splitList(params.codecs),
+      jsExt:  splitList(params.jsExt),
     }
-
     addDebug(this, options.debug, options.debugPrefix, options.debugColor);
     this.debug('root dir: ', this.state.dir.path());
     this.debug('codecs: ', this.state.codecs);
   }
+
+  /**
+   * Internal method to locate the first config file with one of a number of file extensions.
+   * @param {String} uri - base part of filename
+   * @param {Array} [exts] - array of possible extensions
+   * @param {Function} [makeOptions] - optional function to generate options for a {@link File} object
+   * @return {Object} the {@link File} object if it exists or `undefined` if not
+   */
   async firstFileWithExt(uri, exts, makeOptions=doNothing) {
     for (let ext of exts) {
       const path = uri + '.' + ext;
@@ -38,12 +54,34 @@ export class Config {
     }
     return undefined;
   }
+
+  /**
+   * Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)
+   * @param {String} uri - base part of filename
+   * @return {Object} the {@link File} object if it exists or `undefined` if not
+   */
   async jsFile(uri) {
     return await this.firstFileWithExt(uri, this.state.jsExt);
   }
+
+  /**
+   * Internal method to locate a configuration file with one of the `codecs` extensions (`.yaml` or `.json` by default)
+   * @param {String} uri - base part of filename
+   * @return {Object} the {@link File} object if it exists or `undefined` if not
+   */
   async file(uri) {
     return await this.firstFileWithExt(uri, this.state.codecs, (uri, codec) => ({ codec }));
   }
+
+  /**
+   * Method to fetch configuration data from a file.  The file can be a Javascript file which should
+   * return the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.
+   * If the file isn't found then the method returns the `defaults` data if provided, or throws an
+   * error if not.
+   * @param {String} uri - base part of filename
+   * @param {Object} [defaults] - default configuration options to be used if a file isn't found
+   * @return {Object} the configuration data loaded from the file
+   */
   async config(uri, defaults) {
     // first look for a JS file, e.g. <uri>.js, <uri>.mjs
     const jsFile = await this.jsFile(uri);
@@ -60,6 +98,14 @@ export class Config {
   }
 }
 
-export const config = options => new Config(options)
+/**
+ * Function to create a new {@link Config} object for a file
+ * @param {String} dir - directory containing configuration files
+ * @param {Object} [options] - configuration options
+ * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+ * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
+ * @return {Object} the {@link Config} object
+ */
+export const config = (dir, options) => new Config(dir, options)
 
 export default Config
