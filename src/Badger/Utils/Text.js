@@ -1,4 +1,4 @@
-import { isString, isArray } from "./Misc.js";
+import { isString, isArray, noValue } from "./Misc.js";
 
 /**
  * Split a comma/whitespace delimited string into an Array
@@ -12,11 +12,18 @@ import { isString, isArray } from "./Misc.js";
  * const strings = splitList('one, two, three')
  */
 export function splitList(value) {
-  return isString(value)
-    ? value.split(/,\s*|\s+/)
-    : isArray(value)
-      ? value
-      : [value];
+  if (noValue(value)) {
+    return [ ];
+  }
+  else if (isString(value)) {
+    return value.length
+      ? value.split(/,\s*|\s+/)
+      : [ ]
+  }
+  else if (isArray(value)) {
+    return value;
+  }
+  return [value];
 }
 
 /**

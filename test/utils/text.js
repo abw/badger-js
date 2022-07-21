@@ -44,6 +44,29 @@ test(
 
 // splitList
 test(
+  'splitList no value',
+  t => {
+    const list = splitList(undefined);
+    t.is( list.length, 0);
+  }
+)
+test(
+  'splitList empty string',
+  t => {
+    const list = splitList("");
+    t.is( list.length, 0);
+  }
+)
+test(
+  'splitList array',
+  t => {
+    const list = splitList(['foo', 'bar']);
+    t.is( list.length, 2);
+    t.is( list[0], 'foo');
+    t.is( list[1], 'bar');
+  }
+)
+test(
   'splitList text with spaces',
   t => {
     const list = splitList("foo bar   baz\twiz\nwaz\t \n \t  \nwoz");
