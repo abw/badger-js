@@ -2645,7 +2645,7 @@
     "__docId__": 112,
     "kind": "file",
     "name": "src/Badger/Library.js",
-    "content": "import { dir as fsdir } from \"./Filesystem/Directory.js\";\nimport { requiredParam } from \"./Utils/Params.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { fail } from \"./Utils/Misc.js\";\n\nconst defaults = {\n  dir: ['lib','library','src','components'],\n  ext: ['js', 'mjs'],\n}\n\nexport class Library {\n  constructor(props={}) {\n    const root = fsdir(requiredParam(props, 'root'));\n    const dir  = props.directory || props.dir || props.dirs || defaults.dir;\n    const ext  = props.extension || props.ext || props.exts || defaults.ext;\n    const dirs = splitList(dir).map( dir => root.dir(dir) );  // resolve to root dir\n    const exts = splitList(ext).map( ext => ext.replace(/^\\./, '') ); // remove leading '.'\n    this.state = {\n      dirs, exts\n    }\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n  }\n  async dirs() {\n    return this.state.dirsExist\n      || ( this.state.dirsExist = await this.dirsExist() );\n  }\n  async dirsExist() {\n    const dirs = this.state.dirs;\n    const exists = await Promise.all(\n      dirs.map( d => d.exists() )\n    );\n    return dirs.filter((value, index) => exists[index]);\n  }\n  async lib(uri) {\n    const dirs = await this.dirs();\n    const exts = this.state.exts;\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const file = dir.file(uri + '.' + ext);\n        this.debug('looking for module %s as', uri, file.path());\n        const exists = await file.exists();\n        if (exists) {\n          const load   = await import(file.path());\n          this.debug('loaded %s as', file.path());\n          return load;\n        }\n      }\n    }\n    fail(\"Library not found: \", uri);\n  }\n}\n\nexport const library = props => new Library(props);\n\nexport default library;",
+    "content": "import { dir as fsdir } from \"./Filesystem/Directory.js\";\nimport { requiredParam } from \"./Utils/Params.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { fail } from \"./Utils/Misc.js\";\n\nconst defaults = {\n  dir: ['lib','library','src','components'],\n  ext: ['js', 'mjs'],\n}\n\nexport class Library {\n  constructor(props={}) {\n    const root = fsdir(requiredParam(props, 'root'));\n    const dir  = props.directory || props.dir || props.dirs || defaults.dir;\n    const ext  = props.extension || props.ext || props.exts || defaults.ext;\n    const dirs = splitList(dir).map( dir => root.dir(dir) );  // resolve to root dir\n    const exts = splitList(ext).map( ext => ext.replace(/^\\./, '') ); // remove leading '.'\n    this.state = {\n      dirs, exts\n    }\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n  }\n  async dirs() {\n    return this.state.dirsExist\n      || ( this.state.dirsExist = await this.dirsExist() );\n  }\n  async dirsExist() {\n    const dirs = this.state.dirs;\n    const exists = await Promise.all(\n      dirs.map( d => d.exists() )\n    );\n    return dirs.filter((value, index) => exists[index]);\n  }\n  async lib(uri) {\n    const dirs = await this.dirs();\n    const exts = this.state.exts;\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const file = dir.file(uri + '.' + ext);\n        this.debug('looking for module %s as', uri, file.path());\n        const exists = await file.exists();\n        if (exists) {\n          const load = await import(file.path());\n          this.debug('loaded %s as', file.path());\n          return load;\n        }\n      }\n    }\n    fail(\"Library not found: \", uri);\n  }\n}\n\nexport const library = props => new Library(props);\n\nexport default library;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Library.js",
     "access": "public",
@@ -3838,7 +3838,7 @@
     "__docId__": 149,
     "kind": "file",
     "name": "src/Badger/Utils/Text.js",
-    "content": "import { isString, isArray } from \"./Misc.js\";\n\n/**\n * Split a comma/whitespace delimited string into an Array\n * @param {String} [value] - string to split\n * @return {Array} array of split strings\n * @example\n * const strings = splitList('one two three')\n * @example\n * const strings = splitList('one,two,three')\n * @example\n * const strings = splitList('one, two, three')\n */\nexport function splitList(value) {\n  return isString(value)\n    ? value.split(/,\\s*|\\s+/)\n    : isArray(value)\n      ? value\n      : [value];\n}\n\n/**\n * Join an Array into a single string\n * @param {Array} [array] - array to join\n * @param {String} [joint=' '] - delimiter to join strings\n * @param {String} [lastJoint=joint] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinList(['one', 'two', 'three']);   // one two three\n * @example\n * joinList(['one', 'two', 'three'], ', ');   // one, two, three\n * @example\n * joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three\n */\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` and ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' and '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListAnd(['one', 'two', 'three']);   // one, two and three\n */\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` or ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' or '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListOr(['one', 'two', 'three']);   // one, two or three\n */\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Capitalise a string by converting the first character to upper case and other characters to lower case\n * @param {String} [word] - word to capitalise\n * @return {String} capitalised string\n * @example\n * capitalise('badger');   // Badger\n * @example\n * capitalise('BADGER');   // Badger\n */\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\n/**\n * Convert a snake case string to studly caps\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToStudly('happy_badger_dance');   // HappyBadgerDance\n * @example\n * snakeToStudly('happy_badger/dance');   // HappyBadger/Dance\n */\nexport function snakeToStudly(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n\n/**\n * Convert a snake case string to camel case\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToCamel('happy_badger_dance');   // happyBadgerDance\n * @example\n * snakeToCamel('happy_badger/dance');   // happyBadger/dance\n */\nexport function snakeToCamel(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to fooBar\n    segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')\n  ).join('/');\n}\n",
+    "content": "import { isString, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Split a comma/whitespace delimited string into an Array\n * @param {String} [value] - string to split\n * @return {Array} array of split strings\n * @example\n * const strings = splitList('one two three')\n * @example\n * const strings = splitList('one,two,three')\n * @example\n * const strings = splitList('one, two, three')\n */\nexport function splitList(value) {\n  if (noValue(value)) {\n    return [ ];\n  }\n  else if (isString(value)) {\n    return value.length\n      ? value.split(/,\\s*|\\s+/)\n      : [ ]\n  }\n  else if (isArray(value)) {\n    return value;\n  }\n  return [value];\n}\n\n/**\n * Join an Array into a single string\n * @param {Array} [array] - array to join\n * @param {String} [joint=' '] - delimiter to join strings\n * @param {String} [lastJoint=joint] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinList(['one', 'two', 'three']);   // one two three\n * @example\n * joinList(['one', 'two', 'three'], ', ');   // one, two, three\n * @example\n * joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three\n */\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` and ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' and '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListAnd(['one', 'two', 'three']);   // one, two and three\n */\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` or ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' or '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListOr(['one', 'two', 'three']);   // one, two or three\n */\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Capitalise a string by converting the first character to upper case and other characters to lower case\n * @param {String} [word] - word to capitalise\n * @return {String} capitalised string\n * @example\n * capitalise('badger');   // Badger\n * @example\n * capitalise('BADGER');   // Badger\n */\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\n/**\n * Convert a snake case string to studly caps\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToStudly('happy_badger_dance');   // HappyBadgerDance\n * @example\n * snakeToStudly('happy_badger/dance');   // HappyBadger/Dance\n */\nexport function snakeToStudly(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n\n/**\n * Convert a snake case string to camel case\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToCamel('happy_badger_dance');   // happyBadgerDance\n * @example\n * snakeToCamel('happy_badger/dance');   // happyBadger/dance\n */\nexport function snakeToCamel(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to fooBar\n    segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')\n  ).join('/');\n}\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Text.js",
     "access": "public",
@@ -3905,7 +3905,7 @@
       "joinList(['one', 'two', 'three'], ', ');   // one, two, three",
       "joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three"
     ],
-    "lineNumber": 35,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -3968,7 +3968,7 @@
     "examples": [
       "joinListAnd(['one', 'two', 'three']);   // one, two and three"
     ],
-    "lineNumber": 52,
+    "lineNumber": 59,
     "params": [
       {
         "nullable": null,
@@ -4031,7 +4031,7 @@
     "examples": [
       "joinListOr(['one', 'two', 'three']);   // one, two or three"
     ],
-    "lineNumber": 65,
+    "lineNumber": 72,
     "params": [
       {
         "nullable": null,
@@ -4095,7 +4095,7 @@
       "capitalise('badger');   // Badger",
       "capitalise('BADGER');   // Badger"
     ],
-    "lineNumber": 78,
+    "lineNumber": 85,
     "params": [
       {
         "nullable": null,
@@ -4135,7 +4135,7 @@
       "snakeToStudly('happy_badger_dance');   // HappyBadgerDance",
       "snakeToStudly('happy_badger/dance');   // HappyBadger/Dance"
     ],
-    "lineNumber": 91,
+    "lineNumber": 98,
     "params": [
       {
         "nullable": null,
@@ -4175,7 +4175,7 @@
       "snakeToCamel('happy_badger_dance');   // happyBadgerDance",
       "snakeToCamel('happy_badger/dance');   // happyBadger/dance"
     ],
-    "lineNumber": 107,
+    "lineNumber": 114,
     "params": [
       {
         "nullable": null,
@@ -6858,7 +6858,7 @@
     ],
     "return": {
       "types": [
-        "*"
+        "undefined[]"
       ]
     }
   },
@@ -6876,7 +6876,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{joinList}",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 42,
     "undocument": true,
     "params": [
       {
@@ -6924,7 +6924,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{joinListAnd}",
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 59,
     "undocument": true,
     "params": [
       {
@@ -6972,7 +6972,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{joinListOr}",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 72,
     "undocument": true,
     "params": [
       {
@@ -7020,7 +7020,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{capitalise}",
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 85,
     "undocument": true,
     "params": [
       {
@@ -7050,7 +7050,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{snakeToStudly}",
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 98,
     "undocument": true,
     "params": [
       {
@@ -7080,7 +7080,7 @@
     "importPath": "@abw/badger/src/Badger.js",
     "importStyle": "{snakeToCamel}",
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 114,
     "undocument": true,
     "params": [
       {
@@ -7443,7 +7443,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.1\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./src/Badger.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.2\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,

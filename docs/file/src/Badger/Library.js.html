@@ -167,7 +167,7 @@ export class Library {
         this.debug('looking for module %s as', uri, file.path());
         const exists = await file.exists();
         if (exists) {
-          const load   = await import(file.path());
+          const load = await import(file.path());
           this.debug('loaded %s as', file.path());
           return load;
         }
