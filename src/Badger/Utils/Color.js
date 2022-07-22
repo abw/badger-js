@@ -26,7 +26,7 @@ export const ANSIColors = {
  * e.g. `bright red`, `dark green`, etc.  An optional section argument can be
  * set to `fg` (default) to set a foreground color or `bg` for a background color.
  * @param {String} color - color name with optional modifier prefix
- * @param {String} [base] - `fg` or `bg` to set foreground or background color respectively
+ * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively
  * @return {String} ANSI escape code string
  * @example
  * const str = escapeCode('red')
@@ -75,5 +75,5 @@ export const escape = (colors={}) => {
   return escapes.join('');
 }
 
-export const reset = () => ANSIStart + ANSIColors.reset + ANSIEnd;
+export const reset = () => escapeCode('reset', false)
 
