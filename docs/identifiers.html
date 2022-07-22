@@ -34,6 +34,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Debugger">Debugger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebug">addDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bin">bin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-capitalise">capitalise</a></span></span></li>
@@ -81,7 +83,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codec">codec</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codec">codec</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codecs">codecs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-filesystem">Badger/Filesystem</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Directory.js~Directory.html">Directory</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-filesystem">Badger/Filesystem</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/DirPath.js~DirPath.html">DirPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Directory.js~Directory.html">Directory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/File.js~File.html">File</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bin">bin</a></span></span></li>
@@ -317,6 +320,62 @@
           
           
           <span class="code" data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-function">F</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-Debugger">Debugger</a></span></span><span class="code" data-ice="signature">(enabled: <span>*</span>, prefix: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, color: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-function">F</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-addDebug">addDebug</a></span></span><span class="code" data-ice="signature">(obj: <span>*</span>, enabled: <span>*</span>, prefix: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, color: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -932,7 +991,7 @@
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(dir: <span>*</span>, options: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -1156,7 +1215,7 @@
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span><span class="code" data-ice="signature">(dir: <span>*</span>, options: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -1314,7 +1373,9 @@ files from a configuration directory.</p>
       <div>
         
         
-        
+        <div data-ice="description"><p>The Library class implements an object which can load Javascript files
+from one or more library directories.</p>
+</div>
       </div>
     </td>
     <td>
@@ -1370,7 +1431,7 @@ files from a configuration directory.</p>
       <div>
         
         
-        <div data-ice="description"><p>Function to create a new <span><a href="class/src/Badger/Config.js~Config.html">Config</a></span> object for a file</p>
+        <div data-ice="description"><p>Function to create a new Config object</p>
 </div>
       </div>
     </td>
@@ -1393,13 +1454,14 @@ files from a configuration directory.</p>
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-library">library</a></span></span><span class="code" data-ice="signature">(dir: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Function to create a new Library object</p>
+</div>
       </div>
     </td>
     <td>
@@ -1421,7 +1483,7 @@ files from a configuration directory.</p>
           <span data-ice="kind-icon" class="kind-function">F</span>
           
           
-          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span><span class="code" data-ice="signature">(props: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-workspace">workspace</a></span></span><span class="code" data-ice="signature">(dir: <span>*</span>, options: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -1688,6 +1750,36 @@ files from a configuration directory.</p>
   <tbody>
   
   <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          <span data-ice="kind-icon" class="kind-class">C</span>
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/Badger/Filesystem/DirPath.js~DirPath.html">DirPath</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>The DirPath class implements a base class for objects that
+can search one or more directories.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
     <td>
       <span class="access" data-ice="access">public</span>
       

@@ -1,25 +1,27 @@
-import { dir } from "./Filesystem/Directory.js";
-import { requiredParam } from "./Utils/Params.js";
+import { dir as fsDir } from "./Filesystem/Directory.js";
 import { fail, hasValue } from "./Utils/Misc.js";
 import { addDebug } from "./Utils/Debug.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
+import { splitList } from "../Badger.js";
 
 const defaults = {
   library: {
+    dir: 'lib library src components',
   },
   config: {
     dir: 'config',
   }
 }
 export class Workspace {
-  constructor(props={}) {
-    const rootDir = dir(requiredParam(props, 'dir'));
-    const cfgDir  = rootDir.dir(props.config?.dir || defaults.config.dir);
-    const cfgOpts = { ...defaults.config, ...(props.config||{}) };
+  constructor(dir, options={}) {
+    const rootDir = fsDir(dir);
+    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);
+    const cfgOpts = { ...defaults.config, ...(options.config||{}) };
     const config  = new Config(cfgDir, cfgOpts);
-    const libOpts = { ...defaults.library, ...(props.library||{}), root: rootDir };
-    const library = new Library(libOpts);
+    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );
+    const libOpts = { ...defaults.library, ...(options.library||{}) };
+    const library = new Library(libDirs, libOpts);
 
     this.state = {
       rootDir,
@@ -27,9 +29,12 @@ export class Workspace {
       library
     }
 
-    addDebug(this, props.debug, props.debugPrefix, props.debugColor);
+    // console.log('options: ', options);
+    addDebug(this, options.debug, options.debugPrefix, options.debugColor);
     this.debug('root dir: ', rootDir.path());
     this.debug('config dir: ', cfgDir.path());
+    this.debug('libDirs: ', libDirs);
+    this.debug('libOpts: ', libOpts);
   }
   dir(path, options) {
     this.debug("dir(%s, %o)", path, options);
@@ -75,6 +80,6 @@ export class Workspace {
   }
 }
 
-export const workspace = props => new Workspace(props);
+export const workspace = (dir, options) => new Workspace(dir, options);
 
 export default Workspace;

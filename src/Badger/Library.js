@@ -1,37 +1,40 @@
-import { dir as fsdir } from "./Filesystem/Directory.js";
-import { requiredParam } from "./Utils/Params.js";
+import { DirPath } from "./Filesystem/DirPath.js";
 import { addDebug } from "./Utils/Debug.js";
 import { splitList } from "./Utils/Text.js";
 import { fail } from "./Utils/Misc.js";
 
 const defaults = {
-  dir: ['lib','library','src','components'],
-  ext: ['js', 'mjs'],
+  jsExt: 'js mjs',
 }
 
-export class Library {
-  constructor(props={}) {
-    const root = fsdir(requiredParam(props, 'root'));
-    const dir  = props.directory || props.dir || props.dirs || defaults.dir;
-    const ext  = props.extension || props.ext || props.exts || defaults.ext;
-    const dirs = splitList(dir).map( dir => root.dir(dir) );  // resolve to root dir
-    const exts = splitList(ext).map( ext => ext.replace(/^\./, '') ); // remove leading '.'
-    this.state = {
-      dirs, exts
-    }
-    addDebug(this, props.debug, props.debugPrefix, props.debugColor);
+/**
+ * The Library class implements an object which can load Javascript files
+ * from one or more library directories.  Files can be Javascript files
+ * (with `.js` or `.mjs` extensions by default)
+ */
+export class Library extends DirPath {
+  /**
+   * Constructor for Library object.
+   * @param {String} dir - one or more directories that contain Javascript libraries
+   * @param {Object} [options] - configuration options
+   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+   * @return {Object} the Library object
+   */
+  constructor(dir, options={}) {
+    super(dir);
+    const params = { ...defaults, ...options };
+    const exts = splitList(params.jsExt).map( ext => ext.replace(/^\./, '') ); // remove leading '.'
+    this.state.exts = exts;
+    addDebug(this, options.debug, options.debugPrefix, options.debugColor);
+    this.debug("state: ", this.state)
   }
-  async dirs() {
-    return this.state.dirsExist
-      || ( this.state.dirsExist = await this.dirsExist() );
-  }
-  async dirsExist() {
-    const dirs = this.state.dirs;
-    const exists = await Promise.all(
-      dirs.map( d => d.exists() )
-    );
-    return dirs.filter((value, index) => exists[index]);
-  }
+
+  /**
+   * Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).
+   * Returns the exports from the library if found or throws an error if not.
+   * @param {String} uri - base part of filename
+   * @return {Object} the exports from the loaded libary
+   */
   async lib(uri) {
     const dirs = await this.dirs();
     const exts = this.state.exts;
@@ -51,6 +54,13 @@ export class Library {
   }
 }
 
-export const library = props => new Library(props);
+/**
+ * Function to create a new Library object
+ * @param {String} dir - directory or directories containing configuration files
+ * @param {Object} [options] - configuration options
+ * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+ * @return {Object} the Library object
+ */
+export const library = (dir, options) => new Library(dir, options);
 
 export default library;

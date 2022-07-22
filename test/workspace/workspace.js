@@ -4,17 +4,19 @@ import { bin, workspace } from '../../src/Badger.js'
 const DEBUG = false;
 const thisDir = bin(import.meta.url);
 const testDir = thisDir.dir('test_space');
-const testSpace = workspace({
-  dir: testDir,
-  debug: DEBUG,
-  debugPrefix: '    workspace > ',
-  debugColor: 'blue',
-  config: {
+const testSpace = workspace(
+  testDir,
+  {
     debug: DEBUG,
-    debugPrefix: '    config > ',
-    debugColor: 'green'
+    debugPrefix: '    workspace > ',
+    debugColor: 'blue',
+    config: {
+      debug: DEBUG,
+      debugPrefix: '    config > ',
+      debugColor: 'green'
+    }
   }
-});
+);
 
 test.serial(
   'the workspace directory is set',

@@ -1,15 +1,24 @@
 import test from 'ava';
-import { bin, library } from '../../src/Badger.js'
+import { bin, library, splitList } from '../../src/Badger.js'
 
 const DEBUG = false;
 const testDir = bin(import.meta.url).dir('test_libs');
-const testLib = library({
-  root: testDir,
-  dir: 'libA libB libC',
-  debug: DEBUG,
-  debugPrefix: '    library > ',
-  debugColor: 'red',
-});
+const testLib = library(
+  splitList('libA libB libC').map( dir => testDir.dir(dir) ),
+  {
+    debug: DEBUG,
+    debugPrefix: '    library > ',
+    debugColor: 'red',
+  }
+);
+const testLib2 = library(
+  testDir.dir('libA'),
+  {
+    debug: DEBUG,
+    debugPrefix: '    library > ',
+    debugColor: 'red',
+  }
+);
 
 test(
   'the library has 2 library directories',
@@ -52,5 +61,23 @@ test(
     const fiveSix = await testLib.lib('five/six');
     t.is( fiveSix.five, 5 )
     t.is( fiveSix.six, 6 )
+  }
+);
+
+//-----------------------------------------------------------------------------
+// library2 - has a single directory
+//-----------------------------------------------------------------------------
+test(
+  'the second library has 1 library directories',
+  async t => {
+    const dirs = await testLib2.dirs();
+    t.is( dirs.length, 1 )
+  }
+);
+test(
+  'the second library can load one(.js)',
+  async t => {
+    const one = await testLib2.lib('one');
+    t.is( one.one, 1 )
   }
 );

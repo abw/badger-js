@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../">
-  <title data-ice="title">Component | @abw/badger</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/Badger/Filesystem/DirPath.js | @abw/badger</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -126,366 +126,67 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Component} from '<span><a href="file/src/Badger.js.html#lineNumber3">@abw/badger/src/Badger.js</a></span>'</code></pre></div>
-  <span data-ice="access">public</span>
-  <span data-ice="kind">class</span>
-  
-  
-  
-  <span data-ice="source">| <span><a href="file/src/Badger.js.html#lineNumber3">source</a></span></span>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Filesystem/DirPath.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { dir as fsDir } from "./Directory.js";
+import { splitList } from "../Utils/Text.js";
 
-<div class="self-detail detail">
-  <h1 data-ice="name">Component</h1>
+/**
+ * The DirPath class implements a base class for objects that
+ * can search one or more directories.
+ */
+export class DirPath {
+  /**
+   * Constructor for filesystem paths.
+   * @param {String|Array} dir - comma/whitespace delimited string containing directories, or a {@link Directory} object or Array of {@link Directory} objects
+   * @return {Object} the {@link DirPath} object
+   */
+  constructor(dir) {
+    const dirs = this.initDirs(dir);
+    this.state = {
+      dirs
+    }
+  }
 
-  
+  /**
+   * Internal method to initialise the directories.  If the `dir` argument is a string then it will be split on
+   * commas and/or whitespace and converted to an array of {@link Directory} objects.  If the `dir` is a
+   * {@link Directory} object then it will be wrapped in an array.  If the `dir` argument is already an array
+   * (presumably of {@link Directory} objects) then no further processing is required.
+   * @param {String|Array} dir - comma/whitespace delimited string containing directories, or a {@link Directory} object or Array of {@link Directory} objects
+   * @return {Array} an array of {@link Directory} objects
+   */
+  initDirs(dir) {
+    return splitList(dir).map( dir =&gt; fsDir(dir) );
+  }
 
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  /**
+   * Internal method to return an array of the directories in the `dirs` argument passed to the constructor that
+   * actually exist in the filesystem.  The checks to determine if the directories exists are only carried
+   * out the first time the method is called.  Subsequent calls will return the cached value stored in
+   * `this.state.dirsExist`.
+   * @return {Array} an array of {@link Directory} objects that exist
+   */
+  async dirs() {
+    return this.state.dirsExist
+      || ( this.state.dirsExist = await this.dirsExist() );
+  }
 
-  
-  
-  
-  
+  /**
+   * Internal method to determine which of the directories in the `dirs` argument passed to the constructor
+   * actually exist in the filesystem.
+   * @return {Array} an array of {@link Directory} objects that exist
+   */
+  async dirsExist() {
+    const dirs = this.state.dirs;
+    const exists = await Promise.all(
+      dirs.map( d =&gt; d.exists() )
+    );
+    return dirs.filter((value, index) =&gt; exists[index]);
+  }
+}
 
-  
+export default DirPath</code></pre>
 
-  
-
-  
-
-  
-</div>
-
-
-
-<div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Badger.js~Component.html#instance-constructor-constructor">constructor</a></span></span><span class="code" data-ice="signature">()</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
-<div data-ice="memberSummary"><h2>Member Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Members</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Badger.js~Component.html#instance-member-props">props</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Badger.js~Component.html#instance-member-workspace">workspace</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
-<div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/Badger.js~Component.html#instance-method-initComponent">initComponent</a></span></span><span class="code" data-ice="signature">()</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
-
-
-
-
-
-<div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
-
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-constructor-constructor">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">constructor</span><span class="code" data-ice="signature">()</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber4">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
-<div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
-
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-props">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">props</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber6">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-workspace">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">workspace</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber5">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
-<div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
-
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-initComponent">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">initComponent</span><span class="code" data-ice="signature">()</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/Badger.js.html#lineNumber10">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
 </div>
 
 <footer class="footer">

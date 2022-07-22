@@ -42,10 +42,22 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger/src/badger.js~debugger",
+    "function/index.html#static-function-Debugger",
+    "<span>Debugger</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
+    "function"
+  ],
+  [
     "@abw/badger/src/badger/utils/debug.js~debugger",
     "function/index.html#static-function-Debugger",
     "<span>Debugger</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Utils/Debug.js</span>",
     "function"
+  ],
+  [
+    "@abw/badger/src/badger/filesystem/dirpath.js~dirpath",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html",
+    "<span>DirPath</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Filesystem/DirPath.js</span>",
+    "class"
   ],
   [
     "@abw/badger/src/badger.js~directory",
@@ -106,6 +118,12 @@ window.esdocSearchIndex = [
     "class/src/Badger/Workspace.js~Workspace.html",
     "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger/Workspace.js</span>",
     "class"
+  ],
+  [
+    "@abw/badger/src/badger.js~adddebug",
+    "function/index.html#static-function-addDebug",
+    "<span>addDebug</span> <span class=\"search-result-import-path\">@abw/badger/src/Badger.js</span>",
+    "function"
   ],
   [
     "@abw/badger/src/badger/utils/debug.js~adddebug",
@@ -894,12 +912,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~config#state",
-    "class/src/Badger.js~Config.html#instance-member-state",
-    "src/Badger.js~Config#state",
-    "member"
-  ],
-  [
     "src/badger.js~directory#create",
     "class/src/Badger.js~Directory.html#instance-method-create",
     "src/Badger.js~Directory#create",
@@ -1014,28 +1026,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~library#dirs",
-    "class/src/Badger.js~Library.html#instance-method-dirs",
-    "src/Badger.js~Library#dirs",
-    "method"
-  ],
-  [
-    "src/badger.js~library#dirsexist",
-    "class/src/Badger.js~Library.html#instance-method-dirsExist",
-    "src/Badger.js~Library#dirsExist",
-    "method"
-  ],
-  [
     "src/badger.js~library#lib",
     "class/src/Badger.js~Library.html#instance-method-lib",
     "src/Badger.js~Library#lib",
     "method"
-  ],
-  [
-    "src/badger.js~library#state",
-    "class/src/Badger.js~Library.html#instance-member-state",
-    "src/Badger.js~Library#state",
-    "member"
   ],
   [
     "src/badger.js~path#constructor",
@@ -1230,9 +1224,39 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/config.js~config#state",
-    "class/src/Badger/Config.js~Config.html#instance-member-state",
-    "src/Badger/Config.js~Config#state",
+    "src/badger/filesystem/dirpath.js",
+    "file/src/Badger/Filesystem/DirPath.js.html",
+    "src/Badger/Filesystem/DirPath.js",
+    "file"
+  ],
+  [
+    "src/badger/filesystem/dirpath.js~dirpath#constructor",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-constructor-constructor",
+    "src/Badger/Filesystem/DirPath.js~DirPath#constructor",
+    "method"
+  ],
+  [
+    "src/badger/filesystem/dirpath.js~dirpath#dirs",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-dirs",
+    "src/Badger/Filesystem/DirPath.js~DirPath#dirs",
+    "method"
+  ],
+  [
+    "src/badger/filesystem/dirpath.js~dirpath#dirsexist",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-dirsExist",
+    "src/Badger/Filesystem/DirPath.js~DirPath#dirsExist",
+    "method"
+  ],
+  [
+    "src/badger/filesystem/dirpath.js~dirpath#initdirs",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-initDirs",
+    "src/Badger/Filesystem/DirPath.js~DirPath#initDirs",
+    "method"
+  ],
+  [
+    "src/badger/filesystem/dirpath.js~dirpath#state",
+    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-member-state",
+    "src/Badger/Filesystem/DirPath.js~DirPath#state",
     "member"
   ],
   [
@@ -1422,28 +1446,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/library.js~library#dirs",
-    "class/src/Badger/Library.js~Library.html#instance-method-dirs",
-    "src/Badger/Library.js~Library#dirs",
-    "method"
-  ],
-  [
-    "src/badger/library.js~library#dirsexist",
-    "class/src/Badger/Library.js~Library.html#instance-method-dirsExist",
-    "src/Badger/Library.js~Library#dirsExist",
-    "method"
-  ],
-  [
     "src/badger/library.js~library#lib",
     "class/src/Badger/Library.js~Library.html#instance-method-lib",
     "src/Badger/Library.js~Library#lib",
     "method"
-  ],
-  [
-    "src/badger/library.js~library#state",
-    "class/src/Badger/Library.js~Library.html#instance-member-state",
-    "src/Badger/Library.js~Library#state",
-    "member"
   ],
   [
     "src/badger/utils/color.js",

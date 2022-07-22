@@ -34,6 +34,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Library.html">Library</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger.js~Workspace.html">Workspace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-Debugger">Debugger</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-addDebug">addDebug</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-anyParams">anyParams</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bin">bin</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-capitalise">capitalise</a></span></span></li>
@@ -81,7 +83,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codec">codec</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codec">codec</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-codecs">codecs</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-filesystem">Badger/Filesystem</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Directory.js~Directory.html">Directory</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#badger-filesystem">Badger/Filesystem</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/DirPath.js~DirPath.html">DirPath</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Directory.js~Directory.html">Directory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/File.js~File.html">File</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/Badger/Filesystem/Path.js~Path.html">Path</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bin">bin</a></span></span></li>
@@ -124,40 +127,43 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Library.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { dir as fsdir } from "./Filesystem/Directory.js";
-import { requiredParam } from "./Utils/Params.js";
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { DirPath } from "./Filesystem/DirPath.js";
 import { addDebug } from "./Utils/Debug.js";
 import { splitList } from "./Utils/Text.js";
 import { fail } from "./Utils/Misc.js";
 
 const defaults = {
-  dir: ['lib','library','src','components'],
-  ext: ['js', 'mjs'],
+  jsExt: 'js mjs',
 }
 
-export class Library {
-  constructor(props={}) {
-    const root = fsdir(requiredParam(props, 'root'));
-    const dir  = props.directory || props.dir || props.dirs || defaults.dir;
-    const ext  = props.extension || props.ext || props.exts || defaults.ext;
-    const dirs = splitList(dir).map( dir =&gt; root.dir(dir) );  // resolve to root dir
-    const exts = splitList(ext).map( ext =&gt; ext.replace(/^\./, '') ); // remove leading '.'
-    this.state = {
-      dirs, exts
-    }
-    addDebug(this, props.debug, props.debugPrefix, props.debugColor);
+/**
+ * The Library class implements an object which can load Javascript files
+ * from one or more library directories.  Files can be Javascript files
+ * (with `.js` or `.mjs` extensions by default)
+ */
+export class Library extends DirPath {
+  /**
+   * Constructor for Library object.
+   * @param {String} dir - one or more directories that contain Javascript libraries
+   * @param {Object} [options] - configuration options
+   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+   * @return {Object} the Library object
+   */
+  constructor(dir, options={}) {
+    super(dir);
+    const params = { ...defaults, ...options };
+    const exts = splitList(params.jsExt).map( ext =&gt; ext.replace(/^\./, '') ); // remove leading '.'
+    this.state.exts = exts;
+    addDebug(this, options.debug, options.debugPrefix, options.debugColor);
+    this.debug("state: ", this.state)
   }
-  async dirs() {
-    return this.state.dirsExist
-      || ( this.state.dirsExist = await this.dirsExist() );
-  }
-  async dirsExist() {
-    const dirs = this.state.dirs;
-    const exists = await Promise.all(
-      dirs.map( d =&gt; d.exists() )
-    );
-    return dirs.filter((value, index) =&gt; exists[index]);
-  }
+
+  /**
+   * Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).
+   * Returns the exports from the library if found or throws an error if not.
+   * @param {String} uri - base part of filename
+   * @return {Object} the exports from the loaded libary
+   */
   async lib(uri) {
     const dirs = await this.dirs();
     const exts = this.state.exts;
@@ -177,7 +183,14 @@ export class Library {
   }
 }
 
-export const library = props =&gt; new Library(props);
+/**
+ * Function to create a new Library object
+ * @param {String} dir - directory or directories containing configuration files
+ * @param {Object} [options] - configuration options
+ * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
+ * @return {Object} the Library object
+ */
+export const library = (dir, options) =&gt; new Library(dir, options);
 
 export default library;</code></pre>
 

@@ -1,11 +1,11 @@
-import { dir as fsDir } from './Filesystem/Directory.js'
+import { DirPath } from './Filesystem/DirPath.js';
 import { splitList } from './Utils/Text.js'
 import { doNothing, fail } from './Utils/Misc.js';
 import { addDebug } from './Utils/Debug.js';
 
 const defaults = {
-  codecs: 'yaml json',
-  jsExt:  'js mjs',
+  codecs: ['yaml', 'json'],
+  jsExt:  ['js', 'mjs'],
 };
 
 /**
@@ -14,25 +14,21 @@ const defaults = {
  * (with `.js` or `.mjs` extensions by default) or data files using any
  * of the standard codecs (`.yaml` or `.json` by default).
  */
-export class Config {
+export class Config extends DirPath {
   /**
    * Constructor for Config object.
-   * @param {String} dir - directory containing configuration files
+   * @param {String} dir - one or more directories that contain configuration files
    * @param {Object} [options] - configuration options
    * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
    * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
-   * @return {Object} the {@link Config} object
+   * @return {Object} the Config object
    */
   constructor(dir, options={}) {
+    super(dir);
     const params = { ...defaults, ...options };
-    this.state = {
-      dir:    fsDir(dir),
-      codecs: splitList(params.codecs),
-      jsExt:  splitList(params.jsExt),
-    }
+    this.state.codecs = splitList(params.codecs),
+    this.state.jsExt = splitList(params.jsExt),
     addDebug(this, options.debug, options.debugPrefix, options.debugColor);
-    this.debug('root dir: ', this.state.dir.path());
-    this.debug('codecs: ', this.state.codecs);
   }
 
   /**
@@ -43,13 +39,17 @@ export class Config {
    * @return {Object} the {@link File} object if it exists or `undefined` if not
    */
   async firstFileWithExt(uri, exts, makeOptions=doNothing) {
-    for (let ext of exts) {
-      const path = uri + '.' + ext;
-      const file = this.state.dir.file(path, makeOptions(uri, ext));
-      this.debug('looking for config file: ', file.path());
-      if (await file.exists()) {
-        this.debug('config file exists: ', file.path());
-        return file;
+    const dirs = await this.dirs();
+
+    for (let dir of dirs) {
+      for (let ext of exts) {
+        const path = uri + '.' + ext;
+        const file = dir.file(path, makeOptions(uri, ext));
+        this.debug('looking for config file: ', file.path());
+        if (await file.exists()) {
+          this.debug('config file exists: ', file.path());
+          return file;
+        }
       }
     }
     return undefined;
@@ -99,12 +99,12 @@ export class Config {
 }
 
 /**
- * Function to create a new {@link Config} object for a file
- * @param {String} dir - directory containing configuration files
+ * Function to create a new Config object
+ * @param {String} dir - directory or directories containing configuration files
  * @param {Object} [options] - configuration options
  * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
  * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
- * @return {Object} the {@link Config} object
+ * @return {Object} the Config object
  */
 export const config = (dir, options) => new Config(dir, options)
 
