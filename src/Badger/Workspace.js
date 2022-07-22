@@ -1,9 +1,9 @@
 import { dir as fsDir } from "./Filesystem/Directory.js";
 import { fail, hasValue } from "./Utils/Misc.js";
 import { addDebug } from "./Utils/Debug.js";
+import { splitList } from "./Utils/Text.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
-import { splitList } from "../Badger.js";
 
 const defaults = {
   library: {
