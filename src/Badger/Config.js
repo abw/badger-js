@@ -86,8 +86,7 @@ export class Config extends DirPath {
     // first look for a JS file, e.g. <uri>.js, <uri>.mjs
     const jsFile = await this.jsFile(uri);
     if (jsFile) {
-      const load = await import(jsFile.path());
-      return load.default;
+      return await import(jsFile.path());
     }
     // then for a config file with a codec extension, e.g. <uri>.yaml, <uri>.yaml
     const file = await this.file(uri);

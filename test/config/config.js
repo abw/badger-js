@@ -54,6 +54,7 @@ test.serial(
   async t => {
     const data = await cfg.config('pouch');
     t.is( data.pouch, 'frusset' )
-    t.is( data.message, 'You have pleasantly wibbled my frusset pouch' )
+    t.is( data.message, 'You have most pleasantly wibbled my frusset pouch' )
+    t.is( data.default.attrib, 'Queen Asphyxia XIX' )
   }
 );
