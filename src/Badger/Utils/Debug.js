@@ -1,4 +1,4 @@
-import { escape, reset } from './Color.js'
+import { ANSIescape, ANSIreset } from './Color.js'
 import { doNothing } from './Misc.js';
 
 /**
@@ -28,8 +28,8 @@ export function Debugger(enabled, prefix='', color) {
       ? (format, ...args) =>
         console.log(
           '%s' + prefix + '%s' + format,
-          color ? escape(color) : '',
-          reset(),
+          color ? ANSIescape(color) : '',
+          ANSIreset(),
           ...args,
         )
       : console.log.bind(console)

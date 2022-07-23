@@ -35,7 +35,7 @@ export const ANSIColors = {
  * @example
  * const str = escapeCode('bright red', 'bg')
  */
-export const escapeCode = (color, base='fg') => {
+export const ANSIescapeCode = (color, base='fg') => {
   let   codes = [ ];
   let   pair  = color.split(/ /, 2);
   const hue   = pair.pop();
@@ -63,17 +63,17 @@ export const escapeCode = (color, base='fg') => {
  * @example
  * const str = escape({ fg: 'bright yellow', bg: 'blue' })
  */
-export const escape = (colors={}) => {
+export const ANSIescape = (colors={}) => {
   const col = isObject(colors) ? colors : { fg: colors };
   let escapes = [ ];
   if (col.bg) {
-    escapes.push(escapeCode(col.bg, 'bg'));
+    escapes.push(ANSIescapeCode(col.bg, 'bg'));
   }
   if (col.fg) {
-    escapes.push(escapeCode(col.fg, 'fg'));
+    escapes.push(ANSIescapeCode(col.fg, 'fg'));
   }
   return escapes.join('');
 }
 
-export const reset = () => escapeCode('reset', false)
+export const ANSIreset = () => ANSIescapeCode('reset', false)
 
