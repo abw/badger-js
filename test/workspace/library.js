@@ -24,7 +24,7 @@ test.serial(
 test.serial(
   'load a library',
   async t => {
-    const lib = await testSpace.lib('Module1');
+    const lib = await testSpace.library('Module1');
     t.is( lib.a, 10 );
     t.is( lib.b, 20 );
   }
@@ -32,7 +32,7 @@ test.serial(
 test.serial(
   'destructure a loaded library',
   async t => {
-    const { default: stuff, a, b, } = await testSpace.lib('Module1');
+    const { default: stuff, a, b, } = await testSpace.library('Module1');
     t.is( stuff.a, 10 );
     t.is( a, 10 );
     t.is( b, 20 );

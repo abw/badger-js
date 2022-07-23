@@ -66,12 +66,12 @@ export class Workspace {
       ? this.state.config.config(uri, defaults)
       : this.state.config;
   }
-  async lib(uri) {
-    return this.state.library.lib(uri);
+  async library(uri) {
+    return this.state.library.library(uri);
   }
   async component(uri, props) {
     const config  = await this.config(uri, {});
-    const lib     = await this.lib(config.component?.library || uri);
+    const lib     = await this.library(config.component?.library || uri);
     const exp     = config.component?.export || 'default';
     const compcls = lib[exp] || fail("No '", exp, "' export from component library: ", uri);
     const comp = new compcls(this, { ...config, ...props });

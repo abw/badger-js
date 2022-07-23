@@ -58,3 +58,27 @@ test.serial(
     t.is( data.default.attrib, 'Queen Asphyxia XIX' )
   }
 );
+
+//-----------------------------------------------------------------------------
+// #fragment dataPath
+//-----------------------------------------------------------------------------
+test.serial(
+  'read the animal config with #name fragment',
+  t => cfg.config('animal#name').then(
+    data => t.is( data, 'Badger' )
+  )
+);
+test.serial(
+  'read the wibble config with defaults and #name fragment',
+  async t => {
+    const data = await cfg.config('wibble#name', { name: 'wobble' });
+    t.is( data, 'wobble' )
+  }
+);
+test.serial(
+  'read the pouch.js config with path #message',
+  async t => {
+    const message = await cfg.config('pouch#message');
+    t.is( message, 'You have most pleasantly wibbled my frusset pouch' )
+  }
+);

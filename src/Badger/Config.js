@@ -2,6 +2,7 @@ import { DirPath } from './Filesystem/DirPath.js';
 import { splitList } from './Utils/Text.js'
 import { doNothing, fail } from './Utils/Misc.js';
 import { addDebug } from './Utils/Debug.js';
+import { dataPath } from '../Badger/Utils/DataPath.js';
 
 const defaults = {
   codecs: ['yaml', 'json'],
@@ -83,17 +84,29 @@ export class Config extends DirPath {
    * @return {Object} the configuration data loaded from the file
    */
   async config(uri, defaults) {
+    const [base, fragment] = uri.split('#', 2);
+    let jsFile, file, data;
+
     // first look for a JS file, e.g. <uri>.js, <uri>.mjs
-    const jsFile = await this.jsFile(uri);
-    if (jsFile) {
-      return await import(jsFile.path());
+    if ((jsFile = await this.jsFile(base))) {
+      data = await import(jsFile.path());
     }
     // then for a config file with a codec extension, e.g. <uri>.yaml, <uri>.yaml
-    const file = await this.file(uri);
-    if (file) {
-      return await file.read();
+    else if ((file = await this.file(base))) {
+      data = await file.read();
     }
-    return defaults || fail("No configuration file for " + uri);
+    // failing that use any default value
+    else if (defaults) {
+      data = defaults;
+    }
+    // anything else is a big pile of fail
+    else {
+      return fail("No configuration file for " + base);
+    }
+    // resolve any data path in a #fragment
+    return fragment
+      ? dataPath(data, fragment)
+      : data;
   }
 }
 

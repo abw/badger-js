@@ -2,6 +2,7 @@ import { DirPath } from "./Filesystem/DirPath.js";
 import { addDebug } from "./Utils/Debug.js";
 import { splitList } from "./Utils/Text.js";
 import { fail } from "./Utils/Misc.js";
+import { dataPath } from "./Utils/DataPath.js";
 
 const defaults = {
   jsExt: 'js mjs',
@@ -35,18 +36,21 @@ export class Library extends DirPath {
    * @param {String} uri - base part of filename
    * @return {Object} the exports from the loaded libary
    */
-  async lib(uri) {
+  async library(uri) {
+    const [base, fragment] = uri.split('#', 2);
     const dirs = await this.dirs();
     const exts = this.state.exts;
     for (let dir of dirs) {
       for (let ext of exts) {
-        const file = dir.file(uri + '.' + ext);
-        this.debug('looking for module %s as', uri, file.path());
+        const file = dir.file(base + '.' + ext);
+        this.debug('looking for module %s as', base, file.path());
         const exists = await file.exists();
         if (exists) {
           const load = await import(file.path());
           this.debug('loaded %s as', file.path());
-          return load;
+          return fragment
+            ? dataPath(load, fragment)
+            : load;
         }
       }
     }
