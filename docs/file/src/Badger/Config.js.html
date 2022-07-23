@@ -6,7 +6,7 @@
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
-<meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
+<link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="@abw/badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
@@ -145,6 +145,7 @@
 import { splitList } from './Utils/Text.js'
 import { doNothing, fail } from './Utils/Misc.js';
 import { addDebug } from './Utils/Debug.js';
+import { dataPath } from '../Badger/Utils/DataPath.js';
 
 const defaults = {
   codecs: ['yaml', 'json'],
@@ -226,17 +227,29 @@ export class Config extends DirPath {
    * @return {Object} the configuration data loaded from the file
    */
   async config(uri, defaults) {
+    const [base, fragment] = uri.split('#', 2);
+    let jsFile, file, data;
+
     // first look for a JS file, e.g. &lt;uri&gt;.js, &lt;uri&gt;.mjs
-    const jsFile = await this.jsFile(uri);
-    if (jsFile) {
-      return await import(jsFile.path());
+    if ((jsFile = await this.jsFile(base))) {
+      data = await import(jsFile.path());
     }
     // then for a config file with a codec extension, e.g. &lt;uri&gt;.yaml, &lt;uri&gt;.yaml
-    const file = await this.file(uri);
-    if (file) {
-      return await file.read();
+    else if ((file = await this.file(base))) {
+      data = await file.read();
     }
-    return defaults || fail("No configuration file for " + uri);
+    // failing that use any default value
+    else if (defaults) {
+      data = defaults;
+    }
+    // anything else is a big pile of fail
+    else {
+      return fail("No configuration file for " + base);
+    }
+    // resolve any data path in a #fragment
+    return fragment
+      ? dataPath(data, fragment)
+      : data;
   }
 }
 

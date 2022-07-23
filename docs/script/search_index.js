@@ -1110,9 +1110,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~library#lib",
-    "class/src/Badger.js~Library.html#instance-method-lib",
-    "src/Badger.js~Library#lib",
+    "src/badger.js~library#library",
+    "class/src/Badger.js~Library.html#instance-method-library",
+    "src/Badger.js~Library#library",
     "method"
   ],
   [
@@ -1200,9 +1200,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~workspace#lib",
-    "class/src/Badger.js~Workspace.html#instance-method-lib",
-    "src/Badger.js~Workspace#lib",
+    "src/badger.js~workspace#library",
+    "class/src/Badger.js~Workspace.html#instance-method-library",
+    "src/Badger.js~Workspace#library",
     "method"
   ],
   [
@@ -1530,9 +1530,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/library.js~library#lib",
-    "class/src/Badger/Library.js~Library.html#instance-method-lib",
-    "src/Badger/Library.js~Library#lib",
+    "src/badger/library.js~library#library",
+    "class/src/Badger/Library.js~Library.html#instance-method-library",
+    "src/Badger/Library.js~Library#library",
     "method"
   ],
   [
@@ -1614,9 +1614,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/workspace.js~workspace#lib",
-    "class/src/Badger/Workspace.js~Workspace.html#instance-method-lib",
-    "src/Badger/Workspace.js~Workspace#lib",
+    "src/badger/workspace.js~workspace#library",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-library",
+    "src/Badger/Workspace.js~Workspace#library",
     "method"
   ],
   [
