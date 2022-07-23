@@ -25,7 +25,7 @@ Install `badger` using your favourite package manager.
 ## Manual
 
 Read the [Manual](https://abw.github.io/badger-js/docs/manual/) for an introduction to the
-toolkit and example of use.
+toolkit and examples of use.
 ## API Documentation
 
 Read the [API documentation](https://abw.github.io/badger-js/docs/) for further information
