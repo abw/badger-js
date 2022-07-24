@@ -17,7 +17,7 @@ Create a library directory specifying one or more directories where your code is
 Then call the `library()` method to load a `.js` or `.mjs` module from any of those
 directories.
 
-```js title="bin/configLoaderExample.js"
+```js
 import { Library } from '@abw/badger'
 
 const library = new Library(
@@ -50,7 +50,7 @@ shown in the earlier examples. For example, if you have a script in the `bin`
 directory and you want to load configuration files from the `config` directory
 located alongside it then you can do something like this:
 
-```js title="bin/libraryLoaderExample.js"
+```js
 import { bin, Library } from '@abw/badger'
 
 const library = new Library(
@@ -60,7 +60,7 @@ const library = new Library(
 
 Or more succinctly like this:
 
-```js title="bin/libraryLoaderExample.js"
+```js
 import { bin, Library } from '@abw/badger'
 
 const library = new Library(

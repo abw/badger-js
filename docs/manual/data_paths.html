@@ -30,6 +30,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/introduction.html"><a href="manual/introduction.html" data-ice="link">Introduction</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/introduction.html"><a href="manual/introduction.html#warning" data-ice="link">Warning</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -39,6 +40,8 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#directories" data-ice="link">Directories</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#reading-files" data-ice="link">Reading Files</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#writing-files" data-ice="link">Writing Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#directory-object" data-ice="link">Directory Object</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#file-objects" data-ice="link">File Objects</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -80,6 +83,11 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/data_paths.html"><a href="manual/data_paths.html" data-ice="link">Data Paths</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#config-files" data-ice="link">Config Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#optional-items" data-ice="link">Optional Items</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#quoted-path-segments" data-ice="link">Quoted Path Segments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#javascript-library-exports" data-ice="link">Javascript Library Exports</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#navigating-your-own-data" data-ice="link">Navigating Your Own Data</a></li>
 </ul>
   </div>
 </div>
@@ -88,7 +96,18 @@
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="data-paths">Data Paths</h1><p>Both the <a href="../class/src/Badger/Config.js~Config">Config</a> and
 <a href="../class/src/Badger/Library.js~Library">Library</a> modules provide a
 convenient way to drill down into the data returned to fetch a particular item.</p>
-<p>For example, suppose you have the following configuration file in <code>config/zoo.yaml</code>.</p>
+<p>This uses the <a href="../function#static-function-dataPath">dataPath()</a> function which
+nagivates data using a URL-like path.  The data path syntax is intentionally simple and
+limited.  If you want to do anything more complicated then you should consider using JSON
+Path instead.</p>
+<ul>
+<li><a href="#config-files">Config Files</a></li>
+<li><a href="#optional-items">Optional Items</a></li>
+<li><a href="#quoted-path-segments">Quoted Path Segments</a></li>
+<li><a href="#javascript-library-exports">Javascript Library Exports</a></li>
+<li><a href="#navigating-your-own-data">Navigating Your Own Data</a></li>
+</ul>
+<h2 id="config-files">Config Files</h2><p>Suppose you have the following configuration file in <code>config/zoo.yaml</code>.</p>
 <pre><code class="lang-yaml"><code class="source-code prettyprint">animals:
   aardvark:
     name: Alan
@@ -98,7 +117,11 @@ convenient way to drill down into the data returned to fetch a particular item.<
     name: Colin</code></code></pre>
 <p>If you have a Config object setup to read files from the <code>config</code> directory then
 you can read the whole of the <code>zoo</code> data set like this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">configDir.config('zoo').then(
+<pre><code class="lang-js"><code class="source-code prettyprint">use { Config } from '@abw/badger'
+
+const configDir = new Config('config');
+
+configDir.config('zoo').then(
   zoo =&gt; console.log("The badger is called ", zoo.animals.badger.name) // The badger is called Brian
 )</code></code></pre>
 <p>If you're only looking for a particular item, in this case the name of the badger,
@@ -120,13 +143,13 @@ access items in an array.</p>
 }</code></code></pre>
 <p>Then a data path of <code>numbers/3</code> would return "forty-two", or <code>friends/0/name</code> would return
 "Ford Prefect".</p>
-<p>If an item is <code>undefined</code> or <code>null</code> then an error is thrown.  Using the above data this would
-happen if you tried to access <code>friends/12/name</code> or <code>friends/0/birthday</code></p>
+<h2 id="optional-items">Optional Items</h2><p>If an item specified in the path is <code>undefined</code> or <code>null</code> then an error is thrown.  Using the
+above data this would happen if you tried to access <code>friends/12/name</code> or <code>friends/0/birthday</code></p>
 <p>You can add an question mark to the end of a path segment to make it silently return <code>undefined</code>
 instead, e.g. <code>friends/12?/name</code> or <code>friends/0/birthday?</code>.  Note that the question mark can only
 appear at the end of a segment.  If it appears anywhere else then it is assumed to be the same
 thing as <code>?/</code>.  e.g. <code>foo?bar</code> is the same as <code>foo?/bar</code>.</p>
-<p>You can enclose any segment in single or double quotes if you happen to have data keys that include
+<h2 id="quoted-path-segments">Quoted Path Segments</h2><p>You can enclose any segment in single or double quotes if you happen to have data keys that include
 <code>/</code> or <code>?</code> characters in them.  For example, <code>question/"What is the answer?"</code> to access the value
 "42" in the following data:</p>
 <pre><code class="lang-json"><code class="source-code prettyprint">{
@@ -137,9 +160,9 @@ thing as <code>?/</code>.  e.g. <code>foo?bar</code> is the same as <code>foo?/b
 <p>If you want to make a quoted part optional then add the question mark after the closing quote, e.g.
 <code>question/"What is the question?"</code> would throw an error because it is not defined, but can be specified
 as <code>question/"What is the question?"?</code> to instead return <code>undefined</code>.</p>
-<p>The data path syntax is intentionally simple and limited.  If you want to do anything more complicated
-then you should consider using JSON Path instead.</p>
-<p>All of the above applies to the data returned by the Config and Library modules when loaded
+<p>Note that the usual Javascript rules for quoted strings apply.  e.g. use <code>\n</code> to encode a newline,
+<code>\"</code> to escape a double quote inside a double quoted string, and so on.</p>
+<h2 id="javascript-library-exports">Javascript Library Exports</h2><p>All of the above applies to the data returned by the Config and Library modules when loaded
 Javascript files.  By default they will return an object containing all exported values from the
 Javascript file.  If you want to access the <code>default</code> export, for example, then you can add a <code>#default</code> suffix
 to the file basename when loading it.</p>
@@ -154,6 +177,22 @@ to the file basename when loading it.</p>
     // do something with anotherExport here
   }
 )</code></code></pre>
+<h2 id="navigating-your-own-data">Navigating Your Own Data</h2><p>You can use the <code>dataPath()</code> function to navigate your own data.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { dataPath } from '@abw/badger'
+
+const animals = {
+  aardvark: {
+    name: "Alan"
+  }
+  badger: {
+    name: "Brian"
+  },
+  cat: {
+    name: "Colin"
+  }
+}
+
+const badgerName = dataPath(data, 'badger/name');</code></code></pre>
 </div>
 </div>
 

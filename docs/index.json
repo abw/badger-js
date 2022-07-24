@@ -1447,7 +1447,7 @@
     "__docId__": 81,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
-    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nclass Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
+    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nexport class Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Directory.js",
     "access": "public",
@@ -1456,164 +1456,6 @@
   },
   {
     "__docId__": 82,
-    "kind": "function",
-    "name": "dir",
-    "memberof": "src/Badger/Filesystem/Directory.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/Directory.js~dir",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{dir}",
-    "description": "Function to create a new {@link Directory} object",
-    "lineNumber": 189,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "string"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "path",
-        "description": "directory path"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.codec",
-        "description": "a codec for encoding/decoding files"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the {@link Directory} object"
-    }
-  },
-  {
-    "__docId__": 83,
-    "kind": "function",
-    "name": "cwd",
-    "memberof": "src/Badger/Filesystem/Directory.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/Directory.js~cwd",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{cwd}",
-    "description": "Function to create a new {@link Directory} object for the current working directory",
-    "lineNumber": 199,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.codec",
-        "description": "a codec for encoding/decoding files"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the {@link Directory} object"
-    }
-  },
-  {
-    "__docId__": 84,
-    "kind": "function",
-    "name": "bin",
-    "memberof": "src/Badger/Filesystem/Directory.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Filesystem/Directory.js~bin",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{bin}",
-    "description": "Function to create a new {@link Directory} object for the directory of a JS source file",
-    "lineNumber": 210,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "string"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "url",
-        "description": "module url - from `import.meta.url`"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options",
-        "description": "configuration options"
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": true,
-        "name": "options.codec",
-        "description": "a codec for encoding/decoding files"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": "the {@link Directory} object"
-    }
-  },
-  {
-    "__docId__": 85,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger/Filesystem/Directory.js",
@@ -1622,7 +1464,7 @@
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "Directory",
+    "importStyle": "{Directory}",
     "description": "The Directory class implements a wrapper around a filesystem\ndirectory.",
     "lineNumber": 12,
     "interface": false,
@@ -1631,7 +1473,7 @@
     ]
   },
   {
-    "__docId__": 86,
+    "__docId__": 83,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1684,7 +1526,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 84,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1737,7 +1579,7 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 85,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1772,7 +1614,7 @@
     ]
   },
   {
-    "__docId__": 89,
+    "__docId__": 86,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1815,7 +1657,7 @@
     }
   },
   {
-    "__docId__": 90,
+    "__docId__": 87,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1837,7 +1679,7 @@
     "params": []
   },
   {
-    "__docId__": 91,
+    "__docId__": 88,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1859,7 +1701,7 @@
     "params": []
   },
   {
-    "__docId__": 92,
+    "__docId__": 89,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1881,7 +1723,7 @@
     "params": []
   },
   {
-    "__docId__": 93,
+    "__docId__": 90,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1934,7 +1776,7 @@
     }
   },
   {
-    "__docId__": 94,
+    "__docId__": 91,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -1977,7 +1819,7 @@
     }
   },
   {
-    "__docId__": 95,
+    "__docId__": 92,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -2040,7 +1882,7 @@
     }
   },
   {
-    "__docId__": 96,
+    "__docId__": 93,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -2085,7 +1927,7 @@
     }
   },
   {
-    "__docId__": 97,
+    "__docId__": 94,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -2154,7 +1996,7 @@
     }
   },
   {
-    "__docId__": 98,
+    "__docId__": 95,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger/Filesystem/Directory.js~Directory",
@@ -2217,41 +2059,30 @@
     }
   },
   {
-    "__docId__": 99,
-    "kind": "file",
-    "name": "src/Badger/Filesystem/File.js",
-    "content": "import path from 'node:path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile, rm } from 'node:fs/promises'\n\n/**\n * The File class implements a wrapper around a filesystem\n * file.\n */\nclass File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {String|Object} the file content\n   * @example\n   * const text = file('myfile.txt').read();\n   * @example\n   * const data = file('myfile.json', { codec: 'json' }).read();\n   * @example\n   * const data = file('myfile.json').read({ codec: 'json' });\n   */\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n\n  async delete(options) {\n    await rm(this.state.path, options);\n    return this;\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} path - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
-    "static": true,
-    "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/File.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 100,
+    "__docId__": 96,
     "kind": "function",
-    "name": "file",
-    "memberof": "src/Badger/Filesystem/File.js",
+    "name": "dir",
+    "memberof": "src/Badger/Filesystem/Directory.js",
     "generator": false,
     "async": false,
     "static": true,
-    "longname": "src/Badger/Filesystem/File.js~file",
+    "longname": "src/Badger/Filesystem/Directory.js~dir",
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "{file}",
-    "description": "Function to create a new {@link File} object for a file",
-    "lineNumber": 83,
+    "importStyle": "{dir}",
+    "description": "Function to create a new {@link Directory} object",
+    "lineNumber": 189,
     "params": [
       {
         "nullable": null,
         "types": [
-          "String"
+          "string"
         ],
         "spread": false,
         "optional": false,
         "name": "path",
-        "description": "file path"
+        "description": "directory path"
       },
       {
         "nullable": null,
@@ -2280,11 +2111,124 @@
         "Object"
       ],
       "spread": false,
-      "description": "the {@link File} object"
+      "description": "the {@link Directory} object"
     }
   },
   {
-    "__docId__": 101,
+    "__docId__": 97,
+    "kind": "function",
+    "name": "cwd",
+    "memberof": "src/Badger/Filesystem/Directory.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Filesystem/Directory.js~cwd",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cwd}",
+    "description": "Function to create a new {@link Directory} object for the current working directory",
+    "lineNumber": 199,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
+    }
+  },
+  {
+    "__docId__": 98,
+    "kind": "function",
+    "name": "bin",
+    "memberof": "src/Badger/Filesystem/Directory.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Filesystem/Directory.js~bin",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{bin}",
+    "description": "Function to create a new {@link Directory} object for the directory of a JS source file",
+    "lineNumber": 210,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": "module url - from `import.meta.url`"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link Directory} object"
+    }
+  },
+  {
+    "__docId__": 99,
+    "kind": "file",
+    "name": "src/Badger/Filesystem/File.js",
+    "content": "import path from 'node:path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile, rm } from 'node:fs/promises'\n\n/**\n * The File class implements a wrapper around a filesystem\n * file.\n */\nexport class File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {String|Object} the file content\n   * @example\n   * const text = file('myfile.txt').read();\n   * @example\n   * const data = file('myfile.json', { codec: 'json' }).read();\n   * @example\n   * const data = file('myfile.json').read({ codec: 'json' });\n   */\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n\n  async delete(options) {\n    await rm(this.state.path, options);\n    return this;\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} path - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
+    "static": true,
+    "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/File.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 100,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger/Filesystem/File.js",
@@ -2293,7 +2237,7 @@
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "File",
+    "importStyle": "{File}",
     "description": "The File class implements a wrapper around a filesystem\nfile.",
     "lineNumber": 11,
     "interface": false,
@@ -2302,7 +2246,7 @@
     ]
   },
   {
-    "__docId__": 102,
+    "__docId__": 101,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2345,7 +2289,7 @@
     }
   },
   {
-    "__docId__": 103,
+    "__docId__": 102,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2375,7 +2319,7 @@
     ]
   },
   {
-    "__docId__": 104,
+    "__docId__": 103,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2424,7 +2368,7 @@
     }
   },
   {
-    "__docId__": 105,
+    "__docId__": 104,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2480,7 +2424,7 @@
     }
   },
   {
-    "__docId__": 106,
+    "__docId__": 105,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger/Filesystem/File.js~File",
@@ -2504,6 +2448,62 @@
       "types": [
         "*"
       ]
+    }
+  },
+  {
+    "__docId__": 106,
+    "kind": "function",
+    "name": "file",
+    "memberof": "src/Badger/Filesystem/File.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Filesystem/File.js~file",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{file}",
+    "description": "Function to create a new {@link File} object for a file",
+    "lineNumber": 83,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "file path"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "a codec for encoding/decoding files"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the {@link File} object"
     }
   },
   {
@@ -5331,108 +5331,6 @@
   },
   {
     "__docId__": 209,
-    "kind": "function",
-    "name": "dir",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~dir",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{dir}",
-    "description": null,
-    "lineNumber": 189,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 210,
-    "kind": "function",
-    "name": "cwd",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~cwd",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{cwd}",
-    "description": null,
-    "lineNumber": 199,
-    "undocument": true,
-    "params": [
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 211,
-    "kind": "function",
-    "name": "bin",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~bin",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{bin}",
-    "description": null,
-    "lineNumber": 210,
-    "undocument": true,
-    "params": [
-      {
-        "name": "url",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 212,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -5441,7 +5339,7 @@
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "Directory",
+    "importStyle": "{Directory}",
     "description": null,
     "lineNumber": 12,
     "undocument": true,
@@ -5451,7 +5349,7 @@
     ]
   },
   {
-    "__docId__": 213,
+    "__docId__": 210,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -5504,7 +5402,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 211,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -5557,7 +5455,7 @@
     }
   },
   {
-    "__docId__": 215,
+    "__docId__": 212,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -5592,7 +5490,7 @@
     ]
   },
   {
-    "__docId__": 216,
+    "__docId__": 213,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -5635,7 +5533,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 214,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -5657,7 +5555,7 @@
     "params": []
   },
   {
-    "__docId__": 218,
+    "__docId__": 215,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5679,7 +5577,7 @@
     "params": []
   },
   {
-    "__docId__": 219,
+    "__docId__": 216,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5701,7 +5599,7 @@
     "params": []
   },
   {
-    "__docId__": 220,
+    "__docId__": 217,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -5754,7 +5652,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 218,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -5797,7 +5695,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 219,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -5860,7 +5758,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 220,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -5905,7 +5803,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 221,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -5974,7 +5872,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 222,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -6037,20 +5935,20 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 223,
     "kind": "function",
-    "name": "file",
+    "name": "dir",
     "memberof": "src/Badger.js",
     "generator": false,
     "async": false,
     "static": true,
-    "longname": "src/Badger.js~file",
+    "longname": "src/Badger.js~dir",
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "{file}",
+    "importStyle": "{dir}",
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 189,
     "undocument": true,
     "params": [
       {
@@ -6073,7 +5971,73 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 224,
+    "kind": "function",
+    "name": "cwd",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~cwd",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cwd}",
+    "description": null,
+    "lineNumber": 199,
+    "undocument": true,
+    "params": [
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 225,
+    "kind": "function",
+    "name": "bin",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~bin",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{bin}",
+    "description": null,
+    "lineNumber": 210,
+    "undocument": true,
+    "params": [
+      {
+        "name": "url",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 226,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -6082,7 +6046,7 @@
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "File",
+    "importStyle": "{File}",
     "description": null,
     "lineNumber": 11,
     "undocument": true,
@@ -6092,7 +6056,7 @@
     ]
   },
   {
-    "__docId__": 228,
+    "__docId__": 227,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -6135,7 +6099,7 @@
     }
   },
   {
-    "__docId__": 229,
+    "__docId__": 228,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -6165,7 +6129,7 @@
     ]
   },
   {
-    "__docId__": 230,
+    "__docId__": 229,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -6214,7 +6178,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 230,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -6270,7 +6234,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 231,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger.js~File",
@@ -6283,6 +6247,42 @@
     "lineNumber": 70,
     "undocument": true,
     "params": [
+      {
+        "name": "options",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 232,
+    "kind": "function",
+    "name": "file",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~file",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{file}",
+    "description": null,
+    "lineNumber": 83,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      },
       {
         "name": "options",
         "types": [
@@ -8113,7 +8113,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/introduction.md",
     "name": "./manual/introduction.md",
-    "content": "# Introduction\n\nThe `badger` toolkit provides a range of classes and utility\nfunctions for server-side Javascript using Node.js.\n\nThere is no particular rhyme or reason as to what's included\nor excluded from the toolkit.  It contains the kind of things\nthat I've found to be useful to help build and manage\nnon-trivial software projects.\n\n",
+    "content": "# Introduction\n\nThe `badger` toolkit provides a range of classes and utility\nfunctions for server-side Javascript using Node.js.\n\nThere is no particular rhyme or reason as to what's included\nor excluded from the toolkit.  It contains the kind of things\nthat I've found to be useful to help build and maintain\nnon-trivial software projects.\n\n## Warning\n\nPlease note that it is *opinionated* and *selfish* software.\n\nIt is *opiniated* because it (generally speaking) only implements one way\nto do something.  It's the way that I think is best (or least bad) and\naims to please one person (me) most of the time, rather than providing\ncountless configuration options to try and please all the people all\nthe time.\n\nIt is *selfish* because I wrote it to make my own life easier and to\nsimplify and expediate the process of writing software for myself and\nmy clients.  You're welcome to use it, but please be warned that after 25+\nyears of writing, maintaining and supporting Open Source software, I no\nlonger have the time or inclination to provide free support for other\npeople.\n\nIf you find a bug or have a suggestion for a way it can be improved\nthen please feel free to raise an issue and/or submit a pull request\nfor a patch to fix the problem or add a new feature.  But don't be\nsurprised if I don't jump to apply it if it doesn't provide something\nthat I personally find useful.\n\n",
     "static": true,
     "access": "public"
   },
@@ -8121,7 +8121,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/filesystem.md",
     "name": "./manual/filesystem.md",
-    "content": "# Filesystem Utilities\n\nThe filesystem utilities provide a simple and convenient way to\nhandle common  directory and file operations.\n\n- [Directories](#directories)\n- [Reading Files](#reading-files)\n- [Writing Files](#writing-files)\n\n## Directories\n\nSay you've got a script in your project which needs to read a file\nfrom a different directory.\n\nLet's assume that the script is `bin/hello.js` and you want\nto read the contents of the file in `data/hello.txt`.  The\n`bin` function accepts the URL of the source file which you\ncan get from `import.meta.url` and returns an object\nrepresenting the directory that it's in.  Note that this will\nalways be the same directory regardless of where you run the\nscript from.\n\n```js title=\"bin/hello.js\"\nimport { bin } from '@abw/badger'\n\n// current directory where this script is located\nconst thisDir = bin(import.meta.url);\n```\n\nThe `parent()` method returns the parent directory and on that\nwe can call the `directory()` (or `dir()` for short) method to access a\ndirectory beneath that.  In this case, we're going for the `data`\ndirectory.\n\n```js\n// directory where the data file is located\nconst dataDir = thisDir.parent().dir('data');\n```\n\n## Reading Files\n\nWe can then access the `hello.txt` file in that directory and\nread the file content using the `read()` method.  This returns\na Promise which will fulfull with the file content.  Add a\n`.then()` handler to do something with the content.\n\n```js\ndataDir.file('hello.txt').read().then(\n  text => console.log(text)\n)\n```\n\nWe can chain all those function/method calls together like so:\n\n```js title=\"bin/animal.js\"\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .dir('data')\n  .file('hello.txt')\n  .read()\n  .then( text => console.log(text) )\n```\n\n## Writing Files\nWriting files is just as easy:\n\n```js title=\"bin/goodbye.js\"\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .dir('data')\n  .file('goodbye.txt')\n  .write('K thx bye');\n```\n\nFor further information see the documentation for the\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) and\n[File](../class/src/Badger/Filesystem/File.js~File) modules.\n\n",
+    "content": "# Filesystem Utilities\n\nThe filesystem utilities provide a simple and convenient way to\nhandle common  directory and file operations.\n\n- [Directories](#directories)\n- [Reading Files](#reading-files)\n- [Writing Files](#writing-files)\n- [Directory Object](#directory-object)\n- [File Object](#file-object)\n\n## Directories\n\nSay you've got a script in your project which needs to read a file\nfrom a different directory.\n\nLet's assume that the script is `bin/hello.js` and you want\nto read the contents of the file in `data/hello.txt`.\n\nThe `bin` function accepts the URL of the source file which you\ncan get from `import.meta.url` and returns an object\nrepresenting the directory that it's in.  Note that this will\nalways be the same directory regardless of where you run the\nscript from.\n\n```js\nimport { bin } from '@abw/badger'\n\n// current directory where this script is located\nconst thisDir = bin(import.meta.url);\n```\n\nThe `parent()` method returns the parent directory and on that\nyou can call the `directory()` (or `dir()` for short) method to access a\ndirectory beneath that.  In this case, we're going for the `data`\ndirectory.\n\n```js\n// directory where the data file is located\nconst dataDir = thisDir.parent().dir('data');\n```\n\n## Reading Files\n\nOnce you have a directory object you can then access the `hello.txt` file in\nthat directory and read the file content using the `read()` method.  This\nreturns a Promise which will fulfull with the file content.  Add a\n`.then()` handler to do something with the content.\n\n```js\ndataDir.file('hello.txt').read().then(\n  text => console.log(text)\n)\n```\n\nYou can chain all those function/method calls together like so:\n\n```js\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .dir('data')\n  .file('hello.txt')\n  .read()\n  .then( text => console.log(text) )\n```\n\n## Writing Files\nWriting files is just as easy:\n\n```js\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .dir('data')\n  .file('goodbye.txt')\n  .write('K thx bye');\n```\n\nFor further information see the documentation for the\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) and\n[File](../class/src/Badger/Filesystem/File.js~File) modules.\n\n## Directory Object\n\nYou can create a directory object directly, either using `new Directory(path)` or with\nthe `dir(path)` function.\n\n```js\nimport { dir } from '@abw/badger'\n\ndir('data')\n  .file('goodbye.txt')\n  .write('K thx bye');\n```\n\n## File Objects\n\nYou can also create a file object directly, either using `new File()` or with\nthe `file()` function.\n\n```js\nimport { file } from '@abw/badger'\n\nfile('data/goodbye.txt')\n  .write('K thx bye');\n```\n",
     "static": true,
     "access": "public"
   },
@@ -8129,7 +8129,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/codecs.md",
     "name": "./manual/codecs.md",
-    "content": "# Data Codecs\n\nCodecs are used to encode and decode data to and from serialised text.\nThe badger toolkit comes with two built-in codecs for `json` and `yaml` files.\n\n- [Read Data File](#read-data-files)\n- [Write Data Files](#write-data-files)\n\n## Read Data Files\n\nSuppose that we have a `badger.yaml` file in the `data` directory that we\nwant to read.\n\n```yaml title=\"data/animal.yaml\"\nname:   Brian\nanimal: Badger\n```\n\nAll we have to do is add the `{ codec: \"yaml\" }`\noptions to the `file()` method.  The `read()` method will then\nautomatically decode the YAML text.\n\n```js title=\"bin/animal.js\"\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .directory('data')\n  .file('badger.yaml', { codec: 'yaml' })\n  .read().then(\n    data => console.log(data.name, 'is a', data.animal)\n  )\n```\n\nThis prints the string \"Brian is a Badger\" to the console.\n\n## Write Data Files\n\nThe `codec` option also works when writing data.\n\n```js title=\"bin/giraffe.js\"\nimport { bin } from '@abw/badger'\n\nbin(import.meta.url)\n  .parent()\n  .directory('data')\n  .file('giraffe.yaml', { codec: 'yaml' })\n  .write({\n    name:   \"Gerald\",\n    animal: \"Giraffe\",\n  })\n```\n\nYou should now have a `data/giraffe.yaml` file containing the following:\n\n```yaml title=\"data/giraffe.yaml\"\nname: Gerald\nanimal: Giraffe\n```\n\n",
+    "content": "# Data Codecs\n\nCodecs are used to encode and decode data to and from serialised text.\nThe badger toolkit comes with two built-in codecs for `json` and `yaml` files.\n\n- [Read Data File](#read-data-files)\n- [Write Data Files](#write-data-files)\n\n## Read Data Files\n\nSuppose that you have a `badger.yaml` file that you want to read.\n\n```yaml\nname:   Brian\nanimal: Badger\n```\n\nAll you have to do is add the `{ codec: 'yaml' }`\noption to the `file()` function.  The `read()`\nmethod will then automatically decode the YAML text.\n\n```js\nimport { file } from '@abw/badger'\n\nfile('badger.yaml', { codec: 'yaml' })\n  .read()\n  .then(\n    data => console.log(data.name, 'is a', data.animal)\n  )\n```\n\nThis prints the string \"Brian is a Badger\" to the console.\n\nYou can also do the same thing using the `file()` method on a directory\nobject.\n\n```js\nimport { dir } from '@abw/badger'\n\ndir('data')\n  .file('badger.yaml', { codec: 'yaml' })\n  .read()\n  .then(\n    data => console.log(data.name, 'is a', data.animal)\n  )\n```\n\n## Write Data Files\n\nThe `codec` option also works when writing data.\n\n```js\nimport { file } from '@abw/badger'\n\nfile('giraffe.yaml', { codec: 'yaml' })\n  .write({\n    name:   \"Gerald\",\n    animal: \"Giraffe\",\n  })\n```\n\nYou should now have a `giraffe.yaml` file containing the following:\n\n```yaml\nname: Gerald\nanimal: Giraffe\n```\n\n",
     "static": true,
     "access": "public"
   },
@@ -8137,7 +8137,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/config_files.md",
     "name": "./manual/config_files.md",
-    "content": "# Configuration Files\n\nWe all know (hopefully) that it's considered harmful to hard-code values in code\nthat might conceivably change at some point.  Furthermore, the DRY (Don't\nRepeat Yourself) principle tells us that _\"Every piece of knowledge must\nhave a single, unambiguous, authoritative representation within a system\"_.\n\nSo it's good practice to have a single location where configuration options for your\nproject can be stored.  For a smaller projects this might be a single configuration\nfile (e.g. consider how `package.json` is used for NPM modules). For larger projects\nyou may choose to have several configuration files to achieve a better separation\nof concerns and to make them easier to manage.\n\n- [Config Object](#config-object)\n- [Config Directory](#config-directory)\n- [Multiple Config Directories](#multiple-config-directories)\n- [Loading a Config File](#loading-a-config-file)\n- [Data Path](#data-path)\n- [Configuration Options](#configuration-options)\n- [Benefits](#benefits)\n\n## Config Object\n\nThe [Config](../class/src/Badger/Config.js~Config) module simplifies the process\nof reading configuration files stored in a central location.  Tell it where your\nconfiguration files are stored and then it will take care of loading them for you.\n\n```js\nimport { Config } from '@abw/badger'\n\n// look for config files in a `config` directory\nconst configDir = new Config('config')\n\n// load the badger.(js|mjs|yaml|json) file\nconfigDir.config('badger').then(\n  config => console.log(\"loading the badger config: \", config)\n)\n```\n\n## Config Directory\n\nWhen you create a new `Config` object you should specify the name of the\nconfiguration directory relative to your current location.\n\n```js\nconst configDir = new Config('config')\n```\n\nYou can specify it as a string as shown above, or using a\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as\nshown in the earlier examples. For example, if you have a script in the `bin`\ndirectory and you want to load configuration files from the `config` directory\nlocated alongside it then you can do something like this:\n\n```js title=\"bin/configLoaderExample.js\"\nimport { bin, Config } from '@abw/badger'\n\nconst configDir = new Config(\n  bin(import.meta.url).parent().dir('config')\n)\n```\n\nOr more succinctly like this:\n\n```js title=\"bin/configLoaderExample.js\"\nimport { bin, Config } from '@abw/badger'\n\nconst configDir = new Config(\n  bin(import.meta.url).dir('../config')\n)\n```\n\n## Multiple Config Directories\n\nIf you have multiple locations that you want to read configuration files\nfrom then you can specify them as an array.  The values of the array can be\neither Directory objects or strings, or a mixture of the two.  For example if\nfor some reason you have a `config` directory and a `system` directory that\nyou want to read configuration files from then you could do this:\n\n```js\nconst rootDir = bin(import.meta.url).parent()\n\nconst configDir = new Config(\n  [rootDir.dir('config'), rootDir.dir('system')]\n)\n```\n\n## Loading a Config File\n\nThe `config()` method expects the basename (i.e. no file extension) of a file\nin your config directory (or one of them).\n\n```js\n// load the badger.(js|mjs|yaml|json) file\nconfigDir.config('badger').then(\n  config => console.log(\"loaded the badger config: \", config)\n)\n```\n\n### Javascript Files\n\nIt will first look for a Javascript file with a `.js` or `.mjs` extension.\nIf it finds such a file then it will import it and return a Promise that\nfulfills with the exports from that file.  For example, a `config/badger.js`\nfile might look like this:\n\n```js title=\"config/badger.js\"\nexport const name=\"Brian\";\nexport const animal=\"Badger\";\n```\n\n### YAML or JSON Files\n\nIf it doesn't find a Javascript file then it will look for a `yaml` or `json`\nfile.  For example, a `config/badger.yaml` might look like this:\n\n```yaml title=\"config/badger.yaml\"\nname:   Brian\nanimal: Badger\n```\n\nOr a `config/badger.json` might look like this:\n\n```json title=\"config/badger.json\"\n{\n  \"name\":   \"Brian\",\n  \"animal\": \"Badger\"\n}\n```\n\nIn all the above cases, the same data will be returned in the Promise.\n\n```js\nconfigDir.config('badger').then(\n  // prints \"Brian is a Badger\"\n  config => console.log(config.name, \"is a\", config.animal)\n)\n```\n\n## Data Path\n\nIf you want to access a particular piece of data from the loaded configuration\nthen you can specify it as a data path fragment following the file name.  Separate the\nfile name and data path fragment with a `#`.\n\n```js\n// load the default export from the badger.(js|mjs) file\nconfigDir.config('badger#name').then(\n  name => console.log(\"The badger is called\", name)\n)\n```\n\nSee the [Data Paths](./manual/data_paths) documentation for further information.\n\n## Configuration Options\n\nThe `jsExt` configuration option can be used to change the file extensions\nthat are recognised for Javascript files (`['js', 'mjs']` by default) and\nthe `codec` option can be used to specify which codecs can be used for\ndata files (`['yaml', 'json']` by default).  Note that the names of the\n`codec` correspond to the file extensions, e.g. a file must have a `.yaml`\nextension to be reconised and read using the `yaml` codec.\n\nFor example, if you only want to look for `.js` Javascript files and `.json`\ndata files then you would set the options like this:\n\n```js\nconst configDir = new Config(\n  rootDir.dir('config'),\n  {\n    jsExt: ['js'],\n    codec: ['json'],\n  };\n)\n```\n\nOr, given that you now only have one value for each of `jsExt` and `codecs` you\ncould do it like this:\n\n```js\nconst configDir = new Config(\n  rootDir.dir('config'),\n  {\n    jsExt: 'js',\n    codec: 'json',\n  };\n)\n```\n\n## Benefits\n\nIn case it's not immediately obvious, one key benefit of using the Config module to\nload configuration files is that it allows you to change the format that you're\nusing at any time.  You might start off with a simple `.json` JSON file then later decide\nthat you want to change to a `.yaml` YAML file so that you can add some comments and whitespace\nto make it more readable.  Further down the line you might need to perform some\ncomputation and switch it to a `.js` Javascript file.\n\nOf course you still need to re-write your configuration file but you don't need to worry about\nupdating any code that's loading it.  When you add a `badger.yaml` file to the configuration\ndirectory it will immediately take precedence over the `badger.json` file, or if you add a\n`badger.js` file it will take precedence over both the `badger.yaml` and `badger.json` files.\n\nThis is why you should **NOT** provide the file extension in the name you pass to the\n`config()` method.  Leave it up to the `config()` method to work that out for you\nand do the right thing.\n\n",
+    "content": "# Configuration Files\n\nWe all know (hopefully) that it's considered harmful to hard-code values in code\nthat might conceivably change at some point.  Furthermore, the DRY (Don't\nRepeat Yourself) principle tells us that _\"Every piece of knowledge must\nhave a single, unambiguous, authoritative representation within a system\"_.\n\nSo it's good practice to have a single location where configuration options for your\nproject can be stored.  For a smaller projects this might be a single configuration\nfile (e.g. consider how `package.json` is used for NPM modules). For larger projects\nyou may choose to have several configuration files to achieve a better separation\nof concerns and to make them easier to manage.\n\n- [Config Object](#config-object)\n- [Config Directory](#config-directory)\n- [Multiple Config Directories](#multiple-config-directories)\n- [Loading a Config File](#loading-a-config-file)\n- [Data Path](#data-path)\n- [Configuration Options](#configuration-options)\n- [Benefits](#benefits)\n\n## Config Object\n\nThe [Config](../class/src/Badger/Config.js~Config) module simplifies the process\nof reading configuration files stored in a central location.  Tell it where your\nconfiguration files are stored and then it will take care of loading them for you.\n\n```js\nimport { Config } from '@abw/badger'\n\n// look for config files in a `config` directory\nconst configDir = new Config('config')\n\n// load the badger.(js|mjs|yaml|json) file\nconfigDir.config('badger').then(\n  config => console.log(\"loading the badger config: \", config)\n)\n```\n\n## Config Directory\n\nWhen you create a new `Config` object you should specify the name of the\nconfiguration directory relative to your current location.\n\n```js\nconst configDir = new Config('config')\n```\n\nYou can specify it as a string as shown above, or using a\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as\nshown in the earlier examples. For example, if you have a script in the `bin`\ndirectory and you want to load configuration files from the `config` directory\nlocated alongside it then you can do something like this:\n\n```js\nimport { bin, Config } from '@abw/badger'\n\nconst configDir = new Config(\n  bin(import.meta.url).parent().dir('config')\n)\n```\n\nOr more succinctly like this:\n\n```js\nimport { bin, Config } from '@abw/badger'\n\nconst configDir = new Config(\n  bin(import.meta.url).dir('../config')\n)\n```\n\n## Multiple Config Directories\n\nIf you have multiple locations that you want to read configuration files\nfrom then you can specify them as an array.  The values of the array can be\neither Directory objects or strings, or a mixture of the two.  For example if\nyou want to read configuration files from your project root directory and/or a\n`config` directory then you could do this:\n\n```js\nconst rootDir = bin(import.meta.url).parent()\n\nconst configDir = new Config(\n  [rootDir, rootDir.dir('config')]\n)\n```\n\n## Loading a Config File\n\nThe `config()` method expects the basename (i.e. no file extension) of a file\nin your config directory (or one of them).\n\n```js\n// load the badger.(js|mjs|yaml|json) file\nconfigDir.config('badger').then(\n  config => console.log(\"loaded the badger config: \", config)\n)\n```\n\n### Javascript Files\n\nIt will first look for a Javascript file with a `.js` or `.mjs` extension.\nIf it finds such a file then it will import it and return a Promise that\nfulfills with the exports from that file.  For example, a `config/badger.js`\nfile might look like this:\n\n```js\nexport const name=\"Brian\";\nexport const animal=\"Badger\";\n```\n\n### YAML or JSON Files\n\nIf it doesn't find a Javascript file then it will look for a `yaml` or `json`\nfile.  For example, a `config/badger.yaml` might look like this:\n\n```yaml\nname:   Brian\nanimal: Badger\n```\n\nOr a `config/badger.json` might look like this:\n\n```json\n{\n  \"name\":   \"Brian\",\n  \"animal\": \"Badger\"\n}\n```\n\nIn all the above cases, the same data will be returned in the Promise.\n\n```js\nconfigDir.config('badger').then(\n  // prints \"Brian is a Badger\"\n  config => console.log(config.name, \"is a\", config.animal)\n)\n```\n\n## Data Path\n\nIf you want to access a particular piece of data from the loaded configuration\nthen you can specify it as a data path fragment following the file name.  Separate the\nfile name and data path fragment with a `#`.\n\n```js\n// load the default export from the badger.(js|mjs) file\nconfigDir.config('badger#name').then(\n  name => console.log(\"The badger is called\", name)\n)\n```\n\nSee the [Data Paths](./manual/data_paths) documentation for further information.\n\n## Configuration Options\n\nThe `jsExt` configuration option can be used to change the file extensions\nthat are recognised for Javascript files (`['js', 'mjs']` by default) and\nthe `codec` option can be used to specify which codecs can be used for\ndata files (`['yaml', 'json']` by default).  Note that the names of the\n`codec` correspond to the file extensions, e.g. a file must have a `.yaml`\nextension to be reconised and read using the `yaml` codec.\n\nFor example, if you only want to look for `.js` Javascript files and `.json`\ndata files then you would set the options like this:\n\n```js\nconst configDir = new Config(\n  rootDir.dir('config'),\n  {\n    jsExt: ['js'],\n    codec: ['json'],\n  };\n)\n```\n\nOr, given that you now only have one value for each of `jsExt` and `codecs` you\ncould do it like this:\n\n```js\nconst configDir = new Config(\n  rootDir.dir('config'),\n  {\n    jsExt: 'js',\n    codec: 'json',\n  };\n)\n```\n\n## Benefits\n\nIn case it's not immediately obvious, one key benefit of using the Config module to\nload configuration files is that it allows you to change the format that you're\nusing at any time.  You might start off with a simple `.json` JSON file then later decide\nthat you want to change to a `.yaml` YAML file so that you can add some comments and whitespace\nto make it more readable.  Further down the line you might need to perform some\ncomputation and switch it to a `.js` Javascript file.\n\nOf course you still need to re-write your configuration file but you don't need to worry about\nupdating any code that's loading it.  When you add a `badger.yaml` file to the configuration\ndirectory it will immediately take precedence over the `badger.json` file, or if you add a\n`badger.js` file it will take precedence over both the `badger.yaml` and `badger.json` files.\n\nThis is why you should **NOT** provide the file extension in the name you pass to the\n`config()` method.  Leave it up to the `config()` method to work that out for you\nand do the right thing.\n\n",
     "static": true,
     "access": "public"
   },
@@ -8145,7 +8145,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/library_modules.md",
     "name": "./manual/library_modules.md",
-    "content": "# Library Modules\n\nThe [Library](../class/src/Badger/Library.js~Library) module is similar to the\n[Config](../class/src/Badger/Config.js~Config) module except that it's designed to\nwork only with Javascript files.\n\n- [Library Object](#library-object)\n- [Library Directory](#library-directory)\n- [Multiple Library Directories](#multiple-library-directories)\n- [Loading a Library Module](#loading-a-library-module)\n- [Data Path](#data-path)\n- [Configuration Options](#configuration-options)\n\n## Library Object\n\nCreate a library directory specifying one or more directories where your code is located.\nThen call the `library()` method to load a `.js` or `.mjs` module from any of those\ndirectories.\n\n```js title=\"bin/configLoaderExample.js\"\nimport { Library } from '@abw/badger'\n\nconst library = new Library(\n  ['src', 'lib']\n)\n\n// load first of src/Example.js, src/Example.mjs, lib/Example.js or lib/Example.mjs\nlibrary.library('Example').then(\n  exports => {\n    // do something with your code exports here\n  }\n)\n```\n\nThe Promise returned fulfills to an object containing all the exports from your library\nmodule.\n\n## Library Directory\n\nWhen you create a new `Library` object you should specify the name of the\nlibrary directory or directories relative to your current location.\n\n```js\nconst library = new Library('library')\n```\n\nYou can specify it as a string as shown above, or using a\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as\nshown in the earlier examples. For example, if you have a script in the `bin`\ndirectory and you want to load configuration files from the `config` directory\nlocated alongside it then you can do something like this:\n\n```js title=\"bin/libraryLoaderExample.js\"\nimport { bin, Library } from '@abw/badger'\n\nconst library = new Library(\n  bin(import.meta.url).parent().dir('library')\n)\n```\n\nOr more succinctly like this:\n\n```js title=\"bin/libraryLoaderExample.js\"\nimport { bin, Library } from '@abw/badger'\n\nconst library = new Library(\n  bin(import.meta.url).dir('../library')\n)\n```\n## Multiple Library Directories\n\nIf you have multiple locations that you want to read library files\nfrom then you can specify them as an array.  The values of the array can be\neither Directory objects or strings, or a mixture of the two.  For example if\nyou want to load modules from the `src` and `lib` directories then you could do this:\n\n```js\nconst rootDir = bin(import.meta.url).parent()\n\nconst library = new Library(\n  [rootDir.dir('src'), rootDir.dir('lib')]\n)\n```\n\n## Loading a Library Module\n\nThe `library()` method expects the basename (i.e. no file extension) of a file\nin your library directory (or one of them).\n\n```js\n// load the badger.(js|mjs) file\nlibrary.library('badger').then(\n  badger => {\n    // do something with whatever badger exports here\n  }\n)\n```\n\nIt returns a Promise which fulfills with all the exports from your module.\n\n## Data Path\n\nIf you want to access a particular export then you can specify it as a data path\nfragment following the file name.  Separate the file name and data path fragment\nwith a `#`.\n\n```js\n// load the default export from the badger.(js|mjs) file\nlibrary.library('badger#default').then(\n  badger => {\n    // do something with the default badger export here\n  }\n)\n```\n\nSee the [Data Paths](./manual/data_paths) documentation for further information.\n\n## Configuration Options\n\nThe `jsExt` configuration option can be used to change the file extensions\nthat are recognised for Javascript files (`['js', 'mjs']` by default).\n\nFor example, if you only want to look for `.js` Javascript files and `.json`\ndata files then you would set the options like this:\n\n```js\nconst libary = new Library(\n  rootDir.dir('lib'),\n  {\n    jsExt:  ['js'],\n  };\n)\n```\n\nOr, given that you now only have one value for `jsExt` you\ncould do it like this:\n\n```js\nconst library = new Library(\n  rootDir.dir('lib'),\n  {\n    jsExt:  'js',\n  };\n)\n```\n",
+    "content": "# Library Modules\n\nThe [Library](../class/src/Badger/Library.js~Library) module is similar to the\n[Config](../class/src/Badger/Config.js~Config) module except that it's designed to\nwork only with Javascript files.\n\n- [Library Object](#library-object)\n- [Library Directory](#library-directory)\n- [Multiple Library Directories](#multiple-library-directories)\n- [Loading a Library Module](#loading-a-library-module)\n- [Data Path](#data-path)\n- [Configuration Options](#configuration-options)\n\n## Library Object\n\nCreate a library directory specifying one or more directories where your code is located.\nThen call the `library()` method to load a `.js` or `.mjs` module from any of those\ndirectories.\n\n```js\nimport { Library } from '@abw/badger'\n\nconst library = new Library(\n  ['src', 'lib']\n)\n\n// load first of src/Example.js, src/Example.mjs, lib/Example.js or lib/Example.mjs\nlibrary.library('Example').then(\n  exports => {\n    // do something with your code exports here\n  }\n)\n```\n\nThe Promise returned fulfills to an object containing all the exports from your library\nmodule.\n\n## Library Directory\n\nWhen you create a new `Library` object you should specify the name of the\nlibrary directory or directories relative to your current location.\n\n```js\nconst library = new Library('library')\n```\n\nYou can specify it as a string as shown above, or using a\n[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as\nshown in the earlier examples. For example, if you have a script in the `bin`\ndirectory and you want to load configuration files from the `config` directory\nlocated alongside it then you can do something like this:\n\n```js\nimport { bin, Library } from '@abw/badger'\n\nconst library = new Library(\n  bin(import.meta.url).parent().dir('library')\n)\n```\n\nOr more succinctly like this:\n\n```js\nimport { bin, Library } from '@abw/badger'\n\nconst library = new Library(\n  bin(import.meta.url).dir('../library')\n)\n```\n## Multiple Library Directories\n\nIf you have multiple locations that you want to read library files\nfrom then you can specify them as an array.  The values of the array can be\neither Directory objects or strings, or a mixture of the two.  For example if\nyou want to load modules from the `src` and `lib` directories then you could do this:\n\n```js\nconst rootDir = bin(import.meta.url).parent()\n\nconst library = new Library(\n  [rootDir.dir('src'), rootDir.dir('lib')]\n)\n```\n\n## Loading a Library Module\n\nThe `library()` method expects the basename (i.e. no file extension) of a file\nin your library directory (or one of them).\n\n```js\n// load the badger.(js|mjs) file\nlibrary.library('badger').then(\n  badger => {\n    // do something with whatever badger exports here\n  }\n)\n```\n\nIt returns a Promise which fulfills with all the exports from your module.\n\n## Data Path\n\nIf you want to access a particular export then you can specify it as a data path\nfragment following the file name.  Separate the file name and data path fragment\nwith a `#`.\n\n```js\n// load the default export from the badger.(js|mjs) file\nlibrary.library('badger#default').then(\n  badger => {\n    // do something with the default badger export here\n  }\n)\n```\n\nSee the [Data Paths](./manual/data_paths) documentation for further information.\n\n## Configuration Options\n\nThe `jsExt` configuration option can be used to change the file extensions\nthat are recognised for Javascript files (`['js', 'mjs']` by default).\n\nFor example, if you only want to look for `.js` Javascript files and `.json`\ndata files then you would set the options like this:\n\n```js\nconst libary = new Library(\n  rootDir.dir('lib'),\n  {\n    jsExt:  ['js'],\n  };\n)\n```\n\nOr, given that you now only have one value for `jsExt` you\ncould do it like this:\n\n```js\nconst library = new Library(\n  rootDir.dir('lib'),\n  {\n    jsExt:  'js',\n  };\n)\n```\n",
     "static": true,
     "access": "public"
   },
@@ -8153,7 +8153,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/data_paths.md",
     "name": "./manual/data_paths.md",
-    "content": "# Data Paths\n\nBoth the [Config](../class/src/Badger/Config.js~Config) and\n[Library](../class/src/Badger/Library.js~Library) modules provide a\nconvenient way to drill down into the data returned to fetch a particular item.\n\nFor example, suppose you have the following configuration file in `config/zoo.yaml`.\n\n```yaml title=\"config/zoo.yaml\"\nanimals:\n  aardvark:\n    name: Alan\n  badger:\n    name: Brian\n  cat:\n    name: Colin\n```\n\nIf you have a Config object setup to read files from the `config` directory then\nyou can read the whole of the `zoo` data set like this:\n\n```js\nconfigDir.config('zoo').then(\n  zoo => console.log(\"The badger is called \", zoo.animals.badger.name) // The badger is called Brian\n)\n```\n\nIf you're only looking for a particular item, in this case the name of the badger,\nthen you can add a data path fragment to the file name, like this:\n\n```js\nconfigDir.config('zoo#animals/badger/name').then(\n  name => console.log(\"The badger is called \", name) // The badger is called Brian\n)\n```\n\nEach element of the data path should be separated by a slash.  You can specify\ntext elements to access items in an object (as shown above) or numerical elements to\naccess items in an array.\n\nFor example, if you have some data that looks like this:\n\n```json\n{\n  \"numbers\": [\"zero\", \"one\", \"two\", \"forty-two\"],\n  \"friends\": [\n    { \"name\": \"Ford Prefect\" },\n    { \"name\": \"Zaphod Beeblebrox\" },\n    { \"name\": \"Trillian\" },\n  ]\n}\n```\n\nThen a data path of `numbers/3` would return \"forty-two\", or `friends/0/name` would return\n\"Ford Prefect\".\n\nIf an item is `undefined` or `null` then an error is thrown.  Using the above data this would\nhappen if you tried to access `friends/12/name` or `friends/0/birthday`\n\nYou can add an question mark to the end of a path segment to make it silently return `undefined`\ninstead, e.g. `friends/12?/name` or `friends/0/birthday?`.  Note that the question mark can only\nappear at the end of a segment.  If it appears anywhere else then it is assumed to be the same\nthing as `?/`.  e.g. `foo?bar` is the same as `foo?/bar`.\n\nYou can enclose any segment in single or double quotes if you happen to have data keys that include\n`/` or `?` characters in them.  For example, `question/\"What is the answer?\"` to access the value\n\"42\" in the following data:\n\n```json\n{\n  \"question\": {\n    \"What is the answer?\": 42\n  }\n}\n```\n\nIf you want to make a quoted part optional then add the question mark after the closing quote, e.g.\n`question/\"What is the question?\"` would throw an error because it is not defined, but can be specified\nas `question/\"What is the question?\"?` to instead return `undefined`.\n\nThe data path syntax is intentionally simple and limited.  If you want to do anything more complicated\nthen you should consider using JSON Path instead.\n\nAll of the above applies to the data returned by the Config and Library modules when loaded\nJavascript files.  By default they will return an object containing all exported values from the\nJavascript file.  If you want to access the `default` export, for example, then you can add a `#default` suffix\nto the file basename when loading it.\n\n```js\nlibraryDir.library('Example#default').then(\n  default => {\n    // do something with the default export here\n  }\n)\n```\n\nAny other named export can be accessed in the same way.\n\n```js\nlibraryDir.library('Example#anotherExport').then(\n  anotherExport => {\n    // do something with anotherExport here\n  }\n)\n```\n",
+    "content": "# Data Paths\n\nBoth the [Config](../class/src/Badger/Config.js~Config) and\n[Library](../class/src/Badger/Library.js~Library) modules provide a\nconvenient way to drill down into the data returned to fetch a particular item.\n\nThis uses the [dataPath()](../function#static-function-dataPath) function which\nnagivates data using a URL-like path.  The data path syntax is intentionally simple and\nlimited.  If you want to do anything more complicated then you should consider using JSON\nPath instead.\n\n- [Config Files](#config-files)\n- [Optional Items](#optional-items)\n- [Quoted Path Segments](#quoted-path-segments)\n- [Javascript Library Exports](#javascript-library-exports)\n- [Navigating Your Own Data](#navigating-your-own-data)\n\n## Config Files\n\nSuppose you have the following configuration file in `config/zoo.yaml`.\n\n```yaml\nanimals:\n  aardvark:\n    name: Alan\n  badger:\n    name: Brian\n  cat:\n    name: Colin\n```\n\nIf you have a Config object setup to read files from the `config` directory then\nyou can read the whole of the `zoo` data set like this:\n\n```js\nuse { Config } from '@abw/badger'\n\nconst configDir = new Config('config');\n\nconfigDir.config('zoo').then(\n  zoo => console.log(\"The badger is called \", zoo.animals.badger.name) // The badger is called Brian\n)\n```\n\nIf you're only looking for a particular item, in this case the name of the badger,\nthen you can add a data path fragment to the file name, like this:\n\n```js\nconfigDir.config('zoo#animals/badger/name').then(\n  name => console.log(\"The badger is called \", name) // The badger is called Brian\n)\n```\n\nEach element of the data path should be separated by a slash.  You can specify\ntext elements to access items in an object (as shown above) or numerical elements to\naccess items in an array.\n\nFor example, if you have some data that looks like this:\n\n```json\n{\n  \"numbers\": [\"zero\", \"one\", \"two\", \"forty-two\"],\n  \"friends\": [\n    { \"name\": \"Ford Prefect\" },\n    { \"name\": \"Zaphod Beeblebrox\" },\n    { \"name\": \"Trillian\" },\n  ]\n}\n```\n\nThen a data path of `numbers/3` would return \"forty-two\", or `friends/0/name` would return\n\"Ford Prefect\".\n\n## Optional Items\n\nIf an item specified in the path is `undefined` or `null` then an error is thrown.  Using the\nabove data this would happen if you tried to access `friends/12/name` or `friends/0/birthday`\n\nYou can add an question mark to the end of a path segment to make it silently return `undefined`\ninstead, e.g. `friends/12?/name` or `friends/0/birthday?`.  Note that the question mark can only\nappear at the end of a segment.  If it appears anywhere else then it is assumed to be the same\nthing as `?/`.  e.g. `foo?bar` is the same as `foo?/bar`.\n\n## Quoted Path Segments\n\nYou can enclose any segment in single or double quotes if you happen to have data keys that include\n`/` or `?` characters in them.  For example, `question/\"What is the answer?\"` to access the value\n\"42\" in the following data:\n\n```json\n{\n  \"question\": {\n    \"What is the answer?\": 42\n  }\n}\n```\n\nIf you want to make a quoted part optional then add the question mark after the closing quote, e.g.\n`question/\"What is the question?\"` would throw an error because it is not defined, but can be specified\nas `question/\"What is the question?\"?` to instead return `undefined`.\n\nNote that the usual Javascript rules for quoted strings apply.  e.g. use `\\n` to encode a newline,\n`\\\"` to escape a double quote inside a double quoted string, and so on.\n\n## Javascript Library Exports\n\nAll of the above applies to the data returned by the Config and Library modules when loaded\nJavascript files.  By default they will return an object containing all exported values from the\nJavascript file.  If you want to access the `default` export, for example, then you can add a `#default` suffix\nto the file basename when loading it.\n\n```js\nlibraryDir.library('Example#default').then(\n  default => {\n    // do something with the default export here\n  }\n)\n```\n\nAny other named export can be accessed in the same way.\n\n```js\nlibraryDir.library('Example#anotherExport').then(\n  anotherExport => {\n    // do something with anotherExport here\n  }\n)\n```\n\n## Navigating Your Own Data\n\nYou can use the `dataPath()` function to navigate your own data.\n\n```js\nimport { dataPath } from '@abw/badger'\n\nconst animals = {\n  aardvark: {\n    name: \"Alan\"\n  }\n  badger: {\n    name: \"Brian\"\n  },\n  cat: {\n    name: \"Colin\"\n  }\n}\n\nconst badgerName = dataPath(data, 'badger/name');\n```",
     "static": true,
     "access": "public"
   }

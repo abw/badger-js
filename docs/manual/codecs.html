@@ -30,6 +30,7 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/introduction.html"><a href="manual/introduction.html" data-ice="link">Introduction</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/introduction.html"><a href="manual/introduction.html#warning" data-ice="link">Warning</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -39,6 +40,8 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#directories" data-ice="link">Directories</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#reading-files" data-ice="link">Reading Files</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#writing-files" data-ice="link">Writing Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#directory-object" data-ice="link">Directory Object</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/filesystem.html"><a href="manual/filesystem.html#file-objects" data-ice="link">File Objects</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -80,6 +83,11 @@
     <ul class="manual-toc">
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/data_paths.html"><a href="manual/data_paths.html" data-ice="link">Data Paths</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#config-files" data-ice="link">Config Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#optional-items" data-ice="link">Optional Items</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#quoted-path-segments" data-ice="link">Quoted Path Segments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#javascript-library-exports" data-ice="link">Javascript Library Exports</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#navigating-your-own-data" data-ice="link">Navigating Your Own Data</a></li>
 </ul>
   </div>
 </div>
@@ -91,35 +99,39 @@ The badger toolkit comes with two built-in codecs for <code>json</code> and <cod
 <li><a href="#read-data-files">Read Data File</a></li>
 <li><a href="#write-data-files">Write Data Files</a></li>
 </ul>
-<h2 id="read-data-files">Read Data Files</h2><p>Suppose that we have a <code>badger.yaml</code> file in the <code>data</code> directory that we
-want to read.</p>
+<h2 id="read-data-files">Read Data Files</h2><p>Suppose that you have a <code>badger.yaml</code> file that you want to read.</p>
 <pre><code class="lang-yaml"><code class="source-code prettyprint">name:   Brian
 animal: Badger</code></code></pre>
-<p>All we have to do is add the <code>{ codec: "yaml" }</code>
-options to the <code>file()</code> method.  The <code>read()</code> method will then
-automatically decode the YAML text.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
+<p>All you have to do is add the <code>{ codec: 'yaml' }</code>
+option to the <code>file()</code> function.  The <code>read()</code>
+method will then automatically decode the YAML text.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { file } from '@abw/badger'
 
-bin(import.meta.url)
-  .parent()
-  .directory('data')
-  .file('badger.yaml', { codec: 'yaml' })
-  .read().then(
+file('badger.yaml', { codec: 'yaml' })
+  .read()
+  .then(
     data =&gt; console.log(data.name, 'is a', data.animal)
   )</code></code></pre>
 <p>This prints the string "Brian is a Badger" to the console.</p>
-<h2 id="write-data-files">Write Data Files</h2><p>The <code>codec</code> option also works when writing data.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
+<p>You can also do the same thing using the <code>file()</code> method on a directory
+object.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { dir } from '@abw/badger'
 
-bin(import.meta.url)
-  .parent()
-  .directory('data')
-  .file('giraffe.yaml', { codec: 'yaml' })
+dir('data')
+  .file('badger.yaml', { codec: 'yaml' })
+  .read()
+  .then(
+    data =&gt; console.log(data.name, 'is a', data.animal)
+  )</code></code></pre>
+<h2 id="write-data-files">Write Data Files</h2><p>The <code>codec</code> option also works when writing data.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { file } from '@abw/badger'
+
+file('giraffe.yaml', { codec: 'yaml' })
   .write({
     name:   "Gerald",
     animal: "Giraffe",
   })</code></code></pre>
-<p>You should now have a <code>data/giraffe.yaml</code> file containing the following:</p>
+<p>You should now have a <code>giraffe.yaml</code> file containing the following:</p>
 <pre><code class="lang-yaml"><code class="source-code prettyprint">name: Gerald
 animal: Giraffe</code></code></pre>
 </div>
