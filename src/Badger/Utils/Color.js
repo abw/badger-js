@@ -1,8 +1,8 @@
 import { isObject } from "./Misc.js";
 
-export const ANSIStart  = '\u001B[';
-export const ANSIEnd    = 'm';
-export const ANSIColors = {
+const ANSIStart  = '\u001B[';
+const ANSIEnd    = 'm';
+const ANSIColors = {
   reset:    0,
   bold:     1,
   bright:   1,
@@ -75,5 +75,9 @@ export const ANSIescape = (colors={}) => {
   return escapes.join('');
 }
 
+/**
+ * Returns an ANSI escape code to reset all colors.
+ * @return {String} ANSI escape reset string
+ */
 export const ANSIreset = () => ANSIescapeCode('reset', false)
 
