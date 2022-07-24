@@ -4,9 +4,22 @@ Both the [Config](../class/src/Badger/Config.js~Config) and
 [Library](../class/src/Badger/Library.js~Library) modules provide a
 convenient way to drill down into the data returned to fetch a particular item.
 
-For example, suppose you have the following configuration file in `config/zoo.yaml`.
+This uses the [dataPath()](../function#static-function-dataPath) function which
+nagivates data using a URL-like path.  The data path syntax is intentionally simple and
+limited.  If you want to do anything more complicated then you should consider using JSON
+Path instead.
 
-```yaml title="config/zoo.yaml"
+- [Config Files](#config-files)
+- [Optional Items](#optional-items)
+- [Quoted Path Segments](#quoted-path-segments)
+- [Javascript Library Exports](#javascript-library-exports)
+- [Navigating Your Own Data](#navigating-your-own-data)
+
+## Config Files
+
+Suppose you have the following configuration file in `config/zoo.yaml`.
+
+```yaml
 animals:
   aardvark:
     name: Alan
@@ -20,6 +33,10 @@ If you have a Config object setup to read files from the `config` directory then
 you can read the whole of the `zoo` data set like this:
 
 ```js
+use { Config } from '@abw/badger'
+
+const configDir = new Config('config');
+
 configDir.config('zoo').then(
   zoo => console.log("The badger is called ", zoo.animals.badger.name) // The badger is called Brian
 )
@@ -54,13 +71,17 @@ For example, if you have some data that looks like this:
 Then a data path of `numbers/3` would return "forty-two", or `friends/0/name` would return
 "Ford Prefect".
 
-If an item is `undefined` or `null` then an error is thrown.  Using the above data this would
-happen if you tried to access `friends/12/name` or `friends/0/birthday`
+## Optional Items
+
+If an item specified in the path is `undefined` or `null` then an error is thrown.  Using the
+above data this would happen if you tried to access `friends/12/name` or `friends/0/birthday`
 
 You can add an question mark to the end of a path segment to make it silently return `undefined`
 instead, e.g. `friends/12?/name` or `friends/0/birthday?`.  Note that the question mark can only
 appear at the end of a segment.  If it appears anywhere else then it is assumed to be the same
 thing as `?/`.  e.g. `foo?bar` is the same as `foo?/bar`.
+
+## Quoted Path Segments
 
 You can enclose any segment in single or double quotes if you happen to have data keys that include
 `/` or `?` characters in them.  For example, `question/"What is the answer?"` to access the value
@@ -78,8 +99,10 @@ If you want to make a quoted part optional then add the question mark after the 
 `question/"What is the question?"` would throw an error because it is not defined, but can be specified
 as `question/"What is the question?"?` to instead return `undefined`.
 
-The data path syntax is intentionally simple and limited.  If you want to do anything more complicated
-then you should consider using JSON Path instead.
+Note that the usual Javascript rules for quoted strings apply.  e.g. use `\n` to encode a newline,
+`\"` to escape a double quote inside a double quoted string, and so on.
+
+## Javascript Library Exports
 
 All of the above applies to the data returned by the Config and Library modules when loaded
 Javascript files.  By default they will return an object containing all exported values from the
@@ -102,4 +125,26 @@ libraryDir.library('Example#anotherExport').then(
     // do something with anotherExport here
   }
 )
+```
+
+## Navigating Your Own Data
+
+You can use the `dataPath()` function to navigate your own data.
+
+```js
+import { dataPath } from '@abw/badger'
+
+const animals = {
+  aardvark: {
+    name: "Alan"
+  }
+  badger: {
+    name: "Brian"
+  },
+  cat: {
+    name: "Colin"
+  }
+}
+
+const badgerName = dataPath(data, 'badger/name');
 ```

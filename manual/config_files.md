@@ -52,7 +52,7 @@ shown in the earlier examples. For example, if you have a script in the `bin`
 directory and you want to load configuration files from the `config` directory
 located alongside it then you can do something like this:
 
-```js title="bin/configLoaderExample.js"
+```js
 import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
@@ -62,7 +62,7 @@ const configDir = new Config(
 
 Or more succinctly like this:
 
-```js title="bin/configLoaderExample.js"
+```js
 import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
@@ -75,14 +75,14 @@ const configDir = new Config(
 If you have multiple locations that you want to read configuration files
 from then you can specify them as an array.  The values of the array can be
 either Directory objects or strings, or a mixture of the two.  For example if
-for some reason you have a `config` directory and a `system` directory that
-you want to read configuration files from then you could do this:
+you want to read configuration files from your project root directory and/or a
+`config` directory then you could do this:
 
 ```js
 const rootDir = bin(import.meta.url).parent()
 
 const configDir = new Config(
-  [rootDir.dir('config'), rootDir.dir('system')]
+  [rootDir, rootDir.dir('config')]
 )
 ```
 
@@ -105,7 +105,7 @@ If it finds such a file then it will import it and return a Promise that
 fulfills with the exports from that file.  For example, a `config/badger.js`
 file might look like this:
 
-```js title="config/badger.js"
+```js
 export const name="Brian";
 export const animal="Badger";
 ```
@@ -115,14 +115,14 @@ export const animal="Badger";
 If it doesn't find a Javascript file then it will look for a `yaml` or `json`
 file.  For example, a `config/badger.yaml` might look like this:
 
-```yaml title="config/badger.yaml"
+```yaml
 name:   Brian
 animal: Badger
 ```
 
 Or a `config/badger.json` might look like this:
 
-```json title="config/badger.json"
+```json
 {
   "name":   "Brian",
   "animal": "Badger"
