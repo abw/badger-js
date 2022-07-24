@@ -21,7 +21,7 @@ of concerns and to make them easier to manage.
 
 ## Config Object
 
-The [Config](../class/src/Badger/Config.js~Config) module simplifies the process
+The [Config](class/src/Badger/Config.js~Config) module simplifies the process
 of reading configuration files stored in a central location.  Tell it where your
 configuration files are stored and then it will take care of loading them for you.
 
@@ -47,7 +47,7 @@ const configDir = new Config('config')
 ```
 
 You can specify it as a string as shown above, or using a
-[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as
+[Directory](class/src/Badger/Filesystem/Directory.js~Directory) object as
 shown in the earlier examples. For example, if you have a script in the `bin`
 directory and you want to load configuration files from the `config` directory
 located alongside it then you can do something like this:

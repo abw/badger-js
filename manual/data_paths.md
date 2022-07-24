@@ -1,10 +1,10 @@
 # Data Paths
 
-Both the [Config](../class/src/Badger/Config.js~Config) and
-[Library](../class/src/Badger/Library.js~Library) modules provide a
+Both the [Config](class/src/Badger/Config.js~Config) and
+[Library](class/src/Badger/Library.js~Library) modules provide a
 convenient way to drill down into the data returned to fetch a particular item.
 
-This uses the [dataPath()](../function#static-function-dataPath) function which
+This uses the [dataPath()](function#static-function-dataPath) function which
 nagivates data using a URL-like path.  The data path syntax is intentionally simple and
 limited.  If you want to do anything more complicated then you should consider using JSON
 Path instead.

@@ -1,7 +1,7 @@
 # Library Modules
 
-The [Library](../class/src/Badger/Library.js~Library) module is similar to the
-[Config](../class/src/Badger/Config.js~Config) module except that it's designed to
+The [Library](class/src/Badger/Library.js~Library) module is similar to the
+[Config](class/src/Badger/Config.js~Config) module except that it's designed to
 work only with Javascript files.
 
 - [Library Object](#library-object)
@@ -45,7 +45,7 @@ const library = new Library('library')
 ```
 
 You can specify it as a string as shown above, or using a
-[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) object as
+[Directory](class/src/Badger/Filesystem/Directory.js~Directory) object as
 shown in the earlier examples. For example, if you have a script in the `bin`
 directory and you want to load configuration files from the `config` directory
 located alongside it then you can do something like this:

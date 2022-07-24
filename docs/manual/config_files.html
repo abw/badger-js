@@ -111,7 +111,7 @@ of concerns and to make them easier to manage.</p>
 <li><a href="#configuration-options">Configuration Options</a></li>
 <li><a href="#benefits">Benefits</a></li>
 </ul>
-<h2 id="config-object">Config Object</h2><p>The <a href="../class/src/Badger/Config.js~Config">Config</a> module simplifies the process
+<h2 id="config-object">Config Object</h2><p>The <a href="class/src/Badger/Config.js~Config">Config</a> module simplifies the process
 of reading configuration files stored in a central location.  Tell it where your
 configuration files are stored and then it will take care of loading them for you.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { Config } from '@abw/badger'
@@ -127,7 +127,7 @@ configDir.config('badger').then(
 configuration directory relative to your current location.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const configDir = new Config('config')</code></code></pre>
 <p>You can specify it as a string as shown above, or using a
-<a href="../class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object as
+<a href="class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object as
 shown in the earlier examples. For example, if you have a script in the <code>bin</code>
 directory and you want to load configuration files from the <code>config</code> directory
 located alongside it then you can do something like this:</p>

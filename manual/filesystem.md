@@ -80,8 +80,8 @@ bin(import.meta.url)
 ```
 
 For further information see the documentation for the
-[Directory](../class/src/Badger/Filesystem/Directory.js~Directory) and
-[File](../class/src/Badger/Filesystem/File.js~File) modules.
+[Directory](class/src/Badger/Filesystem/Directory.js~Directory) and
+[File](class/src/Badger/Filesystem/File.js~File) modules.
 
 ## Directory Object
 
