@@ -8,7 +8,7 @@ import yaml from 'js-yaml';
  * @example
  * encode({ message: 'Hello World' })
  */
-export const encode = data => yaml.dump(data);
+const encode = data => yaml.dump(data);
 
 /**
  * Function to decode YAML
@@ -17,11 +17,11 @@ export const encode = data => yaml.dump(data);
  * @example
  * decode("message: Hello World")
  */
-export const decode = text => yaml.load(text);
+const decode = text => yaml.load(text);
 
 /**
  * An object containing the YAML `encode` and `decode` functions
  */
-export const codec = { encode, decode };
+export const yamlCodec = { encode, decode };
 
-export default codec
+export default yamlCodec

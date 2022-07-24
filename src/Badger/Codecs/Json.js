@@ -5,7 +5,7 @@
  * @example
  * encode({ message: 'Hello World' })
  */
-export const encode = data => JSON.stringify(data);
+const encode = data => JSON.stringify(data);
 
 /**
  * Function to decode JSON
@@ -14,11 +14,11 @@ export const encode = data => JSON.stringify(data);
  * @example
  * decode("{ message: 'Hello World' }")
  */
-export const decode = text => JSON.parse(text);
+const decode = text => JSON.parse(text);
 
 /**
  * An object containing the JSON `encode` and `decode` functions
  */
-export const codec = { encode, decode };
+export const jsonCodec = { encode, decode };
 
-export default codec
+export default jsonCodec
