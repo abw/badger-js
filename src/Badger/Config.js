@@ -5,8 +5,8 @@ import { addDebug } from './Utils/Debug.js';
 import { dataPath } from '../Badger/Utils/DataPath.js';
 
 const defaults = {
-  codecs: ['yaml', 'json'],
-  jsExt:  ['js', 'mjs'],
+  codec: ['yaml', 'json'],
+  jsExt: ['js', 'mjs'],
 };
 
 /**
@@ -21,13 +21,13 @@ export class Config extends DirPath {
    * @param {String} dir - one or more directories that contain configuration files
    * @param {Object} [options] - configuration options
    * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
-   * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
+   * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names
    * @return {Object} the Config object
    */
   constructor(dir, options={}) {
     super(dir);
     const params = { ...defaults, ...options };
-    this.state.codecs = splitList(params.codecs),
+    this.state.codec = splitList(params.codec),
     this.state.jsExt = splitList(params.jsExt),
     addDebug(this, options.debug, options.debugPrefix, options.debugColor);
   }
@@ -66,12 +66,12 @@ export class Config extends DirPath {
   }
 
   /**
-   * Internal method to locate a configuration file with one of the `codecs` extensions (`.yaml` or `.json` by default)
+   * Internal method to locate a configuration file with one of the `codec` extensions (`.yaml` or `.json` by default)
    * @param {String} uri - base part of filename
    * @return {Object} the {@link File} object if it exists or `undefined` if not
    */
   async file(uri) {
-    return await this.firstFileWithExt(uri, this.state.codecs, (uri, codec) => ({ codec }));
+    return await this.firstFileWithExt(uri, this.state.codec, (uri, codec) => ({ codec }));
   }
 
   /**
@@ -115,7 +115,7 @@ export class Config extends DirPath {
  * @param {String} dir - directory or directories containing configuration files
  * @param {Object} [options] - configuration options
  * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions
- * @param {Array|String} [options.codecs='yaml json'] - Array or comma/whitespace delimited string of codec names
+ * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names
  * @return {Object} the Config object
  */
 export const config = (dir, options) => new Config(dir, options)
