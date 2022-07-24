@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -85,62 +85,43 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger">badger</h1><img width="300" src="./manual/asset/badger2.svg">
-
-<p>This is the manual for the <code>badger</code> Javascript toolkit.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="data-codecs">Data Codecs</h1><p>Codecs are used to encode and decode data to and from serialised text.
+The badger toolkit comes with two built-in codecs for <code>json</code> and <code>yaml</code> files.</p>
 <ul>
-<li><a href="manual/introduction.html">Introduction</a></li>
-<li><a href="manual/filesystem.html">Filesystem Utilities</a></li>
-<li><a href="manual/codecs.html">Data Codecs</a></li>
-<li><a href="manual/config_files.html">Configuration Files</a></li>
-<li><a href="manual/library_modules.html">Library Modules</a></li>
-<li><a href="manual/data_paths.html">Data Paths</a></li>
+<li><a href="#read-data-files">Read Data File</a></li>
+<li><a href="#write-data-files">Write Data Files</a></li>
 </ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
+<h2 id="read-data-files">Read Data Files</h2><p>Suppose that we have a <code>badger.yaml</code> file in the <code>data</code> directory that we
+want to read.</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">name:   Brian
+animal: Badger</code></code></pre>
+<p>All we have to do is add the <code>{ codec: "yaml" }</code>
+options to the <code>file()</code> method.  The <code>read()</code> method will then
+automatically decode the YAML text.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
 
-  
+bin(import.meta.url)
+  .parent()
+  .directory('data')
+  .file('badger.yaml', { codec: 'yaml' })
+  .read().then(
+    data =&gt; console.log(data.name, 'is a', data.animal)
+  )</code></code></pre>
+<p>This prints the string "Brian is a Badger" to the console.</p>
+<h2 id="write-data-files">Write Data Files</h2><p>The <code>codec</code> option also works when writing data.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
 
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/introduction.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/filesystem.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/codecs.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/config_files.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/library_modules.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/data_paths.html"></a>
-      </div>
-    </div>
-</div>
+bin(import.meta.url)
+  .parent()
+  .directory('data')
+  .file('giraffe.yaml', { codec: 'yaml' })
+  .write({
+    name:   "Gerald",
+    animal: "Giraffe",
+  })</code></code></pre>
+<p>You should now have a <code>data/giraffe.yaml</code> file containing the following:</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">name: Gerald
+animal: Giraffe</code></code></pre>
 </div>
 </div>
 

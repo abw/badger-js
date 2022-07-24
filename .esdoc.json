@@ -1,14 +1,26 @@
 {
   "source": "./src",
   "destination": "./docs",
+  "index": "./README.md",
+  "package": "./package.json",
   "plugins": [
     {
       "name": "@itsjamie/esdoc-standard-plugin",
       "option": {
+        "brand": {
+          "title": "Badger",
+          "logo": "./manual/asset/badger2.svg"
+        },
         "manual": {
           "index": "./manual/index.md",
+          "asset": "./manual/asset",
           "files": [
-            "./manual/getting_started.md"
+            "./manual/introduction.md",
+            "./manual/filesystem.md",
+            "./manual/codecs.md",
+            "./manual/config_files.md",
+            "./manual/library_modules.md",
+            "./manual/data_paths.md"
           ]
         }
       }
@@ -18,6 +30,15 @@
       "option": {
         "enable": true,
         "styles": ["./docs/styles/badger.css"]
+      }
+    },
+    {
+      "name": "@itsjamie/esdoc-importpath-plugin",
+      "option": {
+        "stripPackageName": true,
+        "replaces": [
+          { "from": ".*", "to": "@abw/badger" }
+        ]
       }
     }
   ]

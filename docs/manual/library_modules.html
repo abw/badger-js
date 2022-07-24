@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -85,62 +85,99 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger">badger</h1><img width="300" src="./manual/asset/badger2.svg">
-
-<p>This is the manual for the <code>badger</code> Javascript toolkit.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="library-modules">Library Modules</h1><p>The <a href="../class/src/Badger/Library.js~Library">Library</a> module is similar to the
+<a href="../class/src/Badger/Config.js~Config">Config</a> module except that it's designed to
+work only with Javascript files.</p>
 <ul>
-<li><a href="manual/introduction.html">Introduction</a></li>
-<li><a href="manual/filesystem.html">Filesystem Utilities</a></li>
-<li><a href="manual/codecs.html">Data Codecs</a></li>
-<li><a href="manual/config_files.html">Configuration Files</a></li>
-<li><a href="manual/library_modules.html">Library Modules</a></li>
-<li><a href="manual/data_paths.html">Data Paths</a></li>
+<li><a href="#library-object">Library Object</a></li>
+<li><a href="#library-directory">Library Directory</a></li>
+<li><a href="#multiple-library-directories">Multiple Library Directories</a></li>
+<li><a href="#loading-a-library-module">Loading a Library Module</a></li>
+<li><a href="#data-path">Data Path</a></li>
+<li><a href="#configuration-options">Configuration Options</a></li>
 </ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
+<h2 id="library-object">Library Object</h2><p>Create a library directory specifying one or more directories where your code is located.
+Then call the <code>library()</code> method to load a <code>.js</code> or <code>.mjs</code> module from any of those
+directories.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Library } from '@abw/badger'
 
-  
+const library = new Library(
+  ['src', 'lib']
+)
 
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/introduction.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/filesystem.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/codecs.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/config_files.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/library_modules.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/data_paths.html"></a>
-      </div>
-    </div>
-</div>
+// load first of src/Example.js, src/Example.mjs, lib/Example.js or lib/Example.mjs
+library.library('Example').then(
+  exports =&gt; {
+    // do something with your code exports here
+  }
+)</code></code></pre>
+<p>The Promise returned fulfills to an object containing all the exports from your library
+module.</p>
+<h2 id="library-directory">Library Directory</h2><p>When you create a new <code>Library</code> object you should specify the name of the
+library directory or directories relative to your current location.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const library = new Library('library')</code></code></pre>
+<p>You can specify it as a string as shown above, or using a
+<a href="../class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object as
+shown in the earlier examples. For example, if you have a script in the <code>bin</code>
+directory and you want to load configuration files from the <code>config</code> directory
+located alongside it then you can do something like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Library } from '@abw/badger'
+
+const library = new Library(
+  bin(import.meta.url).parent().dir('library')
+)</code></code></pre>
+<p>Or more succinctly like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Library } from '@abw/badger'
+
+const library = new Library(
+  bin(import.meta.url).dir('../library')
+)</code></code></pre>
+<h2 id="multiple-library-directories">Multiple Library Directories</h2><p>If you have multiple locations that you want to read library files
+from then you can specify them as an array.  The values of the array can be
+either Directory objects or strings, or a mixture of the two.  For example if
+you want to load modules from the <code>src</code> and <code>lib</code> directories then you could do this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const rootDir = bin(import.meta.url).parent()
+
+const library = new Library(
+  [rootDir.dir('src'), rootDir.dir('lib')]
+)</code></code></pre>
+<h2 id="loading-a-library-module">Loading a Library Module</h2><p>The <code>library()</code> method expects the basename (i.e. no file extension) of a file
+in your library directory (or one of them).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// load the badger.(js|mjs) file
+library.library('badger').then(
+  badger =&gt; {
+    // do something with whatever badger exports here
+  }
+)</code></code></pre>
+<p>It returns a Promise which fulfills with all the exports from your module.</p>
+<h2 id="data-path">Data Path</h2><p>If you want to access a particular export then you can specify it as a data path
+fragment following the file name.  Separate the file name and data path fragment
+with a <code>#</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// load the default export from the badger.(js|mjs) file
+library.library('badger#default').then(
+  badger =&gt; {
+    // do something with the default badger export here
+  }
+)</code></code></pre>
+<p>See the <a href="./manual/data_paths">Data Paths</a> documentation for further information.</p>
+<h2 id="configuration-options">Configuration Options</h2><p>The <code>jsExt</code> configuration option can be used to change the file extensions
+that are recognised for Javascript files (<code>['js', 'mjs']</code> by default).</p>
+<p>For example, if you only want to look for <code>.js</code> Javascript files and <code>.json</code>
+data files then you would set the options like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const libary = new Library(
+  rootDir.dir('lib'),
+  {
+    jsExt:  ['js'],
+  };
+)</code></code></pre>
+<p>Or, given that you now only have one value for <code>jsExt</code> you
+could do it like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const library = new Library(
+  rootDir.dir('lib'),
+  {
+    jsExt:  'js',
+  };
+)</code></code></pre>
 </div>
 </div>
 

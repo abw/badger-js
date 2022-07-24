@@ -7,7 +7,7 @@
   <script src="script/prettify/prettify.js"></script>
   <script src="script/manual.js"></script>
 <link rel="stylesheet" href="./inject/css/0-badger.css"><meta name="description" content="Component based framework and utility modules"><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Badger"><meta property="twitter:description" content="Component based framework and utility modules"></head>
-<body class="layout-container manual-root manual-index" data-ice="rootContainer">
+<body class="layout-container manual-root" data-ice="rootContainer">
 
 <header>
   <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.svg" style="width:34px;"></a>
@@ -85,62 +85,75 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown">
-  <div class="manual-user-index" data-ice="manualUserIndex"><h1 id="badger">badger</h1><img width="300" src="./manual/asset/badger2.svg">
-
-<p>This is the manual for the <code>badger</code> Javascript toolkit.</p>
-<ul>
-<li><a href="manual/introduction.html">Introduction</a></li>
-<li><a href="manual/filesystem.html">Filesystem Utilities</a></li>
-<li><a href="manual/codecs.html">Data Codecs</a></li>
-<li><a href="manual/config_files.html">Configuration Files</a></li>
-<li><a href="manual/library_modules.html">Library Modules</a></li>
-<li><a href="manual/data_paths.html">Data Paths</a></li>
-</ul>
-<h1 id="author">Author</h1><p><a href="https://github.com/abw">Andy Wardley</a></p>
-</div>
-
-  
-
-  <div class="manual-cards">
-    
-  <div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/introduction.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/filesystem.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/codecs.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/config_files.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/library_modules.html"></a>
-      </div>
-    </div>
-<div class="manual-card-wrap" data-ice="cards">
-      <div class="manual-card">
-        <div data-ice="card"><h1></h1></div>
-        <a data-ice="link" href="manual/data_paths.html"></a>
-      </div>
-    </div>
-</div>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="data-paths">Data Paths</h1><p>Both the <a href="../class/src/Badger/Config.js~Config">Config</a> and
+<a href="../class/src/Badger/Library.js~Library">Library</a> modules provide a
+convenient way to drill down into the data returned to fetch a particular item.</p>
+<p>For example, suppose you have the following configuration file in <code>config/zoo.yaml</code>.</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">animals:
+  aardvark:
+    name: Alan
+  badger:
+    name: Brian
+  cat:
+    name: Colin</code></code></pre>
+<p>If you have a Config object setup to read files from the <code>config</code> directory then
+you can read the whole of the <code>zoo</code> data set like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">configDir.config('zoo').then(
+  zoo =&gt; console.log("The badger is called ", zoo.animals.badger.name) // The badger is called Brian
+)</code></code></pre>
+<p>If you're only looking for a particular item, in this case the name of the badger,
+then you can add a data path fragment to the file name, like this:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">configDir.config('zoo#animals/badger/name').then(
+  name =&gt; console.log("The badger is called ", name) // The badger is called Brian
+)</code></code></pre>
+<p>Each element of the data path should be separated by a slash.  You can specify
+text elements to access items in an object (as shown above) or numerical elements to
+access items in an array.</p>
+<p>For example, if you have some data that looks like this:</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  "numbers": ["zero", "one", "two", "forty-two"],
+  "friends": [
+    { "name": "Ford Prefect" },
+    { "name": "Zaphod Beeblebrox" },
+    { "name": "Trillian" },
+  ]
+}</code></code></pre>
+<p>Then a data path of <code>numbers/3</code> would return "forty-two", or <code>friends/0/name</code> would return
+"Ford Prefect".</p>
+<p>If an item is <code>undefined</code> or <code>null</code> then an error is thrown.  Using the above data this would
+happen if you tried to access <code>friends/12/name</code> or <code>friends/0/birthday</code></p>
+<p>You can add an question mark to the end of a path segment to make it silently return <code>undefined</code>
+instead, e.g. <code>friends/12?/name</code> or <code>friends/0/birthday?</code>.  Note that the question mark can only
+appear at the end of a segment.  If it appears anywhere else then it is assumed to be the same
+thing as <code>?/</code>.  e.g. <code>foo?bar</code> is the same as <code>foo?/bar</code>.</p>
+<p>You can enclose any segment in single or double quotes if you happen to have data keys that include
+<code>/</code> or <code>?</code> characters in them.  For example, <code>question/"What is the answer?"</code> to access the value
+"42" in the following data:</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">{
+  "question": {
+    "What is the answer?": 42
+  }
+}</code></code></pre>
+<p>If you want to make a quoted part optional then add the question mark after the closing quote, e.g.
+<code>question/"What is the question?"</code> would throw an error because it is not defined, but can be specified
+as <code>question/"What is the question?"?</code> to instead return <code>undefined</code>.</p>
+<p>The data path syntax is intentionally simple and limited.  If you want to do anything more complicated
+then you should consider using JSON Path instead.</p>
+<p>All of the above applies to the data returned by the Config and Library modules when loaded
+Javascript files.  By default they will return an object containing all exported values from the
+Javascript file.  If you want to access the <code>default</code> export, for example, then you can add a <code>#default</code> suffix
+to the file basename when loading it.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">libraryDir.library('Example#default').then(
+  default =&gt; {
+    // do something with the default export here
+  }
+)</code></code></pre>
+<p>Any other named export can be accessed in the same way.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">libraryDir.library('Example#anotherExport').then(
+  anotherExport =&gt; {
+    // do something with anotherExport here
+  }
+)</code></code></pre>
 </div>
 </div>
 
