@@ -8,7 +8,7 @@ import { readFile, writeFile, rm } from 'node:fs/promises'
  * The File class implements a wrapper around a filesystem
  * file.
  */
-class File extends Path {
+export class File extends Path {
   /**
    * Returns a new {@link Directory} object for the parent directory of the file
    * @param {Object} [options] - directory configuration options
