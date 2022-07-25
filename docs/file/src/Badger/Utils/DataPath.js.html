@@ -133,6 +133,9 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Utils/DataPath.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { fail, hasValue, isArray, noValue } from "./Misc.js";
 
+/**
+ * Characters that can be escaped in quoted strings.
+ */
 const quotedEscapes = {
   b: "\b",
   f: "\f",
@@ -145,6 +148,10 @@ const quotedEscapes = {
   '\\': '\\',
 }
 
+/**
+ * Match a double quoted string and expand escaped characters
+ * @param {String} [string] - the string to match
+ */
 export const matchDoubleQuotedString = string =&gt; {
   const regex = /^"((?:\\[\\"nrt]|.)*?)"$/
   const match = string.match(regex);
@@ -153,6 +160,10 @@ export const matchDoubleQuotedString = string =&gt; {
     : null;
 }
 
+/**
+ * Match a single quoted string and expand escaped characters
+ * @param {String} [string] - the string to match
+ */
 export const matchSingleQuotedString = string =&gt; {
   const regex = /^'((?:\\[\\']|.)*?)'$/
   const match = string.match(regex);
@@ -161,6 +172,10 @@ export const matchSingleQuotedString = string =&gt; {
     : null;
 }
 
+/**
+ * Split a data path into component parts
+ * @param {String} [path] - the path to split
+ */
 export const splitDataPath = path =&gt; {
   // * match a slash: \/
   // * match a single quoted string: '...'
@@ -168,7 +183,6 @@ export const splitDataPath = path =&gt; {
   // * match anything else: hello world!
   let parts = [ ];
   const regex = /(?:(\/)|'((?:\\[\\']|.)*?)'|"((?:\\[\\"nrt]|.)*?)"|([^/?]+))(\??)/g;
-  // console.log('\nsplitDataPath [%s]', path);
   const matches = [...path.matchAll(regex)];
 
   matches.map(
@@ -195,7 +209,11 @@ export const splitDataPath = path =&gt; {
   return parts;
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Traverse a data structure using a path.
+ * @param {Object} [data] - the data to traverse
+ * @param {String} [path] - the data path
+ */
 export const dataPath = (data, path) =&gt; {
   let root  = data;
   let parts = splitDataPath(path);

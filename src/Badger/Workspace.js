@@ -103,6 +103,7 @@ export class Workspace {
 
   /**
    * Writes content to a file.  If a `codec` has been specified then the content will be encoded.
+   * @param {string} path - file path relative to the workspace directory
    * @param {String|Object} data - directory configuration options
    * @param {Object} [options] - directory configuration options
    * @param {Boolean} [options.codec] - codec for encoding/decoding file data
@@ -119,21 +120,57 @@ export class Workspace {
     this.debug("write(%s, %o, %o)", path, data, options);
     return this.file(path, options).write(data);
   }
+
+  /**
+   * Fetch the configuration directory or a directory relative to it
+   * @param {string} [path] - file path relative to the configuration directory
+   * @param {Object} [options] - directory configuration options
+   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory
+   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory
+   * @return {Object} a {@link Directory} object
+   */
   configDir(path, options) {
     this.debug("configDir(%s, %o)", path, options);
     return hasValue(path)
-      ? this.state.configDir(path, options)
+      ? this.state.configDir.dir(path, options)
       : this.state.configDir;
   }
+
+  /**
+   * Fetches configuration data from a file in the configuration directory or returns the
+   * {@link Config} object itself if no file uri is specified.
+   * @param {string} [uri] - file path relative to the configuration directory
+   * @param {Object} [defaults] - default configuration options if file isn't found
+   * @return {Promise} fulfills to the configuration data read from the file
+   * @example
+   * workspace.config('myfile').then(
+   *   config => console.log("Loaded myfile config: ", config)
+   * );
+   */
   async config(uri, defaults) {
     this.debug("config(%s, %o)", uri, defaults);
     return hasValue(uri)
       ? this.state.config.config(uri, defaults)
       : this.state.config;
   }
+
+  /**
+   * Loads a Javscript library from the library directory or returns the
+   * {@link Library} object itself if no file uri is specified.
+   * @param {string} [uri] - file path relative to the library directory
+   * @return {Promise} fulfills to the configuration data read from the file
+   * @example
+   * workspace.library('mylib').then(
+   *   exports => console.log("Loaded mylib exports: ", exports)
+   * );
+   */
   async library(uri) {
-    return this.state.library.library(uri);
+    this.debug("library(%s, %o)", uri);
+    return hasValue(uri)
+      ? this.state.library.library(uri)
+      : this.state.library;
   }
+
   async component(uri, props) {
     const config  = await this.config(uri, {});
     const lib     = await this.library(config.component?.library || uri);

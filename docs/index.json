@@ -939,7 +939,7 @@
     "__docId__": 65,
     "kind": "file",
     "name": "src/Badger/Config.js",
-    "content": "import { DirPath } from './Filesystem/DirPath.js';\nimport { splitList } from './Utils/Text.js'\nimport { doNothing, fail } from './Utils/Misc.js';\nimport { addDebug } from './Utils/Debug.js';\nimport { dataPath } from '../Badger/Utils/DataPath.js';\n\nconst defaults = {\n  codec: ['yaml', 'json'],\n  jsExt: ['js', 'mjs'],\n};\n\n/**\n * The Config class implements an object which can load configuration\n * files from a configuration directory.  Files can be Javascript files\n * (with `.js` or `.mjs` extensions by default) or data files using any\n * of the standard codecs (`.yaml` or `.json` by default).\n */\nexport class Config extends DirPath {\n  /**\n   * Constructor for Config object.\n   * @param {String} dir - one or more directories that contain configuration files\n   * @param {Object} [options] - configuration options\n   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n   * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names\n   * @return {Object} the Config object\n   */\n  constructor(dir, options={}) {\n    super(dir);\n    const params = { ...defaults, ...options };\n    this.state.codec = splitList(params.codec),\n    this.state.jsExt = splitList(params.jsExt),\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n  }\n\n  /**\n   * Internal method to locate the first config file with one of a number of file extensions.\n   * @param {String} uri - base part of filename\n   * @param {Array} [exts] - array of possible extensions\n   * @param {Function} [makeOptions] - optional function to generate options for a {@link File} object\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async firstFileWithExt(uri, exts, makeOptions=doNothing) {\n    const dirs = await this.dirs();\n\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const path = uri + '.' + ext;\n        const file = dir.file(path, makeOptions(uri, ext));\n        this.debug('looking for config file: ', file.path());\n        if (await file.exists()) {\n          this.debug('config file exists: ', file.path());\n          return file;\n        }\n      }\n    }\n    return undefined;\n  }\n\n  /**\n   * Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async jsFile(uri) {\n    return await this.firstFileWithExt(uri, this.state.jsExt);\n  }\n\n  /**\n   * Internal method to locate a configuration file with one of the `codec` extensions (`.yaml` or `.json` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async file(uri) {\n    return await this.firstFileWithExt(uri, this.state.codec, (uri, codec) => ({ codec }));\n  }\n\n  /**\n   * Method to fetch configuration data from a file.  The file can be a Javascript file which should\n   * return the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\n   * If the file isn't found then the method returns the `defaults` data if provided, or throws an\n   * error if not.\n   * @param {String} uri - base part of filename\n   * @param {Object} [defaults] - default configuration options to be used if a file isn't found\n   * @return {Object} the configuration data loaded from the file\n   */\n  async config(uri, defaults) {\n    const [base, fragment] = uri.split('#', 2);\n    let jsFile, file, data;\n\n    // first look for a JS file, e.g. <uri>.js, <uri>.mjs\n    if ((jsFile = await this.jsFile(base))) {\n      data = await import(jsFile.path());\n    }\n    // then for a config file with a codec extension, e.g. <uri>.yaml, <uri>.yaml\n    else if ((file = await this.file(base))) {\n      data = await file.read();\n    }\n    // failing that use any default value\n    else if (defaults) {\n      data = defaults;\n    }\n    // anything else is a big pile of fail\n    else {\n      return fail(\"No configuration file for \" + base);\n    }\n    // resolve any data path in a #fragment\n    return fragment\n      ? dataPath(data, fragment)\n      : data;\n  }\n}\n\n/**\n * Function to create a new Config object\n * @param {String} dir - directory or directories containing configuration files\n * @param {Object} [options] - configuration options\n * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names\n * @return {Object} the Config object\n */\nexport const config = (dir, options) => new Config(dir, options)\n\nexport default Config\n",
+    "content": "import { DirPath } from './Filesystem/DirPath.js';\nimport { splitList } from './Utils/Text.js'\nimport { doNothing, fail } from './Utils/Misc.js';\nimport { addDebug } from './Utils/Debug.js';\nimport { dataPath } from '../Badger/Utils/DataPath.js';\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  codec: ['yaml', 'json'],\n  jsExt: ['js', 'mjs'],\n};\n\n/**\n * The Config class implements an object which can load configuration\n * files from a configuration directory.  Files can be Javascript files\n * (with `.js` or `.mjs` extensions by default) or data files using any\n * of the standard codecs (`.yaml` or `.json` by default).\n */\nexport class Config extends DirPath {\n  /**\n   * Constructor for Config object.\n   * @param {String} dir - one or more directories that contain configuration files\n   * @param {Object} [options] - configuration options\n   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n   * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names\n   * @return {Object} the Config object\n   */\n  constructor(dir, options={}) {\n    super(dir);\n    const params = { ...defaults, ...options };\n    this.state.codec = splitList(params.codec),\n    this.state.jsExt = splitList(params.jsExt),\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n  }\n\n  /**\n   * Internal method to locate the first config file with one of a number of file extensions.\n   * @param {String} uri - base part of filename\n   * @param {Array} [exts] - array of possible extensions\n   * @param {Function} [makeOptions] - optional function to generate options for a {@link File} object\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async firstFileWithExt(uri, exts, makeOptions=doNothing) {\n    const dirs = await this.dirs();\n\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const path = uri + '.' + ext;\n        const file = dir.file(path, makeOptions(uri, ext));\n        this.debug('looking for config file: ', file.path());\n        if (await file.exists()) {\n          this.debug('config file exists: ', file.path());\n          return file;\n        }\n      }\n    }\n    return undefined;\n  }\n\n  /**\n   * Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async jsFile(uri) {\n    return await this.firstFileWithExt(uri, this.state.jsExt);\n  }\n\n  /**\n   * Internal method to locate a configuration file with one of the `codec` extensions (`.yaml` or `.json` by default)\n   * @param {String} uri - base part of filename\n   * @return {Object} the {@link File} object if it exists or `undefined` if not\n   */\n  async file(uri) {\n    return await this.firstFileWithExt(uri, this.state.codec, (uri, codec) => ({ codec }));\n  }\n\n  /**\n   * Method to fetch configuration data from a file.  The file can be a Javascript file which should\n   * return the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\n   * If the file isn't found then the method returns the `defaults` data if provided, or throws an\n   * error if not.\n   * @param {String} uri - base part of filename\n   * @param {Object} [defaults] - default configuration options to be used if a file isn't found\n   * @return {Object} the configuration data loaded from the file\n   */\n  async config(uri, defaults) {\n    const [base, fragment] = uri.split('#', 2);\n    let jsFile, file, data;\n\n    // first look for a JS file, e.g. <uri>.js, <uri>.mjs\n    if ((jsFile = await this.jsFile(base))) {\n      data = await import(jsFile.path());\n    }\n    // then for a config file with a codec extension, e.g. <uri>.yaml, <uri>.yaml\n    else if ((file = await this.file(base))) {\n      data = await file.read();\n    }\n    // failing that use any default value\n    else if (defaults) {\n      data = defaults;\n    }\n    // anything else is a big pile of fail\n    else {\n      return fail(\"No configuration file for \" + base);\n    }\n    // resolve any data path in a #fragment\n    return fragment\n      ? dataPath(data, fragment)\n      : data;\n  }\n}\n\n/**\n * Function to create a new Config object\n * @param {String} dir - directory or directories containing configuration files\n * @param {Object} [options] - configuration options\n * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n * @param {Array|String} [options.codec='yaml json'] - Array or comma/whitespace delimited string of codec names\n * @return {Object} the Config object\n */\nexport const config = (dir, options) => new Config(dir, options)\n\nexport default Config\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Config.js",
     "access": "public",
@@ -957,9 +957,8 @@
     "export": false,
     "importPath": "@abw/badger",
     "importStyle": null,
-    "description": null,
-    "lineNumber": 7,
-    "undocument": true,
+    "description": "Default configuration options.",
+    "lineNumber": 10,
     "type": {
       "types": [
         "{\"codec\": *, \"jsExt\": *}"
@@ -979,7 +978,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Config}",
     "description": "The Config class implements an object which can load configuration\nfiles from a configuration directory.  Files can be Javascript files\n(with `.js` or `.mjs` extensions by default) or data files using any\nof the standard codecs (`.yaml` or `.json` by default).",
-    "lineNumber": 18,
+    "lineNumber": 21,
     "interface": false,
     "extends": [
       "src/Badger/Filesystem/DirPath.js~DirPath"
@@ -996,7 +995,7 @@
     "longname": "src/Badger/Config.js~Config#constructor",
     "access": "public",
     "description": "Constructor for Config object.",
-    "lineNumber": 27,
+    "lineNumber": 30,
     "params": [
       {
         "nullable": null,
@@ -1065,7 +1064,7 @@
     "longname": "src/Badger/Config.js~Config#firstFileWithExt",
     "access": "public",
     "description": "Internal method to locate the first config file with one of a number of file extensions.",
-    "lineNumber": 42,
+    "lineNumber": 45,
     "params": [
       {
         "nullable": null,
@@ -1118,7 +1117,7 @@
     "longname": "src/Badger/Config.js~Config#jsFile",
     "access": "public",
     "description": "Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)",
-    "lineNumber": 64,
+    "lineNumber": 67,
     "params": [
       {
         "nullable": null,
@@ -1151,7 +1150,7 @@
     "longname": "src/Badger/Config.js~Config#file",
     "access": "public",
     "description": "Internal method to locate a configuration file with one of the `codec` extensions (`.yaml` or `.json` by default)",
-    "lineNumber": 73,
+    "lineNumber": 76,
     "params": [
       {
         "nullable": null,
@@ -1184,7 +1183,7 @@
     "longname": "src/Badger/Config.js~Config#config",
     "access": "public",
     "description": "Method to fetch configuration data from a file.  The file can be a Javascript file which should\nreturn the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\nIf the file isn't found then the method returns the `defaults` data if provided, or throws an\nerror if not.",
-    "lineNumber": 86,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -1230,7 +1229,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{config}",
     "description": "Function to create a new Config object",
-    "lineNumber": 121,
+    "lineNumber": 124,
     "params": [
       {
         "nullable": null,
@@ -1447,7 +1446,7 @@
     "__docId__": 81,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
-    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nexport class Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
+    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nexport class Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Directory.js",
     "access": "public",
@@ -1483,7 +1482,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#file",
     "access": "public",
     "description": "Fetch a new {@link File} object for a file in the directory.",
-    "lineNumber": 20,
+    "lineNumber": 21,
     "params": [
       {
         "nullable": null,
@@ -1514,6 +1513,18 @@
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
@@ -1536,7 +1547,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#directory",
     "access": "public",
     "description": "Fetch a new {@link Directory} object for a sub-directory in the directory.",
-    "lineNumber": 32,
+    "lineNumber": 34,
     "params": [
       {
         "nullable": null,
@@ -1566,7 +1577,19 @@
         "spread": false,
         "optional": true,
         "name": "options.codec",
-        "description": "codec for encoding/decoding file data"
+        "description": "default codec for encoding/decoding files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "default character encoding for files"
       }
     ],
     "return": {
@@ -1589,7 +1612,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#dir",
     "access": "public",
     "description": "An alias for the {@link directory} method for lazy people",
-    "lineNumber": 41,
+    "lineNumber": 43,
     "return": {
       "nullable": null,
       "types": [
@@ -1624,7 +1647,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#parent",
     "access": "public",
     "description": "Returns a new {@link Directory} object for the parent directory",
-    "lineNumber": 52,
+    "lineNumber": 55,
     "params": [
       {
         "nullable": null,
@@ -1639,12 +1662,24 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
-        "description": "codec for encoding/decoding file data"
+        "description": "default codec for encoding/decoding files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "default character encoding for files"
       }
     ],
     "return": {
@@ -1667,7 +1702,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#read",
     "access": "public",
     "description": "Returns the names of the files and sub-directories in the directory",
-    "lineNumber": 61,
+    "lineNumber": 64,
     "return": {
       "nullable": null,
       "types": [
@@ -1689,7 +1724,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 70,
+    "lineNumber": 73,
     "return": {
       "nullable": null,
       "types": [
@@ -1711,7 +1746,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 80,
+    "lineNumber": 83,
     "return": {
       "nullable": null,
       "types": [
@@ -1733,7 +1768,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 93,
+    "lineNumber": 96,
     "params": [
       {
         "nullable": null,
@@ -1786,7 +1821,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 107,
+    "lineNumber": 110,
     "params": [
       {
         "nullable": null,
@@ -1829,7 +1864,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 124,
+    "lineNumber": 127,
     "params": [
       {
         "nullable": null,
@@ -1892,7 +1927,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 141,
+    "lineNumber": 144,
     "params": [
       {
         "nullable": null,
@@ -1937,7 +1972,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 154,
+    "lineNumber": 157,
     "params": [
       {
         "nullable": null,
@@ -2006,7 +2041,7 @@
     "longname": "src/Badger/Filesystem/Directory.js~Directory#mustExist",
     "access": "public",
     "description": "Assert that a directory exists and optionally create it",
-    "lineNumber": 167,
+    "lineNumber": 170,
     "params": [
       {
         "nullable": null,
@@ -2072,7 +2107,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{dir}",
     "description": "Function to create a new {@link Directory} object",
-    "lineNumber": 189,
+    "lineNumber": 192,
     "params": [
       {
         "nullable": null,
@@ -2128,7 +2163,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cwd}",
     "description": "Function to create a new {@link Directory} object for the current working directory",
-    "lineNumber": 199,
+    "lineNumber": 202,
     "params": [
       {
         "nullable": null,
@@ -2174,7 +2209,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{bin}",
     "description": "Function to create a new {@link Directory} object for the directory of a JS source file",
-    "lineNumber": 210,
+    "lineNumber": 213,
     "params": [
       {
         "nullable": null,
@@ -2220,7 +2255,7 @@
     "__docId__": 99,
     "kind": "file",
     "name": "src/Badger/Filesystem/File.js",
-    "content": "import path from 'node:path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile, rm } from 'node:fs/promises'\n\n/**\n * The File class implements a wrapper around a filesystem\n * file.\n */\nexport class File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @return {String|Object} the file content\n   * @example\n   * const text = file('myfile.txt').read();\n   * @example\n   * const data = file('myfile.json', { codec: 'json' }).read();\n   * @example\n   * const data = file('myfile.json').read({ codec: 'json' });\n   */\n  read(options) {\n    const opts = this.options(options);\n    const file = readFile(this.state.path, opts);\n    return opts.codec\n      ? file.then(text => codec(opts.codec).decode(text))\n      : file;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    return writeFile(this.state.path, text, opts).then( () => this );\n  }\n\n  async delete(options) {\n    await rm(this.state.path, options);\n    return this;\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} path - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
+    "content": "import path from 'node:path'\nimport Path from './Path.js'\nimport { dir } from './Directory.js'\nimport { codec } from '../Codecs/index.js'\nimport { readFile, writeFile, rm } from 'node:fs/promises'\n\n/**\n * The File class implements a wrapper around a filesystem\n * file.\n */\nexport class File extends Path {\n  /**\n   * Returns a new {@link Directory} object for the parent directory of the file\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  directory(options) {\n    return dir(path.dirname(this.state.path), options);\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the parent {@link Directory} object\n   */\n  dir(...args) {\n    return this.directory(...args);\n  }\n\n  /**\n   * Reads the file content.  If a `codec` has been specified then the content is decoded.\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  async read(options) {\n    const opts = this.options(options);\n    const text = await readFile(this.state.path, opts);\n    return opts.codec\n      ? codec(opts.codec).decode(text)\n      : text;\n  }\n\n  /**\n   * Writes the file content.  If a `codec` has been specified then the content will be encoded.\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  async write(data, options) {\n    const opts = this.options(options);\n    const text = opts.codec\n      ? codec(opts.codec).encode(data)\n      : data;\n    await writeFile(this.state.path, text, opts);\n    return this;\n  }\n\n  /**\n   * Delete the file content.\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.force=false] - when true, exceptions will be ignored if path does not exist\n   * @return {Promise} fulfills with the file object\n   */\n  async delete(options) {\n    await rm(this.state.path, options);\n    return this;\n  }\n}\n\n/**\n * Function to create a new {@link File} object for a file\n * @param {String} path - file path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @param {String} [options.encoding=utf8] - character encoding\n * @return {Object} the {@link File} object\n */\nexport const file = (path, options) => {\n  return new File(path, options);\n}\n\nexport default File\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/File.js",
     "access": "public",
@@ -2256,7 +2291,7 @@
     "longname": "src/Badger/Filesystem/File.js~File#directory",
     "access": "public",
     "description": "Returns a new {@link Directory} object for the parent directory of the file",
-    "lineNumber": 18,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -2271,12 +2306,24 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
@@ -2299,7 +2346,7 @@
     "longname": "src/Badger/Filesystem/File.js~File#dir",
     "access": "public",
     "description": "An alias for the {@link directory} method for lazy people",
-    "lineNumber": 26,
+    "lineNumber": 27,
     "return": {
       "nullable": null,
       "types": [
@@ -2324,17 +2371,17 @@
     "name": "read",
     "memberof": "src/Badger/Filesystem/File.js~File",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#read",
     "access": "public",
     "description": "Reads the file content.  If a `codec` has been specified then the content is decoded.",
     "examples": [
-      "const text = file('myfile.txt').read();",
-      "const data = file('myfile.json', { codec: 'json' }).read();",
-      "const data = file('myfile.json').read({ codec: 'json' });"
+      "file('myfile.txt').read().then( text => console.log(text) );",
+      "file('myfile.json', { codec: 'json' }).read().( data => console.log(data) );",
+      "file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );"
     ],
-    "lineNumber": 42,
+    "lineNumber": 44,
     "params": [
       {
         "nullable": null,
@@ -2349,22 +2396,33 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "String",
-        "Object"
+        "Promise"
       ],
       "spread": false,
-      "description": "the file content"
+      "description": "fulfills with the file content"
     }
   },
   {
@@ -2373,7 +2431,7 @@
     "name": "write",
     "memberof": "src/Badger/Filesystem/File.js~File",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#write",
     "access": "public",
@@ -2383,7 +2441,7 @@
       "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
       "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
     ],
-    "lineNumber": 62,
+    "lineNumber": 66,
     "params": [
       {
         "nullable": null,
@@ -2409,18 +2467,33 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -2433,21 +2506,39 @@
     "static": false,
     "longname": "src/Badger/Filesystem/File.js~File#delete",
     "access": "public",
-    "description": null,
-    "lineNumber": 70,
-    "undocument": true,
+    "description": "Delete the file content.",
+    "lineNumber": 81,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "false",
+        "defaultRaw": false,
+        "name": "options.force",
+        "description": "when true, exceptions will be ignored if path does not exist"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -2464,7 +2555,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{file}",
     "description": "Function to create a new {@link File} object for a file",
-    "lineNumber": 83,
+    "lineNumber": 95,
     "params": [
       {
         "nullable": null,
@@ -2495,6 +2586,18 @@
         "optional": true,
         "name": "options.codec",
         "description": "a codec for encoding/decoding files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
@@ -2510,7 +2613,7 @@
     "__docId__": 107,
     "kind": "file",
     "name": "src/Badger/Filesystem/Path.js",
-    "content": "import path from 'node:path';\nimport { stat } from 'node:fs/promises'\nimport { rethrow } from '../Utils/Misc.js';\nimport { addDebug } from '../Utils/Debug.js';\n\nconst defaultOptions = {\n  encoding: 'utf8'\n}\n\n/**\n * The Path class implements a base class for the {@link File} and {@link Directory}\n * classes.  It implements the common functionality for representing a filesystem path.\n */\nexport class Path {\n  /**\n   * Constructor for filesystem paths.\n   * @param {string} path - file path\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Path} object\n   */\n  constructor(path, options={}) {\n    // allow path/file/directory to be constructed from an existing object\n    if (path instanceof Path) {\n      path = path.path();\n    }\n    this.state = { path, options: { ...defaultOptions, ...options } };\n    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);\n  }\n\n  /**\n   * Accessor method to return the filesystem path.\n   * @return {String} the filesystem path\n   */\n  path() {\n    return this.state.path;\n  }\n\n  /**\n   * Create a path relative to the current path.\n   * @param {String[]} parts - part(s) of the filesystem path\n   * @return {String} the new path\n   * @example\n   * const p = new Path('/path/to/here')\n   * const q = p.relativePath('there')          // -> /path/to/here/there\n   * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there\n   */\n  relativePath(...parts) {\n    return path.join(this.state.path, ...parts);\n  }\n\n  /**\n   * Internal method to merge any options with the pre-defined options passed to the\n   * constructor.  Options passed as arguments will take precedence.\n   * @param {Object} options - new options\n   * @return {Object} the merged options\n   * @example\n   * const p = new Path('/path/to/here', { option1: 'hello' })\n   * const q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }\n   */\n  options(options={}) {\n    return { ...this.state.options, ...options };\n  }\n\n  /**\n   * Method to assert that the path exists.\n   * @return {Promise} fulfills with `true` if the path exists or rejects if the path doesn't\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.exists()\n   *   .then( console.log('path exists') )\n   *   .catch( console.log('path does not exist') )\n   */\n  async exists() {\n    try {\n      await this.stat();\n      return true;\n    }\n    catch (error) {\n      return error.code === 'ENOENT'\n        ? false\n        : rethrow(error);\n    }\n  }\n\n  /**\n   * Method to fetch stats for the path.  Uses the `stat` function from `node:fs/promises`.\n   * Stats are cached internally (subject to change)\n   * @return {Promise} fulfills with path stats returned from the `stat` function\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.stat()\n   *   .then( stats => console.log('path stats:', stats) )\n   *   .catch( console.log('path does not exist') )\n   */\n  async stat() {\n    const stats = await stat(this.state.path);\n    return this.state.stats = stats;\n  }\n\n  /**\n   * Method to clear internal cache of path stats (subject to change)\n   */\n  unstat() {\n    this.state.stats = undefined;\n    return this;\n  }\n}\n\nexport default Path\n",
+    "content": "import path from 'node:path';\nimport { stat } from 'node:fs/promises'\nimport { rethrow } from '../Utils/Misc.js';\nimport { addDebug } from '../Utils/Debug.js';\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  encoding: 'utf8'\n}\n\n/**\n * The Path class implements a base class for the {@link File} and {@link Directory}\n * classes.  It implements the common functionality for representing a filesystem path.\n */\nexport class Path {\n  /**\n   * Constructor for filesystem paths.\n   * @param {string} path - file path\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.encoding=utf8] - file encoding\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Path} object\n   */\n  constructor(path, options={}) {\n    // allow path/file/directory to be constructed from an existing object\n    if (path instanceof Path) {\n      path = path.path();\n    }\n    this.state = { path, options: { ...defaults, ...options } };\n    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);\n  }\n\n  /**\n   * Accessor method to return the filesystem path.\n   * @return {String} the filesystem path\n   */\n  path() {\n    return this.state.path;\n  }\n\n  /**\n   * Create a path relative to the current path.\n   * @param {String[]} parts - part(s) of the filesystem path\n   * @return {String} the new path\n   * @example\n   * const p = new Path('/path/to/here')\n   * const q = p.relativePath('there')          // -> /path/to/here/there\n   * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there\n   */\n  relativePath(...parts) {\n    return path.join(this.state.path, ...parts);\n  }\n\n  /**\n   * Internal method to merge any options with the pre-defined options passed to the\n   * constructor.  Options passed as arguments will take precedence.\n   * @param {Object} options - new options\n   * @return {Object} the merged options\n   * @example\n   * const p = new Path('/path/to/here', { option1: 'hello' })\n   * const q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }\n   */\n  options(options={}) {\n    return { ...this.state.options, ...options };\n  }\n\n  /**\n   * Method to assert that the path exists.\n   * @return {Promise} fulfills with `true` if the path exists or rejects if the path doesn't\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.exists()\n   *   .then( console.log('path exists') )\n   *   .catch( console.log('path does not exist') )\n   */\n  async exists() {\n    try {\n      await this.stat();\n      return true;\n    }\n    catch (error) {\n      return error.code === 'ENOENT'\n        ? false\n        : rethrow(error);\n    }\n  }\n\n  /**\n   * Method to fetch stats for the path.  Uses the `stat` function from `node:fs/promises`.\n   * Stats are cached internally (subject to change)\n   * @return {Promise} fulfills with path stats returned from the `stat` function\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.stat()\n   *   .then( stats => console.log('path stats:', stats) )\n   *   .catch( console.log('path does not exist') )\n   */\n  async stat() {\n    const stats = await stat(this.state.path);\n    return this.state.stats = stats;\n  }\n\n  /**\n   * Method to clear internal cache of path stats (subject to change)\n   */\n  unstat() {\n    this.state.stats = undefined;\n    return this;\n  }\n}\n\nexport default Path\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Path.js",
     "access": "public",
@@ -2520,17 +2623,16 @@
   {
     "__docId__": 108,
     "kind": "variable",
-    "name": "defaultOptions",
+    "name": "defaults",
     "memberof": "src/Badger/Filesystem/Path.js",
     "static": true,
-    "longname": "src/Badger/Filesystem/Path.js~defaultOptions",
+    "longname": "src/Badger/Filesystem/Path.js~defaults",
     "access": "public",
     "export": false,
     "importPath": "@abw/badger",
     "importStyle": null,
-    "description": null,
-    "lineNumber": 6,
-    "undocument": true,
+    "description": "Default configuration options.",
+    "lineNumber": 9,
     "type": {
       "types": [
         "{\"encoding\": string}"
@@ -2550,7 +2652,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Path}",
     "description": "The Path class implements a base class for the {@link File} and {@link Directory}\nclasses.  It implements the common functionality for representing a filesystem path.",
-    "lineNumber": 14,
+    "lineNumber": 17,
     "interface": false
   },
   {
@@ -2564,7 +2666,7 @@
     "longname": "src/Badger/Filesystem/Path.js~Path#constructor",
     "access": "public",
     "description": "Constructor for filesystem paths.",
-    "lineNumber": 22,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -2585,6 +2687,18 @@
         "optional": true,
         "name": "options",
         "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "file encoding"
       },
       {
         "nullable": null,
@@ -2615,7 +2729,7 @@
     "longname": "src/Badger/Filesystem/Path.js~Path#state",
     "access": "public",
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -2634,7 +2748,7 @@
     "longname": "src/Badger/Filesystem/Path.js~Path#path",
     "access": "public",
     "description": "Accessor method to return the filesystem path.",
-    "lineNumber": 35,
+    "lineNumber": 39,
     "return": {
       "nullable": null,
       "types": [
@@ -2659,7 +2773,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\nconst q = p.relativePath('there')          // -> /path/to/here/there\nconst r = p.relativePath('and', 'there')   // -> /path/to/here/and/there"
     ],
-    "lineNumber": 48,
+    "lineNumber": 52,
     "params": [
       {
         "nullable": null,
@@ -2695,7 +2809,7 @@
     "examples": [
       "const p = new Path('/path/to/here', { option1: 'hello' })\nconst q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }"
     ],
-    "lineNumber": 61,
+    "lineNumber": 65,
     "params": [
       {
         "nullable": null,
@@ -2731,7 +2845,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.exists()\n  .then( console.log('path exists') )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 74,
+    "lineNumber": 78,
     "return": {
       "nullable": null,
       "types": [
@@ -2756,7 +2870,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.stat()\n  .then( stats => console.log('path stats:', stats) )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 96,
+    "lineNumber": 100,
     "return": {
       "nullable": null,
       "types": [
@@ -2778,7 +2892,7 @@
     "longname": "src/Badger/Filesystem/Path.js~Path#unstat",
     "access": "public",
     "description": "Method to clear internal cache of path stats (subject to change)",
-    "lineNumber": 104,
+    "lineNumber": 108,
     "params": [],
     "return": {
       "types": [
@@ -2790,7 +2904,7 @@
     "__docId__": 118,
     "kind": "file",
     "name": "src/Badger/Library.js",
-    "content": "import { DirPath } from \"./Filesystem/DirPath.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { fail } from \"./Utils/Misc.js\";\nimport { dataPath } from \"./Utils/DataPath.js\";\n\nconst defaults = {\n  jsExt: 'js mjs',\n}\n\n/**\n * The Library class implements an object which can load Javascript files\n * from one or more library directories.  Files can be Javascript files\n * (with `.js` or `.mjs` extensions by default)\n */\nexport class Library extends DirPath {\n  /**\n   * Constructor for Library object.\n   * @param {String} dir - one or more directories that contain Javascript libraries\n   * @param {Object} [options] - configuration options\n   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n   * @return {Object} the Library object\n   */\n  constructor(dir, options={}) {\n    super(dir);\n    const params = { ...defaults, ...options };\n    const exts = splitList(params.jsExt).map( ext => ext.replace(/^\\./, '') ); // remove leading '.'\n    this.state.exts = exts;\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug(\"state: \", this.state)\n  }\n\n  /**\n   * Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).\n   * Returns the exports from the library if found or throws an error if not.\n   * @param {String} uri - base part of filename\n   * @return {Object} the exports from the loaded libary\n   */\n  async library(uri) {\n    const [base, fragment] = uri.split('#', 2);\n    const dirs = await this.dirs();\n    const exts = this.state.exts;\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const file = dir.file(base + '.' + ext);\n        this.debug('looking for module %s as', base, file.path());\n        const exists = await file.exists();\n        if (exists) {\n          const load = await import(file.path());\n          this.debug('loaded %s as', file.path());\n          return fragment\n            ? dataPath(load, fragment)\n            : load;\n        }\n      }\n    }\n    fail(\"Library not found: \", uri);\n  }\n}\n\n/**\n * Function to create a new Library object\n * @param {String} dir - directory or directories containing configuration files\n * @param {Object} [options] - configuration options\n * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n * @return {Object} the Library object\n */\nexport const library = (dir, options) => new Library(dir, options);\n\nexport default library;",
+    "content": "import { DirPath } from \"./Filesystem/DirPath.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { fail } from \"./Utils/Misc.js\";\nimport { dataPath } from \"./Utils/DataPath.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  jsExt: 'js mjs',\n}\n\n/**\n * The Library class implements an object which can load Javascript files\n * from one or more library directories.  Files can be Javascript files\n * (with `.js` or `.mjs` extensions by default)\n */\nexport class Library extends DirPath {\n  /**\n   * Constructor for Library object.\n   * @param {String} dir - one or more directories that contain Javascript libraries\n   * @param {Object} [options] - configuration options\n   * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n   * @return {Object} the Library object\n   */\n  constructor(dir, options={}) {\n    super(dir);\n    const params = { ...defaults, ...options };\n    const exts = splitList(params.jsExt).map( ext => ext.replace(/^\\./, '') ); // remove leading '.'\n    this.state.exts = exts;\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug(\"state: \", this.state)\n  }\n\n  /**\n   * Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).\n   * Returns the exports from the library if found or throws an error if not.\n   * @param {String} uri - base part of filename\n   * @return {Object} the exports from the loaded libary\n   */\n  async library(uri) {\n    const [base, fragment] = uri.split('#', 2);\n    const dirs = await this.dirs();\n    const exts = this.state.exts;\n    for (let dir of dirs) {\n      for (let ext of exts) {\n        const file = dir.file(base + '.' + ext);\n        this.debug('looking for module %s as', base, file.path());\n        const exists = await file.exists();\n        if (exists) {\n          const load = await import(file.path());\n          this.debug('loaded %s as', file.path());\n          return fragment\n            ? dataPath(load, fragment)\n            : load;\n        }\n      }\n    }\n    fail(\"Library not found: \", uri);\n  }\n}\n\n/**\n * Function to create a new Library object\n * @param {String} dir - directory or directories containing configuration files\n * @param {Object} [options] - configuration options\n * @param {Array|String} [options.jsExt='js mjs'] - Array or comma/whitespace delimited string of Javascript file extensions\n * @return {Object} the Library object\n */\nexport const library = (dir, options) => new Library(dir, options);\n\nexport default library;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Library.js",
     "access": "public",
@@ -2808,9 +2922,8 @@
     "export": false,
     "importPath": "@abw/badger",
     "importStyle": null,
-    "description": null,
-    "lineNumber": 7,
-    "undocument": true,
+    "description": "Default configuration options.",
+    "lineNumber": 10,
     "type": {
       "types": [
         "{\"jsExt\": string}"
@@ -2830,7 +2943,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Library}",
     "description": "The Library class implements an object which can load Javascript files\nfrom one or more library directories.  Files can be Javascript files\n(with `.js` or `.mjs` extensions by default)",
-    "lineNumber": 16,
+    "lineNumber": 19,
     "interface": false,
     "extends": [
       "src/Badger/Filesystem/DirPath.js~DirPath"
@@ -2847,7 +2960,7 @@
     "longname": "src/Badger/Library.js~Library#constructor",
     "access": "public",
     "description": "Constructor for Library object.",
-    "lineNumber": 24,
+    "lineNumber": 27,
     "params": [
       {
         "nullable": null,
@@ -2903,7 +3016,7 @@
     "longname": "src/Badger/Library.js~Library#library",
     "access": "public",
     "description": "Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).\nReturns the exports from the library if found or throws an error if not.",
-    "lineNumber": 39,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -2939,7 +3052,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{library}",
     "description": "Function to create a new Library object",
-    "lineNumber": 68,
+    "lineNumber": 71,
     "params": [
       {
         "nullable": null,
@@ -3202,7 +3315,7 @@
     "__docId__": 131,
     "kind": "file",
     "name": "src/Badger/Utils/DataPath.js",
-    "content": "import { fail, hasValue, isArray, noValue } from \"./Misc.js\";\n\nconst quotedEscapes = {\n  b: \"\\b\",\n  f: \"\\f\",\n  n: \"\\n\",\n  r: \"\\r\",\n  t: \"\\t\",\n  v: \"\\v\",\n  '\"': '\"',\n  \"'\": \"'\",\n  '\\\\': '\\\\',\n}\n\nexport const matchDoubleQuotedString = string => {\n  const regex = /^\"((?:\\\\[\\\\\"nrt]|.)*?)\"$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\nexport const matchSingleQuotedString = string => {\n  const regex = /^'((?:\\\\[\\\\']|.)*?)'$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\nexport const splitDataPath = path => {\n  // * match a slash: \\/\n  // * match a single quoted string: '...'\n  // * match a double quoted string: \"...\"\n  // * match anything else: hello world!\n  let parts = [ ];\n  const regex = /(?:(\\/)|'((?:\\\\[\\\\']|.)*?)'|\"((?:\\\\[\\\\\"nrt]|.)*?)\"|([^/?]+))(\\??)/g;\n  // console.log('\\nsplitDataPath [%s]', path);\n  const matches = [...path.matchAll(regex)];\n\n  matches.map(\n    ([ , , single, double, other, optional]) => {\n      let part;\n      // console.log('match [slash:%s] [single:%s] [double:%s] [other:%s]', slash, single, double, other);\n\n      if (single) {\n        part = single.replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (double) {\n        part = double.replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (other) {\n        part = other\n      }\n      if (hasValue(part)) {\n        parts.push(optional ? [part, {optional:true}] : part);\n      }\n    }\n  )\n  // console.log('MATCHED ', parts);\n\n  return parts;\n}\n\n// eslint-disable-next-line no-unused-vars\nexport const dataPath = (data, path) => {\n  let root  = data;\n  let parts = splitDataPath(path);\n  let done  = [ ];\n  // console.log('parts: ', parts);\n\n  for (let part of parts) {\n    const [word, opts] = isArray(part) ? part : [part, {}];\n    root = root[word];\n    done.push(word);\n    if (noValue(root)) {\n      if (opts.optional) {\n        return root;\n      }\n      else {\n        fail(\"No value for data at path: \", done.join('/'));\n      }\n    }\n  }\n  return root;\n}\n",
+    "content": "import { fail, hasValue, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Characters that can be escaped in quoted strings.\n */\nconst quotedEscapes = {\n  b: \"\\b\",\n  f: \"\\f\",\n  n: \"\\n\",\n  r: \"\\r\",\n  t: \"\\t\",\n  v: \"\\v\",\n  '\"': '\"',\n  \"'\": \"'\",\n  '\\\\': '\\\\',\n}\n\n/**\n * Match a double quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchDoubleQuotedString = string => {\n  const regex = /^\"((?:\\\\[\\\\\"nrt]|.)*?)\"$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Match a single quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchSingleQuotedString = string => {\n  const regex = /^'((?:\\\\[\\\\']|.)*?)'$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Split a data path into component parts\n * @param {String} [path] - the path to split\n */\nexport const splitDataPath = path => {\n  // * match a slash: \\/\n  // * match a single quoted string: '...'\n  // * match a double quoted string: \"...\"\n  // * match anything else: hello world!\n  let parts = [ ];\n  const regex = /(?:(\\/)|'((?:\\\\[\\\\']|.)*?)'|\"((?:\\\\[\\\\\"nrt]|.)*?)\"|([^/?]+))(\\??)/g;\n  const matches = [...path.matchAll(regex)];\n\n  matches.map(\n    ([ , , single, double, other, optional]) => {\n      let part;\n      // console.log('match [slash:%s] [single:%s] [double:%s] [other:%s]', slash, single, double, other);\n\n      if (single) {\n        part = single.replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (double) {\n        part = double.replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (other) {\n        part = other\n      }\n      if (hasValue(part)) {\n        parts.push(optional ? [part, {optional:true}] : part);\n      }\n    }\n  )\n  // console.log('MATCHED ', parts);\n\n  return parts;\n}\n\n/**\n * Traverse a data structure using a path.\n * @param {Object} [data] - the data to traverse\n * @param {String} [path] - the data path\n */\nexport const dataPath = (data, path) => {\n  let root  = data;\n  let parts = splitDataPath(path);\n  let done  = [ ];\n  // console.log('parts: ', parts);\n\n  for (let part of parts) {\n    const [word, opts] = isArray(part) ? part : [part, {}];\n    root = root[word];\n    done.push(word);\n    if (noValue(root)) {\n      if (opts.optional) {\n        return root;\n      }\n      else {\n        fail(\"No value for data at path: \", done.join('/'));\n      }\n    }\n  }\n  return root;\n}\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/DataPath.js",
     "access": "public",
@@ -3220,9 +3333,8 @@
     "export": false,
     "importPath": "@abw/badger",
     "importStyle": null,
-    "description": null,
-    "lineNumber": 3,
-    "undocument": true,
+    "description": "Characters that can be escaped in quoted strings.",
+    "lineNumber": 6,
     "type": {
       "types": [
         "{\"b\": string, \"f\": string, \"n\": string, \"r\": string, \"t\": string, \"v\": string, \"\"\": string, \"'\": string, \"\\\": string}"
@@ -3243,15 +3355,18 @@
     "export": true,
     "importPath": "@abw/badger",
     "importStyle": "{matchDoubleQuotedString}",
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
+    "description": "Match a double quoted string and expand escaped characters",
+    "lineNumber": 22,
     "params": [
       {
-        "name": "string",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "string",
+        "description": "the string to match"
       }
     ],
     "return": {
@@ -3273,15 +3388,18 @@
     "export": true,
     "importPath": "@abw/badger",
     "importStyle": "{matchSingleQuotedString}",
-    "description": null,
-    "lineNumber": 23,
-    "undocument": true,
+    "description": "Match a single quoted string and expand escaped characters",
+    "lineNumber": 34,
     "params": [
       {
-        "name": "string",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "string",
+        "description": "the string to match"
       }
     ],
     "return": {
@@ -3303,15 +3421,18 @@
     "export": true,
     "importPath": "@abw/badger",
     "importStyle": "{splitDataPath}",
-    "description": null,
-    "lineNumber": 31,
-    "undocument": true,
+    "description": "Split a data path into component parts",
+    "lineNumber": 46,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "the path to split"
       }
     ],
     "return": {
@@ -3333,21 +3454,28 @@
     "export": true,
     "importPath": "@abw/badger",
     "importStyle": "{dataPath}",
-    "description": null,
-    "lineNumber": 66,
-    "undocument": true,
+    "description": "Traverse a data structure using a path.",
+    "lineNumber": 84,
     "params": [
       {
-        "name": "data",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "data",
+        "description": "the data to traverse"
       },
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "the data path"
       }
     ],
     "return": {
@@ -4539,7 +4667,7 @@
     "__docId__": 166,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
-    "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\nconst defaults = {\n  library: {\n    dir: 'lib library src components',\n  },\n  config: {\n    dir: 'config',\n  }\n}\nexport class Workspace {\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    // console.log('options: ', options);\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir(path, options)\n      : this.state.configDir;\n  }\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n  async library(uri) {\n    return this.state.library.library(uri);\n  }\n  async component(uri, props) {\n    const config  = await this.config(uri, {});\n    const lib     = await this.library(config.component?.library || uri);\n    const exp     = config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp = new compcls(this, { ...config, ...props });\n    // this.debug(\"created component \", uri)\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
+    "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  async component(uri, props) {\n    const config  = await this.config(uri, {});\n    const lib     = await this.library(config.component?.library || uri);\n    // TODO: check for data path fragment in URI\n    const exp     = config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    // this.debug(\"created component \", uri)\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Workspace.js",
     "access": "public",
@@ -4557,12 +4685,11 @@
     "export": false,
     "importPath": "@abw/badger",
     "importStyle": null,
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
+    "description": "Default configuration options.",
+    "lineNumber": 11,
     "type": {
       "types": [
-        "{\"library\": *, \"config\": *}"
+        "{\"config\": *, \"library\": *}"
       ]
     },
     "ignore": true
@@ -4578,9 +4705,8 @@
     "export": true,
     "importPath": "@abw/badger",
     "importStyle": "{Workspace}",
-    "description": null,
-    "lineNumber": 16,
-    "undocument": true,
+    "description": "The Workspace class implements an object which acts as a central repository\nfor your project, providing access to directories, files, configuration files,\nJavascript libraries and components.",
+    "lineNumber": 25,
     "interface": false
   },
   {
@@ -4593,9 +4719,80 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#constructor",
     "access": "public",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true
+    "description": "Constructor for Workspace object.",
+    "lineNumber": 36,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": "root directory for the workspace"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.config",
+        "description": "configuration options for a {@link Config} object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.config.dir",
+        "description": "configuration directory or directories relative to the workspace directory"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.library",
+        "description": "configuration options for a {@link Config} object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.library.dir",
+        "description": "library directory or directories relative to the workspace directory"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the Workspace object"
+    }
   },
   {
     "__docId__": 170,
@@ -4606,7 +4803,7 @@
     "longname": "src/Badger/Workspace.js~Workspace#state",
     "access": "public",
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 45,
     "undocument": true,
     "type": {
       "types": [
@@ -4624,27 +4821,47 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 39,
-    "undocument": true,
+    "description": "Fetch a new {@link Directory} object for a sub-directory of the workspace directory.",
+    "lineNumber": 65,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "directory path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object"
     }
   },
   {
@@ -4657,27 +4874,59 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 45,
-    "undocument": true,
+    "description": "Fetch a new {@link File} object for a file in the workspace.",
+    "lineNumber": 80,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "file path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "file configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for the file"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link File} object"
     }
   },
   {
@@ -4690,27 +4939,64 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 49,
-    "undocument": true,
+    "description": "Read the content of a file in the workspace.",
+    "examples": [
+      "file('myfile.txt').read().then( text => console.log(text) );",
+      "file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );",
+      "file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );"
+    ],
+    "lineNumber": 99,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "file path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for the file"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file content"
     }
   },
   {
@@ -4723,33 +5009,75 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#write",
     "access": "public",
-    "description": null,
-    "lineNumber": 53,
-    "undocument": true,
+    "description": "Writes content to a file.  If a `codec` has been specified then the content will be encoded.",
+    "examples": [
+      "file('myfile.txt').write('Hello World');",
+      "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
+      "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
+    ],
+    "lineNumber": 119,
     "params": [
       {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
         "name": "path",
-        "types": [
-          "*"
-        ]
+        "description": "file path relative to the workspace directory"
       },
       {
+        "nullable": null,
+        "types": [
+          "String",
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
         "name": "data",
-        "types": [
-          "*"
-        ]
+        "description": "directory configuration options"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -4762,27 +5090,59 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#configDir",
     "access": "public",
-    "description": null,
-    "lineNumber": 57,
-    "undocument": true,
+    "description": "Fetch the configuration directory or a directory relative to it",
+    "lineNumber": 132,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "file path relative to the configuration directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding data for files in the directory"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for files in the directory"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object"
     }
   },
   {
@@ -4795,27 +5155,40 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#config",
     "access": "public",
-    "description": null,
-    "lineNumber": 63,
-    "undocument": true,
+    "description": "Fetches configuration data from a file in the configuration directory or returns the\n{@link Config} object itself if no file uri is specified.",
+    "examples": [
+      "workspace.config('myfile').then(\n  config => console.log(\"Loaded myfile config: \", config)\n);"
+    ],
+    "lineNumber": 150,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "uri",
+        "description": "file path relative to the configuration directory"
       },
       {
-        "name": "defaults",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "defaults",
+        "description": "default configuration options if file isn't found"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to the configuration data read from the file"
     }
   },
   {
@@ -4828,21 +5201,30 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#library",
     "access": "public",
-    "description": null,
-    "lineNumber": 69,
-    "undocument": true,
+    "description": "Loads a Javscript library from the library directory or returns the\n{@link Library} object itself if no file uri is specified.",
+    "examples": [
+      "workspace.library('mylib').then(\n  exports => console.log(\"Loaded mylib exports: \", exports)\n);"
+    ],
+    "lineNumber": 167,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "uri",
+        "description": "file path relative to the library directory"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to the configuration data read from the file"
     }
   },
   {
@@ -4856,7 +5238,7 @@
     "longname": "src/Badger/Workspace.js~Workspace#component",
     "access": "public",
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 174,
     "undocument": true,
     "params": [
       {
@@ -4892,7 +5274,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{workspace}",
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 186,
     "undocument": true,
     "params": [
       {
@@ -5059,7 +5441,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Config}",
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 21,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -5077,7 +5459,7 @@
     "longname": "src/Badger.js~Config#constructor",
     "access": "public",
     "description": "Constructor for Config object.",
-    "lineNumber": 27,
+    "lineNumber": 30,
     "params": [
       {
         "nullable": null,
@@ -5146,7 +5528,7 @@
     "longname": "src/Badger.js~Config#firstFileWithExt",
     "access": "public",
     "description": "Internal method to locate the first config file with one of a number of file extensions.",
-    "lineNumber": 42,
+    "lineNumber": 45,
     "params": [
       {
         "nullable": null,
@@ -5199,7 +5581,7 @@
     "longname": "src/Badger.js~Config#jsFile",
     "access": "public",
     "description": "Internal method to locate a Javascript configuration file with one of the `jsExt` extensions (`.js` or `.mjs` by default)",
-    "lineNumber": 64,
+    "lineNumber": 67,
     "params": [
       {
         "nullable": null,
@@ -5232,7 +5614,7 @@
     "longname": "src/Badger.js~Config#file",
     "access": "public",
     "description": "Internal method to locate a configuration file with one of the `codec` extensions (`.yaml` or `.json` by default)",
-    "lineNumber": 73,
+    "lineNumber": 76,
     "params": [
       {
         "nullable": null,
@@ -5265,7 +5647,7 @@
     "longname": "src/Badger.js~Config#config",
     "access": "public",
     "description": "Method to fetch configuration data from a file.  The file can be a Javascript file which should\nreturn the configuration data as the default export, or a YAML (`.yaml`) or JSON (`.json`) file.\nIf the file isn't found then the method returns the `defaults` data if provided, or throws an\nerror if not.",
-    "lineNumber": 86,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -5311,7 +5693,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{config}",
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 124,
     "undocument": true,
     "params": [
       {
@@ -5359,7 +5741,7 @@
     "longname": "src/Badger.js~Directory#file",
     "access": "public",
     "description": "Fetch a new {@link File} object for a file in the directory.",
-    "lineNumber": 20,
+    "lineNumber": 21,
     "params": [
       {
         "nullable": null,
@@ -5390,6 +5772,18 @@
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
@@ -5412,7 +5806,7 @@
     "longname": "src/Badger.js~Directory#directory",
     "access": "public",
     "description": "Fetch a new {@link Directory} object for a sub-directory in the directory.",
-    "lineNumber": 32,
+    "lineNumber": 34,
     "params": [
       {
         "nullable": null,
@@ -5442,7 +5836,19 @@
         "spread": false,
         "optional": true,
         "name": "options.codec",
-        "description": "codec for encoding/decoding file data"
+        "description": "default codec for encoding/decoding files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "default character encoding for files"
       }
     ],
     "return": {
@@ -5465,7 +5871,7 @@
     "longname": "src/Badger.js~Directory#dir",
     "access": "public",
     "description": "An alias for the {@link directory} method for lazy people",
-    "lineNumber": 41,
+    "lineNumber": 43,
     "return": {
       "nullable": null,
       "types": [
@@ -5500,7 +5906,7 @@
     "longname": "src/Badger.js~Directory#parent",
     "access": "public",
     "description": "Returns a new {@link Directory} object for the parent directory",
-    "lineNumber": 52,
+    "lineNumber": 55,
     "params": [
       {
         "nullable": null,
@@ -5515,12 +5921,24 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
-        "description": "codec for encoding/decoding file data"
+        "description": "default codec for encoding/decoding files"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "default character encoding for files"
       }
     ],
     "return": {
@@ -5543,7 +5961,7 @@
     "longname": "src/Badger.js~Directory#read",
     "access": "public",
     "description": "Returns the names of the files and sub-directories in the directory",
-    "lineNumber": 61,
+    "lineNumber": 64,
     "return": {
       "nullable": null,
       "types": [
@@ -5565,7 +5983,7 @@
     "longname": "src/Badger.js~Directory#isEmpty",
     "access": "public",
     "description": "Determines if the directory is empty.",
-    "lineNumber": 70,
+    "lineNumber": 73,
     "return": {
       "nullable": null,
       "types": [
@@ -5587,7 +6005,7 @@
     "longname": "src/Badger.js~Directory#notEmpty",
     "access": "public",
     "description": "Determines if the directory is not empty.",
-    "lineNumber": 80,
+    "lineNumber": 83,
     "return": {
       "nullable": null,
       "types": [
@@ -5609,7 +6027,7 @@
     "longname": "src/Badger.js~Directory#empty",
     "access": "public",
     "description": "Empty the directory.",
-    "lineNumber": 93,
+    "lineNumber": 96,
     "params": [
       {
         "nullable": null,
@@ -5662,7 +6080,7 @@
     "longname": "src/Badger.js~Directory#mkdir",
     "access": "public",
     "description": "Make the directory.",
-    "lineNumber": 107,
+    "lineNumber": 110,
     "params": [
       {
         "nullable": null,
@@ -5705,7 +6123,7 @@
     "longname": "src/Badger.js~Directory#rmdir",
     "access": "public",
     "description": "Remove the directory.",
-    "lineNumber": 124,
+    "lineNumber": 127,
     "params": [
       {
         "nullable": null,
@@ -5768,7 +6186,7 @@
     "longname": "src/Badger.js~Directory#create",
     "access": "public",
     "description": "Create the directory and any intermediate directories.",
-    "lineNumber": 141,
+    "lineNumber": 144,
     "params": [
       {
         "nullable": null,
@@ -5813,7 +6231,7 @@
     "longname": "src/Badger.js~Directory#destroy",
     "access": "public",
     "description": "Empty and delete the directory.",
-    "lineNumber": 154,
+    "lineNumber": 157,
     "params": [
       {
         "nullable": null,
@@ -5882,7 +6300,7 @@
     "longname": "src/Badger.js~Directory#mustExist",
     "access": "public",
     "description": "Assert that a directory exists and optionally create it",
-    "lineNumber": 167,
+    "lineNumber": 170,
     "params": [
       {
         "nullable": null,
@@ -5948,7 +6366,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{dir}",
     "description": null,
-    "lineNumber": 189,
+    "lineNumber": 192,
     "undocument": true,
     "params": [
       {
@@ -5984,7 +6402,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cwd}",
     "description": null,
-    "lineNumber": 199,
+    "lineNumber": 202,
     "undocument": true,
     "params": [
       {
@@ -6014,7 +6432,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{bin}",
     "description": null,
-    "lineNumber": 210,
+    "lineNumber": 213,
     "undocument": true,
     "params": [
       {
@@ -6066,7 +6484,7 @@
     "longname": "src/Badger.js~File#directory",
     "access": "public",
     "description": "Returns a new {@link Directory} object for the parent directory of the file",
-    "lineNumber": 18,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -6081,12 +6499,24 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
@@ -6109,7 +6539,7 @@
     "longname": "src/Badger.js~File#dir",
     "access": "public",
     "description": "An alias for the {@link directory} method for lazy people",
-    "lineNumber": 26,
+    "lineNumber": 27,
     "return": {
       "nullable": null,
       "types": [
@@ -6134,17 +6564,17 @@
     "name": "read",
     "memberof": "src/Badger.js~File",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Badger.js~File#read",
     "access": "public",
     "description": "Reads the file content.  If a `codec` has been specified then the content is decoded.",
     "examples": [
-      "const text = file('myfile.txt').read();",
-      "const data = file('myfile.json', { codec: 'json' }).read();",
-      "const data = file('myfile.json').read({ codec: 'json' });"
+      "file('myfile.txt').read().then( text => console.log(text) );",
+      "file('myfile.json', { codec: 'json' }).read().( data => console.log(data) );",
+      "file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );"
     ],
-    "lineNumber": 42,
+    "lineNumber": 44,
     "params": [
       {
         "nullable": null,
@@ -6159,22 +6589,33 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "String",
-        "Object"
+        "Promise"
       ],
       "spread": false,
-      "description": "the file content"
+      "description": "fulfills with the file content"
     }
   },
   {
@@ -6183,7 +6624,7 @@
     "name": "write",
     "memberof": "src/Badger.js~File",
     "generator": false,
-    "async": false,
+    "async": true,
     "static": false,
     "longname": "src/Badger.js~File#write",
     "access": "public",
@@ -6193,7 +6634,7 @@
       "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
       "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
     ],
-    "lineNumber": 62,
+    "lineNumber": 66,
     "params": [
       {
         "nullable": null,
@@ -6219,18 +6660,33 @@
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "String"
         ],
         "spread": false,
         "optional": true,
         "name": "options.codec",
         "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -6243,21 +6699,39 @@
     "static": false,
     "longname": "src/Badger.js~File#delete",
     "access": "public",
-    "description": null,
-    "lineNumber": 70,
-    "undocument": true,
+    "description": "Delete the file content.",
+    "lineNumber": 81,
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "false",
+        "defaultRaw": false,
+        "name": "options.force",
+        "description": "when true, exceptions will be ignored if path does not exist"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -6274,7 +6748,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{file}",
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 95,
     "undocument": true,
     "params": [
       {
@@ -6308,7 +6782,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Path}",
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 17,
     "undocument": true,
     "interface": false
   },
@@ -6323,7 +6797,7 @@
     "longname": "src/Badger.js~Path#constructor",
     "access": "public",
     "description": "Constructor for filesystem paths.",
-    "lineNumber": 22,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -6344,6 +6818,18 @@
         "optional": true,
         "name": "options",
         "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "file encoding"
       },
       {
         "nullable": null,
@@ -6374,7 +6860,7 @@
     "longname": "src/Badger.js~Path#state",
     "access": "public",
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -6393,7 +6879,7 @@
     "longname": "src/Badger.js~Path#path",
     "access": "public",
     "description": "Accessor method to return the filesystem path.",
-    "lineNumber": 35,
+    "lineNumber": 39,
     "return": {
       "nullable": null,
       "types": [
@@ -6418,7 +6904,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\nconst q = p.relativePath('there')          // -> /path/to/here/there\nconst r = p.relativePath('and', 'there')   // -> /path/to/here/and/there"
     ],
-    "lineNumber": 48,
+    "lineNumber": 52,
     "params": [
       {
         "nullable": null,
@@ -6454,7 +6940,7 @@
     "examples": [
       "const p = new Path('/path/to/here', { option1: 'hello' })\nconst q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }"
     ],
-    "lineNumber": 61,
+    "lineNumber": 65,
     "params": [
       {
         "nullable": null,
@@ -6490,7 +6976,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.exists()\n  .then( console.log('path exists') )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 74,
+    "lineNumber": 78,
     "return": {
       "nullable": null,
       "types": [
@@ -6515,7 +7001,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.stat()\n  .then( stats => console.log('path stats:', stats) )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 96,
+    "lineNumber": 100,
     "return": {
       "nullable": null,
       "types": [
@@ -6537,7 +7023,7 @@
     "longname": "src/Badger.js~Path#unstat",
     "access": "public",
     "description": "Method to clear internal cache of path stats (subject to change)",
-    "lineNumber": 104,
+    "lineNumber": 108,
     "params": [],
     "return": {
       "types": [
@@ -6557,7 +7043,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Library}",
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 19,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -6575,7 +7061,7 @@
     "longname": "src/Badger.js~Library#constructor",
     "access": "public",
     "description": "Constructor for Library object.",
-    "lineNumber": 24,
+    "lineNumber": 27,
     "params": [
       {
         "nullable": null,
@@ -6631,7 +7117,7 @@
     "longname": "src/Badger.js~Library#library",
     "access": "public",
     "description": "Method to load a Javascript library in one of the library directories and with one of the `jsExt` extensions (`.js` or `.mjs` by default).\nReturns the exports from the library if found or throws an error if not.",
-    "lineNumber": 39,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -6667,7 +7153,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{library}",
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 71,
     "undocument": true,
     "params": [
       {
@@ -6790,7 +7276,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{matchDoubleQuotedString}",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 22,
     "undocument": true,
     "params": [
       {
@@ -6820,7 +7306,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{matchSingleQuotedString}",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 34,
     "undocument": true,
     "params": [
       {
@@ -6850,7 +7336,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{splitDataPath}",
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 46,
     "undocument": true,
     "params": [
       {
@@ -6880,7 +7366,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{dataPath}",
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 84,
     "undocument": true,
     "params": [
       {
@@ -7747,7 +8233,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{Workspace}",
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 25,
     "undocument": true,
     "interface": false
   },
@@ -7761,9 +8247,80 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#constructor",
     "access": "public",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true
+    "description": "Constructor for Workspace object.",
+    "lineNumber": 36,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": "root directory for the workspace"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.config",
+        "description": "configuration options for a {@link Config} object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.config.dir",
+        "description": "configuration directory or directories relative to the workspace directory"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.library",
+        "description": "configuration options for a {@link Config} object"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array",
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.library.dir",
+        "description": "library directory or directories relative to the workspace directory"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "the Workspace object"
+    }
   },
   {
     "__docId__": 280,
@@ -7774,7 +8331,7 @@
     "longname": "src/Badger.js~Workspace#state",
     "access": "public",
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 45,
     "undocument": true,
     "type": {
       "types": [
@@ -7792,27 +8349,47 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#dir",
     "access": "public",
-    "description": null,
-    "lineNumber": 39,
-    "undocument": true,
+    "description": "Fetch a new {@link Directory} object for a sub-directory of the workspace directory.",
+    "lineNumber": 65,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "directory path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object"
     }
   },
   {
@@ -7825,27 +8402,59 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#file",
     "access": "public",
-    "description": null,
-    "lineNumber": 45,
-    "undocument": true,
+    "description": "Fetch a new {@link File} object for a file in the workspace.",
+    "lineNumber": 80,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "file path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "file configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for the file"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link File} object"
     }
   },
   {
@@ -7858,27 +8467,64 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#read",
     "access": "public",
-    "description": null,
-    "lineNumber": 49,
-    "undocument": true,
+    "description": "Read the content of a file in the workspace.",
+    "examples": [
+      "file('myfile.txt').read().then( text => console.log(text) );",
+      "file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );",
+      "file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );"
+    ],
+    "lineNumber": 99,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "path",
+        "description": "file path relative to the workspace directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for the file"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file content"
     }
   },
   {
@@ -7891,33 +8537,75 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#write",
     "access": "public",
-    "description": null,
-    "lineNumber": 53,
-    "undocument": true,
+    "description": "Writes content to a file.  If a `codec` has been specified then the content will be encoded.",
+    "examples": [
+      "file('myfile.txt').write('Hello World');",
+      "file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });",
+      "file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });"
+    ],
+    "lineNumber": 119,
     "params": [
       {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
         "name": "path",
-        "types": [
-          "*"
-        ]
+        "description": "file path relative to the workspace directory"
       },
       {
+        "nullable": null,
+        "types": [
+          "String",
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
         "name": "data",
-        "types": [
-          "*"
-        ]
+        "description": "directory configuration options"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding file data"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "codec for encoding/decoding file data"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with the file object"
     }
   },
   {
@@ -7930,27 +8618,59 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#configDir",
     "access": "public",
-    "description": null,
-    "lineNumber": 57,
-    "undocument": true,
+    "description": "Fetch the configuration directory or a directory relative to it",
+    "lineNumber": 132,
     "params": [
       {
-        "name": "path",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "path",
+        "description": "file path relative to the configuration directory"
       },
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "directory configuration options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.codec",
+        "description": "codec for encoding/decoding data for files in the directory"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": true,
+        "defaultValue": "utf8",
+        "defaultRaw": "utf8",
+        "name": "options.encoding",
+        "description": "character encoding for files in the directory"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Object"
+      ],
+      "spread": false,
+      "description": "a {@link Directory} object"
     }
   },
   {
@@ -7963,27 +8683,40 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#config",
     "access": "public",
-    "description": null,
-    "lineNumber": 63,
-    "undocument": true,
+    "description": "Fetches configuration data from a file in the configuration directory or returns the\n{@link Config} object itself if no file uri is specified.",
+    "examples": [
+      "workspace.config('myfile').then(\n  config => console.log(\"Loaded myfile config: \", config)\n);"
+    ],
+    "lineNumber": 150,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "uri",
+        "description": "file path relative to the configuration directory"
       },
       {
-        "name": "defaults",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "defaults",
+        "description": "default configuration options if file isn't found"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to the configuration data read from the file"
     }
   },
   {
@@ -7996,21 +8729,30 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#library",
     "access": "public",
-    "description": null,
-    "lineNumber": 69,
-    "undocument": true,
+    "description": "Loads a Javscript library from the library directory or returns the\n{@link Library} object itself if no file uri is specified.",
+    "examples": [
+      "workspace.library('mylib').then(\n  exports => console.log(\"Loaded mylib exports: \", exports)\n);"
+    ],
+    "lineNumber": 167,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "string"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "uri",
+        "description": "file path relative to the library directory"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to the configuration data read from the file"
     }
   },
   {
@@ -8024,7 +8766,7 @@
     "longname": "src/Badger.js~Workspace#component",
     "access": "public",
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 174,
     "undocument": true,
     "params": [
       {
@@ -8060,7 +8802,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{workspace}",
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 186,
     "undocument": true,
     "params": [
       {
@@ -8088,7 +8830,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.4\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.5\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,
