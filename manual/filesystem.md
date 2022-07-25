@@ -17,11 +17,11 @@ from a different directory.
 Let's assume that the script is `bin/hello.js` and you want
 to read the contents of the file in `data/hello.txt`.
 
-The `bin` function accepts the URL of the source file which you
-can get from `import.meta.url` and returns an object
-representing the directory that it's in.  Note that this will
-always be the same directory regardless of where you run the
-script from.
+The [bin](function#static-function-bin) function accepts
+the URL of the source file which you can get from `import.meta.url`
+and returns an object representing the directory that it's in.  Note
+that this will always be the same directory regardless of where you
+run the script from.
 
 ```js
 import { bin } from '@abw/badger'
@@ -85,8 +85,20 @@ For further information see the documentation for the
 
 ## Directory Object
 
-You can create a directory object directly, either using `new Directory(path)` or with
-the `dir(path)` function.
+You can create a [Directory](class/src/Badger/Filesystem/Directory.js~Directory) object
+directly.
+
+```js
+import { Directory } from '@abw/badger'
+
+const dir = new Directory('data');
+
+dir
+  .file('goodbye.txt')
+  .write('K thx bye');
+```
+
+Or as a shortcut you can use the [dir](function#static-function-dir) function.
 
 ```js
 import { dir } from '@abw/badger'
@@ -98,8 +110,18 @@ dir('data')
 
 ## File Objects
 
-You can also create a file object directly, either using `new File()` or with
-the `file()` function.
+You can also create a [File](class/src/Badger/Filesystem/File.js~File) object directly.
+
+```js
+import { File } from '@abw/badger'
+
+const file = new File('data/goodbye.txt')
+
+file
+  .write('K thx bye');
+```
+
+Or as a shortcut you can use the [file](function#static-function-file) function.
 
 ```js
 import { file } from '@abw/badger'

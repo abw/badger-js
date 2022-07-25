@@ -90,6 +90,19 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/data_paths.html"><a href="manual/data_paths.html#navigating-your-own-data" data-ice="link">Navigating Your Own Data</a></li>
 </ul>
   </div>
+<div data-ice="manual">
+    <ul class="manual-toc">
+      
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/workspace.html"><a href="manual/workspace.html" data-ice="link">Workspace</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#workspace-directory" data-ice="link">Workspace Directory</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#directories" data-ice="link">Directories</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#files" data-ice="link">Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#configuration-files" data-ice="link">Configuration Files</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#javascript-libraries" data-ice="link">Javascript Libraries</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#javascript-components" data-ice="link">Javascript Components</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/workspace.html"><a href="manual/workspace.html#configuration-options" data-ice="link">Configuration Options</a></li>
+</ul>
+  </div>
 </div>
 </nav>
 
@@ -106,11 +119,11 @@ handle common  directory and file operations.</p>
 from a different directory.</p>
 <p>Let's assume that the script is <code>bin/hello.js</code> and you want
 to read the contents of the file in <code>data/hello.txt</code>.</p>
-<p>The <code>bin</code> function accepts the URL of the source file which you
-can get from <code>import.meta.url</code> and returns an object
-representing the directory that it's in.  Note that this will
-always be the same directory regardless of where you run the
-script from.</p>
+<p>The <a href="function#static-function-bin">bin</a> function accepts
+the URL of the source file which you can get from <code>import.meta.url</code>
+and returns an object representing the directory that it's in.  Note
+that this will always be the same directory regardless of where you
+run the script from.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { bin } from '@abw/badger'
 
 // current directory where this script is located
@@ -148,15 +161,29 @@ bin(import.meta.url)
 <p>For further information see the documentation for the
 <a href="class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> and
 <a href="class/src/Badger/Filesystem/File.js~File">File</a> modules.</p>
-<h2 id="directory-object">Directory Object</h2><p>You can create a directory object directly, either using <code>new Directory(path)</code> or with
-the <code>dir(path)</code> function.</p>
+<h2 id="directory-object">Directory Object</h2><p>You can create a <a href="class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object
+directly.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Directory } from '@abw/badger'
+
+const dir = new Directory('data');
+
+dir
+  .file('goodbye.txt')
+  .write('K thx bye');</code></code></pre>
+<p>Or as a shortcut you can use the <a href="function#static-function-dir">dir</a> function.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { dir } from '@abw/badger'
 
 dir('data')
   .file('goodbye.txt')
   .write('K thx bye');</code></code></pre>
-<h2 id="file-objects">File Objects</h2><p>You can also create a file object directly, either using <code>new File()</code> or with
-the <code>file()</code> function.</p>
+<h2 id="file-objects">File Objects</h2><p>You can also create a <a href="class/src/Badger/Filesystem/File.js~File">File</a> object directly.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { File } from '@abw/badger'
+
+const file = new File('data/goodbye.txt')
+
+file
+  .write('K thx bye');</code></code></pre>
+<p>Or as a shortcut you can use the <a href="function#static-function-file">file</a> function.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { file } from '@abw/badger'
 
 file('data/goodbye.txt')

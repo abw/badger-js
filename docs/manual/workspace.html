@@ -106,106 +106,82 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="data-paths">Data Paths</h1><p>Both the <a href="class/src/Badger/Config.js~Config">Config</a> and
-<a href="class/src/Badger/Library.js~Library">Library</a> modules provide a
-convenient way to drill down into the data returned to fetch a particular item.</p>
-<p>This uses the <a href="function#static-function-dataPath">dataPath()</a> function which
-nagivates data using a URL-like path.  The data path syntax is intentionally simple and
-limited.  If you want to do anything more complicated then you should consider using JSON
-Path instead.</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="workspace">Workspace</h1><p>The <a href="class/src/Badger/Workspace.js~Workspace">Workspace</a> module provides a
+convenient "hub" for accessing directories, files, configuration files,
+libraries and other resources for your project.</p>
 <ul>
-<li><a href="#config-files">Config Files</a></li>
-<li><a href="#optional-items">Optional Items</a></li>
-<li><a href="#quoted-path-segments">Quoted Path Segments</a></li>
-<li><a href="#javascript-library-exports">Javascript Library Exports</a></li>
-<li><a href="#navigating-your-own-data">Navigating Your Own Data</a></li>
+<li><a href="#workspace-directory">Workspace Directory</a></li>
+<li><a href="#directories">Directories</a></li>
+<li><a href="#files">Files</a></li>
+<li><a href="#configuration-files">Configuration Files</a></li>
+<li><a href="#javascript-libraries">Javscript Libraries</a></li>
+<li><a href="#configuration-options">Configuration Options</a></li>
 </ul>
-<h2 id="config-files">Config Files</h2><p>Suppose you have the following configuration file in <code>config/zoo.yaml</code>.</p>
-<pre><code class="lang-yaml"><code class="source-code prettyprint">animals:
-  aardvark:
-    name: Alan
-  badger:
-    name: Brian
-  cat:
-    name: Colin</code></code></pre>
-<p>If you have a Config object setup to read files from the <code>config</code> directory then
-you can read the whole of the <code>zoo</code> data set like this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">use { Config } from '@abw/badger'
+<h2 id="workspace-directory">Workspace Directory</h2><p>Create a new Workspace object and provide it with the workspace directory.
+This is usually the top-level directory of your project.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Workspace } from '@abw/badger'
 
-const configDir = new Config('config');
+const workspace = new Workspace('/path/to/project')</code></code></pre>
+<p>You can specify an absolute directory path, the path of a directory relative to
+your current location, or a <a href="class/src/Badger/Directory.js~Directory">Directory</a>
+directory object.  The <a href="function#static-function-bin">bin</a> function can be used to
+determine the directory in which a script is located.</p>
+<p>For example, if you have a <code>bin/myscript.js</code> file, you can create a workspace
+for the parent directory like so:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Workspace } from '@abw/badger'
 
-configDir.config('zoo').then(
-  zoo =&gt; console.log("The badger is called ", zoo.animals.badger.name) // The badger is called Brian
+const workspace = new Workspace(
+  bin(import.meta.url).parent()
 )</code></code></pre>
-<p>If you're only looking for a particular item, in this case the name of the badger,
-then you can add a data path fragment to the file name, like this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">configDir.config('zoo#animals/badger/name').then(
-  name =&gt; console.log("The badger is called ", name) // The badger is called Brian
+<h2 id="directories">Directories</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-dir">dir()</a> method is a shortcut
+to fetch a <a href="class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object for any
+directory relative to the workspace directory.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const tmpdir = workspace.dir('tmp');</code></code></pre>
+<h2 id="files">Files</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-file">file()</a> method is a shortcut
+to fetch a <a href="class/src/Badger/Filesystem/File.js~File">File</a> object for any
+file relative to the workspace directory.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const wibble = workspace.file('tmp/wibble.log');</code></code></pre>
+<h2 id="configuration-files">Configuration Files</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-config">config()</a> method is a shortcut
+to load data from a configuration file using the <a href="class/src/Badger/Config.js~Config">Config</a>
+module.</p>
+<p>The default location for configuration files is the <code>config</code> directory relative to the workspace
+directory.  See <a href="#config-options">configuration options</a> below for details on how to change this.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">workspace.config('animals').then(
+  data =&gt; console.log("Data from the config/animals(.js|.mjs|.yaml|.json) file", data)
 )</code></code></pre>
-<p>Each element of the data path should be separated by a slash.  You can specify
-text elements to access items in an object (as shown above) or numerical elements to
-access items in an array.</p>
-<p>For example, if you have some data that looks like this:</p>
-<pre><code class="lang-json"><code class="source-code prettyprint">{
-  "numbers": ["zero", "one", "two", "forty-two"],
-  "friends": [
-    { "name": "Ford Prefect" },
-    { "name": "Zaphod Beeblebrox" },
-    { "name": "Trillian" },
-  ]
-}</code></code></pre>
-<p>Then a data path of <code>numbers/3</code> would return "forty-two", or <code>friends/0/name</code> would return
-"Ford Prefect".</p>
-<h2 id="optional-items">Optional Items</h2><p>If an item specified in the path is <code>undefined</code> or <code>null</code> then an error is thrown.  Using the
-above data this would happen if you tried to access <code>friends/12/name</code> or <code>friends/0/birthday</code></p>
-<p>You can add an question mark to the end of a path segment to make it silently return <code>undefined</code>
-instead, e.g. <code>friends/12?/name</code> or <code>friends/0/birthday?</code>.  Note that the question mark can only
-appear at the end of a segment.  If it appears anywhere else then it is assumed to be the same
-thing as <code>?/</code>.  e.g. <code>foo?bar</code> is the same as <code>foo?/bar</code>.</p>
-<h2 id="quoted-path-segments">Quoted Path Segments</h2><p>You can enclose any segment in single or double quotes if you happen to have data keys that include
-<code>/</code> or <code>?</code> characters in them.  For example, <code>question/"What is the answer?"</code> to access the value
-"42" in the following data:</p>
-<pre><code class="lang-json"><code class="source-code prettyprint">{
-  "question": {
-    "What is the answer?": 42
-  }
-}</code></code></pre>
-<p>If you want to make a quoted part optional then add the question mark after the closing quote, e.g.
-<code>question/"What is the question?"</code> would throw an error because it is not defined, but can be specified
-as <code>question/"What is the question?"?</code> to instead return <code>undefined</code>.</p>
-<p>Note that the usual Javascript rules for quoted strings apply.  e.g. use <code>\n</code> to encode a newline,
-<code>\"</code> to escape a double quote inside a double quoted string, and so on.</p>
-<h2 id="javascript-library-exports">Javascript Library Exports</h2><p>All of the above applies to the data returned by the Config and Library modules when loaded
-Javascript files.  By default they will return an object containing all exported values from the
-Javascript file.  If you want to access the <code>default</code> export, for example, then you can add a <code>#default</code> suffix
-to the file basename when loading it.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">libraryDir.library('Example#default').then(
-  default =&gt; {
-    // do something with the default export here
+<h2 id="javascript-libraries">Javascript Libraries</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-library">library()</a> method is a shortcut
+to load a Javascript library from one of the library directories using the
+<a href="class/src/Badger/Library.js~Library">Library</a> module.</p>
+<p>The default search path for libary files is any of the <code>lib</code>, <code>library</code>, <code>src</code> or <code>components</code>
+directories relative to the workspace directory.  See <a href="#config-options">configuration options</a>
+below for details on how to change this.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">workspace.config('animals').then(
+  data =&gt; console.log("Data from the config/animals(.js|.mjs|.yaml|.json) file", data)
+)</code></code></pre>
+<h2 id="javascript-components">Javascript Components</h2><p>TODO</p>
+<h2 id="configuration-options">Configuration Options</h2><p>The <code>config</code> option can be provided to configure the <a href="class/src/Badger/Config.js~Config">Config</a>
+object that the workspace used to load configuration files.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    config: {
+        dir:   'cfg',
+        codec: 'json',
+        jsExt: 'js',
+    }
   }
 )</code></code></pre>
-<p>Any other named export can be accessed in the same way.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">libraryDir.library('Example#anotherExport').then(
-  anotherExport =&gt; {
-    // do something with anotherExport here
+<p>The <code>library</code> option can be provided to configure the <a href="class/src/Badger/Library.js~Library">Library</a>
+object that the workspace used to load Javascript libraries.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    library: {
+        dir:   'lib',
+        jsExt: 'js',
+    }
   }
 )</code></code></pre>
-<h2 id="navigating-your-own-data">Navigating Your Own Data</h2><p>You can use the <code>dataPath()</code> function to navigate your own data.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">import { dataPath } from '@abw/badger'
-
-const animals = {
-  aardvark: {
-    name: "Alan"
-  }
-  badger: {
-    name: "Brian"
-  },
-  cat: {
-    name: "Colin"
-  }
-}
-
-const badgerName = dataPath(data, 'badger/name');</code></code></pre>
 </div>
 </div>
 

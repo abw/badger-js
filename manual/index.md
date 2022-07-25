@@ -10,6 +10,7 @@ This is the manual for the `badger` Javascript toolkit.
 * [Configuration Files](manual/config_files.html)
 * [Library Modules](manual/library_modules.html)
 * [Data Paths](manual/data_paths.html)
+* [Workspace](manual/workspace.html)
 
 # Author
 [Andy Wardley](https://github.com/abw)
