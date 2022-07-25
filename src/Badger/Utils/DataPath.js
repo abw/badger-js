@@ -1,5 +1,8 @@
 import { fail, hasValue, isArray, noValue } from "./Misc.js";
 
+/**
+ * Characters that can be escaped in quoted strings.
+ */
 const quotedEscapes = {
   b: "\b",
   f: "\f",
@@ -12,6 +15,10 @@ const quotedEscapes = {
   '\\': '\\',
 }
 
+/**
+ * Match a double quoted string and expand escaped characters
+ * @param {String} [string] - the string to match
+ */
 export const matchDoubleQuotedString = string => {
   const regex = /^"((?:\\[\\"nrt]|.)*?)"$/
   const match = string.match(regex);
@@ -20,6 +27,10 @@ export const matchDoubleQuotedString = string => {
     : null;
 }
 
+/**
+ * Match a single quoted string and expand escaped characters
+ * @param {String} [string] - the string to match
+ */
 export const matchSingleQuotedString = string => {
   const regex = /^'((?:\\[\\']|.)*?)'$/
   const match = string.match(regex);
@@ -28,6 +39,10 @@ export const matchSingleQuotedString = string => {
     : null;
 }
 
+/**
+ * Split a data path into component parts
+ * @param {String} [path] - the path to split
+ */
 export const splitDataPath = path => {
   // * match a slash: \/
   // * match a single quoted string: '...'
@@ -35,7 +50,6 @@ export const splitDataPath = path => {
   // * match anything else: hello world!
   let parts = [ ];
   const regex = /(?:(\/)|'((?:\\[\\']|.)*?)'|"((?:\\[\\"nrt]|.)*?)"|([^/?]+))(\??)/g;
-  // console.log('\nsplitDataPath [%s]', path);
   const matches = [...path.matchAll(regex)];
 
   matches.map(
@@ -62,7 +76,11 @@ export const splitDataPath = path => {
   return parts;
 }
 
-// eslint-disable-next-line no-unused-vars
+/**
+ * Traverse a data structure using a path.
+ * @param {Object} [data] - the data to traverse
+ * @param {String} [path] - the data path
+ */
 export const dataPath = (data, path) => {
   let root  = data;
   let parts = splitDataPath(path);

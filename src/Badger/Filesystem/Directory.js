@@ -15,6 +15,7 @@ export class Directory extends Path {
    * @param {string} path - file path
    * @param {Object} [options] - file configuration options
    * @param {String} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.encoding=utf8] - character encoding
    * @return {Object} the {@link File} object
    */
   file(path, options) {
@@ -26,7 +27,8 @@ export class Directory extends Path {
    * Fetch a new {@link Directory} object for a sub-directory in the directory.
    * @param {string} path - directory path
    * @param {Object} [options] - directory configuration options
-   * @param {String} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.codec] - default codec for encoding/decoding files
+   * @param {String} [options.encoding=utf8] - default character encoding for files
    * @return {Object} the {@link Directory} object
    */
   directory(path, options) {
@@ -46,7 +48,8 @@ export class Directory extends Path {
   /**
    * Returns a new {@link Directory} object for the parent directory
    * @param {Object} [options] - directory configuration options
-   * @param {Boolean} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.codec] - default codec for encoding/decoding files
+   * @param {String} [options.encoding=utf8] - default character encoding for files
    * @return {Object} a {@link Directory} object for the parent
    */
   parent(options) {

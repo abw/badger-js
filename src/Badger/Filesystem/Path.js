@@ -3,7 +3,10 @@ import { stat } from 'node:fs/promises'
 import { rethrow } from '../Utils/Misc.js';
 import { addDebug } from '../Utils/Debug.js';
 
-const defaultOptions = {
+/**
+ * Default configuration options.
+ */
+const defaults = {
   encoding: 'utf8'
 }
 
@@ -16,6 +19,7 @@ export class Path {
    * Constructor for filesystem paths.
    * @param {string} path - file path
    * @param {Object} [options] - configuration options
+   * @param {String} [options.encoding=utf8] - file encoding
    * @param {String} [options.codec] - codec for encoding/decoding file data
    * @return {Object} the {@link Path} object
    */
@@ -24,7 +28,7 @@ export class Path {
     if (path instanceof Path) {
       path = path.path();
     }
-    this.state = { path, options: { ...defaultOptions, ...options } };
+    this.state = { path, options: { ...defaults, ...options } };
     addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);
   }
 

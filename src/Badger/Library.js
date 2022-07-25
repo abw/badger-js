@@ -4,6 +4,9 @@ import { splitList } from "./Utils/Text.js";
 import { fail } from "./Utils/Misc.js";
 import { dataPath } from "./Utils/DataPath.js";
 
+/**
+ * Default configuration options.
+ */
 const defaults = {
   jsExt: 'js mjs',
 }

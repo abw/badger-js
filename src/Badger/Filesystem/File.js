@@ -12,7 +12,8 @@ export class File extends Path {
   /**
    * Returns a new {@link Directory} object for the parent directory of the file
    * @param {Object} [options] - directory configuration options
-   * @param {Boolean} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.encoding=utf8] - character encoding
    * @return {Object} a {@link Directory} object for the parent
    */
   directory(options) {
@@ -30,28 +31,31 @@ export class File extends Path {
   /**
    * Reads the file content.  If a `codec` has been specified then the content is decoded.
    * @param {Object} [options] - directory configuration options
-   * @param {Boolean} [options.codec] - codec for encoding/decoding file data
-   * @return {String|Object} the file content
+   * @param {String} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.encoding=utf8] - character encoding
+   * @return {Promise} fulfills with the file content
    * @example
-   * const text = file('myfile.txt').read();
+   * file('myfile.txt').read().then( text => console.log(text) );
    * @example
-   * const data = file('myfile.json', { codec: 'json' }).read();
+   * file('myfile.json', { codec: 'json' }).read().( data => console.log(data) );
    * @example
-   * const data = file('myfile.json').read({ codec: 'json' });
+   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );
    */
-  read(options) {
+  async read(options) {
     const opts = this.options(options);
-    const file = readFile(this.state.path, opts);
+    const text = await readFile(this.state.path, opts);
     return opts.codec
-      ? file.then(text => codec(opts.codec).decode(text))
-      : file;
+      ? codec(opts.codec).decode(text)
+      : text;
   }
 
   /**
    * Writes the file content.  If a `codec` has been specified then the content will be encoded.
    * @param {String|Object} data - directory configuration options
    * @param {Object} [options] - directory configuration options
-   * @param {Boolean} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.codec] - codec for encoding/decoding file data
+   * @param {String} [options.encoding=utf8] - character encoding
+   * @return {Promise} fulfills with the file object
    * @example
    * file('myfile.txt').write('Hello World');
    * @example
@@ -59,14 +63,21 @@ export class File extends Path {
    * @example
    * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });
    */
-  write(data, options) {
+  async write(data, options) {
     const opts = this.options(options);
     const text = opts.codec
       ? codec(opts.codec).encode(data)
       : data;
-    return writeFile(this.state.path, text, opts).then( () => this );
+    await writeFile(this.state.path, text, opts);
+    return this;
   }
 
+  /**
+   * Delete the file content.
+   * @param {Object} [options] - directory configuration options
+   * @param {Boolean} [options.force=false] - when true, exceptions will be ignored if path does not exist
+   * @return {Promise} fulfills with the file object
+   */
   async delete(options) {
     await rm(this.state.path, options);
     return this;
@@ -78,6 +89,7 @@ export class File extends Path {
  * @param {String} path - file path
  * @param {Object} [options] - configuration options
  * @param {Boolean} [options.codec] - a codec for encoding/decoding files
+ * @param {String} [options.encoding=utf8] - character encoding
  * @return {Object} the {@link File} object
  */
 export const file = (path, options) => {
