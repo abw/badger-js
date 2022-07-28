@@ -57,6 +57,40 @@ test(
   'fetch component3 which has a custom component library and export',
   async t => {
     const comp3 = await testSpace.component('Component3');
-    t.is( await comp3.message(), 'Three is the magic number' );
+    t.is( await comp3.message(), 'Component 3 message: Three is the magic number' );
   }
+);
+
+test(
+  'fetch component4 which has a custom component library and export',
+  async t => {
+    const comp4 = await testSpace.component('Component4');
+    t.is( await comp4.message(), 'Component 4 message: Four is the magic number' );
+  }
+);
+
+test(
+  'fetch component4 but override import',
+  async t => {
+    const comp4 = await testSpace.component('Component4#MyComponent3');
+    t.is( await comp4.message(), 'Component 3 message: Four is the magic number' );
+  }
+);
+
+test(
+  'fetch hello component',
+  async t => {
+    const hello = await testSpace.component('Hello');
+    t.is( await hello.message(), 'Hello World!' );
+  }
+);
+
+test(
+  'fetch hello component the long way',
+  t =>
+    testSpace.config('Hello').then(
+      config => testSpace.library('Hello')
+        .then( library => new library.default(testSpace, config) )
+        .then( hello => t.is( hello.message(), 'Hello World!' ) )
+    )
 );

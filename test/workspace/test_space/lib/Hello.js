@@ -1,6 +1,6 @@
-import { Component } from "../../../../../src/Badger.js";
+import { Component } from "../../../../src/Badger.js";
 
-export class MyComponent3 extends Component {
+class Hello extends Component {
   initComponent(props) {
     this.debug("initComponent() => ", props.message);
   }
@@ -10,4 +10,4 @@ export class MyComponent3 extends Component {
   }
 }
 
-// export default MyComponent3
+export default Hello
