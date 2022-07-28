@@ -210,7 +210,7 @@ export const cwd = options => {
  * @param {Boolean} [options.codec] - a codec for encoding/decoding files
  * @return {Object} the {@link Directory} object
  */
-export const bin = (url, options) => {
+export const bin = (url=process.argv[1], options) => {
   return dir(
     path.dirname(url.replace(/^file:\/\//, '')),
     options
