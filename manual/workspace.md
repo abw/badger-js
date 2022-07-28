@@ -91,7 +91,39 @@ workspace.config('animals').then(
 
 ## Javascript Components
 
-TODO
+The [component(uri, props)](class/src/Badger.js~Workspace#instance-method-component) method can
+be called to create a new component object.  The `uri` argument should be the base name of the
+component.
+
+If there is a configuration file matching the `uri` in the configuration directory
+then it will be loaded (via the
+[config(uri)](class/src/Badger.js~Workspace#instance-method-config) method) and used as
+the default configuration for the object.  The optional `props` can be defined
+to refine this configuration.
+
+The corresponding library file will then be loaded from the library directory
+(via the [library(uri)](class/src/Badger.js~Workspace#instance-method-library) method).
+This should have a default export which is the component class, implemented as a subclass
+of the [Component](class/src/Badger/Component.js~Component) base class.
+
+An instance of the component class is then instantiated, passing a reference to the
+workspace and the configuration options.
+
+```js
+workspace.component('Hello').then(
+  hello => console.log('loaded hello component: ', hello)
+)
+```
+
+The above example is roughly equivalent to:
+
+```js
+workspace.config('Hello').then(
+  config => workspace.library('Hello')
+    .then( library => new library.default(workspace, config) )
+    .then( hello => console.log('loaded Hello component: ', hello) )
+)
+```
 
 ## Configuration Options
 
