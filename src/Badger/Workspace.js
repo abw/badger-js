@@ -171,14 +171,24 @@ export class Workspace {
       : this.state.library;
   }
 
+  /**
+   * Loads a Javscript library from the library directory and instantiates a
+   * component.
+   * @param {String} uri - component base name
+   * @param {Object} [props] - optional configuration properties
+   * @return {Promise} fulfills to a newly instantiated component
+   * @example
+   * workspace.component(mycomp').then(
+   *   component => console.log("Created component: ", component)
+   * );
+   */
   async component(uri, props) {
-    const config  = await this.config(uri, {});
-    const lib     = await this.library(config.component?.library || uri);
-    // TODO: check for data path fragment in URI
-    const exp     = config.component?.export || 'default';
+    const [base, fragment] = uri.split('#', 2);
+    const config  = await this.config(base, {});
+    const lib     = await this.library(config.component?.library || base);
+    const exp     = fragment || config.component?.export || 'default';
     const compcls = lib[exp] || fail("No '", exp, "' export from component library: ", uri);
     const comp    = new compcls(this, { ...config, ...props });
-    // this.debug("created component ", uri)
     return comp;
   }
 }
