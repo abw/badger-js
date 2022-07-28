@@ -81,3 +81,10 @@ export const ANSIescape = (colors={}) => {
  */
 export const ANSIreset = () => ANSIescapeCode('reset', false)
 
+/**
+ * Returns a function to display strings in a particular color.
+ * @param {String} color - color(s) to display string
+ * @return {Function} function to display strings in the pre-defined color(s)
+ */
+export const color = (colors) =>
+  text => ANSIescape(colors) + text + ANSIreset();
