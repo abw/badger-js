@@ -1,4 +1,4 @@
-import { prompt, confirm } from '../src/Badger/Utils/index.js'
+import { prompt, confirm } from '../src/Badger/Utils/Prompt.js'
 
 // demonstration / test of prompt() and confirm()
 

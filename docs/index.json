@@ -4928,1229 +4928,7 @@
     }
   },
   {
-    "__docId__": 182,
-    "kind": "file",
-    "name": "src/Badger/Utils/index.js",
-    "content": "export * from './Color.js';\nexport * from './DataPath.js';\nexport * from './Debug.js';\nexport * from './Misc.js';\nexport * from './Options.js';\nexport * from './Params.js';\nexport * from './Prompt.js';\nexport * from './Text.js';",
-    "static": true,
-    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/index.js",
-    "access": "public",
-    "description": null,
-    "lineNumber": 1
-  },
-  {
-    "__docId__": 183,
-    "kind": "function",
-    "name": "ANSIescapeCode",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~ANSIescapeCode",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{ANSIescapeCode}",
-    "description": null,
-    "lineNumber": 38,
-    "undocument": true,
-    "params": [
-      {
-        "name": "color",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "base",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": "fg",
-        "defaultValue": "fg"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 184,
-    "kind": "function",
-    "name": "ANSIescape",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~ANSIescape",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{ANSIescape}",
-    "description": null,
-    "lineNumber": 66,
-    "undocument": true,
-    "params": [
-      {
-        "name": "colors",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 185,
-    "kind": "function",
-    "name": "ANSIreset",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~ANSIreset",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{ANSIreset}",
-    "description": null,
-    "lineNumber": 82,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 186,
-    "kind": "function",
-    "name": "color",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~color",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{color}",
-    "description": null,
-    "lineNumber": 89,
-    "undocument": true,
-    "params": [
-      {
-        "name": "colors",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 187,
-    "kind": "function",
-    "name": "matchDoubleQuotedString",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~matchDoubleQuotedString",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{matchDoubleQuotedString}",
-    "description": null,
-    "lineNumber": 22,
-    "undocument": true,
-    "params": [
-      {
-        "name": "string",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 188,
-    "kind": "function",
-    "name": "matchSingleQuotedString",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~matchSingleQuotedString",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{matchSingleQuotedString}",
-    "description": null,
-    "lineNumber": 34,
-    "undocument": true,
-    "params": [
-      {
-        "name": "string",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 189,
-    "kind": "function",
-    "name": "splitDataPath",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~splitDataPath",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{splitDataPath}",
-    "description": null,
-    "lineNumber": 46,
-    "undocument": true,
-    "params": [
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 190,
-    "kind": "function",
-    "name": "dataPath",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~dataPath",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{dataPath}",
-    "description": null,
-    "lineNumber": 84,
-    "undocument": true,
-    "params": [
-      {
-        "name": "data",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "path",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 191,
-    "kind": "function",
-    "name": "Debugger",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~Debugger",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{Debugger}",
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
-    "params": [
-      {
-        "name": "enabled",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "prefix",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": "",
-        "defaultValue": ""
-      },
-      {
-        "name": "color",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 192,
-    "kind": "function",
-    "name": "addDebug",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~addDebug",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{addDebug}",
-    "description": null,
-    "lineNumber": 57,
-    "undocument": true,
-    "params": [
-      {
-        "name": "obj",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "enabled",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "prefix",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": "",
-        "defaultValue": ""
-      },
-      {
-        "name": "color",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 193,
-    "kind": "function",
-    "name": "isString",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isString",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isString}",
-    "description": null,
-    "lineNumber": 8,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 194,
-    "kind": "function",
-    "name": "isArray",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isArray",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isArray}",
-    "description": null,
-    "lineNumber": 17,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 195,
-    "kind": "function",
-    "name": "isFunction",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isFunction",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isFunction}",
-    "description": null,
-    "lineNumber": 26,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 196,
-    "kind": "function",
-    "name": "isObject",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isObject",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isObject}",
-    "description": null,
-    "lineNumber": 35,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 197,
-    "kind": "function",
-    "name": "isUndefined",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isUndefined",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isUndefined}",
-    "description": null,
-    "lineNumber": 46,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 198,
-    "kind": "function",
-    "name": "isNull",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~isNull",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{isNull}",
-    "description": null,
-    "lineNumber": 55,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 199,
-    "kind": "function",
-    "name": "hasValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~hasValue",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{hasValue}",
-    "description": null,
-    "lineNumber": 64,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 200,
-    "kind": "function",
-    "name": "haveValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~haveValue",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{haveValue}",
-    "description": null,
-    "lineNumber": 73,
-    "undocument": true,
-    "params": [
-      {
-        "name": "values",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 201,
-    "kind": "function",
-    "name": "noValue",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~noValue",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{noValue}",
-    "description": null,
-    "lineNumber": 82,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 202,
-    "kind": "function",
-    "name": "fail",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~fail",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{fail}",
-    "description": null,
-    "lineNumber": 91,
-    "undocument": true,
-    "params": [
-      {
-        "name": "message",
-        "types": [
-          "...*"
-        ],
-        "spread": true
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 203,
-    "kind": "function",
-    "name": "rethrow",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~rethrow",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{rethrow}",
-    "description": null,
-    "lineNumber": 100,
-    "undocument": true,
-    "params": [
-      {
-        "name": "error",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 204,
-    "kind": "function",
-    "name": "doNothing",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~doNothing",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{doNothing}",
-    "description": null,
-    "lineNumber": 107,
-    "undocument": true,
-    "params": [],
-    "return": null
-  },
-  {
-    "__docId__": 205,
-    "kind": "function",
-    "name": "args",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~args",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{args}",
-    "description": null,
-    "lineNumber": 117,
-    "undocument": true,
-    "params": [
-      {
-        "name": "argv",
-        "optional": true,
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 206,
-    "kind": "function",
-    "name": "options",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": true,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~options",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{options}",
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
-    "params": [
-      {
-        "name": "config",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "{...cmdline: Object, ...answers: Object}"
-      ]
-    }
-  },
-  {
-    "__docId__": 207,
-    "kind": "function",
-    "name": "requiredParam",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParam",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParam}",
-    "description": null,
-    "lineNumber": 13,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 208,
-    "kind": "function",
-    "name": "requiredParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParams}",
-    "description": null,
-    "lineNumber": 32,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 209,
-    "kind": "variable",
-    "name": "allParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~allParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{allParams}",
-    "description": null,
-    "lineNumber": 39,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 210,
-    "kind": "function",
-    "name": "anyParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~anyParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{anyParams}",
-    "description": null,
-    "lineNumber": 50,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 211,
-    "kind": "function",
-    "name": "prompt",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": true,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~prompt",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{prompt}",
-    "description": null,
-    "lineNumber": 16,
-    "undocument": true,
-    "params": [
-      {
-        "name": "question",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 212,
-    "kind": "function",
-    "name": "confirm",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": true,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~confirm",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{confirm}",
-    "description": null,
-    "lineNumber": 39,
-    "undocument": true,
-    "params": [
-      {
-        "name": "question",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "options",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      }
-    ],
-    "return": null
-  },
-  {
-    "__docId__": 213,
-    "kind": "function",
-    "name": "splitList",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~splitList",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{splitList}",
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
-    "params": [
-      {
-        "name": "value",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "undefined[]"
-      ]
-    }
-  },
-  {
-    "__docId__": 214,
-    "kind": "function",
-    "name": "joinList",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinList",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{joinList}",
-    "description": null,
-    "lineNumber": 42,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " ",
-        "defaultValue": " "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "*"
-        ],
-        "defaultRaw": "joint",
-        "defaultValue": "joint"
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 215,
-    "kind": "function",
-    "name": "joinListAnd",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinListAnd",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{joinListAnd}",
-    "description": null,
-    "lineNumber": 59,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": ", ",
-        "defaultValue": ", "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " and ",
-        "defaultValue": " and "
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 216,
-    "kind": "function",
-    "name": "joinListOr",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~joinListOr",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{joinListOr}",
-    "description": null,
-    "lineNumber": 72,
-    "undocument": true,
-    "params": [
-      {
-        "name": "array",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "joint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": ", ",
-        "defaultValue": ", "
-      },
-      {
-        "name": "lastJoint",
-        "optional": true,
-        "types": [
-          "string"
-        ],
-        "defaultRaw": " or ",
-        "defaultValue": " or "
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 217,
-    "kind": "function",
-    "name": "capitalise",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~capitalise",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{capitalise}",
-    "description": null,
-    "lineNumber": 85,
-    "undocument": true,
-    "params": [
-      {
-        "name": "word",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 218,
-    "kind": "function",
-    "name": "snakeToStudly",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~snakeToStudly",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{snakeToStudly}",
-    "description": null,
-    "lineNumber": 98,
-    "undocument": true,
-    "params": [
-      {
-        "name": "snake",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 219,
-    "kind": "function",
-    "name": "snakeToCamel",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~snakeToCamel",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{snakeToCamel}",
-    "description": null,
-    "lineNumber": 114,
-    "undocument": true,
-    "params": [
-      {
-        "name": "snake",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 220,
+    "__docId__": 174,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
     "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory and instantiates a\n   * component.\n   * @param {String} uri - component base name\n   * @param {Object} [props] - optional configuration properties\n   * @return {Promise} fulfills to a newly instantiated component\n   * @example\n   * workspace.component(mycomp').then(\n   *   component => console.log(\"Created component: \", component)\n   * );\n   */\n  async component(uri, props) {\n    const [base, fragment] = uri.split('#', 2);\n    const config  = await this.config(base, {});\n    const lib     = await this.library(config.component?.library || base);\n    const exp     = fragment || config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
@@ -6161,7 +4939,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 221,
+    "__docId__": 175,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -6181,7 +4959,7 @@
     "ignore": true
   },
   {
-    "__docId__": 222,
+    "__docId__": 176,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6196,7 +4974,7 @@
     "interface": false
   },
   {
-    "__docId__": 223,
+    "__docId__": 177,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6281,7 +5059,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 178,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6298,7 +5076,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 179,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6351,7 +5129,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 180,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6416,7 +5194,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 181,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6486,7 +5264,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 182,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6567,7 +5345,7 @@
     }
   },
   {
-    "__docId__": 229,
+    "__docId__": 183,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6632,7 +5410,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 184,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6678,7 +5456,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 185,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6714,7 +5492,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 186,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6760,7 +5538,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 187,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6792,10 +5570,10 @@
     "return": null
   },
   {
-    "__docId__": 251,
+    "__docId__": 204,
     "kind": "file",
     "name": "src/Badger.js",
-    "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/index.js';\n//export * from './Badger/Utils/Color.js';\n//export * from './Badger/Utils/DataPath.js';\n//export * from './Badger/Utils/Debug.js';\n//export * from './Badger/Utils/Misc.js';\n//export * from './Badger/Utils/Params.js';\n//export * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
+    "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/Color.js';\nexport * from './Badger/Utils/DataPath.js';\nexport * from './Badger/Utils/Debug.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Options.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Prompt.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger.js",
     "access": "public",
@@ -6803,7 +5581,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 252,
+    "__docId__": 205,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -6819,7 +5597,7 @@
     "interface": false
   },
   {
-    "__docId__": 253,
+    "__docId__": 206,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -6833,7 +5611,7 @@
     "undocument": true
   },
   {
-    "__docId__": 254,
+    "__docId__": 207,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -6850,7 +5628,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 208,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -6867,7 +5645,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 209,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -6883,7 +5661,7 @@
     "return": null
   },
   {
-    "__docId__": 257,
+    "__docId__": 210,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -6903,7 +5681,7 @@
     }
   },
   {
-    "__docId__": 258,
+    "__docId__": 211,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -6929,7 +5707,7 @@
     "return": null
   },
   {
-    "__docId__": 259,
+    "__docId__": 212,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -6948,7 +5726,7 @@
     ]
   },
   {
-    "__docId__": 260,
+    "__docId__": 213,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -7017,7 +5795,7 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 214,
     "kind": "method",
     "name": "firstFileWithExt",
     "memberof": "src/Badger.js~Config",
@@ -7070,7 +5848,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 215,
     "kind": "method",
     "name": "jsFile",
     "memberof": "src/Badger.js~Config",
@@ -7103,7 +5881,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 216,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -7136,7 +5914,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 217,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -7179,7 +5957,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 218,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -7211,7 +5989,7 @@
     "return": null
   },
   {
-    "__docId__": 266,
+    "__docId__": 219,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -7230,7 +6008,7 @@
     ]
   },
   {
-    "__docId__": 267,
+    "__docId__": 220,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -7295,7 +6073,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 221,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -7360,7 +6138,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 222,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -7395,7 +6173,7 @@
     ]
   },
   {
-    "__docId__": 270,
+    "__docId__": 223,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -7450,7 +6228,7 @@
     }
   },
   {
-    "__docId__": 271,
+    "__docId__": 224,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -7472,7 +6250,7 @@
     "params": []
   },
   {
-    "__docId__": 272,
+    "__docId__": 225,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -7494,7 +6272,7 @@
     "params": []
   },
   {
-    "__docId__": 273,
+    "__docId__": 226,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -7516,7 +6294,7 @@
     "params": []
   },
   {
-    "__docId__": 274,
+    "__docId__": 227,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -7569,7 +6347,7 @@
     }
   },
   {
-    "__docId__": 275,
+    "__docId__": 228,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -7612,7 +6390,7 @@
     }
   },
   {
-    "__docId__": 276,
+    "__docId__": 229,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -7675,7 +6453,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 230,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -7720,7 +6498,7 @@
     }
   },
   {
-    "__docId__": 278,
+    "__docId__": 231,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -7789,7 +6567,7 @@
     }
   },
   {
-    "__docId__": 279,
+    "__docId__": 232,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -7852,7 +6630,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 233,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -7888,7 +6666,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 234,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -7918,7 +6696,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 235,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -7955,7 +6733,7 @@
     }
   },
   {
-    "__docId__": 283,
+    "__docId__": 236,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -7974,7 +6752,7 @@
     ]
   },
   {
-    "__docId__": 284,
+    "__docId__": 237,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -8029,7 +6807,7 @@
     }
   },
   {
-    "__docId__": 285,
+    "__docId__": 238,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -8059,7 +6837,7 @@
     ]
   },
   {
-    "__docId__": 286,
+    "__docId__": 239,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -8119,7 +6897,7 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 240,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -8190,7 +6968,7 @@
     }
   },
   {
-    "__docId__": 288,
+    "__docId__": 241,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger.js~File",
@@ -8235,7 +7013,7 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 242,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger.js",
@@ -8271,7 +7049,7 @@
     }
   },
   {
-    "__docId__": 290,
+    "__docId__": 243,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger.js",
@@ -8287,7 +7065,7 @@
     "interface": false
   },
   {
-    "__docId__": 291,
+    "__docId__": 244,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Path",
@@ -8352,7 +7130,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 245,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Path",
@@ -8369,7 +7147,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 246,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger.js~Path",
@@ -8391,7 +7169,7 @@
     "params": []
   },
   {
-    "__docId__": 294,
+    "__docId__": 247,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger.js~Path",
@@ -8427,7 +7205,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 248,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger.js~Path",
@@ -8463,7 +7241,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 249,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger.js~Path",
@@ -8488,7 +7266,7 @@
     "params": []
   },
   {
-    "__docId__": 297,
+    "__docId__": 250,
     "kind": "method",
     "name": "stat",
     "memberof": "src/Badger.js~Path",
@@ -8513,7 +7291,7 @@
     "params": []
   },
   {
-    "__docId__": 298,
+    "__docId__": 251,
     "kind": "method",
     "name": "unstat",
     "memberof": "src/Badger.js~Path",
@@ -8532,7 +7310,7 @@
     }
   },
   {
-    "__docId__": 299,
+    "__docId__": 252,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -8551,7 +7329,7 @@
     ]
   },
   {
-    "__docId__": 300,
+    "__docId__": 253,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -8607,7 +7385,7 @@
     }
   },
   {
-    "__docId__": 301,
+    "__docId__": 254,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Library",
@@ -8640,7 +7418,7 @@
     }
   },
   {
-    "__docId__": 302,
+    "__docId__": 255,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -8672,7 +7450,7 @@
     "return": null
   },
   {
-    "__docId__": 303,
+    "__docId__": 256,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger.js",
@@ -8711,7 +7489,7 @@
     }
   },
   {
-    "__docId__": 304,
+    "__docId__": 257,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger.js",
@@ -8744,7 +7522,7 @@
     }
   },
   {
-    "__docId__": 305,
+    "__docId__": 258,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger.js",
@@ -8763,7 +7541,7 @@
     "return": null
   },
   {
-    "__docId__": 306,
+    "__docId__": 259,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger.js",
@@ -8789,7 +7567,7 @@
     "return": null
   },
   {
-    "__docId__": 307,
+    "__docId__": 260,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger.js",
@@ -8819,7 +7597,7 @@
     }
   },
   {
-    "__docId__": 308,
+    "__docId__": 261,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger.js",
@@ -8849,7 +7627,7 @@
     }
   },
   {
-    "__docId__": 309,
+    "__docId__": 262,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger.js",
@@ -8879,7 +7657,7 @@
     }
   },
   {
-    "__docId__": 310,
+    "__docId__": 263,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger.js",
@@ -8915,7 +7693,7 @@
     }
   },
   {
-    "__docId__": 311,
+    "__docId__": 264,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger.js",
@@ -8960,7 +7738,7 @@
     }
   },
   {
-    "__docId__": 312,
+    "__docId__": 265,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger.js",
@@ -9007,7 +7785,7 @@
     "return": null
   },
   {
-    "__docId__": 313,
+    "__docId__": 266,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -9037,7 +7815,7 @@
     }
   },
   {
-    "__docId__": 314,
+    "__docId__": 267,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -9067,7 +7845,7 @@
     }
   },
   {
-    "__docId__": 315,
+    "__docId__": 268,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -9097,7 +7875,7 @@
     }
   },
   {
-    "__docId__": 316,
+    "__docId__": 269,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -9127,7 +7905,7 @@
     }
   },
   {
-    "__docId__": 317,
+    "__docId__": 270,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -9157,7 +7935,7 @@
     }
   },
   {
-    "__docId__": 318,
+    "__docId__": 271,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -9187,7 +7965,7 @@
     }
   },
   {
-    "__docId__": 319,
+    "__docId__": 272,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -9217,7 +7995,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 273,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -9248,7 +8026,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 274,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -9278,7 +8056,7 @@
     }
   },
   {
-    "__docId__": 322,
+    "__docId__": 275,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -9305,7 +8083,7 @@
     "return": null
   },
   {
-    "__docId__": 323,
+    "__docId__": 276,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger.js",
@@ -9331,7 +8109,7 @@
     "return": null
   },
   {
-    "__docId__": 324,
+    "__docId__": 277,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger.js",
@@ -9350,7 +8128,7 @@
     "return": null
   },
   {
-    "__docId__": 325,
+    "__docId__": 278,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger.js",
@@ -9381,7 +8159,7 @@
     }
   },
   {
-    "__docId__": 326,
+    "__docId__": 279,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger.js",
@@ -9411,7 +8189,7 @@
     }
   },
   {
-    "__docId__": 327,
+    "__docId__": 280,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -9450,7 +8228,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 281,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -9489,7 +8267,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 282,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -9509,7 +8287,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 283,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -9545,7 +8323,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 284,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger.js",
@@ -9584,7 +8362,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 285,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger.js",
@@ -9619,7 +8397,7 @@
     "return": null
   },
   {
-    "__docId__": 333,
+    "__docId__": 286,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -9649,7 +8427,7 @@
     }
   },
   {
-    "__docId__": 334,
+    "__docId__": 287,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -9697,7 +8475,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 288,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -9745,7 +8523,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 289,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -9793,7 +8571,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 290,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -9823,7 +8601,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 291,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger.js",
@@ -9853,7 +8631,7 @@
     }
   },
   {
-    "__docId__": 339,
+    "__docId__": 292,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger.js",
@@ -9883,7 +8661,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 293,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -9899,7 +8677,7 @@
     "interface": false
   },
   {
-    "__docId__": 341,
+    "__docId__": 294,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -9984,7 +8762,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 295,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -10001,7 +8779,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 296,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -10054,7 +8832,7 @@
     }
   },
   {
-    "__docId__": 344,
+    "__docId__": 297,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -10119,7 +8897,7 @@
     }
   },
   {
-    "__docId__": 345,
+    "__docId__": 298,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -10189,7 +8967,7 @@
     }
   },
   {
-    "__docId__": 346,
+    "__docId__": 299,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -10270,7 +9048,7 @@
     }
   },
   {
-    "__docId__": 347,
+    "__docId__": 300,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -10335,7 +9113,7 @@
     }
   },
   {
-    "__docId__": 348,
+    "__docId__": 301,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -10381,7 +9159,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 302,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Workspace",
@@ -10417,7 +9195,7 @@
     }
   },
   {
-    "__docId__": 350,
+    "__docId__": 303,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -10463,7 +9241,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 304,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",

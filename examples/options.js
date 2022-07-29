@@ -1,4 +1,4 @@
-import { options } from '../src/Badger/Utils/index.js'
+import { options } from '../src/Badger/Utils/Options.js'
 
 // example showing use of options()
 
