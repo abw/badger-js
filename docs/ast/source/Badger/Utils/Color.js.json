@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 2486,
+  "end": 2774,
   "loc": {
     "start": {
       "line": 1,
@@ -9,16 +9,16 @@
       "index": 0
     },
     "end": {
-      "line": 84,
-      "column": 0,
-      "index": 2486
+      "line": 90,
+      "column": 50,
+      "index": 2774
     }
   },
   "errors": [],
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 2486,
+    "end": 2774,
     "loc": {
       "start": {
         "line": 1,
@@ -26,9 +26,9 @@
         "index": 0
       },
       "end": {
-        "line": 84,
-        "column": 0,
-        "index": 2486
+        "line": 90,
+        "column": 50,
+        "index": 2774
       }
     },
     "sourceType": "module",
@@ -4521,8 +4521,47 @@
               }
             }
           ],
-          "trailingComments": []
+          "trailingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n ",
+              "start": 2486,
+              "end": 2690,
+              "loc": {
+                "start": {
+                  "line": 84,
+                  "column": 0,
+                  "index": 2486
+                },
+                "end": {
+                  "line": 88,
+                  "column": 3,
+                  "index": 2690
+                }
+              }
+            }
+          ]
         },
+        "trailingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n ",
+            "start": 2486,
+            "end": 2690,
+            "loc": {
+              "start": {
+                "line": 84,
+                "column": 0,
+                "index": 2486
+              },
+              "end": {
+                "line": 88,
+                "column": 3,
+                "index": 2690
+              }
+            }
+          }
+        ],
         "leadingComments": [
           {
             "type": "CommentBlock",
@@ -4539,6 +4578,371 @@
                 "line": 81,
                 "column": 3,
                 "index": 2422
+              }
+            }
+          }
+        ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2691,
+        "end": 2774,
+        "loc": {
+          "start": {
+            "line": 89,
+            "column": 0,
+            "index": 2691
+          },
+          "end": {
+            "line": 90,
+            "column": 50,
+            "index": 2774
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2698,
+          "end": 2774,
+          "loc": {
+            "start": {
+              "line": 89,
+              "column": 7,
+              "index": 2698
+            },
+            "end": {
+              "line": 90,
+              "column": 50,
+              "index": 2774
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2704,
+              "end": 2773,
+              "loc": {
+                "start": {
+                  "line": 89,
+                  "column": 13,
+                  "index": 2704
+                },
+                "end": {
+                  "line": 90,
+                  "column": 49,
+                  "index": 2773
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2704,
+                "end": 2709,
+                "loc": {
+                  "start": {
+                    "line": 89,
+                    "column": 13,
+                    "index": 2704
+                  },
+                  "end": {
+                    "line": 89,
+                    "column": 18,
+                    "index": 2709
+                  },
+                  "identifierName": "color"
+                },
+                "name": "color"
+              },
+              "init": {
+                "type": "ArrowFunctionExpression",
+                "start": 2712,
+                "end": 2773,
+                "loc": {
+                  "start": {
+                    "line": 89,
+                    "column": 21,
+                    "index": 2712
+                  },
+                  "end": {
+                    "line": 90,
+                    "column": 49,
+                    "index": 2773
+                  }
+                },
+                "id": {
+                  "type": "Identifier",
+                  "start": 2704,
+                  "end": 2709,
+                  "loc": {
+                    "start": {
+                      "line": 89,
+                      "column": 13,
+                      "index": 2704
+                    },
+                    "end": {
+                      "line": 89,
+                      "column": 18,
+                      "index": 2709
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "generator": false,
+                "async": false,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "start": 2713,
+                    "end": 2719,
+                    "loc": {
+                      "start": {
+                        "line": 89,
+                        "column": 22,
+                        "index": 2713
+                      },
+                      "end": {
+                        "line": 89,
+                        "column": 28,
+                        "index": 2719
+                      },
+                      "identifierName": "colors"
+                    },
+                    "name": "colors"
+                  }
+                ],
+                "body": {
+                  "type": "ArrowFunctionExpression",
+                  "start": 2726,
+                  "end": 2773,
+                  "loc": {
+                    "start": {
+                      "line": 90,
+                      "column": 2,
+                      "index": 2726
+                    },
+                    "end": {
+                      "line": 90,
+                      "column": 49,
+                      "index": 2773
+                    }
+                  },
+                  "id": null,
+                  "generator": false,
+                  "async": false,
+                  "params": [
+                    {
+                      "type": "Identifier",
+                      "start": 2726,
+                      "end": 2730,
+                      "loc": {
+                        "start": {
+                          "line": 90,
+                          "column": 2,
+                          "index": 2726
+                        },
+                        "end": {
+                          "line": 90,
+                          "column": 6,
+                          "index": 2730
+                        },
+                        "identifierName": "text"
+                      },
+                      "name": "text"
+                    }
+                  ],
+                  "body": {
+                    "type": "BinaryExpression",
+                    "start": 2734,
+                    "end": 2773,
+                    "loc": {
+                      "start": {
+                        "line": 90,
+                        "column": 10,
+                        "index": 2734
+                      },
+                      "end": {
+                        "line": 90,
+                        "column": 49,
+                        "index": 2773
+                      }
+                    },
+                    "left": {
+                      "type": "BinaryExpression",
+                      "start": 2734,
+                      "end": 2759,
+                      "loc": {
+                        "start": {
+                          "line": 90,
+                          "column": 10,
+                          "index": 2734
+                        },
+                        "end": {
+                          "line": 90,
+                          "column": 35,
+                          "index": 2759
+                        }
+                      },
+                      "left": {
+                        "type": "CallExpression",
+                        "start": 2734,
+                        "end": 2752,
+                        "loc": {
+                          "start": {
+                            "line": 90,
+                            "column": 10,
+                            "index": 2734
+                          },
+                          "end": {
+                            "line": 90,
+                            "column": 28,
+                            "index": 2752
+                          }
+                        },
+                        "callee": {
+                          "type": "Identifier",
+                          "start": 2734,
+                          "end": 2744,
+                          "loc": {
+                            "start": {
+                              "line": 90,
+                              "column": 10,
+                              "index": 2734
+                            },
+                            "end": {
+                              "line": 90,
+                              "column": 20,
+                              "index": 2744
+                            },
+                            "identifierName": "ANSIescape"
+                          },
+                          "name": "ANSIescape"
+                        },
+                        "arguments": [
+                          {
+                            "type": "Identifier",
+                            "start": 2745,
+                            "end": 2751,
+                            "loc": {
+                              "start": {
+                                "line": 90,
+                                "column": 21,
+                                "index": 2745
+                              },
+                              "end": {
+                                "line": 90,
+                                "column": 27,
+                                "index": 2751
+                              },
+                              "identifierName": "colors"
+                            },
+                            "name": "colors"
+                          }
+                        ]
+                      },
+                      "operator": "+",
+                      "right": {
+                        "type": "Identifier",
+                        "start": 2755,
+                        "end": 2759,
+                        "loc": {
+                          "start": {
+                            "line": 90,
+                            "column": 31,
+                            "index": 2755
+                          },
+                          "end": {
+                            "line": 90,
+                            "column": 35,
+                            "index": 2759
+                          },
+                          "identifierName": "text"
+                        },
+                        "name": "text"
+                      }
+                    },
+                    "operator": "+",
+                    "right": {
+                      "type": "CallExpression",
+                      "start": 2762,
+                      "end": 2773,
+                      "loc": {
+                        "start": {
+                          "line": 90,
+                          "column": 38,
+                          "index": 2762
+                        },
+                        "end": {
+                          "line": 90,
+                          "column": 49,
+                          "index": 2773
+                        }
+                      },
+                      "callee": {
+                        "type": "Identifier",
+                        "start": 2762,
+                        "end": 2771,
+                        "loc": {
+                          "start": {
+                            "line": 90,
+                            "column": 38,
+                            "index": 2762
+                          },
+                          "end": {
+                            "line": 90,
+                            "column": 47,
+                            "index": 2771
+                          },
+                          "identifierName": "ANSIreset"
+                        },
+                        "name": "ANSIreset"
+                      },
+                      "arguments": []
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [
+            {
+              "type": "CommentBlock",
+              "value": "*\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n ",
+              "start": 2486,
+              "end": 2690,
+              "loc": {
+                "start": {
+                  "line": 84,
+                  "column": 0,
+                  "index": 2486
+                },
+                "end": {
+                  "line": 88,
+                  "column": 3,
+                  "index": 2690
+                }
+              }
+            }
+          ],
+          "trailingComments": []
+        },
+        "leadingComments": [
+          {
+            "type": "CommentBlock",
+            "value": "*\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n ",
+            "start": 2486,
+            "end": 2690,
+            "loc": {
+              "start": {
+                "line": 84,
+                "column": 0,
+                "index": 2486
+              },
+              "end": {
+                "line": 88,
+                "column": 3,
+                "index": 2690
               }
             }
           }
@@ -4617,6 +5021,24 @@
           "line": 81,
           "column": 3,
           "index": 2422
+        }
+      }
+    },
+    {
+      "type": "CommentBlock",
+      "value": "*\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n ",
+      "start": 2486,
+      "end": 2690,
+      "loc": {
+        "start": {
+          "line": 84,
+          "column": 0,
+          "index": 2486
+        },
+        "end": {
+          "line": 88,
+          "column": 3,
+          "index": 2690
         }
       }
     }

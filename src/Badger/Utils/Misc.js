@@ -111,8 +111,8 @@ export function doNothing() {
 /**
  * Returns an array of the `process.argv` array from offset 2 onwards,
  * i.e. removing the node path and script name.
- * @param {String} value - value to test
- * @return {Boolean} true if `value` is a string or false if not
+ * @param {Array} argv - list of arguments, defaults to `process.argv`
+ * @return {Array} array of arguments excluding the first two
  */
 export function args(argv=process.argv) {
   return argv.slice(2);

@@ -158,7 +158,29 @@ below for details on how to change this.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">workspace.config('animals').then(
   data =&gt; console.log("Data from the config/animals(.js|.mjs|.yaml|.json) file", data)
 )</code></code></pre>
-<h2 id="javascript-components">Javascript Components</h2><p>TODO</p>
+<h2 id="javascript-components">Javascript Components</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-component">component(uri, props)</a> method can
+be called to create a new component object.  The <code>uri</code> argument should be the base name of the
+component.</p>
+<p>If there is a configuration file matching the <code>uri</code> in the configuration directory
+then it will be loaded (via the
+<a href="class/src/Badger.js~Workspace#instance-method-config">config(uri)</a> method) and used as
+the default configuration for the object.  The optional <code>props</code> can be defined
+to refine this configuration.</p>
+<p>The corresponding library file will then be loaded from the library directory
+(via the <a href="class/src/Badger.js~Workspace#instance-method-library">library(uri)</a> method).
+This should have a default export which is the component class, implemented as a subclass
+of the <a href="class/src/Badger/Component.js~Component">Component</a> base class.</p>
+<p>An instance of the component class is then instantiated, passing a reference to the
+workspace and the configuration options.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">workspace.component('Hello').then(
+  hello =&gt; console.log('loaded hello component: ', hello)
+)</code></code></pre>
+<p>The above example is roughly equivalent to:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">workspace.config('Hello').then(
+  config =&gt; workspace.library('Hello')
+    .then( library =&gt; new library.default(workspace, config) )
+    .then( hello =&gt; console.log('loaded Hello component: ', hello) )
+)</code></code></pre>
 <h2 id="configuration-options">Configuration Options</h2><p>The <code>config</code> option can be provided to configure the <a href="class/src/Badger/Config.js~Config">Config</a>
 object that the workspace used to load configuration files.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(

@@ -1446,7 +1446,7 @@
     "__docId__": 81,
     "kind": "file",
     "name": "src/Badger/Filesystem/Directory.js",
-    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nexport class Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url, options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
+    "content": "import process from 'node:process';\nimport path from 'node:path';\nimport Path from './Path.js'\nimport { file } from './File.js'\nimport { fail } from '../Utils/Misc.js';\nimport { rm, mkdir, rmdir, readdir } from 'node:fs/promises'\n\n/**\n * The Directory class implements a wrapper around a filesystem\n * directory.\n */\nexport class Directory extends Path {\n  /**\n   * Fetch a new {@link File} object for a file in the directory.\n   * @param {string} path - file path\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {String} [options.encoding=utf8] - character encoding\n   * @return {Object} the {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return file(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory in the directory.\n   * @param {string} path - directory path\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} the {@link Directory} object\n   */\n  directory(path, options) {\n    this.debug(\"directory(%s, %o)\", path, options);\n    return dir(this.relativePath(path), this.options(options));\n  }\n\n  /**\n   * An alias for the {@link directory} method for lazy people\n   * @return {Object} the {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return this.directory(path, options);\n  }\n\n  /**\n   * Returns a new {@link Directory} object for the parent directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - default codec for encoding/decoding files\n   * @param {String} [options.encoding=utf8] - default character encoding for files\n   * @return {Object} a {@link Directory} object for the parent\n   */\n  parent(options) {\n    this.debug(\"parent()\");\n    return this.directory('..', options);\n  }\n\n  /**\n   * Returns the names of the files and sub-directories in the directory\n   * @return {Promise} fulfills with an array of the file and directory names\n   */\n  async read() {\n    this.debug(\"read()\");\n    return await readdir(this.path());\n  }\n\n  /**\n   * Determines if the directory is empty.\n   * @return {Promise} fulfills with a boolean value true (empty) or false (not empty).\n   */\n  async isEmpty() {\n    this.debug(\"isEmpty()\");\n    const entries = await this.read();\n    return entries.length === 0;\n  }\n\n  /**\n   * Determines if the directory is not empty.\n   * @return {Promise} fulfills with a boolean value true (not empty) or false (empty).\n   */\n  async notEmpty() {\n    this.debug(\"notEmpty()\");\n    const empty = await this.isEmpty();\n    return !empty;\n  }\n\n  /**\n   * Empty the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.force] - force removal of files and directories\n   * @param {Boolean} [options.recursive] - recursively empty and delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async empty(options={}) {\n    this.debug(\"empty(%o)\", options);\n    if (await this.exists() && await this.notEmpty()) {\n      await rm(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Make the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive] - create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mkdir(options={}) {\n    this.debug(\"mkdir(%o)\", options);\n    const exists = await this.exists();\n    if (! exists) {\n      await mkdir(this.path(), options);\n    }\n    return this;\n  }\n\n  /**\n   * Remove the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty] - delete items in directory\n   * @param {Boolean} [options.force] - force delete files and directories\n   * @param {Boolean} [options.recursive] - recursively delete sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async rmdir(options={}) {\n    this.debug(\"rmdir(%o)\", options);\n    if (options.empty) {\n      await this.empty(options);\n    }\n    if (await this.exists()) {\n      await rmdir(this.path());\n    }\n    return this;\n  }\n\n  /**\n   * Create the directory and any intermediate directories.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.recursive=true] - recursively create intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  create(options={ recursive: true }) {\n    this.debug(\"create(%o)\", options);\n    return this.mkdir(options);\n  }\n\n  /**\n   * Empty and delete the directory.\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.empty=true] - empty directory of any files and sub-directories\n   * @param {Boolean} [options.recursive=true] - recursively delete sub-directories\n   * @param {Boolean} [options.force=true] - force deletion of files and sub-directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  destroy(options={ empty: true, recursive: true, force: true }) {\n    this.debug(\"destroy(%o)\", options);\n    return this.rmdir(options);\n  }\n\n  /**\n   * Assert that a directory exists and optionally create it\n   * @param {Object} [options] - configuration options\n   * @param {Boolean} [options.create] - create the directory and any intermediate directories if it doesn't exist - equivalent to adding `mkdir` and `recursive` options or calling {@link create}\n   * @param {Boolean} [options.mkdir] - create the directory, add the `recursive` option to create intermediate directories - equivalent to calling {@link mkdir}\n   * @param {Boolean} [options.recursive] - when used with `mkdir`, creates any intermediate directories\n   * @return {Promise} fulfills to the {@link Directory} object\n   */\n  async mustExist(options={}) {\n    this.debug(\"mustExist(%o)\", options);\n    if (await this.exists()) {\n      return this;\n    }\n    if (options.mkdir) {\n      return this.mkdir(options);\n    }\n    if (options.create) {\n      return this.create();\n    }\n    fail(\"Directory does not exist: \", this.path());\n  }\n}\n\n/**\n * Function to create a new {@link Directory} object\n * @param {string} path - directory path\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const dir = (path, options) => {\n  return new Directory(path, options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the current working directory\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const cwd = options => {\n  return dir(process.cwd(), options);\n}\n\n/**\n * Function to create a new {@link Directory} object for the directory of a JS source file\n * @param {string} url - module url - from `import.meta.url`\n * @param {Object} [options] - configuration options\n * @param {Boolean} [options.codec] - a codec for encoding/decoding files\n * @return {Object} the {@link Directory} object\n */\nexport const bin = (url=process.argv[1], options) => {\n  return dir(\n    path.dirname(url.replace(/^file:\\/\\//, '')),\n    options\n  );\n}\n\nexport default Directory\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Directory.js",
     "access": "public",
@@ -3101,7 +3101,7 @@
     "__docId__": 124,
     "kind": "file",
     "name": "src/Badger/Utils/Color.js",
-    "content": "import { isObject } from \"./Misc.js\";\n\nconst ANSIStart  = '\\u001B[';\nconst ANSIEnd    = 'm';\nconst ANSIColors = {\n  reset:    0,\n  bold:     1,\n  bright:   1,\n  dark:     2,\n  black:    0,\n  red:      1,\n  green:    2,\n  yellow:   3,\n  blue:     4,\n  magenta:  5,\n  cyan:     6,\n  grey:     7,\n  white:    8,\n  fg:      30,\n  bg:      40,\n};\n\n/**\n * Returns an ANSI escape code for a color string.  This can be a single color\n * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,\n * e.g. `bright red`, `dark green`, etc.  An optional section argument can be\n * set to `fg` (default) to set a foreground color or `bg` for a background color.\n * @param {String} color - color name with optional modifier prefix\n * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively\n * @return {String} ANSI escape code string\n * @example\n * const str = escapeCode('red')\n * @example\n * const str = escapeCode('bright red')\n * @example\n * const str = escapeCode('bright red', 'bg')\n */\nexport const ANSIescapeCode = (color, base='fg') => {\n  let   codes = [ ];\n  let   pair  = color.split(/ /, 2);\n  const hue   = pair.pop();\n  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];\n  codes.push(code);\n  if (pair.length) {\n    const shade = pair.length ? pair.shift() : 'dark';\n    codes.push(ANSIColors[shade])\n  }\n  // console.log('escapeCode(%s, %s) => ', color, base, codes.join(';'));\n  return ANSIStart + codes.join(';') + ANSIEnd;\n}\n\n/**\n * Returns an ANSI escape code for a color string or combination of foreground and\n * background colors.\n * @param {String|Object} colors - either a simple color name or object contain foreground and background colors\n * @param {String} [colors.fg] - foreground color\n * @param {String} [colors.fg] - background color\n * @return {String} ANSI escape code string\n * @example\n * const str = escape('red')\n * @example\n * const str = escape('bright red')\n * @example\n * const str = escape({ fg: 'bright yellow', bg: 'blue' })\n */\nexport const ANSIescape = (colors={}) => {\n  const col = isObject(colors) ? colors : { fg: colors };\n  let escapes = [ ];\n  if (col.bg) {\n    escapes.push(ANSIescapeCode(col.bg, 'bg'));\n  }\n  if (col.fg) {\n    escapes.push(ANSIescapeCode(col.fg, 'fg'));\n  }\n  return escapes.join('');\n}\n\n/**\n * Returns an ANSI escape code to reset all colors.\n * @return {String} ANSI escape reset string\n */\nexport const ANSIreset = () => ANSIescapeCode('reset', false)\n\n",
+    "content": "import { isObject } from \"./Misc.js\";\n\nconst ANSIStart  = '\\u001B[';\nconst ANSIEnd    = 'm';\nconst ANSIColors = {\n  reset:    0,\n  bold:     1,\n  bright:   1,\n  dark:     2,\n  black:    0,\n  red:      1,\n  green:    2,\n  yellow:   3,\n  blue:     4,\n  magenta:  5,\n  cyan:     6,\n  grey:     7,\n  white:    8,\n  fg:      30,\n  bg:      40,\n};\n\n/**\n * Returns an ANSI escape code for a color string.  This can be a single color\n * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,\n * e.g. `bright red`, `dark green`, etc.  An optional section argument can be\n * set to `fg` (default) to set a foreground color or `bg` for a background color.\n * @param {String} color - color name with optional modifier prefix\n * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively\n * @return {String} ANSI escape code string\n * @example\n * const str = escapeCode('red')\n * @example\n * const str = escapeCode('bright red')\n * @example\n * const str = escapeCode('bright red', 'bg')\n */\nexport const ANSIescapeCode = (color, base='fg') => {\n  let   codes = [ ];\n  let   pair  = color.split(/ /, 2);\n  const hue   = pair.pop();\n  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];\n  codes.push(code);\n  if (pair.length) {\n    const shade = pair.length ? pair.shift() : 'dark';\n    codes.push(ANSIColors[shade])\n  }\n  // console.log('escapeCode(%s, %s) => ', color, base, codes.join(';'));\n  return ANSIStart + codes.join(';') + ANSIEnd;\n}\n\n/**\n * Returns an ANSI escape code for a color string or combination of foreground and\n * background colors.\n * @param {String|Object} colors - either a simple color name or object contain foreground and background colors\n * @param {String} [colors.fg] - foreground color\n * @param {String} [colors.fg] - background color\n * @return {String} ANSI escape code string\n * @example\n * const str = escape('red')\n * @example\n * const str = escape('bright red')\n * @example\n * const str = escape({ fg: 'bright yellow', bg: 'blue' })\n */\nexport const ANSIescape = (colors={}) => {\n  const col = isObject(colors) ? colors : { fg: colors };\n  let escapes = [ ];\n  if (col.bg) {\n    escapes.push(ANSIescapeCode(col.bg, 'bg'));\n  }\n  if (col.fg) {\n    escapes.push(ANSIescapeCode(col.fg, 'fg'));\n  }\n  return escapes.join('');\n}\n\n/**\n * Returns an ANSI escape code to reset all colors.\n * @return {String} ANSI escape reset string\n */\nexport const ANSIreset = () => ANSIescapeCode('reset', false)\n\n/**\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n */\nexport const color = (colors) =>\n  text => ANSIescape(colors) + text + ANSIreset();",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Color.js",
     "access": "public",
@@ -3313,6 +3313,42 @@
   },
   {
     "__docId__": 131,
+    "kind": "function",
+    "name": "color",
+    "memberof": "src/Badger/Utils/Color.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/Color.js~color",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{color}",
+    "description": "Returns a function to display strings in a particular color.",
+    "lineNumber": 89,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "colors",
+        "description": "color(s) to display string"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": "function to display strings in the pre-defined color(s)"
+    }
+  },
+  {
+    "__docId__": 132,
     "kind": "file",
     "name": "src/Badger/Utils/DataPath.js",
     "content": "import { fail, hasValue, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Characters that can be escaped in quoted strings.\n */\nconst quotedEscapes = {\n  b: \"\\b\",\n  f: \"\\f\",\n  n: \"\\n\",\n  r: \"\\r\",\n  t: \"\\t\",\n  v: \"\\v\",\n  '\"': '\"',\n  \"'\": \"'\",\n  '\\\\': '\\\\',\n}\n\n/**\n * Match a double quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchDoubleQuotedString = string => {\n  const regex = /^\"((?:\\\\[\\\\\"nrt]|.)*?)\"$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Match a single quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchSingleQuotedString = string => {\n  const regex = /^'((?:\\\\[\\\\']|.)*?)'$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Split a data path into component parts\n * @param {String} [path] - the path to split\n */\nexport const splitDataPath = path => {\n  // * match a slash: \\/\n  // * match a single quoted string: '...'\n  // * match a double quoted string: \"...\"\n  // * match anything else: hello world!\n  let parts = [ ];\n  const regex = /(?:(\\/)|'((?:\\\\[\\\\']|.)*?)'|\"((?:\\\\[\\\\\"nrt]|.)*?)\"|([^/?]+))(\\??)/g;\n  const matches = [...path.matchAll(regex)];\n\n  matches.map(\n    ([ , , single, double, other, optional]) => {\n      let part;\n      // console.log('match [slash:%s] [single:%s] [double:%s] [other:%s]', slash, single, double, other);\n\n      if (single) {\n        part = single.replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (double) {\n        part = double.replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (other) {\n        part = other\n      }\n      if (hasValue(part)) {\n        parts.push(optional ? [part, {optional:true}] : part);\n      }\n    }\n  )\n  // console.log('MATCHED ', parts);\n\n  return parts;\n}\n\n/**\n * Traverse a data structure using a path.\n * @param {Object} [data] - the data to traverse\n * @param {String} [path] - the data path\n */\nexport const dataPath = (data, path) => {\n  let root  = data;\n  let parts = splitDataPath(path);\n  let done  = [ ];\n  // console.log('parts: ', parts);\n\n  for (let part of parts) {\n    const [word, opts] = isArray(part) ? part : [part, {}];\n    root = root[word];\n    done.push(word);\n    if (noValue(root)) {\n      if (opts.optional) {\n        return root;\n      }\n      else {\n        fail(\"No value for data at path: \", done.join('/'));\n      }\n    }\n  }\n  return root;\n}\n",
@@ -3323,7 +3359,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 132,
+    "__docId__": 133,
     "kind": "variable",
     "name": "quotedEscapes",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -3343,7 +3379,7 @@
     "ignore": true
   },
   {
-    "__docId__": 133,
+    "__docId__": 134,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -3376,7 +3412,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 135,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -3409,7 +3445,7 @@
     }
   },
   {
-    "__docId__": 135,
+    "__docId__": 136,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -3442,7 +3478,7 @@
     }
   },
   {
-    "__docId__": 136,
+    "__docId__": 137,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -3485,7 +3521,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 138,
     "kind": "file",
     "name": "src/Badger/Utils/Debug.js",
     "content": "import { ANSIescape, ANSIreset } from './Color.js'\nimport { doNothing } from './Misc.js';\n\n/**\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function Debugger(enabled, prefix='', color) {\n  return enabled\n    ? prefix\n      ? (format, ...args) =>\n        console.log(\n          '%s' + prefix + '%s' + format,\n          color ? ANSIescape(color) : '',\n          ANSIreset(),\n          ...args,\n        )\n      : console.log.bind(console)\n    : doNothing;\n}\n\n/**\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function addDebug(obj, enabled, prefix='', color) {\n  obj.debug = Debugger(enabled, prefix, color);\n}\n",
@@ -3496,7 +3532,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 138,
+    "__docId__": 139,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -3579,7 +3615,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 140,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -3665,10 +3701,10 @@
     "return": null
   },
   {
-    "__docId__": 140,
+    "__docId__": 141,
     "kind": "file",
     "name": "src/Badger/Utils/Misc.js",
-    "content": "/**\n * Determines if a value is a string\n * @param {String} value - value to test\n * @return {Boolean} true if `value` is a string or false if not\n */\nexport function isString(value) {\n  return typeof value === 'string';\n}\n\n/**\n * Determines if a value is an array\n * @param {Array} value - value to test\n * @return {Boolean} true if `value` is an Array or false if not\n */\nexport function isArray(value) {\n  return Array.isArray(value);\n}\n\n/**\n * Determines if a value is a Function\n * @param {Function} value - value to test\n * @return {Boolean} true if `value` is a Function or false if not\n */\nexport function isFunction(value) {\n  return typeof value === 'function'\n}\n\n/**\n * Determines if a value is an Object (but not an Array)\n * @param {Object} value - value to test\n * @return {Boolean} true if `value` is an Object or false if not\n */\nexport function isObject(value) {\n  return typeof value === \"object\"\n    && ! isArray(value)\n    && ! isNull(value);\n}\n\n/**\n * Determines if a value is `undefined`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or false if not\n */\nexport function isUndefined(value) {\n  return typeof value === 'undefined';\n}\n\n/**\n * Determines if a value is `null`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `null` or false if not\n */\nexport function isNull(value) {\n  return value === null;\n}\n\n/**\n * Determines if a value is defined and not null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is not `undefined` or `null`\n */\nexport function hasValue(value) {\n  return ! (isUndefined(value) || isNull(value));\n}\n\n/**\n * Determines if all values are defined and not null\n * @param {any[]} values - values to test\n * @return {Boolean} true if all values are not `undefined` or `null`\n */\nexport function haveValue(...values) {\n  return values.every( value => hasValue(value) );\n}\n\n/**\n * Determines if a value is undefined or null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or `null`\n */\nexport function noValue(value) {\n  return ! hasValue(value);\n}\n\n/**\n * Throws a new Error object\n * @param {String[]} message - error message string(s)\n * @throws {Error}\n */\nexport function fail(...message) {\n  throw new Error(message.join(''));\n}\n\n/**\n * Re-throw an existing Error object\n * @param {Error} error - error object\n * @throws {Error}\n */\nexport function rethrow(error) {\n  throw error;\n}\n\n/**\n * Do nothing.  Nothing at all.\n */\nexport function doNothing() {\n  // speak again Cordelia\n}",
+    "content": "import process from \"node:process\"\n\n/**\n * Determines if a value is a string\n * @param {String} value - value to test\n * @return {Boolean} true if `value` is a string or false if not\n */\nexport function isString(value) {\n  return typeof value === 'string';\n}\n\n/**\n * Determines if a value is an array\n * @param {Array} value - value to test\n * @return {Boolean} true if `value` is an Array or false if not\n */\nexport function isArray(value) {\n  return Array.isArray(value);\n}\n\n/**\n * Determines if a value is a Function\n * @param {Function} value - value to test\n * @return {Boolean} true if `value` is a Function or false if not\n */\nexport function isFunction(value) {\n  return typeof value === 'function'\n}\n\n/**\n * Determines if a value is an Object (but not an Array)\n * @param {Object} value - value to test\n * @return {Boolean} true if `value` is an Object or false if not\n */\nexport function isObject(value) {\n  return typeof value === \"object\"\n    && ! isArray(value)\n    && ! isNull(value);\n}\n\n/**\n * Determines if a value is `undefined`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or false if not\n */\nexport function isUndefined(value) {\n  return typeof value === 'undefined';\n}\n\n/**\n * Determines if a value is `null`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `null` or false if not\n */\nexport function isNull(value) {\n  return value === null;\n}\n\n/**\n * Determines if a value is defined and not null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is not `undefined` or `null`\n */\nexport function hasValue(value) {\n  return ! (isUndefined(value) || isNull(value));\n}\n\n/**\n * Determines if all values are defined and not null\n * @param {any[]} values - values to test\n * @return {Boolean} true if all values are not `undefined` or `null`\n */\nexport function haveValue(...values) {\n  return values.every( value => hasValue(value) );\n}\n\n/**\n * Determines if a value is undefined or null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or `null`\n */\nexport function noValue(value) {\n  return ! hasValue(value);\n}\n\n/**\n * Throws a new Error object\n * @param {String[]} message - error message string(s)\n * @throws {Error}\n */\nexport function fail(...message) {\n  throw new Error(message.join(''));\n}\n\n/**\n * Re-throw an existing Error object\n * @param {Error} error - error object\n * @throws {Error}\n */\nexport function rethrow(error) {\n  throw error;\n}\n\n/**\n * Do nothing.  Nothing at all.\n */\nexport function doNothing() {\n  // speak again Cordelia\n}\n\n/**\n * Returns an array of the `process.argv` array from offset 2 onwards,\n * i.e. removing the node path and script name.\n * @param {Array} argv - list of arguments, defaults to `process.argv`\n * @return {Array} array of arguments excluding the first two\n */\nexport function args(argv=process.argv) {\n  return argv.slice(2);\n}\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Misc.js",
     "access": "public",
@@ -3676,7 +3712,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 141,
+    "__docId__": 142,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3689,7 +3725,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isString}",
     "description": "Determines if a value is a string",
-    "lineNumber": 6,
+    "lineNumber": 8,
     "params": [
       {
         "nullable": null,
@@ -3712,7 +3748,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 143,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3725,7 +3761,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isArray}",
     "description": "Determines if a value is an array",
-    "lineNumber": 15,
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
@@ -3748,7 +3784,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 144,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3761,7 +3797,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isFunction}",
     "description": "Determines if a value is a Function",
-    "lineNumber": 24,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -3784,7 +3820,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 145,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3797,7 +3833,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isObject}",
     "description": "Determines if a value is an Object (but not an Array)",
-    "lineNumber": 33,
+    "lineNumber": 35,
     "params": [
       {
         "nullable": null,
@@ -3820,7 +3856,7 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 146,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3833,7 +3869,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isUndefined}",
     "description": "Determines if a value is `undefined`",
-    "lineNumber": 44,
+    "lineNumber": 46,
     "params": [
       {
         "nullable": null,
@@ -3856,7 +3892,7 @@
     }
   },
   {
-    "__docId__": 146,
+    "__docId__": 147,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3869,7 +3905,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isNull}",
     "description": "Determines if a value is `null`",
-    "lineNumber": 53,
+    "lineNumber": 55,
     "params": [
       {
         "nullable": null,
@@ -3892,7 +3928,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 148,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3905,7 +3941,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{hasValue}",
     "description": "Determines if a value is defined and not null",
-    "lineNumber": 62,
+    "lineNumber": 64,
     "params": [
       {
         "nullable": null,
@@ -3928,7 +3964,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 149,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3941,7 +3977,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{haveValue}",
     "description": "Determines if all values are defined and not null",
-    "lineNumber": 71,
+    "lineNumber": 73,
     "params": [
       {
         "nullable": null,
@@ -3964,7 +4000,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 150,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -3977,7 +4013,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{noValue}",
     "description": "Determines if a value is undefined or null",
-    "lineNumber": 80,
+    "lineNumber": 82,
     "params": [
       {
         "nullable": null,
@@ -4000,7 +4036,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 151,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4013,7 +4049,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{fail}",
     "description": "Throws a new Error object",
-    "lineNumber": 89,
+    "lineNumber": 91,
     "params": [
       {
         "nullable": null,
@@ -4037,7 +4073,7 @@
     "return": null
   },
   {
-    "__docId__": 151,
+    "__docId__": 152,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4050,7 +4086,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{rethrow}",
     "description": "Re-throw an existing Error object",
-    "lineNumber": 98,
+    "lineNumber": 100,
     "params": [
       {
         "nullable": null,
@@ -4074,7 +4110,7 @@
     "return": null
   },
   {
-    "__docId__": 152,
+    "__docId__": 153,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4087,12 +4123,110 @@
     "importPath": "@abw/badger",
     "importStyle": "{doNothing}",
     "description": "Do nothing.  Nothing at all.",
-    "lineNumber": 105,
+    "lineNumber": 107,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 153,
+    "__docId__": 154,
+    "kind": "function",
+    "name": "args",
+    "memberof": "src/Badger/Utils/Misc.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/Misc.js~args",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{args}",
+    "description": "Returns an array of the `process.argv` array from offset 2 onwards,\ni.e. removing the node path and script name.",
+    "lineNumber": 117,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "argv",
+        "description": "list of arguments, defaults to `process.argv`"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": "array of arguments excluding the first two"
+    }
+  },
+  {
+    "__docId__": 155,
+    "kind": "file",
+    "name": "src/Badger/Utils/Options.js",
+    "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { hasValue } from './Misc.js';\n\nconst defaults = {\n  verboseColor: 'magenta',\n};\n\nexport const options = async config => {\n  const verbose = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n\n  // add in other command line options\n  config.options.map(\n    option => {\n      const name    = option.name;\n      const about   = option.about;\n      const deflt   = option.default;\n      const short   = option.short;\n      const type    = option.type;\n      const pattern = option.pattern || (hasValue(type) && `<${type}>`);\n      let string    = `--${name}`;\n      let args      = [];\n      if (hasValue(option.arg) && ! option.arg) {\n        // allow arg: false to indicate no command line argument\n        return;\n      }\n      if (hasValue(short)) {\n        string = `-${short}, ${string}`;\n      }\n      if (hasValue(pattern)) {\n        string = `${string} ${pattern}`;\n      }\n      args.push(string);\n      if (hasValue(about)) {\n        args.push(about);\n      }\n      if (hasValue(deflt)) {\n        args.push(deflt);\n      }\n      command.option(...args)\n    }\n  )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  if (config.yes && cmdline.yes) {\n    if (config.verbose && cmdline.verbose) {\n      process.stdout.write(verbose('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options.map(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type,\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  const answers = await prompter(prompts);\n\n  return {\n    ...cmdline, ...answers\n  }\n}\n\nexport default options",
+    "static": true,
+    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Options.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 156,
+    "kind": "variable",
+    "name": "defaults",
+    "memberof": "src/Badger/Utils/Options.js",
+    "static": true,
+    "longname": "src/Badger/Utils/Options.js~defaults",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"verboseColor\": string}"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 157,
+    "kind": "function",
+    "name": "options",
+    "memberof": "src/Badger/Utils/Options.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Options.js~options",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{options}",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{...cmdline: Object, ...answers: Object}"
+      ]
+    }
+  },
+  {
+    "__docId__": 158,
     "kind": "file",
     "name": "src/Badger/Utils/Params.js",
     "content": "import { hasValue, fail } from \"./Misc.js\";\nimport { joinListOr, splitList } from \"./Text.js\";\n\n/**\n * Assert that a parameter object contains an item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {String} name - parameter that must be included\n * @return {any} the parameter value\n * @throws {Error} if the parameter is not defined or null\n * @example\n * const foo = requiredParam({ foo: 10 }, 'foo');\n */\nexport function requiredParam(params={}, name) {\n  const value = params[name];\n  if (hasValue(value)) {\n    return value;\n  }\n  else {\n    fail(\"Missing value for required parameter: \", name);\n  }\n}\n\n/**\n * Assert that a parameter object contains all specified item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = requiredParams({ foo: 10, bar: 20 }, 'foo bar');\n */\nexport function requiredParams(params={}, names) {\n  return splitList(names).map( name => requiredParam(params, name) );\n}\n\n/**\n * An alias for {@link requiredParams} for people who don't like typing long names (and for symmetry with {@link anyParams}))\n */\nexport const allParams=requiredParams;\n\n/**\n * Assert that a parameter object contains any of the specified items with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = anyParams({ foo: 10, wiz: 99 }, 'foo bar');\n */\nexport function anyParams(params, names) {\n  let found = false;\n  const nlist  = splitList(names);\n  const values = nlist.map(\n    name => {\n      const value = params[name];\n      if (hasValue(value)) {\n        found = true;\n      }\n      return value;\n    }\n  );\n  return found\n    ? values\n    : fail(\"Missing value for one of: \", joinListOr(nlist));\n}\n",
@@ -4103,7 +4237,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 154,
+    "__docId__": 159,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/Params.js",
@@ -4162,7 +4296,7 @@
     ]
   },
   {
-    "__docId__": 155,
+    "__docId__": 160,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -4222,7 +4356,7 @@
     ]
   },
   {
-    "__docId__": 156,
+    "__docId__": 161,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -4241,7 +4375,7 @@
     }
   },
   {
-    "__docId__": 157,
+    "__docId__": 162,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -4301,7 +4435,137 @@
     ]
   },
   {
-    "__docId__": 158,
+    "__docId__": 163,
+    "kind": "file",
+    "name": "src/Badger/Utils/Prompt.js",
+    "content": "import prompts from 'prompts'\n\n/**\n * Prompt user to enter a value.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * prompt(\"What is your name?\")\n *   .then( name => console.log(`Hello ${name}`) );\n * @example\n * prompt(\"What is your name?\", { default: 'Mr.Badger' })\n *   .then( name => console.log(`Hello ${name}`) );\n */\nexport const prompt = async (question, options={}) => {\n  const name = options.name || 'answer';\n  const answers = await prompts([\n    {\n      name,\n      type: options.type || 'text',\n      message: question,\n      initial: options.default,\n    },\n  ]);\n  return answers[name];\n}\n\n/**\n * Prompt user to confirm a choice.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * confirm(\"Are you sure?\")\n *   .then( yes => console.log('You said \"%s\"', yes ? 'YES' : 'NO') );\n */\nexport const confirm = async (question, options={}) =>\n  prompt(question, { ...options, type: 'confirm' });\n\nexport default prompt",
+    "static": true,
+    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Prompt.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 164,
+    "kind": "function",
+    "name": "prompt",
+    "memberof": "src/Badger/Utils/Prompt.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Prompt.js~prompt",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{prompt}",
+    "description": "Prompt user to enter a value.",
+    "examples": [
+      "prompt(\"What is your name?\")\n  .then( name => console.log(`Hello ${name}`) );",
+      "prompt(\"What is your name?\", { default: 'Mr.Badger' })\n  .then( name => console.log(`Hello ${name}`) );"
+    ],
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "question",
+        "description": "question to prompt user to answer"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "optional options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.default",
+        "description": "default value returned if user presses RETURN"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with response to question or default value"
+    }
+  },
+  {
+    "__docId__": 165,
+    "kind": "function",
+    "name": "confirm",
+    "memberof": "src/Badger/Utils/Prompt.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Prompt.js~confirm",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{confirm}",
+    "description": "Prompt user to confirm a choice.",
+    "examples": [
+      "confirm(\"Are you sure?\")\n  .then( yes => console.log('You said \"%s\"', yes ? 'YES' : 'NO') );"
+    ],
+    "lineNumber": 39,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "question",
+        "description": "question to prompt user to answer"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options",
+        "description": "optional options"
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "options.default",
+        "description": "default value returned if user presses RETURN"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills with response to question or default value"
+    }
+  },
+  {
+    "__docId__": 166,
     "kind": "file",
     "name": "src/Badger/Utils/Text.js",
     "content": "import { isString, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Split a comma/whitespace delimited string into an Array\n * @param {String} [value] - string to split\n * @return {Array} array of split strings\n * @example\n * const strings = splitList('one two three')\n * @example\n * const strings = splitList('one,two,three')\n * @example\n * const strings = splitList('one, two, three')\n */\nexport function splitList(value) {\n  if (noValue(value)) {\n    return [ ];\n  }\n  else if (isString(value)) {\n    return value.length\n      ? value.split(/,\\s*|\\s+/)\n      : [ ]\n  }\n  else if (isArray(value)) {\n    return value;\n  }\n  return [value];\n}\n\n/**\n * Join an Array into a single string\n * @param {Array} [array] - array to join\n * @param {String} [joint=' '] - delimiter to join strings\n * @param {String} [lastJoint=joint] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinList(['one', 'two', 'three']);   // one two three\n * @example\n * joinList(['one', 'two', 'three'], ', ');   // one, two, three\n * @example\n * joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three\n */\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` and ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' and '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListAnd(['one', 'two', 'three']);   // one, two and three\n */\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` or ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' or '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListOr(['one', 'two', 'three']);   // one, two or three\n */\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Capitalise a string by converting the first character to upper case and other characters to lower case\n * @param {String} [word] - word to capitalise\n * @return {String} capitalised string\n * @example\n * capitalise('badger');   // Badger\n * @example\n * capitalise('BADGER');   // Badger\n */\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\n/**\n * Convert a snake case string to studly caps\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToStudly('happy_badger_dance');   // HappyBadgerDance\n * @example\n * snakeToStudly('happy_badger/dance');   // HappyBadger/Dance\n */\nexport function snakeToStudly(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n\n/**\n * Convert a snake case string to camel case\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToCamel('happy_badger_dance');   // happyBadgerDance\n * @example\n * snakeToCamel('happy_badger/dance');   // happyBadger/dance\n */\nexport function snakeToCamel(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to fooBar\n    segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')\n  ).join('/');\n}\n",
@@ -4312,7 +4576,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 159,
+    "__docId__": 167,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4353,7 +4617,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 168,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4418,7 +4682,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 169,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4481,7 +4745,7 @@
     }
   },
   {
-    "__docId__": 162,
+    "__docId__": 170,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4544,7 +4808,7 @@
     }
   },
   {
-    "__docId__": 163,
+    "__docId__": 171,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4584,7 +4848,7 @@
     }
   },
   {
-    "__docId__": 164,
+    "__docId__": 172,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4624,7 +4888,7 @@
     }
   },
   {
-    "__docId__": 165,
+    "__docId__": 173,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger/Utils/Text.js",
@@ -4664,10 +4928,1232 @@
     }
   },
   {
-    "__docId__": 166,
+    "__docId__": 182,
+    "kind": "file",
+    "name": "src/Badger/Utils/index.js",
+    "content": "export * from './Color.js';\nexport * from './DataPath.js';\nexport * from './Debug.js';\nexport * from './Misc.js';\nexport * from './Options.js';\nexport * from './Params.js';\nexport * from './Prompt.js';\nexport * from './Text.js';",
+    "static": true,
+    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/index.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 183,
+    "kind": "function",
+    "name": "ANSIescapeCode",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~ANSIescapeCode",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{ANSIescapeCode}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "params": [
+      {
+        "name": "color",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "base",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "fg",
+        "defaultValue": "fg"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 184,
+    "kind": "function",
+    "name": "ANSIescape",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~ANSIescape",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{ANSIescape}",
+    "description": null,
+    "lineNumber": 66,
+    "undocument": true,
+    "params": [
+      {
+        "name": "colors",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 185,
+    "kind": "function",
+    "name": "ANSIreset",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~ANSIreset",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{ANSIreset}",
+    "description": null,
+    "lineNumber": 82,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 186,
+    "kind": "function",
+    "name": "color",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~color",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{color}",
+    "description": null,
+    "lineNumber": 89,
+    "undocument": true,
+    "params": [
+      {
+        "name": "colors",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 187,
+    "kind": "function",
+    "name": "matchDoubleQuotedString",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~matchDoubleQuotedString",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{matchDoubleQuotedString}",
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "params": [
+      {
+        "name": "string",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 188,
+    "kind": "function",
+    "name": "matchSingleQuotedString",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~matchSingleQuotedString",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{matchSingleQuotedString}",
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "params": [
+      {
+        "name": "string",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 189,
+    "kind": "function",
+    "name": "splitDataPath",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~splitDataPath",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{splitDataPath}",
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "params": [
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 190,
+    "kind": "function",
+    "name": "dataPath",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~dataPath",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{dataPath}",
+    "description": null,
+    "lineNumber": 84,
+    "undocument": true,
+    "params": [
+      {
+        "name": "data",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "path",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 191,
+    "kind": "function",
+    "name": "Debugger",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~Debugger",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{Debugger}",
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "params": [
+      {
+        "name": "enabled",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "prefix",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "",
+        "defaultValue": ""
+      },
+      {
+        "name": "color",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 192,
+    "kind": "function",
+    "name": "addDebug",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~addDebug",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{addDebug}",
+    "description": null,
+    "lineNumber": 57,
+    "undocument": true,
+    "params": [
+      {
+        "name": "obj",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "enabled",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "prefix",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "",
+        "defaultValue": ""
+      },
+      {
+        "name": "color",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 193,
+    "kind": "function",
+    "name": "isString",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isString",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isString}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 194,
+    "kind": "function",
+    "name": "isArray",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isArray",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isArray}",
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 195,
+    "kind": "function",
+    "name": "isFunction",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isFunction",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isFunction}",
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 196,
+    "kind": "function",
+    "name": "isObject",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isObject",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isObject}",
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 197,
+    "kind": "function",
+    "name": "isUndefined",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isUndefined",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isUndefined}",
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 198,
+    "kind": "function",
+    "name": "isNull",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~isNull",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{isNull}",
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 199,
+    "kind": "function",
+    "name": "hasValue",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~hasValue",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{hasValue}",
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 200,
+    "kind": "function",
+    "name": "haveValue",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~haveValue",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{haveValue}",
+    "description": null,
+    "lineNumber": 73,
+    "undocument": true,
+    "params": [
+      {
+        "name": "values",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 201,
+    "kind": "function",
+    "name": "noValue",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~noValue",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{noValue}",
+    "description": null,
+    "lineNumber": 82,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 202,
+    "kind": "function",
+    "name": "fail",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~fail",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{fail}",
+    "description": null,
+    "lineNumber": 91,
+    "undocument": true,
+    "params": [
+      {
+        "name": "message",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 203,
+    "kind": "function",
+    "name": "rethrow",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~rethrow",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{rethrow}",
+    "description": null,
+    "lineNumber": 100,
+    "undocument": true,
+    "params": [
+      {
+        "name": "error",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 204,
+    "kind": "function",
+    "name": "doNothing",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~doNothing",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{doNothing}",
+    "description": null,
+    "lineNumber": 107,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 205,
+    "kind": "function",
+    "name": "args",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~args",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{args}",
+    "description": null,
+    "lineNumber": 117,
+    "undocument": true,
+    "params": [
+      {
+        "name": "argv",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 206,
+    "kind": "function",
+    "name": "options",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~options",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{options}",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{...cmdline: Object, ...answers: Object}"
+      ]
+    }
+  },
+  {
+    "__docId__": 207,
+    "kind": "function",
+    "name": "requiredParam",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~requiredParam",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParam}",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 208,
+    "kind": "function",
+    "name": "requiredParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~requiredParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParams}",
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 209,
+    "kind": "variable",
+    "name": "allParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~allParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{allParams}",
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 210,
+    "kind": "function",
+    "name": "anyParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~anyParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{anyParams}",
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 211,
+    "kind": "function",
+    "name": "prompt",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~prompt",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{prompt}",
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "question",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 212,
+    "kind": "function",
+    "name": "confirm",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~confirm",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{confirm}",
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "params": [
+      {
+        "name": "question",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 213,
+    "kind": "function",
+    "name": "splitList",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~splitList",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{splitList}",
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "params": [
+      {
+        "name": "value",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "undefined[]"
+      ]
+    }
+  },
+  {
+    "__docId__": 214,
+    "kind": "function",
+    "name": "joinList",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~joinList",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{joinList}",
+    "description": null,
+    "lineNumber": 42,
+    "undocument": true,
+    "params": [
+      {
+        "name": "array",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "joint",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": " ",
+        "defaultValue": " "
+      },
+      {
+        "name": "lastJoint",
+        "optional": true,
+        "types": [
+          "*"
+        ],
+        "defaultRaw": "joint",
+        "defaultValue": "joint"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 215,
+    "kind": "function",
+    "name": "joinListAnd",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~joinListAnd",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{joinListAnd}",
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "params": [
+      {
+        "name": "array",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "joint",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": ", ",
+        "defaultValue": ", "
+      },
+      {
+        "name": "lastJoint",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": " and ",
+        "defaultValue": " and "
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 216,
+    "kind": "function",
+    "name": "joinListOr",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~joinListOr",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{joinListOr}",
+    "description": null,
+    "lineNumber": 72,
+    "undocument": true,
+    "params": [
+      {
+        "name": "array",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "joint",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": ", ",
+        "defaultValue": ", "
+      },
+      {
+        "name": "lastJoint",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": " or ",
+        "defaultValue": " or "
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 217,
+    "kind": "function",
+    "name": "capitalise",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~capitalise",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{capitalise}",
+    "description": null,
+    "lineNumber": 85,
+    "undocument": true,
+    "params": [
+      {
+        "name": "word",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 218,
+    "kind": "function",
+    "name": "snakeToStudly",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~snakeToStudly",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{snakeToStudly}",
+    "description": null,
+    "lineNumber": 98,
+    "undocument": true,
+    "params": [
+      {
+        "name": "snake",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 219,
+    "kind": "function",
+    "name": "snakeToCamel",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~snakeToCamel",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{snakeToCamel}",
+    "description": null,
+    "lineNumber": 114,
+    "undocument": true,
+    "params": [
+      {
+        "name": "snake",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 220,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
-    "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  async component(uri, props) {\n    const config  = await this.config(uri, {});\n    const lib     = await this.library(config.component?.library || uri);\n    // TODO: check for data path fragment in URI\n    const exp     = config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    // this.debug(\"created component \", uri)\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
+    "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory and instantiates a\n   * component.\n   * @param {String} uri - component base name\n   * @param {Object} [props] - optional configuration properties\n   * @return {Promise} fulfills to a newly instantiated component\n   * @example\n   * workspace.component(mycomp').then(\n   *   component => console.log(\"Created component: \", component)\n   * );\n   */\n  async component(uri, props) {\n    const [base, fragment] = uri.split('#', 2);\n    const config  = await this.config(base, {});\n    const lib     = await this.library(config.component?.library || base);\n    const exp     = fragment || config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Workspace.js",
     "access": "public",
@@ -4675,7 +6161,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 167,
+    "__docId__": 221,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -4695,7 +6181,7 @@
     "ignore": true
   },
   {
-    "__docId__": 168,
+    "__docId__": 222,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -4710,7 +6196,7 @@
     "interface": false
   },
   {
-    "__docId__": 169,
+    "__docId__": 223,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4795,7 +6281,7 @@
     }
   },
   {
-    "__docId__": 170,
+    "__docId__": 224,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4812,7 +6298,7 @@
     }
   },
   {
-    "__docId__": 171,
+    "__docId__": 225,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4865,7 +6351,7 @@
     }
   },
   {
-    "__docId__": 172,
+    "__docId__": 226,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -4930,7 +6416,7 @@
     }
   },
   {
-    "__docId__": 173,
+    "__docId__": 227,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5000,7 +6486,7 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 228,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5081,7 +6567,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 229,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5146,7 +6632,7 @@
     }
   },
   {
-    "__docId__": 176,
+    "__docId__": 230,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5192,7 +6678,7 @@
     }
   },
   {
-    "__docId__": 177,
+    "__docId__": 231,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5228,7 +6714,7 @@
     }
   },
   {
-    "__docId__": 178,
+    "__docId__": 232,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -5237,31 +6723,44 @@
     "static": false,
     "longname": "src/Badger/Workspace.js~Workspace#component",
     "access": "public",
-    "description": null,
-    "lineNumber": 174,
-    "undocument": true,
+    "description": "Loads a Javscript library from the library directory and instantiates a\ncomponent.",
+    "examples": [
+      "workspace.component(mycomp').then(\n  component => console.log(\"Created component: \", component)\n);"
+    ],
+    "lineNumber": 185,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "component base name"
       },
       {
-        "name": "props",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "props",
+        "description": "optional configuration properties"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to a newly instantiated component"
     }
   },
   {
-    "__docId__": 179,
+    "__docId__": 233,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -5274,7 +6773,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{workspace}",
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 196,
     "undocument": true,
     "params": [
       {
@@ -5293,10 +6792,10 @@
     "return": null
   },
   {
-    "__docId__": 194,
+    "__docId__": 251,
     "kind": "file",
     "name": "src/Badger.js",
-    "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/Color.js';\nexport * from './Badger/Utils/DataPath.js';\nexport * from './Badger/Utils/Debug.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
+    "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/index.js';\n//export * from './Badger/Utils/Color.js';\n//export * from './Badger/Utils/DataPath.js';\n//export * from './Badger/Utils/Debug.js';\n//export * from './Badger/Utils/Misc.js';\n//export * from './Badger/Utils/Params.js';\n//export * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger.js",
     "access": "public",
@@ -5304,7 +6803,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 195,
+    "__docId__": 252,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -5320,7 +6819,7 @@
     "interface": false
   },
   {
-    "__docId__": 196,
+    "__docId__": 253,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -5334,7 +6833,7 @@
     "undocument": true
   },
   {
-    "__docId__": 197,
+    "__docId__": 254,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -5351,7 +6850,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 255,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -5368,7 +6867,7 @@
     }
   },
   {
-    "__docId__": 199,
+    "__docId__": 256,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -5384,7 +6883,7 @@
     "return": null
   },
   {
-    "__docId__": 200,
+    "__docId__": 257,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -5404,7 +6903,7 @@
     }
   },
   {
-    "__docId__": 201,
+    "__docId__": 258,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -5430,7 +6929,7 @@
     "return": null
   },
   {
-    "__docId__": 202,
+    "__docId__": 259,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -5449,7 +6948,7 @@
     ]
   },
   {
-    "__docId__": 203,
+    "__docId__": 260,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -5518,7 +7017,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 261,
     "kind": "method",
     "name": "firstFileWithExt",
     "memberof": "src/Badger.js~Config",
@@ -5571,7 +7070,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 262,
     "kind": "method",
     "name": "jsFile",
     "memberof": "src/Badger.js~Config",
@@ -5604,7 +7103,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 263,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -5637,7 +7136,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 264,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -5680,7 +7179,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 265,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -5712,7 +7211,7 @@
     "return": null
   },
   {
-    "__docId__": 209,
+    "__docId__": 266,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -5731,7 +7230,7 @@
     ]
   },
   {
-    "__docId__": 210,
+    "__docId__": 267,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -5796,7 +7295,7 @@
     }
   },
   {
-    "__docId__": 211,
+    "__docId__": 268,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -5861,7 +7360,7 @@
     }
   },
   {
-    "__docId__": 212,
+    "__docId__": 269,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -5896,7 +7395,7 @@
     ]
   },
   {
-    "__docId__": 213,
+    "__docId__": 270,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -5951,7 +7450,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 271,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -5973,7 +7472,7 @@
     "params": []
   },
   {
-    "__docId__": 215,
+    "__docId__": 272,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -5995,7 +7494,7 @@
     "params": []
   },
   {
-    "__docId__": 216,
+    "__docId__": 273,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -6017,7 +7516,7 @@
     "params": []
   },
   {
-    "__docId__": 217,
+    "__docId__": 274,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -6070,7 +7569,7 @@
     }
   },
   {
-    "__docId__": 218,
+    "__docId__": 275,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -6113,7 +7612,7 @@
     }
   },
   {
-    "__docId__": 219,
+    "__docId__": 276,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -6176,7 +7675,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 277,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -6221,7 +7720,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 278,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -6290,7 +7789,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 279,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -6353,7 +7852,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 280,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -6389,7 +7888,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 281,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -6419,7 +7918,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 282,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -6437,6 +7936,7 @@
     "params": [
       {
         "name": "url",
+        "optional": true,
         "types": [
           "*"
         ]
@@ -6455,7 +7955,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 283,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -6474,7 +7974,7 @@
     ]
   },
   {
-    "__docId__": 227,
+    "__docId__": 284,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -6529,7 +8029,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 285,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -6559,7 +8059,7 @@
     ]
   },
   {
-    "__docId__": 229,
+    "__docId__": 286,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -6619,7 +8119,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 287,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -6690,7 +8190,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 288,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger.js~File",
@@ -6735,7 +8235,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 289,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger.js",
@@ -6771,7 +8271,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 290,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger.js",
@@ -6787,7 +8287,7 @@
     "interface": false
   },
   {
-    "__docId__": 234,
+    "__docId__": 291,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Path",
@@ -6852,7 +8352,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 292,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Path",
@@ -6869,7 +8369,7 @@
     }
   },
   {
-    "__docId__": 236,
+    "__docId__": 293,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger.js~Path",
@@ -6891,7 +8391,7 @@
     "params": []
   },
   {
-    "__docId__": 237,
+    "__docId__": 294,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger.js~Path",
@@ -6927,7 +8427,7 @@
     }
   },
   {
-    "__docId__": 238,
+    "__docId__": 295,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger.js~Path",
@@ -6963,7 +8463,7 @@
     }
   },
   {
-    "__docId__": 239,
+    "__docId__": 296,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger.js~Path",
@@ -6988,7 +8488,7 @@
     "params": []
   },
   {
-    "__docId__": 240,
+    "__docId__": 297,
     "kind": "method",
     "name": "stat",
     "memberof": "src/Badger.js~Path",
@@ -7013,7 +8513,7 @@
     "params": []
   },
   {
-    "__docId__": 241,
+    "__docId__": 298,
     "kind": "method",
     "name": "unstat",
     "memberof": "src/Badger.js~Path",
@@ -7032,7 +8532,7 @@
     }
   },
   {
-    "__docId__": 242,
+    "__docId__": 299,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -7051,7 +8551,7 @@
     ]
   },
   {
-    "__docId__": 243,
+    "__docId__": 300,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -7107,7 +8607,7 @@
     }
   },
   {
-    "__docId__": 244,
+    "__docId__": 301,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Library",
@@ -7140,7 +8640,7 @@
     }
   },
   {
-    "__docId__": 245,
+    "__docId__": 302,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -7172,7 +8672,7 @@
     "return": null
   },
   {
-    "__docId__": 246,
+    "__docId__": 303,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger.js",
@@ -7211,7 +8711,7 @@
     }
   },
   {
-    "__docId__": 247,
+    "__docId__": 304,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger.js",
@@ -7244,7 +8744,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 305,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger.js",
@@ -7263,7 +8763,33 @@
     "return": null
   },
   {
-    "__docId__": 249,
+    "__docId__": 306,
+    "kind": "function",
+    "name": "color",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~color",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{color}",
+    "description": null,
+    "lineNumber": 89,
+    "undocument": true,
+    "params": [
+      {
+        "name": "colors",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 307,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger.js",
@@ -7293,7 +8819,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 308,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger.js",
@@ -7323,7 +8849,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 309,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger.js",
@@ -7353,7 +8879,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 310,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger.js",
@@ -7389,7 +8915,7 @@
     }
   },
   {
-    "__docId__": 253,
+    "__docId__": 311,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger.js",
@@ -7434,7 +8960,7 @@
     }
   },
   {
-    "__docId__": 254,
+    "__docId__": 312,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger.js",
@@ -7481,7 +9007,7 @@
     "return": null
   },
   {
-    "__docId__": 255,
+    "__docId__": 313,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -7494,7 +9020,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isString}",
     "description": null,
-    "lineNumber": 6,
+    "lineNumber": 8,
     "undocument": true,
     "params": [
       {
@@ -7511,7 +9037,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 314,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -7524,7 +9050,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isArray}",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 17,
     "undocument": true,
     "params": [
       {
@@ -7541,7 +9067,7 @@
     }
   },
   {
-    "__docId__": 257,
+    "__docId__": 315,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -7554,7 +9080,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isFunction}",
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 26,
     "undocument": true,
     "params": [
       {
@@ -7571,7 +9097,7 @@
     }
   },
   {
-    "__docId__": 258,
+    "__docId__": 316,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -7584,7 +9110,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isObject}",
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 35,
     "undocument": true,
     "params": [
       {
@@ -7601,7 +9127,7 @@
     }
   },
   {
-    "__docId__": 259,
+    "__docId__": 317,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -7614,7 +9140,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isUndefined}",
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 46,
     "undocument": true,
     "params": [
       {
@@ -7631,7 +9157,7 @@
     }
   },
   {
-    "__docId__": 260,
+    "__docId__": 318,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -7644,7 +9170,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isNull}",
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 55,
     "undocument": true,
     "params": [
       {
@@ -7661,7 +9187,7 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 319,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -7674,7 +9200,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{hasValue}",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 64,
     "undocument": true,
     "params": [
       {
@@ -7691,7 +9217,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 320,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -7704,7 +9230,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{haveValue}",
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 73,
     "undocument": true,
     "params": [
       {
@@ -7722,7 +9248,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 321,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -7735,7 +9261,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{noValue}",
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 82,
     "undocument": true,
     "params": [
       {
@@ -7752,7 +9278,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 322,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -7765,7 +9291,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{fail}",
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 91,
     "undocument": true,
     "params": [
       {
@@ -7779,7 +9305,7 @@
     "return": null
   },
   {
-    "__docId__": 265,
+    "__docId__": 323,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger.js",
@@ -7792,7 +9318,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{rethrow}",
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 100,
     "undocument": true,
     "params": [
       {
@@ -7805,7 +9331,7 @@
     "return": null
   },
   {
-    "__docId__": 266,
+    "__docId__": 324,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger.js",
@@ -7818,13 +9344,74 @@
     "importPath": "@abw/badger",
     "importStyle": "{doNothing}",
     "description": null,
-    "lineNumber": 105,
+    "lineNumber": 107,
     "undocument": true,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 267,
+    "__docId__": 325,
+    "kind": "function",
+    "name": "args",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~args",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{args}",
+    "description": null,
+    "lineNumber": 117,
+    "undocument": true,
+    "params": [
+      {
+        "name": "argv",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 326,
+    "kind": "function",
+    "name": "options",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~options",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{options}",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{...cmdline: Object, ...answers: Object}"
+      ]
+    }
+  },
+  {
+    "__docId__": 327,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -7863,7 +9450,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 328,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -7902,7 +9489,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 329,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -7922,7 +9509,7 @@
     }
   },
   {
-    "__docId__": 270,
+    "__docId__": 330,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -7958,7 +9545,81 @@
     }
   },
   {
-    "__docId__": 271,
+    "__docId__": 331,
+    "kind": "function",
+    "name": "prompt",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~prompt",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{prompt}",
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "question",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 332,
+    "kind": "function",
+    "name": "confirm",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~confirm",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{confirm}",
+    "description": null,
+    "lineNumber": 39,
+    "undocument": true,
+    "params": [
+      {
+        "name": "question",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "options",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 333,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -7988,7 +9649,7 @@
     }
   },
   {
-    "__docId__": 272,
+    "__docId__": 334,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -8036,7 +9697,7 @@
     }
   },
   {
-    "__docId__": 273,
+    "__docId__": 335,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -8084,7 +9745,7 @@
     }
   },
   {
-    "__docId__": 274,
+    "__docId__": 336,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -8132,7 +9793,7 @@
     }
   },
   {
-    "__docId__": 275,
+    "__docId__": 337,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -8162,7 +9823,7 @@
     }
   },
   {
-    "__docId__": 276,
+    "__docId__": 338,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger.js",
@@ -8192,7 +9853,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 339,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger.js",
@@ -8222,7 +9883,7 @@
     }
   },
   {
-    "__docId__": 278,
+    "__docId__": 340,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -8238,7 +9899,7 @@
     "interface": false
   },
   {
-    "__docId__": 279,
+    "__docId__": 341,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -8323,7 +9984,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 342,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -8340,7 +10001,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 343,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -8393,7 +10054,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 344,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -8458,7 +10119,7 @@
     }
   },
   {
-    "__docId__": 283,
+    "__docId__": 345,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -8528,7 +10189,7 @@
     }
   },
   {
-    "__docId__": 284,
+    "__docId__": 346,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -8609,7 +10270,7 @@
     }
   },
   {
-    "__docId__": 285,
+    "__docId__": 347,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -8674,7 +10335,7 @@
     }
   },
   {
-    "__docId__": 286,
+    "__docId__": 348,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -8720,7 +10381,7 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 349,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Workspace",
@@ -8756,7 +10417,7 @@
     }
   },
   {
-    "__docId__": 288,
+    "__docId__": 350,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -8765,31 +10426,44 @@
     "static": false,
     "longname": "src/Badger.js~Workspace#component",
     "access": "public",
-    "description": null,
-    "lineNumber": 174,
-    "undocument": true,
+    "description": "Loads a Javscript library from the library directory and instantiates a\ncomponent.",
+    "examples": [
+      "workspace.component(mycomp').then(\n  component => console.log(\"Created component: \", component)\n);"
+    ],
+    "lineNumber": 185,
     "params": [
       {
-        "name": "uri",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "uri",
+        "description": "component base name"
       },
       {
-        "name": "props",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "Object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "props",
+        "description": "optional configuration properties"
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Promise"
+      ],
+      "spread": false,
+      "description": "fulfills to a newly instantiated component"
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 351,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",
@@ -8802,7 +10476,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{workspace}",
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 196,
     "undocument": true,
     "params": [
       {
@@ -8830,7 +10504,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.5\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"js-yaml\": \"^4.1.0\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.5\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"commander\": \"^9.4.0\",\n    \"js-yaml\": \"^4.1.0\",\n    \"prompts\": \"^2.4.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,
@@ -8903,7 +10577,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/workspace.md",
     "name": "./manual/workspace.md",
-    "content": "# Workspace\n\nThe [Workspace](class/src/Badger/Workspace.js~Workspace) module provides a\nconvenient \"hub\" for accessing directories, files, configuration files,\nlibraries and other resources for your project.\n\n- [Workspace Directory](#workspace-directory)\n- [Directories](#directories)\n- [Files](#files)\n- [Configuration Files](#configuration-files)\n- [Javscript Libraries](#javascript-libraries)\n- [Configuration Options](#configuration-options)\n\n## Workspace Directory\n\nCreate a new Workspace object and provide it with the workspace directory.\nThis is usually the top-level directory of your project.\n\n```js\nimport { Workspace } from '@abw/badger'\n\nconst workspace = new Workspace('/path/to/project')\n```\n\nYou can specify an absolute directory path, the path of a directory relative to\nyour current location, or a [Directory](class/src/Badger/Directory.js~Directory)\ndirectory object.  The [bin](function#static-function-bin) function can be used to\ndetermine the directory in which a script is located.\n\nFor example, if you have a `bin/myscript.js` file, you can create a workspace\nfor the parent directory like so:\n\n```js\nimport { bin, Workspace } from '@abw/badger'\n\nconst workspace = new Workspace(\n  bin(import.meta.url).parent()\n)\n```\n\n## Directories\n\nThe [dir()](class/src/Badger.js~Workspace#instance-method-dir) method is a shortcut\nto fetch a [Directory](class/src/Badger/Filesystem/Directory.js~Directory) object for any\ndirectory relative to the workspace directory.\n\n```js\nconst tmpdir = workspace.dir('tmp');\n```\n\n## Files\n\nThe [file()](class/src/Badger.js~Workspace#instance-method-file) method is a shortcut\nto fetch a [File](class/src/Badger/Filesystem/File.js~File) object for any\nfile relative to the workspace directory.\n\n```js\nconst wibble = workspace.file('tmp/wibble.log');\n```\n\n## Configuration Files\n\nThe [config()](class/src/Badger.js~Workspace#instance-method-config) method is a shortcut\nto load data from a configuration file using the [Config](class/src/Badger/Config.js~Config)\nmodule.\n\nThe default location for configuration files is the `config` directory relative to the workspace\ndirectory.  See [configuration options](#config-options) below for details on how to change this.\n\n```js\nworkspace.config('animals').then(\n  data => console.log(\"Data from the config/animals(.js|.mjs|.yaml|.json) file\", data)\n)\n```\n\n## Javascript Libraries\n\nThe [library()](class/src/Badger.js~Workspace#instance-method-library) method is a shortcut\nto load a Javascript library from one of the library directories using the\n[Library](class/src/Badger/Library.js~Library) module.\n\nThe default search path for libary files is any of the `lib`, `library`, `src` or `components`\ndirectories relative to the workspace directory.  See [configuration options](#config-options)\nbelow for details on how to change this.\n\n```js\nworkspace.config('animals').then(\n  data => console.log(\"Data from the config/animals(.js|.mjs|.yaml|.json) file\", data)\n)\n```\n\n## Javascript Components\n\nTODO\n\n## Configuration Options\n\nThe `config` option can be provided to configure the [Config](class/src/Badger/Config.js~Config)\nobject that the workspace used to load configuration files.\n\n```js\nconst workspace = new Workspace(\n  '/path/to/workspace',\n  {\n    config: {\n        dir:   'cfg',\n        codec: 'json',\n        jsExt: 'js',\n    }\n  }\n)\n```\n\nThe `library` option can be provided to configure the [Library](class/src/Badger/Library.js~Library)\nobject that the workspace used to load Javascript libraries.\n\n```js\nconst workspace = new Workspace(\n  '/path/to/workspace',\n  {\n    library: {\n        dir:   'lib',\n        jsExt: 'js',\n    }\n  }\n)\n```\n",
+    "content": "# Workspace\n\nThe [Workspace](class/src/Badger/Workspace.js~Workspace) module provides a\nconvenient \"hub\" for accessing directories, files, configuration files,\nlibraries and other resources for your project.\n\n- [Workspace Directory](#workspace-directory)\n- [Directories](#directories)\n- [Files](#files)\n- [Configuration Files](#configuration-files)\n- [Javscript Libraries](#javascript-libraries)\n- [Configuration Options](#configuration-options)\n\n## Workspace Directory\n\nCreate a new Workspace object and provide it with the workspace directory.\nThis is usually the top-level directory of your project.\n\n```js\nimport { Workspace } from '@abw/badger'\n\nconst workspace = new Workspace('/path/to/project')\n```\n\nYou can specify an absolute directory path, the path of a directory relative to\nyour current location, or a [Directory](class/src/Badger/Directory.js~Directory)\ndirectory object.  The [bin](function#static-function-bin) function can be used to\ndetermine the directory in which a script is located.\n\nFor example, if you have a `bin/myscript.js` file, you can create a workspace\nfor the parent directory like so:\n\n```js\nimport { bin, Workspace } from '@abw/badger'\n\nconst workspace = new Workspace(\n  bin(import.meta.url).parent()\n)\n```\n\n## Directories\n\nThe [dir()](class/src/Badger.js~Workspace#instance-method-dir) method is a shortcut\nto fetch a [Directory](class/src/Badger/Filesystem/Directory.js~Directory) object for any\ndirectory relative to the workspace directory.\n\n```js\nconst tmpdir = workspace.dir('tmp');\n```\n\n## Files\n\nThe [file()](class/src/Badger.js~Workspace#instance-method-file) method is a shortcut\nto fetch a [File](class/src/Badger/Filesystem/File.js~File) object for any\nfile relative to the workspace directory.\n\n```js\nconst wibble = workspace.file('tmp/wibble.log');\n```\n\n## Configuration Files\n\nThe [config()](class/src/Badger.js~Workspace#instance-method-config) method is a shortcut\nto load data from a configuration file using the [Config](class/src/Badger/Config.js~Config)\nmodule.\n\nThe default location for configuration files is the `config` directory relative to the workspace\ndirectory.  See [configuration options](#config-options) below for details on how to change this.\n\n```js\nworkspace.config('animals').then(\n  data => console.log(\"Data from the config/animals(.js|.mjs|.yaml|.json) file\", data)\n)\n```\n\n## Javascript Libraries\n\nThe [library()](class/src/Badger.js~Workspace#instance-method-library) method is a shortcut\nto load a Javascript library from one of the library directories using the\n[Library](class/src/Badger/Library.js~Library) module.\n\nThe default search path for libary files is any of the `lib`, `library`, `src` or `components`\ndirectories relative to the workspace directory.  See [configuration options](#config-options)\nbelow for details on how to change this.\n\n```js\nworkspace.config('animals').then(\n  data => console.log(\"Data from the config/animals(.js|.mjs|.yaml|.json) file\", data)\n)\n```\n\n## Javascript Components\n\nThe [component(uri, props)](class/src/Badger.js~Workspace#instance-method-component) method can\nbe called to create a new component object.  The `uri` argument should be the base name of the\ncomponent.\n\nIf there is a configuration file matching the `uri` in the configuration directory\nthen it will be loaded (via the\n[config(uri)](class/src/Badger.js~Workspace#instance-method-config) method) and used as\nthe default configuration for the object.  The optional `props` can be defined\nto refine this configuration.\n\nThe corresponding library file will then be loaded from the library directory\n(via the [library(uri)](class/src/Badger.js~Workspace#instance-method-library) method).\nThis should have a default export which is the component class, implemented as a subclass\nof the [Component](class/src/Badger/Component.js~Component) base class.\n\nAn instance of the component class is then instantiated, passing a reference to the\nworkspace and the configuration options.\n\n```js\nworkspace.component('Hello').then(\n  hello => console.log('loaded hello component: ', hello)\n)\n```\n\nThe above example is roughly equivalent to:\n\n```js\nworkspace.config('Hello').then(\n  config => workspace.library('Hello')\n    .then( library => new library.default(workspace, config) )\n    .then( hello => console.log('loaded Hello component: ', hello) )\n)\n```\n\n## Configuration Options\n\nThe `config` option can be provided to configure the [Config](class/src/Badger/Config.js~Config)\nobject that the workspace used to load configuration files.\n\n```js\nconst workspace = new Workspace(\n  '/path/to/workspace',\n  {\n    config: {\n        dir:   'cfg',\n        codec: 'json',\n        jsExt: 'js',\n    }\n  }\n)\n```\n\nThe `library` option can be provided to configure the [Library](class/src/Badger/Library.js~Library)\nobject that the workspace used to load Javascript libraries.\n\n```js\nconst workspace = new Workspace(\n  '/path/to/workspace',\n  {\n    library: {\n        dir:   'lib',\n        jsExt: 'js',\n    }\n  }\n)\n```\n",
     "static": true,
     "access": "public"
   }

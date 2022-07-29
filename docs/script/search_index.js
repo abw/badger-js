@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~ansiescape",
+    "function/index.html#static-function-ANSIescape",
+    "<span>ANSIescape</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~ansiescapecode",
     "function/index.html#static-function-ANSIescapeCode",
     "<span>ANSIescapeCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -21,6 +27,18 @@ window.esdocSearchIndex = [
     "@abw/badger~ansiescapecode",
     "function/index.html#static-function-ANSIescapeCode",
     "<span>ANSIescapeCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~ansiescapecode",
+    "function/index.html#static-function-ANSIescapeCode",
+    "<span>ANSIescapeCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~ansireset",
+    "function/index.html#static-function-ANSIreset",
+    "<span>ANSIreset</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -58,6 +76,12 @@ window.esdocSearchIndex = [
     "class/src/Badger.js~Config.html",
     "<span>Config</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "class"
+  ],
+  [
+    "@abw/badger~debugger",
+    "function/index.html#static-function-Debugger",
+    "<span>Debugger</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
   ],
   [
     "@abw/badger~debugger",
@@ -150,6 +174,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~adddebug",
+    "function/index.html#static-function-addDebug",
+    "<span>addDebug</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~allparams",
+    "variable/index.html#static-variable-allParams",
+    "<span>allParams</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
     "@abw/badger~allparams",
     "variable/index.html#static-variable-allParams",
     "<span>allParams</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -174,6 +210,30 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~anyparams",
+    "function/index.html#static-function-anyParams",
+    "<span>anyParams</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~args",
+    "function/index.html#static-function-args",
+    "<span>args</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~args",
+    "function/index.html#static-function-args",
+    "<span>args</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~args",
+    "function/index.html#static-function-args",
+    "<span>args</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~bin",
     "function/index.html#static-function-bin",
     "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -183,6 +243,12 @@ window.esdocSearchIndex = [
     "@abw/badger~bin",
     "function/index.html#static-function-bin",
     "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~capitalise",
+    "function/index.html#static-function-capitalise",
+    "<span>capitalise</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -222,6 +288,24 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger~color",
+    "function/index.html#static-function-color",
+    "<span>color</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~color",
+    "function/index.html#static-function-color",
+    "<span>color</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~color",
+    "function/index.html#static-function-color",
+    "<span>color</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~config",
     "function/index.html#static-function-config",
     "<span>config</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -231,6 +315,24 @@ window.esdocSearchIndex = [
     "@abw/badger~config",
     "function/index.html#static-function-config",
     "<span>config</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~confirm",
+    "function/index.html#static-function-confirm",
+    "<span>confirm</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~confirm",
+    "function/index.html#static-function-confirm",
+    "<span>confirm</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~confirm",
+    "function/index.html#static-function-confirm",
+    "<span>confirm</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -243,6 +345,12 @@ window.esdocSearchIndex = [
     "@abw/badger~cwd",
     "function/index.html#static-function-cwd",
     "<span>cwd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~datapath",
+    "function/index.html#static-function-dataPath",
+    "<span>dataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -282,6 +390,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~donothing",
+    "function/index.html#static-function-doNothing",
+    "<span>doNothing</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~fail",
+    "function/index.html#static-function-fail",
+    "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~fail",
     "function/index.html#static-function-fail",
     "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -318,6 +438,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~hasvalue",
+    "function/index.html#static-function-hasValue",
+    "<span>hasValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~havevalue",
     "function/index.html#static-function-haveValue",
     "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -327,6 +453,18 @@ window.esdocSearchIndex = [
     "@abw/badger~havevalue",
     "function/index.html#static-function-haveValue",
     "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~havevalue",
+    "function/index.html#static-function-haveValue",
+    "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isarray",
+    "function/index.html#static-function-isArray",
+    "<span>isArray</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -354,6 +492,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~isfunction",
+    "function/index.html#static-function-isFunction",
+    "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~isnull",
     "function/index.html#static-function-isNull",
     "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -363,6 +507,18 @@ window.esdocSearchIndex = [
     "@abw/badger~isnull",
     "function/index.html#static-function-isNull",
     "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isnull",
+    "function/index.html#static-function-isNull",
+    "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isobject",
+    "function/index.html#static-function-isObject",
+    "<span>isObject</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -390,6 +546,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~isstring",
+    "function/index.html#static-function-isString",
+    "<span>isString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isundefined",
+    "function/index.html#static-function-isUndefined",
+    "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~isundefined",
     "function/index.html#static-function-isUndefined",
     "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -414,6 +582,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~joinlist",
+    "function/index.html#static-function-joinList",
+    "<span>joinList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~joinlistand",
     "function/index.html#static-function-joinListAnd",
     "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -423,6 +597,18 @@ window.esdocSearchIndex = [
     "@abw/badger~joinlistand",
     "function/index.html#static-function-joinListAnd",
     "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~joinlistand",
+    "function/index.html#static-function-joinListAnd",
+    "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~joinlistor",
+    "function/index.html#static-function-joinListOr",
+    "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -468,6 +654,18 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~matchdoublequotedstring",
+    "function/index.html#static-function-matchDoubleQuotedString",
+    "<span>matchDoubleQuotedString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~matchsinglequotedstring",
+    "function/index.html#static-function-matchSingleQuotedString",
+    "<span>matchSingleQuotedString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~matchsinglequotedstring",
     "function/index.html#static-function-matchSingleQuotedString",
     "<span>matchSingleQuotedString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -489,6 +687,54 @@ window.esdocSearchIndex = [
     "@abw/badger~novalue",
     "function/index.html#static-function-noValue",
     "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~novalue",
+    "function/index.html#static-function-noValue",
+    "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~options",
+    "function/index.html#static-function-options",
+    "<span>options</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~options",
+    "function/index.html#static-function-options",
+    "<span>options</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~options",
+    "function/index.html#static-function-options",
+    "<span>options</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~prompt",
+    "function/index.html#static-function-prompt",
+    "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~prompt",
+    "function/index.html#static-function-prompt",
+    "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~prompt",
+    "function/index.html#static-function-prompt",
+    "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~requiredparam",
+    "function/index.html#static-function-requiredParam",
+    "<span>requiredParam</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -516,6 +762,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~requiredparams",
+    "function/index.html#static-function-requiredParams",
+    "<span>requiredParams</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~rethrow",
     "function/index.html#static-function-rethrow",
     "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -525,6 +777,18 @@ window.esdocSearchIndex = [
     "@abw/badger~rethrow",
     "function/index.html#static-function-rethrow",
     "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~rethrow",
+    "function/index.html#static-function-rethrow",
+    "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~snaketocamel",
+    "function/index.html#static-function-snakeToCamel",
+    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -552,6 +816,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~snaketostudly",
+    "function/index.html#static-function-snakeToStudly",
+    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~splitdatapath",
     "function/index.html#static-function-splitDataPath",
     "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -561,6 +831,18 @@ window.esdocSearchIndex = [
     "@abw/badger~splitdatapath",
     "function/index.html#static-function-splitDataPath",
     "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~splitdatapath",
+    "function/index.html#static-function-splitDataPath",
+    "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~splitlist",
+    "function/index.html#static-function-splitList",
+    "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -1500,15 +1782,33 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/utils/options.js",
+    "file/src/Badger/Utils/Options.js.html",
+    "src/Badger/Utils/Options.js",
+    "file"
+  ],
+  [
     "src/badger/utils/params.js",
     "file/src/Badger/Utils/Params.js.html",
     "src/Badger/Utils/Params.js",
     "file"
   ],
   [
+    "src/badger/utils/prompt.js",
+    "file/src/Badger/Utils/Prompt.js.html",
+    "src/Badger/Utils/Prompt.js",
+    "file"
+  ],
+  [
     "src/badger/utils/text.js",
     "file/src/Badger/Utils/Text.js.html",
     "src/Badger/Utils/Text.js",
+    "file"
+  ],
+  [
+    "src/badger/utils/index.js",
+    "file/src/Badger/Utils/index.js.html",
+    "src/Badger/Utils/index.js",
     "file"
   ],
   [
