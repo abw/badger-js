@@ -42,6 +42,10 @@ export const options = async config => {
       const pattern = option.pattern || (hasValue(type) && `<${type}>`);
       let string    = `--${name}`;
       let args      = [];
+      if (hasValue(option.arg) && ! option.arg) {
+        // allow arg: false to indicate no command line argument
+        return;
+      }
       if (hasValue(short)) {
         string = `-${short}, ${string}`;
       }
@@ -55,12 +59,7 @@ export const options = async config => {
       if (hasValue(deflt)) {
         args.push(deflt);
       }
-      //if (option.required) {
-      //  command.requiredOption(...args)
-      //}
-      //else {
       command.option(...args)
-      // }
     }
   )
 
@@ -84,6 +83,7 @@ export const options = async config => {
       const type     = option.type || 'text';
       const name     = option.name;
       const prompt   = option.prompt;
+      const noArg    = hasValue(option.arg) && ! option.arg;
       const validate = option.validate ||
         (option.required
           ? value => (hasValue(value) && value.length)
@@ -91,13 +91,30 @@ export const options = async config => {
             : (options.invalid || `You must enter a value for ${name}`)
           : undefined
         )
+
+      // special process for initial
+      // - use cmdline[name]
+      // - or if noArg, use option.default
+      // - if a select list and not a number, find the index
+      let initial = noArg ? option.default : cmdline[name];
+      if (type === 'select' && hasValue(initial)) {
+        if (! Number.isInteger(initial)) {
+          console.log('looking up select option for [%s]', initial);
+          initial = option.choices?.findIndex( i => i.value === initial );
+          if (initial < 0) {
+            initial = 0;
+          }
+        }
+      }
+
       if (hasValue(prompt)) {
         prompts.push(
           {
+            ...option,
             type,
             name,
             message: prompt,
-            initial: cmdline[name],
+            initial: initial,
             validate: validate,
           },
         )
