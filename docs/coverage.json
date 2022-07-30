@@ -1,6 +1,6 @@
 {
-  "coverage": "66.96%",
-  "expectCount": 221,
+  "coverage": "65.48%",
+  "expectCount": 226,
   "actualCount": 148,
   "files": {
     "src/Badger/Codecs/Json.js": {
@@ -88,11 +88,13 @@
       "undocumentLines": []
     },
     "src/Badger/Utils/Options.js": {
-      "expectCount": 2,
+      "expectCount": 4,
       "actualCount": 0,
       "undocumentLines": [
         7,
-        11
+        18,
+        174,
+        191
       ]
     },
     "src/Badger/Utils/Params.js": {
@@ -119,7 +121,7 @@
       ]
     },
     "src/Badger.js": {
-      "expectCount": 100,
+      "expectCount": 103,
       "actualCount": 41,
       "undocumentLines": [
         3,
@@ -164,7 +166,10 @@
         100,
         107,
         117,
-        11,
+        7,
+        18,
+        174,
+        191,
         13,
         32,
         39,

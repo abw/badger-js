@@ -162,6 +162,18 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger~answer",
+    "function/index.html#static-function-answer",
+    "<span>answer</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~answer",
+    "function/index.html#static-function-answer",
+    "<span>answer</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~anyparams",
     "function/index.html#static-function-anyParams",
     "<span>anyParams</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -292,6 +304,18 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-dataPath",
     "<span>dataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
+  ],
+  [
+    "@abw/badger~defaults",
+    "variable/index.html#static-variable-defaults",
+    "<span>defaults</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~defaults",
+    "variable/index.html#static-variable-defaults",
+    "<span>defaults</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
   ],
   [
     "@abw/badger~dir",
@@ -585,6 +609,18 @@ window.esdocSearchIndex = [
     "@abw/badger~rethrow",
     "function/index.html#static-function-rethrow",
     "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~section",
+    "function/index.html#static-function-section",
+    "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~section",
+    "function/index.html#static-function-section",
+    "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [

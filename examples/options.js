@@ -9,7 +9,12 @@ const main = async () => {
     version: '0.0.1',
     yes: true,
     verbose: true,
+    quiet: true,
     options: [
+      {
+        title: "Configuration Options",
+        info:  "Please answer the following questions.\nPress RETURN to accept defaults."
+      },
       {
         name:     'name',
         short:    'n',
@@ -25,6 +30,36 @@ const main = async () => {
         pattern:  '<number>',
         prompt:   'How old are you?',
         required: true
+      },
+      {
+        title: "Database Configuration",
+        info: "Please enter details about the database configuration.",
+      },
+      {
+        name:     'database',
+        short:    'd',
+        about:    'Database',
+        type:     'text',
+        prompt:   'What is the name of the database?',
+        required: true,
+      },
+      {
+        name:     'username',
+        short:    'u',
+        about:    'Username',
+        type:     'text',
+        prompt:   'What is the database username?',
+      },
+      {
+        name:     'password',
+        short:    'p',
+        about:    'Password',
+        type:     'password',
+        prompt:   'What is the database password?',
+      },
+      {
+        title: "More Questions",
+        info: "We are going to ask you some more questions now",
       },
       {
         arg:      false,
@@ -54,5 +89,4 @@ const main = async () => {
   });
   console.log('config: ', config);
 }
-
 main();
