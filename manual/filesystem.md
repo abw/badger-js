@@ -17,16 +17,29 @@ from a different directory.
 Let's assume that the script is `bin/hello.js` and you want
 to read the contents of the file in `data/hello.txt`.
 
-The [bin](function#static-function-bin) function accepts
-the URL of the source file which you can get from `import.meta.url`
-and returns an object representing the directory that it's in.  Note
-that this will always be the same directory regardless of where you
-run the script from.
+The [bin](function#static-function-bin) function returns a
+[Directory](class/src/Badger/Filesystem/Directory.js~Directory)
+representing the directory of the script you're running (`process.argv[1]`).
+This is useful when you want to access files relative to the script
+location, regardless of where you run the script from.  The function
+is so named because the traditional location for executable files in
+Unix systems is the `bin` directory.
 
 ```js
 import { bin } from '@abw/badger'
 
-// current directory where this script is located
+// current directory where the main execution script is located
+const thisDir = bin();
+```
+
+You can also use it to access the directory of the current source file,
+even if it's not the main script you're running.  In this case pass
+`import.meta.url` as an argument.
+
+```js
+import { bin } from '@abw/badger'
+
+// current directory where the current source file is located
 const thisDir = bin(import.meta.url);
 ```
 
