@@ -10,6 +10,15 @@ export function isString(value) {
 }
 
 /**
+ * Determines if a value is an Integer
+ * @param {Integer} value - value to test
+ * @return {Boolean} true if `value` is a string or false if not
+ */
+export function isInteger(value) {
+  return Number.isInteger(value);
+}
+
+/**
  * Determines if a value is an array
  * @param {Array} value - value to test
  * @return {Boolean} true if `value` is an Array or false if not
