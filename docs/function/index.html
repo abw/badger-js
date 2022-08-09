@@ -97,6 +97,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinTime">joinTime</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-joinTimestamp">joinTimestamp</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDate">parseDate</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-parseDuration">parseDuration</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-singularDurations">singularDurations</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-splitTimestamp">splitTimestamp</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-timestamp">timestamp</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-unpackDate">unpackDate</a></span></span></li>
@@ -2460,6 +2462,35 @@ i.e.</p>
       <div>
         <p>
           
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-parseDuration">parseDuration</a></span></span><span class="code" data-ice="signature">(duration: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Function to parse a duration string, e.g.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
           <span data-ice="async">async</span>
           
           <span class="code" data-ice="name"><span><a href="function/index.html#static-function-prompt">prompt</a></span></span><span class="code" data-ice="signature">(question: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, options: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></span></span>
@@ -2725,6 +2756,35 @@ i.e.</p>
         
         
         
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="function/index.html#static-function-singularDurations">singularDurations</a></span></span><span class="code" data-ice="signature">(duration: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Function to convert an object containing any plural duration units (e.g.</p>
+</div>
       </div>
     </td>
     <td>
@@ -6645,11 +6705,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber408">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber142">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber408">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to determine is a valid is a <code>Date</code> object</p>
@@ -7444,11 +7504,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber115">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber381">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber115">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {isTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber381">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to determine is a string is a valid timestamp.</p>
@@ -7663,11 +7723,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber210">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber510">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber210">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber510">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to join the constituent parts of a date</p>
@@ -8320,11 +8380,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber226">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber526">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinTime} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber226">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinTime} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber526">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to join the constituent parts of a time into a string</p>
@@ -8423,11 +8483,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber189">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber489">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber189">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {joinTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber489">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to join the constituent parts of a time stamp into a string</p>
@@ -9299,11 +9359,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber157">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber423">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber157">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber423">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to return an object containing the constituent timestamp parts for a date/time.</p>
@@ -9338,6 +9398,82 @@ i.e. removing the node path and script name.</p>
         <tr>
           <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
           <td class="return-desc" data-ice="returnDescription"><p>object containing <code>year</code>, <code>month</code>, <code>day</code>, <code>hours</code>, <code>minutes</code> and <code>seconds</code>.</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-parseDuration">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">parseDuration</span><span class="code" data-ice="signature">(duration: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber447">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {parseDuration} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber447">@abw/badger</a></span>'</code></pre></div>
+  
+  
+  <div data-ice="description"><p>Function to parse a duration string, e.g. <code>1 hour 3 minutes</code>.
+Quantities must be integers. Units can be singular (e.g. <code>hour</code>) or plural (e.g. <code>hours</code>).
+Other characters may appear between sections, e.g. <code>1 hour, 2 minutes and 3 seconds</code>.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">duration</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>duration string</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>object containing any of <code>year</code>, <code>month</code>, <code>day</code>, <code>hour</code>, <code>minute</code> and <code>second</code>.</p>
 </td>
         </tr>
       </tbody>
@@ -10146,6 +10282,80 @@ i.e. removing the node path and script name.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-function-singularDurations">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">singularDurations</span><span class="code" data-ice="signature">(duration: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber464">source</a></span></span>
+    </span>
+  </h3>
+
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {singularDurations} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber464">@abw/badger</a></span>'</code></pre></div>
+  
+  
+  <div data-ice="description"><p>Function to convert an object containing any plural duration units (e.g. <code>hours</code>) to the singular counterpart (e.g. <code>hour</code>).</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">duration</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>object containing duration elements, either plural or singluar.</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type code" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>object containing any of <code>year</code>, <code>month</code>, <code>day</code>, <code>hour</code>, <code>minute</code> and <code>second</code>.</p>
+</td>
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-function-snakeToCamel">
     <span class="access" data-ice="access">public</span>
     
@@ -10773,11 +10983,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber123">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber389">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {splitTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber123">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {splitTimestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber389">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to split a timestamp into its constituent parts</p>
@@ -10847,11 +11057,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber242">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber571">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {timestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber242">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {timestamp} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber571">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to create a new <code>Timestamp</code> object</p>
@@ -10952,11 +11162,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber165">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber431">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unpackDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber165">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unpackDate} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber431">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to return an object containing the constituent timestamp parts for a <code>Date</code> object</p>
@@ -11026,11 +11236,11 @@ i.e. removing the node path and script name.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber149">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/Badger/Timestamp.js.html#lineNumber415">source</a></span></span>
     </span>
   </h3>
 
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unpackNow} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber149">@abw/badger</a></span>'</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {unpackNow} from '<span><a href="file/src/Badger/Timestamp.js.html#lineNumber415">@abw/badger</a></span>'</code></pre></div>
   
   
   <div data-ice="description"><p>Function to return an object containing the constituent timestamp parts for the current time.</p>

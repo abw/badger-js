@@ -3101,7 +3101,7 @@
     "__docId__": 124,
     "kind": "file",
     "name": "src/Badger/Timestamp.js",
-    "content": "import { addDebug } from \"./Utils/Debug.js\";\nimport { fail, hasValue, isInteger, isObject, isString, noValue } from \"./Utils/Misc.js\";\n\nconst MATCH_DATE  = '(\\\\d{4})\\\\D(\\\\d{1,2})\\\\D(\\\\d{1,2})';\nconst MATCH_TIME  = '(\\\\d{1,2})\\\\D(\\\\d{2})\\\\D(\\\\d{2})';\nconst MATCH_STAMP = `^\\\\s*${MATCH_DATE}(?:(?:T|\\\\s)${MATCH_TIME})?`;\nconst STAMP_REGEX = new RegExp(MATCH_STAMP);\nconst STAMP_PARTS = [undefined, 'year', 'month', 'day', 'hours', 'minutes', 'seconds'];\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  joint:     ' ',\n  dateJoint: '-',\n  timeJoint: ':',\n}\n\n/**\n * The Timestamp class implements an object for parsing and manipulating\n * ISO8601 timestamps.  It is a very simple implementation that is intended\n * to be lightweight alternative to more feature-rich packages like\n * moment, luxon, dayjs, etc.  The primary goal is to be able to convert\n * between database timestamps and human-readable strings, and to allow\n * simple date adjustments, e.g. + 1 year, + 3 months, etc.  It is implemented\n * as a thin wrapper around the native JS Date object.\n */\nexport class Timestamp {\n  /**\n   * Constructor for Timestamp object.\n   * @param {String|Integer|Date|Object} [ts] - timestamp\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.joint=' '] - joining character between date and time parts\n   * @param {String} [options.dateJoint='-'] - joining character for date segments\n   * @param {String} [options.timeJoint=':'] - joining character for time segments\n   */\n  constructor(ts, options) {\n    const props = { ...defaults, ...options };\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n\n    this.props = props;\n\n    if (noValue(ts)) {\n      // use current time if no argument provided\n      this.parts = unpackNow()\n    }\n    else if (isTimestamp(ts)) {\n      // split timestamp string\n      this.parts = splitTimestamp(ts)\n    }\n    else if (isString(ts)) {\n      // parse another date string\n      this.parts = parseDate(ts)\n    }\n    else if (isDate(ts)) {\n      // unpack a Date object\n      this.parts = unpackDate(ts)\n    }\n    else if (isInteger(ts)) {\n      // milliseconds since the epoch\n      this.parts = parseDate(ts)\n    }\n    else if (isObject(ts)) {\n      if (hasValue(ts.unix)) {\n        // seconds since unix epoch time, multiply by 1000 to get JS milliseconds\n        this.parts = parseDate(ts.unix * 1000);\n      }\n      else if (hasValue(ts.ms)) {\n        // milliseconds since unix epoch time\n        this.parts = parseDate(ts.ms);\n      }\n      else {\n        // object containing year, month, day, etc.\n        this.parts = ts\n      }\n    }\n    else {\n      fail(\"Invalid timestamp: \", ts)\n    }\n  }\n  /**\n   * Method to return a formatted date string in the form `YYYY-MM-DD`.\n   * @param {String} [joint='-'] - optional joining character\n   * @return {String} - formatted date string\n   */\n  date(joint=this.props.dateJoint) {\n    return joinDate(this.parts, joint)\n  }\n  /**\n   * Method to return a formatted time string in the form `HH:MM:SS`.\n   * @param {String} [joint=':''] - optional joining character\n   * @return {String} - formatted time string\n   */\n  time(joint=this.props.timeJoint) {\n    return joinTime(this.parts, joint)\n  }\n  /**\n   * Method to return a formatted timestamp string in the form `YYYY-MM-DD HH:MM:SS`.\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.joint=' '] - joining character between date and time parts\n   * @param {String} [options.dateJoint='-'] - joining character for date segments\n   * @param {String} [options.timeJoint=':'] - joining character for time segments\n   * @return {String} - formatted date/time stamp\n   */\n  stamp(options={}) {\n    return joinTimestamp(this.parts, { ...this.props, ...options })\n  }\n}\n\n/**\n * Function to determine is a string is a valid timestamp.\n * @param {String} ts - timestamp string\n * @return {Boolean} - value indicating if the string is a timestamp\n */\nexport const isTimestamp = ts =>\n  isString(ts) && ts.match(STAMP_REGEX);\n\n/**\n * Function to split a timestamp into its constituent parts\n * @param {String} ts - timestamp string\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const splitTimestamp = ts => {\n  const match = ts.match(STAMP_REGEX) || fail(\"Invalid timestamp: \", ts);\n  let result = { };\n  STAMP_PARTS.forEach(\n    (part, n) => {\n      if (part && match[n]) {\n        result[part] = parseInt(match[n]);\n      }\n    }\n  );\n  // console.log('%s => ', ts, result);\n  return result;\n}\n\n/**\n * Function to determine is a valid is a `Date` object\n * @param {Date} date - date object or other value\n * @return {Boolean} - value indicating if the `date` is a `Date` object\n */\nexport const isDate = date =>\n  date instanceof Date;\n\n/**\n * Function to return an object containing the constituent timestamp parts for the current time.\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const unpackNow = () =>\n  unpackDate(new Date());\n\n/**\n * Function to return an object containing the constituent timestamp parts for a date/time.\n * @param {Date} date - date object or string that can be parsed by `Date.parse()`\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const parseDate = (date) =>\n  unpackDate(new Date(date));\n\n/**\n * Function to return an object containing the constituent timestamp parts for a `Date` object\n * @param {Date} date - date object\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const unpackDate = date => ({\n  year:    date.getFullYear(),\n  month:   date.getMonth() + 1,\n  day:     date.getDate(),\n  hours:   date.getHours(),\n  minutes: date.getMinutes(),\n  seconds: date.getSeconds(),\n})\n\n/**\n * Function to join the constituent parts of a time stamp into a string\n * @param {Object} ts - object containing `year`, `month`, `day`, and optionally, `hours`, `minutes` and `seconds`.\n * @param {String} ts.year - the year as an integer\n * @param {String} ts.month - the month as an integer from 1 to 12\n * @param {String} ts.day - the month as an integer\n * @param {String} ts.[hours] - the hours as an integer from 0 to 23\n * @param {String} ts.[minutes] - the minutes as an integer from 0 to 59\n * @param {String} ts.[seconds] - the seconds as an integer from 0 to 59\n * @param {String} [config] - optional configuration options\n * @param {String} [config.joint=' '] - joining character between date and time parts\n * @param {String} [config.dateJoint='-'] - joining character for date segments\n * @param {String} [config.timeJoint=':'] - joining character for time segments\n * @return {String} - timestamp string of the form `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`\n */\nexport const joinTimestamp = (ts, config={}) => {\n  const date = joinDate(ts, config.dateJoint);\n\n  if (hasValue(ts.hours)) {\n    const time = joinTime(ts, config.timeJoint);\n    return [date, time].join(hasValue(config.joint) ? config.joint : defaults.joint);\n  }\n  else {\n    return date;\n  }\n}\n\n/**\n * Function to join the constituent parts of a date\n * @param {Object} ts - object containing `year`, `month`, `day`\n * @param {String} ts.year - the year as an integer\n * @param {String} ts.month - the month as an integer from 1 to 12\n * @param {String} ts.day - the month as an integer\n * @param {String} [joint='-'] - optional joining character for date segments\n * @return {String} - date string of the form `YYYY-MM-DD`\n */\nexport const joinDate = (ts, joint=defaults.dateJoint) =>\n  [\n    String(ts.year).padStart(4, '0'),\n    String(ts.month).padStart(2, '0'),\n    String(ts.day).padStart(2, '0'),\n  ].join(joint)\n\n/**\n * Function to join the constituent parts of a time into a string\n * @param {Object} ts - object containing `hours`, `minutes` and `seconds`.\n * @param {String} ts.hours - the hours as an integer from 0 to 23\n * @param {String} ts.minutes - the minutes as an integer from 0 to 59\n * @param {String} ts.seconds - the seconds as an integer from 0 to 59\n * @param {String} [joint=':'] - optional joining character for time segments\n * @return {String} - time string of the form `HH:MM:SS`\n */\nexport const joinTime = (ts, joint=defaults.timeJoint) =>\n  [\n    String(ts.hours).padStart(2, '0'),\n    String(ts.minutes).padStart(2, '0'),\n    String(ts.seconds).padStart(2, '0'),\n  ].join(joint)\n\n/**\n * Function to create a new `Timestamp` object\n * @param {String|Integer|Date|Object} [ts] - timestamp\n * @param {Object} [options] - configuration options\n * @param {String} [options.joint=' '] - joining character between date and time parts\n * @param {String} [options.dateJoint='-'] - joining character for date segments\n * @param {String} [options.timeJoint=':'] - joining character for time segments\n * @return {Object} - a `Timestamp` object\n */\nexport const timestamp = (ts, options) => new Timestamp(ts, options)",
+    "content": "import { addDebug } from \"./Utils/Debug.js\";\nimport { fail, hasValue, isInteger, isObject, isString, noValue } from \"./Utils/Misc.js\";\n\nconst MATCH_DATE  = '(\\\\d{4})\\\\D(\\\\d{1,2})\\\\D(\\\\d{1,2})';\nconst MATCH_TIME  = '(\\\\d{1,2})\\\\D(\\\\d{2})\\\\D(\\\\d{2})';\nconst MATCH_STAMP = `^\\\\s*${MATCH_DATE}(?:(?:T|\\\\s)${MATCH_TIME})?`;\nconst STAMP_REGEX = new RegExp(MATCH_STAMP);\nconst STAMP_PARTS = [undefined, 'year', 'month', 'day', 'hours', 'minutes', 'seconds'];\nconst DURATIONS   = ['year', 'month', 'day', 'hour', 'minute', 'second'];\nconst PLURALS     = { hour: 'hours', minute: 'minutes', second: 'seconds' };\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  joint:     ' ',\n  dateJoint: '-',\n  timeJoint: ':',\n}\n\n/**\n * The Timestamp class implements an object for parsing and manipulating\n * ISO8601 timestamps.  It is a very simple implementation that is intended\n * to be lightweight alternative to more feature-rich packages like\n * moment, luxon, dayjs, etc.  The primary goal is to be able to convert\n * between database timestamps and human-readable strings, and to allow\n * simple date adjustments, e.g. + 1 year, + 3 months, etc.  It is implemented\n * as a thin wrapper around the native JS Date object.\n */\nexport class Timestamp {\n  /**\n   * Constructor for Timestamp object.\n   * @param {String|Integer|Date|Object} [ts] - timestamp\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.joint=' '] - joining character between date and time parts\n   * @param {String} [options.dateJoint='-'] - joining character for date segments\n   * @param {String} [options.timeJoint=':'] - joining character for time segments\n   */\n  constructor(ts, options) {\n    const props = { ...defaults, ...options };\n    addDebug(this, props.debug, props.debugPrefix, props.debugColor);\n\n    this.props = props;\n\n    if (noValue(ts)) {\n      // use current time if no argument provided\n      this.parts = unpackNow()\n    }\n    else if (ts instanceof Timestamp) {\n      // copy constructor\n      this.parts = { ...ts.parts };\n    }\n    else if (isTimestamp(ts)) {\n      // split timestamp string\n      this.parts = splitTimestamp(ts)\n    }\n    else if (isString(ts)) {\n      // parse another date string\n      this.parts = parseDate(ts)\n    }\n    else if (isDate(ts)) {\n      // unpack a Date object\n      this.parts = unpackDate(ts)\n    }\n    else if (isInteger(ts)) {\n      // milliseconds since the epoch\n      this.parts = parseDate(ts)\n    }\n    else if (isObject(ts)) {\n      if (hasValue(ts.unix)) {\n        // seconds since unix epoch time, multiply by 1000 to get JS milliseconds\n        this.parts = parseDate(ts.unix * 1000);\n      }\n      else if (hasValue(ts.ms)) {\n        // milliseconds since unix epoch time\n        this.parts = parseDate(ts.ms);\n      }\n      else {\n        // object containing year, month, day, etc.\n        this.parts = ts\n      }\n    }\n    else {\n      fail(\"Invalid timestamp: \", ts)\n    }\n  }\n  /**\n   * Method to return a new object as a copy of the current object\n   * @return {Object} - new `Timestamp` object\n   */\n  copy() {\n    return new Timestamp(this.parts);\n  }\n  /**\n   * Method to get or set the year.\n   * @param {Integer} [year] - optional new value for year\n   * @return {Integer} - the year\n   */\n  year(year) {\n    if (hasValue(year)) {\n      this.parts.year = year;\n    }\n    return this.parts.year;\n  }\n  /**\n   * Method to get or set the month.\n   * @param {Integer} [month] - optional new value for month\n   * @return {Integer} - the month\n   */\n  month(month) {\n    if (hasValue(month)) {\n      this.parts.month = month;\n    }\n    return this.parts.month;\n  }\n  /**\n   * Method to get or set the day.\n   * @param {Integer} [day] - optional new value for day\n   * @return {Integer} - the day\n   */\n  day(day) {\n    if (hasValue(day)) {\n      this.parts.day = day;\n    }\n    return this.parts.day;\n  }\n  /**\n   * Method to get or set the hours.\n   * @param {Integer} [hours] - optional new value for hours\n   * @return {Integer} - the hours\n   */\n  hours(hours) {\n    if (hasValue(hours)) {\n      this.parts.hours = hours;\n    }\n    return this.parts.hours;\n  }\n  /**\n   * Method to get or set the minutes.\n   * @param {Integer} [minutes] - optional new value for minutes\n   * @return {Integer} - the minutes\n   */\n  minutes(minutes) {\n    if (hasValue(minutes)) {\n      this.parts.minutes = minutes;\n    }\n    return this.parts.minutes;\n  }\n  /**\n   * Method to get or set the seconds.\n   * @param {Integer} [seconds] - optional new value for seconds\n   * @return {Integer} - the seconds\n   */\n  seconds(seconds) {\n    if (hasValue(seconds)) {\n      this.parts.seconds = seconds;\n    }\n    return this.parts.seconds;\n  }\n  /**\n   * Method to return a formatted date string in the form `YYYY-MM-DD`.\n   * @param {String} [joint='-'] - optional joining character\n   * @return {String} - formatted date string\n   */\n  date(joint=this.props.dateJoint) {\n    return joinDate(this.parts, joint)\n  }\n  /**\n   * Method to return a formatted time string in the form `HH:MM:SS`.\n   * @param {String} [joint=':''] - optional joining character\n   * @return {String} - formatted time string\n   */\n  time(joint=this.props.timeJoint) {\n    return joinTime(this.parts, joint)\n  }\n  /**\n   * Method to return a formatted timestamp string in the form `YYYY-MM-DD HH:MM:SS`.\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.joint=' '] - joining character between date and time parts\n   * @param {String} [options.dateJoint='-'] - joining character for date segments\n   * @param {String} [options.timeJoint=':'] - joining character for time segments\n   * @return {String} - formatted date/time stamp\n   */\n  stamp(options={}) {\n    return joinTimestamp(this.parts, { ...this.props, ...options })\n  }\n  /**\n   * Method to return a `Date` object\n   * @return {Date} - new date object\n   */\n  dateObject() {\n    return new Date(this.stamp({ joint: 'T', dateJoint: '-', timeJoint: ':' }));\n  }\n  /**\n   * Method to return the number of millseconds since the Unix epoch\n   * @return {Integer} - the number of milliseconds\n   */\n  milliseconds() {\n    return this.dateObject().getTime();\n  }\n  /**\n   * Method to return the number of seconds since the Unix epoch\n   * @return {Integer} - the number of seconds\n   */\n  epochSeconds() {\n    return Math.floor(this.milliseconds() / 1000);\n  }\n  /**\n   * Method to adjust the timestamp.  The duration can be specified as a string containing\n   * one or more items to adjust in either singular or plural form, e.g. `\"1 year, 1 month\"`,\n   * `\"2 years 2 months\"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,\n   * `{ years: 2, months: 2 }`, etc.\n   * @param {String|Object} duration - a string or object of adjustments\n   * @example\n   * ts.adjust(\"1 year 2 months 3 hours\")\n   * @example\n   * ts.adjust({ year: 1, months: 2, hours: 3 })\n   */\n  adjust(duration) {\n    let p = this.parts;\n    const d = isString(duration)\n      ? parseDuration(duration)         // parse string to object\n      : singularDurations(duration);    // convert plurals (e.g. \"hours\") to singular form (e.g. \"hour\")\n    DURATIONS.forEach(\n      unit => {\n        const value = d[unit];\n        if (hasValue(value)) {\n          // By convention we store date elements in singular (year, month, day) and time\n          // elements in plural (hours, minutes, seconds), but we convert all durations to\n          // singluar in parseDuration() and singularDuration() (because it's easier to drop\n          // an 's' from the end of plural than optionally add one.  Here we use the PLURALS\n          // lookup table to map singular hour, minute and second back to their plurals.\n          p[PLURALS[unit]||unit] += value;\n        }\n      }\n    );\n\n    // time underflow\n    while (p.seconds < 0) {\n      p.seconds += 60;\n      p.minutes--;\n    }\n    while (p.minutes < 0) {\n      p.minutes += 60;\n      p.hours--;\n    }\n    while (p.hours < 0) {\n      p.hours += 24;\n      p.day--;\n    }\n\n    // time overflow\n    if (p.seconds > 59) {\n      p.minutes += Math.floor(p.seconds / 60);\n      p.seconds %= 60;\n    }\n    if (p.minutes > 59) {\n      p.hours += Math.floor(p.minutes / 60);\n      p.minutes %= 60;\n    }\n    if (p.hours > 23) {\n      p.day += Math.floor(p.hours / 24);\n      p.hours %= 24;\n    }\n\n    // date underflow\n    while (p.day <= 0) {\n      p.month--;\n      if (p.month <= 0) {\n        p.month += 12;\n        p.year--;\n      }\n      p.day += daysInMonth(p.month, p.year);\n    }\n    while (p.month <= 0) {\n      p.month += 12;\n      p.year--;\n    }\n\n    // month overflow\n    while (p.month > 12) {\n      p.month -= 12;\n      p.year++;\n    }\n\n    // day overflow\n    let dim;\n    while (p.day > (dim = daysInMonth(p.month, p.year))) {\n      p.day -= dim;\n      if (p.month == 12) {\n        p.month = 1;\n        p.year++;\n      }\n      else {\n        p.month++;\n      }\n    }\n\n    return this;\n  }\n  /**\n   * Method to compare the timestamp to another.  The arguments can be any that are accepted\n   * by the constructor.\n   * one or more items to adjust in either singular or plural form, e.g. `\"1 year, 1 month\"`,\n   * `\"2 years 2 months\"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,\n   * `{ years: 2, months: 2 }`, etc.\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Integer} - -1 if the timestamp is before the comparator, 0 if it's equal, +1 if it's after.\n   */\n  compare(...args) {\n    const that  = new Timestamp(...args);\n    const thisp = this.parts;\n    const thatp = that.parts;\n    this.debug(\"this: \", thisp)\n    this.debug(\"that: \", thisp)\n\n    for (let p of STAMP_PARTS) {\n      if (p) {\n        if (thisp[p] < thatp[p]) {\n          this.debug(\"[%s] this[%s] < that[%s]\", p, thisp[p], thatp[p])\n          return -1;\n        }\n        else if (thisp[p] > thatp[p]) {\n          this.debug(\"[%s] this[%s] > that[%s]\", p, thisp[p], thatp[p])\n          return 1;\n        }\n        else {\n          this.debug(\"[%s] this[%s] = that[%s]\", p, thisp[p], thatp[p])\n        }\n      }\n    }\n    return 0;\n  }\n  /**\n   * Method to compare one timestamp to another for equality\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Boolean} - true if the timestamp is equal to the operand\n   */\n  equal(...args) {\n    return this.compare(...args) == 0;\n  }\n  /**\n   * Method to test for the timestamp coming before another timestamp\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Boolean} - true if the timestamp is before the operand\n   */\n  before(...args) {\n    return this.compare(...args) == -1;\n  }\n  /**\n   * Method to test for the timestamp coming after another timestamp\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Boolean} - true if the timestamp is after the operand\n   */\n  after(...args) {\n    return this.compare(...args) == 1;\n  }\n  /**\n   * Method to test for the timestamp being equal to or coming after another timestamp\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Boolean} - true if the timestamp is equal to or coming after the operand\n   */\n  notBefore(...args) {\n    return this.compare(...args) >= 0;\n  }\n  /**\n   * Method to test for the timestamp being equal to or coming before another timestamp\n   * @param {Array} args - any argument(s) accepted by the constructor\n   * @return {Boolean} - true if the timestamp is equal to or coming before the operand\n   */\n  notAfter(...args) {\n    return this.compare(...args) <= 0;\n  }\n}\n\n/**\n * Function to determine is a string is a valid timestamp.\n * @param {String} ts - timestamp string\n * @return {Boolean} - value indicating if the string is a timestamp\n */\nexport const isTimestamp = ts =>\n  isString(ts) && ts.match(STAMP_REGEX);\n\n/**\n * Function to split a timestamp into its constituent parts\n * @param {String} ts - timestamp string\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const splitTimestamp = ts => {\n  const match = ts.match(STAMP_REGEX) || fail(\"Invalid timestamp: \", ts);\n  let result = { };\n  STAMP_PARTS.forEach(\n    (part, n) => {\n      if (part && match[n]) {\n        result[part] = parseInt(match[n]);\n      }\n    }\n  );\n  // console.log('%s => ', ts, result);\n  return result;\n}\n\n/**\n * Function to determine is a valid is a `Date` object\n * @param {Date} date - date object or other value\n * @return {Boolean} - value indicating if the `date` is a `Date` object\n */\nexport const isDate = date =>\n  date instanceof Date;\n\n/**\n * Function to return an object containing the constituent timestamp parts for the current time.\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const unpackNow = () =>\n  unpackDate(new Date());\n\n/**\n * Function to return an object containing the constituent timestamp parts for a date/time.\n * @param {Date} date - date object or string that can be parsed by `Date.parse()`\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const parseDate = (date) =>\n  unpackDate(new Date(date));\n\n/**\n * Function to return an object containing the constituent timestamp parts for a `Date` object\n * @param {Date} date - date object\n * @return {Object} - object containing `year`, `month`, `day`, `hours`, `minutes` and `seconds`.\n */\nexport const unpackDate = date => ({\n  year:    date.getFullYear(),\n  month:   date.getMonth() + 1,\n  day:     date.getDate(),\n  hours:   date.getHours(),\n  minutes: date.getMinutes(),\n  seconds: date.getSeconds(),\n})\n\n/**\n * Function to parse a duration string, e.g. `1 hour 3 minutes`.\n * Quantities must be integers. Units can be singular (e.g. `hour`) or plural (e.g. `hours`).\n * Other characters may appear between sections, e.g. `1 hour, 2 minutes and 3 seconds`.\n * @param {Date} duration - duration string\n * @return {Object} - object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`.\n */\nexport const parseDuration = duration => {\n  const match = duration.matchAll(/(-?\\d+)\\s*(\\w+)/g);\n  let result = { };\n\n  for (let m of match) {\n    const n = parseInt(m[1]);           // convert quantity to integer\n    const d = m[2].replace(/s$/, '');   // convert plural to singular\n    result[d] = n;\n  }\n  return result;\n}\n\n/**\n * Function to convert an object containing any plural duration units (e.g. `hours`) to the singular counterpart (e.g. `hour`).\n * @param {Object} duration - object containing duration elements, either plural or singluar.\n * @return {Object} - object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`.\n */\nexport const singularDurations = duration => {\n  let result = { };\n  Object.entries(duration).forEach(\n    ([key, value]) => {\n      result[key.replace(/s$/, '')] = value;\n    }\n  )\n  return result;\n}\n\n/**\n * Function to join the constituent parts of a time stamp into a string\n * @param {Object} ts - object containing `year`, `month`, `day`, and optionally, `hours`, `minutes` and `seconds`.\n * @param {String} ts.year - the year as an integer\n * @param {String} ts.month - the month as an integer from 1 to 12\n * @param {String} ts.day - the month as an integer\n * @param {String} ts.[hours] - the hours as an integer from 0 to 23\n * @param {String} ts.[minutes] - the minutes as an integer from 0 to 59\n * @param {String} ts.[seconds] - the seconds as an integer from 0 to 59\n * @param {String} [config] - optional configuration options\n * @param {String} [config.joint=' '] - joining character between date and time parts\n * @param {String} [config.dateJoint='-'] - joining character for date segments\n * @param {String} [config.timeJoint=':'] - joining character for time segments\n * @return {String} - timestamp string of the form `YYYY-MM-DD` or `YYYY-MM-DD HH:MM:SS`\n */\nexport const joinTimestamp = (ts, config={}) => {\n  const date = joinDate(ts, config.dateJoint);\n\n  if (hasValue(ts.hours)) {\n    const time = joinTime(ts, config.timeJoint);\n    return [date, time].join(hasValue(config.joint) ? config.joint : defaults.joint);\n  }\n  else {\n    return date;\n  }\n}\n\n/**\n * Function to join the constituent parts of a date\n * @param {Object} ts - object containing `year`, `month`, `day`\n * @param {String} ts.year - the year as an integer\n * @param {String} ts.month - the month as an integer from 1 to 12\n * @param {String} ts.day - the month as an integer\n * @param {String} [joint='-'] - optional joining character for date segments\n * @return {String} - date string of the form `YYYY-MM-DD`\n */\nexport const joinDate = (ts, joint=defaults.dateJoint) =>\n  [\n    String(ts.year).padStart(4, '0'),\n    String(ts.month).padStart(2, '0'),\n    String(ts.day).padStart(2, '0'),\n  ].join(joint)\n\n/**\n * Function to join the constituent parts of a time into a string\n * @param {Object} ts - object containing `hours`, `minutes` and `seconds`.\n * @param {String} ts.hours - the hours as an integer from 0 to 23\n * @param {String} ts.minutes - the minutes as an integer from 0 to 59\n * @param {String} ts.seconds - the seconds as an integer from 0 to 59\n * @param {String} [joint=':'] - optional joining character for time segments\n * @return {String} - time string of the form `HH:MM:SS`\n */\nexport const joinTime = (ts, joint=defaults.timeJoint) =>\n  [\n    String(ts.hours).padStart(2, '0'),\n    String(ts.minutes).padStart(2, '0'),\n    String(ts.seconds).padStart(2, '0'),\n  ].join(joint)\n\n\nconst daysInMonth = (m, y) => {\n  if (m === 4 || m === 6 || m === 9 || m === 11) {\n    return 30;\n  }\n  else if (m == 2) {\n    return leapYear(y) ? 29 : 28;\n  }\n  else {\n    return 31;\n  }\n}\n\nconst leapYear = y => {\n  if (y % 4) {\n    return 0;\n  }\n  else if (y % 400 === 0) {\n    return 1;\n  }\n  else if (y % 100 == 0) {\n    return 0;\n  }\n  else {\n    return 1;\n  }\n}\n\n\n/**\n * Function to create a new `Timestamp` object\n * @param {String|Integer|Date|Object} [ts] - timestamp\n * @param {Object} [options] - configuration options\n * @param {String} [options.joint=' '] - joining character between date and time parts\n * @param {String} [options.dateJoint='-'] - joining character for date segments\n * @param {String} [options.timeJoint=':'] - joining character for time segments\n * @return {Object} - a `Timestamp` object\n */\nexport const timestamp = (ts, options) => new Timestamp(ts, options)",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Timestamp.js",
     "access": "public",
@@ -3216,6 +3216,48 @@
   {
     "__docId__": 130,
     "kind": "variable",
+    "name": "DURATIONS",
+    "memberof": "src/Badger/Timestamp.js",
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~DURATIONS",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string[]"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 131,
+    "kind": "variable",
+    "name": "PLURALS",
+    "memberof": "src/Badger/Timestamp.js",
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~PLURALS",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"hour\": string, \"minute\": string, \"second\": string}"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 132,
+    "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Timestamp.js",
     "static": true,
@@ -3225,7 +3267,7 @@
     "importPath": "@abw/badger",
     "importStyle": null,
     "description": "Default configuration options.",
-    "lineNumber": 13,
+    "lineNumber": 15,
     "type": {
       "types": [
         "{\"joint\": string, \"dateJoint\": string, \"timeJoint\": string}"
@@ -3234,7 +3276,7 @@
     "ignore": true
   },
   {
-    "__docId__": 131,
+    "__docId__": 133,
     "kind": "class",
     "name": "Timestamp",
     "memberof": "src/Badger/Timestamp.js",
@@ -3245,11 +3287,11 @@
     "importPath": "@abw/badger",
     "importStyle": "{Timestamp}",
     "description": "The Timestamp class implements an object for parsing and manipulating\nISO8601 timestamps.  It is a very simple implementation that is intended\nto be lightweight alternative to more feature-rich packages like\nmoment, luxon, dayjs, etc.  The primary goal is to be able to convert\nbetween database timestamps and human-readable strings, and to allow\nsimple date adjustments, e.g. + 1 year, + 3 months, etc.  It is implemented\nas a thin wrapper around the native JS Date object.",
-    "lineNumber": 28,
+    "lineNumber": 30,
     "interface": false
   },
   {
-    "__docId__": 132,
+    "__docId__": 134,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3259,7 +3301,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#constructor",
     "access": "public",
     "description": "Constructor for Timestamp object.",
-    "lineNumber": 37,
+    "lineNumber": 39,
     "params": [
       {
         "nullable": null,
@@ -3323,7 +3365,7 @@
     ]
   },
   {
-    "__docId__": 133,
+    "__docId__": 135,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3331,7 +3373,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#props",
     "access": "public",
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
@@ -3340,7 +3382,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 136,
     "kind": "member",
     "name": "parts",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3348,7 +3390,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#parts",
     "access": "public",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 47,
     "undocument": true,
     "type": {
       "types": [
@@ -3357,7 +3399,227 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 145,
+    "kind": "method",
+    "name": "copy",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#copy",
+    "access": "public",
+    "description": "Method to return a new object as a copy of the current object",
+    "lineNumber": 91,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "new `Timestamp` object"
+    },
+    "params": []
+  },
+  {
+    "__docId__": 146,
+    "kind": "method",
+    "name": "year",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#year",
+    "access": "public",
+    "description": "Method to get or set the year.",
+    "lineNumber": 99,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "year",
+        "description": "optional new value for year"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the year"
+    }
+  },
+  {
+    "__docId__": 147,
+    "kind": "method",
+    "name": "month",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#month",
+    "access": "public",
+    "description": "Method to get or set the month.",
+    "lineNumber": 110,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "month",
+        "description": "optional new value for month"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the month"
+    }
+  },
+  {
+    "__docId__": 148,
+    "kind": "method",
+    "name": "day",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#day",
+    "access": "public",
+    "description": "Method to get or set the day.",
+    "lineNumber": 121,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "day",
+        "description": "optional new value for day"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the day"
+    }
+  },
+  {
+    "__docId__": 149,
+    "kind": "method",
+    "name": "hours",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#hours",
+    "access": "public",
+    "description": "Method to get or set the hours.",
+    "lineNumber": 132,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "hours",
+        "description": "optional new value for hours"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the hours"
+    }
+  },
+  {
+    "__docId__": 150,
+    "kind": "method",
+    "name": "minutes",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#minutes",
+    "access": "public",
+    "description": "Method to get or set the minutes.",
+    "lineNumber": 143,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "minutes",
+        "description": "optional new value for minutes"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the minutes"
+    }
+  },
+  {
+    "__docId__": 151,
+    "kind": "method",
+    "name": "seconds",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#seconds",
+    "access": "public",
+    "description": "Method to get or set the seconds.",
+    "lineNumber": 154,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Integer"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "seconds",
+        "description": "optional new value for seconds"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the seconds"
+    }
+  },
+  {
+    "__docId__": 152,
     "kind": "method",
     "name": "date",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3367,7 +3629,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#date",
     "access": "public",
     "description": "Method to return a formatted date string in the form `YYYY-MM-DD`.",
-    "lineNumber": 86,
+    "lineNumber": 165,
     "params": [
       {
         "nullable": null,
@@ -3392,7 +3654,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 153,
     "kind": "method",
     "name": "time",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3402,7 +3664,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#time",
     "access": "public",
     "description": "Method to return a formatted time string in the form `HH:MM:SS`.",
-    "lineNumber": 94,
+    "lineNumber": 173,
     "params": [
       {
         "nullable": null,
@@ -3427,7 +3689,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 154,
     "kind": "method",
     "name": "stamp",
     "memberof": "src/Badger/Timestamp.js~Timestamp",
@@ -3437,7 +3699,7 @@
     "longname": "src/Badger/Timestamp.js~Timestamp#stamp",
     "access": "public",
     "description": "Method to return a formatted timestamp string in the form `YYYY-MM-DD HH:MM:SS`.",
-    "lineNumber": 105,
+    "lineNumber": 184,
     "params": [
       {
         "nullable": null,
@@ -3496,7 +3758,306 @@
     }
   },
   {
-    "__docId__": 145,
+    "__docId__": 155,
+    "kind": "method",
+    "name": "dateObject",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#dateObject",
+    "access": "public",
+    "description": "Method to return a `Date` object",
+    "lineNumber": 191,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Date"
+      ],
+      "spread": false,
+      "description": "new date object"
+    },
+    "params": []
+  },
+  {
+    "__docId__": 156,
+    "kind": "method",
+    "name": "milliseconds",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#milliseconds",
+    "access": "public",
+    "description": "Method to return the number of millseconds since the Unix epoch",
+    "lineNumber": 198,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the number of milliseconds"
+    },
+    "params": []
+  },
+  {
+    "__docId__": 157,
+    "kind": "method",
+    "name": "epochSeconds",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#epochSeconds",
+    "access": "public",
+    "description": "Method to return the number of seconds since the Unix epoch",
+    "lineNumber": 205,
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "the number of seconds"
+    },
+    "params": []
+  },
+  {
+    "__docId__": 158,
+    "kind": "method",
+    "name": "adjust",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#adjust",
+    "access": "public",
+    "description": "Method to adjust the timestamp.  The duration can be specified as a string containing\none or more items to adjust in either singular or plural form, e.g. `\"1 year, 1 month\"`,\n`\"2 years 2 months\"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,\n`{ years: 2, months: 2 }`, etc.",
+    "examples": [
+      "ts.adjust(\"1 year 2 months 3 hours\")",
+      "ts.adjust({ year: 1, months: 2, hours: 3 })"
+    ],
+    "lineNumber": 219,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "duration",
+        "description": "a string or object of adjustments"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 159,
+    "kind": "method",
+    "name": "compare",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#compare",
+    "access": "public",
+    "description": "Method to compare the timestamp to another.  The arguments can be any that are accepted\nby the constructor.\none or more items to adjust in either singular or plural form, e.g. `\"1 year, 1 month\"`,\n`\"2 years 2 months\"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,\n`{ years: 2, months: 2 }`, etc.",
+    "lineNumber": 310,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Integer"
+      ],
+      "spread": false,
+      "description": "-1 if the timestamp is before the comparator, 0 if it's equal, +1 if it's after."
+    }
+  },
+  {
+    "__docId__": 160,
+    "kind": "method",
+    "name": "equal",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#equal",
+    "access": "public",
+    "description": "Method to compare one timestamp to another for equality",
+    "lineNumber": 339,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "true if the timestamp is equal to the operand"
+    }
+  },
+  {
+    "__docId__": 161,
+    "kind": "method",
+    "name": "before",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#before",
+    "access": "public",
+    "description": "Method to test for the timestamp coming before another timestamp",
+    "lineNumber": 347,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "true if the timestamp is before the operand"
+    }
+  },
+  {
+    "__docId__": 162,
+    "kind": "method",
+    "name": "after",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#after",
+    "access": "public",
+    "description": "Method to test for the timestamp coming after another timestamp",
+    "lineNumber": 355,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "true if the timestamp is after the operand"
+    }
+  },
+  {
+    "__docId__": 163,
+    "kind": "method",
+    "name": "notBefore",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#notBefore",
+    "access": "public",
+    "description": "Method to test for the timestamp being equal to or coming after another timestamp",
+    "lineNumber": 363,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "true if the timestamp is equal to or coming after the operand"
+    }
+  },
+  {
+    "__docId__": 164,
+    "kind": "method",
+    "name": "notAfter",
+    "memberof": "src/Badger/Timestamp.js~Timestamp",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/Badger/Timestamp.js~Timestamp#notAfter",
+    "access": "public",
+    "description": "Method to test for the timestamp being equal to or coming before another timestamp",
+    "lineNumber": 371,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": "any argument(s) accepted by the constructor"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": "true if the timestamp is equal to or coming before the operand"
+    }
+  },
+  {
+    "__docId__": 165,
     "kind": "function",
     "name": "isTimestamp",
     "memberof": "src/Badger/Timestamp.js",
@@ -3509,7 +4070,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isTimestamp}",
     "description": "Function to determine is a string is a valid timestamp.",
-    "lineNumber": 115,
+    "lineNumber": 381,
     "params": [
       {
         "nullable": null,
@@ -3532,7 +4093,7 @@
     }
   },
   {
-    "__docId__": 146,
+    "__docId__": 166,
     "kind": "function",
     "name": "splitTimestamp",
     "memberof": "src/Badger/Timestamp.js",
@@ -3545,7 +4106,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{splitTimestamp}",
     "description": "Function to split a timestamp into its constituent parts",
-    "lineNumber": 123,
+    "lineNumber": 389,
     "params": [
       {
         "nullable": null,
@@ -3568,7 +4129,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 167,
     "kind": "function",
     "name": "isDate",
     "memberof": "src/Badger/Timestamp.js",
@@ -3581,7 +4142,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{isDate}",
     "description": "Function to determine is a valid is a `Date` object",
-    "lineNumber": 142,
+    "lineNumber": 408,
     "params": [
       {
         "nullable": null,
@@ -3604,7 +4165,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 168,
     "kind": "function",
     "name": "unpackNow",
     "memberof": "src/Badger/Timestamp.js",
@@ -3617,7 +4178,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{unpackNow}",
     "description": "Function to return an object containing the constituent timestamp parts for the current time.",
-    "lineNumber": 149,
+    "lineNumber": 415,
     "return": {
       "nullable": null,
       "types": [
@@ -3629,7 +4190,7 @@
     "params": []
   },
   {
-    "__docId__": 149,
+    "__docId__": 169,
     "kind": "function",
     "name": "parseDate",
     "memberof": "src/Badger/Timestamp.js",
@@ -3642,7 +4203,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{parseDate}",
     "description": "Function to return an object containing the constituent timestamp parts for a date/time.",
-    "lineNumber": 157,
+    "lineNumber": 423,
     "params": [
       {
         "nullable": null,
@@ -3665,7 +4226,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 170,
     "kind": "function",
     "name": "unpackDate",
     "memberof": "src/Badger/Timestamp.js",
@@ -3678,7 +4239,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{unpackDate}",
     "description": "Function to return an object containing the constituent timestamp parts for a `Date` object",
-    "lineNumber": 165,
+    "lineNumber": 431,
     "params": [
       {
         "nullable": null,
@@ -3701,7 +4262,79 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 171,
+    "kind": "function",
+    "name": "parseDuration",
+    "memberof": "src/Badger/Timestamp.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~parseDuration",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{parseDuration}",
+    "description": "Function to parse a duration string, e.g. `1 hour 3 minutes`.\nQuantities must be integers. Units can be singular (e.g. `hour`) or plural (e.g. `hours`).\nOther characters may appear between sections, e.g. `1 hour, 2 minutes and 3 seconds`.",
+    "lineNumber": 447,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Date"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "duration",
+        "description": "duration string"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`."
+    }
+  },
+  {
+    "__docId__": 172,
+    "kind": "function",
+    "name": "singularDurations",
+    "memberof": "src/Badger/Timestamp.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~singularDurations",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{singularDurations}",
+    "description": "Function to convert an object containing any plural duration units (e.g. `hours`) to the singular counterpart (e.g. `hour`).",
+    "lineNumber": 464,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "duration",
+        "description": "object containing duration elements, either plural or singluar."
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": "object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`."
+    }
+  },
+  {
+    "__docId__": 173,
     "kind": "function",
     "name": "joinTimestamp",
     "memberof": "src/Badger/Timestamp.js",
@@ -3714,7 +4347,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{joinTimestamp}",
     "description": "Function to join the constituent parts of a time stamp into a string",
-    "lineNumber": 189,
+    "lineNumber": 489,
     "params": [
       {
         "nullable": null,
@@ -3843,7 +4476,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 174,
     "kind": "function",
     "name": "joinDate",
     "memberof": "src/Badger/Timestamp.js",
@@ -3856,7 +4489,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{joinDate}",
     "description": "Function to join the constituent parts of a date",
-    "lineNumber": 210,
+    "lineNumber": 510,
     "params": [
       {
         "nullable": null,
@@ -3921,7 +4554,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 175,
     "kind": "function",
     "name": "joinTime",
     "memberof": "src/Badger/Timestamp.js",
@@ -3934,7 +4567,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{joinTime}",
     "description": "Function to join the constituent parts of a time into a string",
-    "lineNumber": 226,
+    "lineNumber": 526,
     "params": [
       {
         "nullable": null,
@@ -3999,7 +4632,75 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 176,
+    "kind": "function",
+    "name": "daysInMonth",
+    "memberof": "src/Badger/Timestamp.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~daysInMonth",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 534,
+    "undocument": true,
+    "params": [
+      {
+        "name": "m",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "y",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "number"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 177,
+    "kind": "function",
+    "name": "leapYear",
+    "memberof": "src/Badger/Timestamp.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Timestamp.js~leapYear",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 546,
+    "undocument": true,
+    "params": [
+      {
+        "name": "y",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "number"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 178,
     "kind": "function",
     "name": "timestamp",
     "memberof": "src/Badger/Timestamp.js",
@@ -4012,7 +4713,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{timestamp}",
     "description": "Function to create a new `Timestamp` object",
-    "lineNumber": 242,
+    "lineNumber": 571,
     "params": [
       {
         "nullable": null,
@@ -4084,7 +4785,7 @@
     }
   },
   {
-    "__docId__": 155,
+    "__docId__": 179,
     "kind": "file",
     "name": "src/Badger/Utils/Color.js",
     "content": "import { isObject } from \"./Misc.js\";\n\nconst ANSIStart  = '\\u001B[';\nconst ANSIEnd    = 'm';\nconst ANSIColors = {\n  reset:    0,\n  bold:     1,\n  bright:   1,\n  dark:     2,\n  black:    0,\n  red:      1,\n  green:    2,\n  yellow:   3,\n  blue:     4,\n  magenta:  5,\n  cyan:     6,\n  grey:     7,\n  white:    8,\n  fg:      30,\n  bg:      40,\n};\n\n/**\n * Returns an ANSI escape code for a color string.  This can be a single color\n * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,\n * e.g. `bright red`, `dark green`, etc.  An optional section argument can be\n * set to `fg` (default) to set a foreground color or `bg` for a background color.\n * @param {String} color - color name with optional modifier prefix\n * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively\n * @return {String} ANSI escape code string\n * @example\n * const str = escapeCode('red')\n * @example\n * const str = escapeCode('bright red')\n * @example\n * const str = escapeCode('bright red', 'bg')\n */\nexport const ANSIescapeCode = (color, base='fg') => {\n  let   codes = [ ];\n  let   pair  = color.split(/ /, 2);\n  const hue   = pair.pop();\n  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];\n  codes.push(code);\n  if (pair.length) {\n    const shade = pair.length ? pair.shift() : 'dark';\n    codes.push(ANSIColors[shade])\n  }\n  // console.log('escapeCode(%s, %s) => ', color, base, codes.join(';'));\n  return ANSIStart + codes.join(';') + ANSIEnd;\n}\n\n/**\n * Returns an ANSI escape code for a color string or combination of foreground and\n * background colors.\n * @param {String|Object} colors - either a simple color name or object contain foreground and background colors\n * @param {String} [colors.fg] - foreground color\n * @param {String} [colors.fg] - background color\n * @return {String} ANSI escape code string\n * @example\n * const str = escape('red')\n * @example\n * const str = escape('bright red')\n * @example\n * const str = escape({ fg: 'bright yellow', bg: 'blue' })\n */\nexport const ANSIescape = (colors={}) => {\n  const col = isObject(colors) ? colors : { fg: colors };\n  let escapes = [ ];\n  if (col.bg) {\n    escapes.push(ANSIescapeCode(col.bg, 'bg'));\n  }\n  if (col.fg) {\n    escapes.push(ANSIescapeCode(col.fg, 'fg'));\n  }\n  return escapes.join('');\n}\n\n/**\n * Returns an ANSI escape code to reset all colors.\n * @return {String} ANSI escape reset string\n */\nexport const ANSIreset = () => ANSIescapeCode('reset', false)\n\n/**\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n */\nexport const color = (colors) =>\n  text => ANSIescape(colors) + text + ANSIreset();",
@@ -4095,7 +4796,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 156,
+    "__docId__": 180,
     "kind": "variable",
     "name": "ANSIStart",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4116,7 +4817,7 @@
     "ignore": true
   },
   {
-    "__docId__": 157,
+    "__docId__": 181,
     "kind": "variable",
     "name": "ANSIEnd",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4137,7 +4838,7 @@
     "ignore": true
   },
   {
-    "__docId__": 158,
+    "__docId__": 182,
     "kind": "variable",
     "name": "ANSIColors",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4158,7 +4859,7 @@
     "ignore": true
   },
   {
-    "__docId__": 159,
+    "__docId__": 183,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4211,7 +4912,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 184,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4273,7 +4974,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 185,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4298,7 +4999,7 @@
     "params": []
   },
   {
-    "__docId__": 162,
+    "__docId__": 186,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger/Utils/Color.js",
@@ -4334,7 +5035,7 @@
     }
   },
   {
-    "__docId__": 163,
+    "__docId__": 187,
     "kind": "file",
     "name": "src/Badger/Utils/DataPath.js",
     "content": "import { fail, hasValue, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Characters that can be escaped in quoted strings.\n */\nconst quotedEscapes = {\n  b: \"\\b\",\n  f: \"\\f\",\n  n: \"\\n\",\n  r: \"\\r\",\n  t: \"\\t\",\n  v: \"\\v\",\n  '\"': '\"',\n  \"'\": \"'\",\n  '\\\\': '\\\\',\n}\n\n/**\n * Match a double quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchDoubleQuotedString = string => {\n  const regex = /^\"((?:\\\\[\\\\\"nrt]|.)*?)\"$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Match a single quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchSingleQuotedString = string => {\n  const regex = /^'((?:\\\\[\\\\']|.)*?)'$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Split a data path into component parts\n * @param {String} [path] - the path to split\n */\nexport const splitDataPath = path => {\n  // * match a slash: \\/\n  // * match a single quoted string: '...'\n  // * match a double quoted string: \"...\"\n  // * match anything else: hello world!\n  let parts = [ ];\n  const regex = /(?:(\\/)|'((?:\\\\[\\\\']|.)*?)'|\"((?:\\\\[\\\\\"nrt]|.)*?)\"|([^/?]+))(\\??)/g;\n  const matches = [...path.matchAll(regex)];\n\n  matches.map(\n    ([ , , single, double, other, optional]) => {\n      let part;\n      // console.log('match [slash:%s] [single:%s] [double:%s] [other:%s]', slash, single, double, other);\n\n      if (single) {\n        part = single.replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (double) {\n        part = double.replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (other) {\n        part = other\n      }\n      if (hasValue(part)) {\n        parts.push(optional ? [part, {optional:true}] : part);\n      }\n    }\n  )\n  // console.log('MATCHED ', parts);\n\n  return parts;\n}\n\n/**\n * Traverse a data structure using a path.\n * @param {Object} [data] - the data to traverse\n * @param {String} [path] - the data path\n */\nexport const dataPath = (data, path) => {\n  let root  = data;\n  let parts = splitDataPath(path);\n  let done  = [ ];\n  // console.log('parts: ', parts);\n\n  for (let part of parts) {\n    const [word, opts] = isArray(part) ? part : [part, {}];\n    root = root[word];\n    done.push(word);\n    if (noValue(root)) {\n      if (opts.optional) {\n        return root;\n      }\n      else {\n        fail(\"No value for data at path: \", done.join('/'));\n      }\n    }\n  }\n  return root;\n}\n",
@@ -4345,7 +5046,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 164,
+    "__docId__": 188,
     "kind": "variable",
     "name": "quotedEscapes",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -4365,7 +5066,7 @@
     "ignore": true
   },
   {
-    "__docId__": 165,
+    "__docId__": 189,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -4398,7 +5099,7 @@
     }
   },
   {
-    "__docId__": 166,
+    "__docId__": 190,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -4431,7 +5132,7 @@
     }
   },
   {
-    "__docId__": 167,
+    "__docId__": 191,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -4464,7 +5165,7 @@
     }
   },
   {
-    "__docId__": 168,
+    "__docId__": 192,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -4507,7 +5208,7 @@
     }
   },
   {
-    "__docId__": 169,
+    "__docId__": 193,
     "kind": "file",
     "name": "src/Badger/Utils/Debug.js",
     "content": "import { ANSIescape, ANSIreset } from './Color.js'\nimport { doNothing } from './Misc.js';\n\n/**\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function Debugger(enabled, prefix='', color) {\n  return enabled\n    ? prefix\n      ? (format, ...args) =>\n        console.log(\n          '%s' + prefix + '%s' + format,\n          color ? ANSIescape(color) : '',\n          ANSIreset(),\n          ...args,\n        )\n      : console.log.bind(console)\n    : doNothing;\n}\n\n/**\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function addDebug(obj, enabled, prefix='', color) {\n  obj.debug = Debugger(enabled, prefix, color);\n}\n",
@@ -4518,7 +5219,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 170,
+    "__docId__": 194,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -4601,7 +5302,7 @@
     }
   },
   {
-    "__docId__": 171,
+    "__docId__": 195,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -4687,7 +5388,7 @@
     "return": null
   },
   {
-    "__docId__": 172,
+    "__docId__": 196,
     "kind": "file",
     "name": "src/Badger/Utils/Misc.js",
     "content": "import process from \"node:process\"\n\n/**\n * Determines if a value is a string\n * @param {String} value - value to test\n * @return {Boolean} true if `value` is a string or false if not\n */\nexport function isString(value) {\n  return typeof value === 'string';\n}\n\n/**\n * Determines if a value is an Integer\n * @param {Integer} value - value to test\n * @return {Boolean} true if `value` is a string or false if not\n */\nexport function isInteger(value) {\n  return Number.isInteger(value);\n}\n\n/**\n * Determines if a value is an array\n * @param {Array} value - value to test\n * @return {Boolean} true if `value` is an Array or false if not\n */\nexport function isArray(value) {\n  return Array.isArray(value);\n}\n\n/**\n * Determines if a value is a Function\n * @param {Function} value - value to test\n * @return {Boolean} true if `value` is a Function or false if not\n */\nexport function isFunction(value) {\n  return typeof value === 'function'\n}\n\n/**\n * Determines if a value is an Object (but not an Array)\n * @param {Object} value - value to test\n * @return {Boolean} true if `value` is an Object or false if not\n */\nexport function isObject(value) {\n  return typeof value === \"object\"\n    && ! isArray(value)\n    && ! isNull(value);\n}\n\n/**\n * Determines if a value is `undefined`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or false if not\n */\nexport function isUndefined(value) {\n  return typeof value === 'undefined';\n}\n\n/**\n * Determines if a value is `null`\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `null` or false if not\n */\nexport function isNull(value) {\n  return value === null;\n}\n\n/**\n * Determines if a value is defined and not null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is not `undefined` or `null`\n */\nexport function hasValue(value) {\n  return ! (isUndefined(value) || isNull(value));\n}\n\n/**\n * Determines if all values are defined and not null\n * @param {any[]} values - values to test\n * @return {Boolean} true if all values are not `undefined` or `null`\n */\nexport function haveValue(...values) {\n  return values.every( value => hasValue(value) );\n}\n\n/**\n * Determines if a value is undefined or null\n * @param {any} value - value to test\n * @return {Boolean} true if `value` is `undefined` or `null`\n */\nexport function noValue(value) {\n  return ! hasValue(value);\n}\n\n/**\n * Throws a new Error object\n * @param {String[]} message - error message string(s)\n * @throws {Error}\n */\nexport function fail(...message) {\n  throw new Error(message.join(''));\n}\n\n/**\n * Re-throw an existing Error object\n * @param {Error} error - error object\n * @throws {Error}\n */\nexport function rethrow(error) {\n  throw error;\n}\n\n/**\n * Do nothing.  Nothing at all.\n */\nexport function doNothing() {\n  // speak again Cordelia\n}\n\n/**\n * Returns an array of the `process.argv` array from offset 2 onwards,\n * i.e. removing the node path and script name.\n * @param {Array} argv - list of arguments, defaults to `process.argv`\n * @return {Array} array of arguments excluding the first two\n */\nexport function args(argv=process.argv) {\n  return argv.slice(2);\n}\n",
@@ -4698,7 +5399,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 173,
+    "__docId__": 197,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4734,7 +5435,7 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 198,
     "kind": "function",
     "name": "isInteger",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4770,7 +5471,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 199,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4806,7 +5507,7 @@
     }
   },
   {
-    "__docId__": 176,
+    "__docId__": 200,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4842,7 +5543,7 @@
     }
   },
   {
-    "__docId__": 177,
+    "__docId__": 201,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4878,7 +5579,7 @@
     }
   },
   {
-    "__docId__": 178,
+    "__docId__": 202,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4914,7 +5615,7 @@
     }
   },
   {
-    "__docId__": 179,
+    "__docId__": 203,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4950,7 +5651,7 @@
     }
   },
   {
-    "__docId__": 180,
+    "__docId__": 204,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -4986,7 +5687,7 @@
     }
   },
   {
-    "__docId__": 181,
+    "__docId__": 205,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5022,7 +5723,7 @@
     }
   },
   {
-    "__docId__": 182,
+    "__docId__": 206,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5058,7 +5759,7 @@
     }
   },
   {
-    "__docId__": 183,
+    "__docId__": 207,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5095,7 +5796,7 @@
     "return": null
   },
   {
-    "__docId__": 184,
+    "__docId__": 208,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5132,7 +5833,7 @@
     "return": null
   },
   {
-    "__docId__": 185,
+    "__docId__": 209,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5150,7 +5851,7 @@
     "return": null
   },
   {
-    "__docId__": 186,
+    "__docId__": 210,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -5186,7 +5887,7 @@
     }
   },
   {
-    "__docId__": 187,
+    "__docId__": 211,
     "kind": "file",
     "name": "src/Badger/Utils/Options.js",
     "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { hasValue } from './Misc.js';\n\nexport const defaults = {\n  verboseColor:     'magenta',\n  titleColor:       'bright yellow',\n  underlineColor:   'dark yellow',\n  infoColor:        'cyan',\n  tickColor:        'green',\n  questionColor:    'bright white',\n  answerColor:      'bright green',\n  sectionNewlines:  true\n};\n\nexport const options = async config => {\n  const vcol = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n  if (config.quiet) {\n    command.option('-q, --quiet', 'Quiet output')\n  }\n\n  // add in other command line options\n  config.options\n    .filter(\n      option => {\n        if (hasValue(option.arg) && ! option.arg) {\n          // allow arg: false to indicate no command line argument\n          return false;\n        }\n        if (option.title) {\n          // section break\n          return;\n        }\n        return hasValue(option.name);\n      }\n    )\n    .map(\n      option => {\n        const name    = option.name;\n        const about   = option.about;\n        const deflt   = option.default;\n        const short   = option.short;\n        const type    = option.type;\n        const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n        let string    = `--${name}`;\n        let args      = [];\n        if (hasValue(short)) {\n          string = `-${short}, ${string}`;\n        }\n        if (hasValue(pattern)) {\n          string = `${string} ${pattern}`;\n        }\n        args.push(string);\n        if (hasValue(about)) {\n          args.push(about);\n        }\n        if (hasValue(deflt)) {\n          args.push(deflt);\n        }\n        command.option(...args)\n      }\n    )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  const yes     = config.yes && cmdline.yes;\n  const verbose = config.verbose && cmdline.verbose;\n  const quiet   = config.quiet && cmdline.quiet;\n\n  if (yes) {\n    if (verbose && ! quiet) {\n      process.stdout.write(vcol('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options.map(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.toString().length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          // console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type: (\n              hasValue(initial)\n                ? () => {\n                  yes && (quiet || answer({ question: prompt, answer: initial }));\n                  return type;\n                }\n                : type\n            ),\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n      else if (option.title || option.info) {\n        prompts.push(\n          {\n            type: () => {\n              quiet || section(option);\n              return false;\n            }\n          }\n        );\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  const answers = await prompter(prompts);\n\n  return {\n    ...cmdline, ...answers\n  }\n}\n\nexport const section = option => {\n  const title = option.title;\n  const tcol  = color(option.titleColor || defaults.titleColor);\n  const ucol  = color(option.underlineColor || defaults.underlineColor);\n  const icol  = color(option.infoColor || defaults.infoColor);\n  const nl    = (hasValue(option.newlines) ? option.newlines : defaults.sectionNewlines) ? \"\\n\" : \"\";\n\n  if (title) {\n    const uline = '-'.repeat(title.length);\n    process.stdout.write(nl + tcol(title) + \"\\n\" + ucol(uline) + \"\\n\" + nl);\n  }\n\n  if (option.info) {\n    process.stdout.write(icol(option.info) + \"\\n\" + nl);\n  }\n}\n\nexport const answer = option => {\n  const tcol  = color(option.tickColor || defaults.tickColor);\n  const qcol  = color(option.questionColor || defaults.questionColor);\n  const acol  = color(option.answerColor || defaults.answerColor);\n  process.stdout.write(tcol(\"✔ \") + qcol(option.question) + \" \" + acol(option.answer) + \"\\n\");\n}\n\nexport default options",
@@ -5197,7 +5898,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 188,
+    "__docId__": 212,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Utils/Options.js",
@@ -5217,7 +5918,7 @@
     }
   },
   {
-    "__docId__": 189,
+    "__docId__": 213,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger/Utils/Options.js",
@@ -5247,7 +5948,7 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 214,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger/Utils/Options.js",
@@ -5273,7 +5974,7 @@
     "return": null
   },
   {
-    "__docId__": 191,
+    "__docId__": 215,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger/Utils/Options.js",
@@ -5299,7 +6000,7 @@
     "return": null
   },
   {
-    "__docId__": 192,
+    "__docId__": 216,
     "kind": "file",
     "name": "src/Badger/Utils/Params.js",
     "content": "import { hasValue, fail } from \"./Misc.js\";\nimport { joinListOr, splitList } from \"./Text.js\";\n\n/**\n * Assert that a parameter object contains an item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {String} name - parameter that must be included\n * @return {any} the parameter value\n * @throws {Error} if the parameter is not defined or null\n * @example\n * const foo = requiredParam({ foo: 10 }, 'foo');\n */\nexport function requiredParam(params={}, name) {\n  const value = params[name];\n  if (hasValue(value)) {\n    return value;\n  }\n  else {\n    fail(\"Missing value for required parameter: \", name);\n  }\n}\n\n/**\n * Assert that a parameter object contains all specified item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = requiredParams({ foo: 10, bar: 20 }, 'foo bar');\n */\nexport function requiredParams(params={}, names) {\n  return splitList(names).map( name => requiredParam(params, name) );\n}\n\n/**\n * An alias for {@link requiredParams} for people who don't like typing long names (and for symmetry with {@link anyParams}))\n */\nexport const allParams=requiredParams;\n\n/**\n * Assert that a parameter object contains any of the specified items with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = anyParams({ foo: 10, wiz: 99 }, 'foo bar');\n */\nexport function anyParams(params, names) {\n  let found = false;\n  const nlist  = splitList(names);\n  const values = nlist.map(\n    name => {\n      const value = params[name];\n      if (hasValue(value)) {\n        found = true;\n      }\n      return value;\n    }\n  );\n  return found\n    ? values\n    : fail(\"Missing value for one of: \", joinListOr(nlist));\n}\n",
@@ -5310,7 +6011,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 193,
+    "__docId__": 217,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/Params.js",
@@ -5369,7 +6070,7 @@
     ]
   },
   {
-    "__docId__": 194,
+    "__docId__": 218,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -5429,7 +6130,7 @@
     ]
   },
   {
-    "__docId__": 195,
+    "__docId__": 219,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -5448,7 +6149,7 @@
     }
   },
   {
-    "__docId__": 196,
+    "__docId__": 220,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -5508,7 +6209,7 @@
     ]
   },
   {
-    "__docId__": 197,
+    "__docId__": 221,
     "kind": "file",
     "name": "src/Badger/Utils/Prompt.js",
     "content": "import prompts from 'prompts'\n\n/**\n * Prompt user to enter a value.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * prompt(\"What is your name?\")\n *   .then( name => console.log(`Hello ${name}`) );\n * @example\n * prompt(\"What is your name?\", { default: 'Mr.Badger' })\n *   .then( name => console.log(`Hello ${name}`) );\n */\nexport const prompt = async (question, options={}) => {\n  const name = options.name || 'answer';\n  const answers = await prompts([\n    {\n      name,\n      type: options.type || 'text',\n      message: question,\n      initial: options.default,\n    },\n  ]);\n  return answers[name];\n}\n\n/**\n * Prompt user to confirm a choice.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * confirm(\"Are you sure?\")\n *   .then( yes => console.log('You said \"%s\"', yes ? 'YES' : 'NO') );\n */\nexport const confirm = async (question, options={}) =>\n  prompt(question, { ...options, type: 'confirm' });\n\nexport default prompt",
@@ -5519,7 +6220,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 198,
+    "__docId__": 222,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger/Utils/Prompt.js",
@@ -5579,7 +6280,7 @@
     }
   },
   {
-    "__docId__": 199,
+    "__docId__": 223,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger/Utils/Prompt.js",
@@ -5638,7 +6339,7 @@
     }
   },
   {
-    "__docId__": 200,
+    "__docId__": 224,
     "kind": "file",
     "name": "src/Badger/Utils/Text.js",
     "content": "import { isString, isArray, noValue } from \"./Misc.js\";\n\n/**\n * Split a comma/whitespace delimited string into an Array\n * @param {String} [value] - string to split\n * @return {Array} array of split strings\n * @example\n * const strings = splitList('one two three')\n * @example\n * const strings = splitList('one,two,three')\n * @example\n * const strings = splitList('one, two, three')\n */\nexport function splitList(value) {\n  if (noValue(value)) {\n    return [ ];\n  }\n  else if (isString(value)) {\n    return value.length\n      ? value.split(/,\\s*|\\s+/)\n      : [ ]\n  }\n  else if (isArray(value)) {\n    return value;\n  }\n  return [value];\n}\n\n/**\n * Join an Array into a single string\n * @param {Array} [array] - array to join\n * @param {String} [joint=' '] - delimiter to join strings\n * @param {String} [lastJoint=joint] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinList(['one', 'two', 'three']);   // one two three\n * @example\n * joinList(['one', 'two', 'three'], ', ');   // one, two, three\n * @example\n * joinList(['one', 'two', 'three'], ', ', ' and ');   // one, two and three\n */\nexport function joinList(array, joint=' ', lastJoint=joint) {\n  let copy = [...array];\n  const last = copy.pop();\n  return copy.length\n    ? [copy.join(joint), last].join(lastJoint)\n    : last;\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` and ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' and '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListAnd(['one', 'two', 'three']);   // one, two and three\n */\nexport function joinListAnd(array, joint=', ', lastJoint=' and ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Join an Array into a single string using commas for delimiters and ` or ` for the final item\n * @param {Array} [array] - array to join\n * @param {String} [joint=', '] - delimiter to join strings\n * @param {String} [lastJoint=' or '] - delimiter for final item\n * @return {String} joined string\n * @example\n * joinListOr(['one', 'two', 'three']);   // one, two or three\n */\nexport function joinListOr(array, joint=', ', lastJoint=' or ') {\n  return joinList(array, joint, lastJoint);\n}\n\n/**\n * Capitalise a string by converting the first character to upper case and other characters to lower case\n * @param {String} [word] - word to capitalise\n * @return {String} capitalised string\n * @example\n * capitalise('badger');   // Badger\n * @example\n * capitalise('BADGER');   // Badger\n */\nexport function capitalise(word) {\n  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();\n}\n\n/**\n * Convert a snake case string to studly caps\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToStudly('happy_badger_dance');   // HappyBadgerDance\n * @example\n * snakeToStudly('happy_badger/dance');   // HappyBadger/Dance\n */\nexport function snakeToStudly(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to FooBar\n    segment => segment.split('_').map(capitalise).join('')\n  ).join('/');\n}\n\n/**\n * Convert a snake case string to camel case\n * @param {String} [snake] - word to capitalise\n * @return {String} capitalised string\n * @example\n * snakeToCamel('happy_badger_dance');   // happyBadgerDance\n * @example\n * snakeToCamel('happy_badger/dance');   // happyBadger/dance\n */\nexport function snakeToCamel(snake) {\n  return snake.split('/').map(\n    // each segment can be like foo_bar which we convert to fooBar\n    segment => segment.split('_').map((i, n) => n ? capitalise(i) : i).join('')\n  ).join('/');\n}\n",
@@ -5649,7 +6350,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 201,
+    "__docId__": 225,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5690,7 +6391,7 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 226,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5755,7 +6456,7 @@
     }
   },
   {
-    "__docId__": 203,
+    "__docId__": 227,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5818,7 +6519,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 228,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5881,7 +6582,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 229,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5921,7 +6622,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 230,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger/Utils/Text.js",
@@ -5961,7 +6662,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 231,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger/Utils/Text.js",
@@ -6001,7 +6702,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 232,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
     "content": "import { dir as fsDir } from \"./Filesystem/Directory.js\";\nimport { fail, hasValue } from \"./Utils/Misc.js\";\nimport { addDebug } from \"./Utils/Debug.js\";\nimport { splitList } from \"./Utils/Text.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.path());\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory and instantiates a\n   * component.\n   * @param {String} uri - component base name\n   * @param {Object} [props] - optional configuration properties\n   * @return {Promise} fulfills to a newly instantiated component\n   * @example\n   * workspace.component(mycomp').then(\n   *   component => console.log(\"Created component: \", component)\n   * );\n   */\n  async component(uri, props) {\n    const [base, fragment] = uri.split('#', 2);\n    const config  = await this.config(base, {});\n    const lib     = await this.library(config.component?.library || base);\n    const exp     = fragment || config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    return comp;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
@@ -6012,7 +6713,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 209,
+    "__docId__": 233,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -6032,7 +6733,7 @@
     "ignore": true
   },
   {
-    "__docId__": 210,
+    "__docId__": 234,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6047,7 +6748,7 @@
     "interface": false
   },
   {
-    "__docId__": 211,
+    "__docId__": 235,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6132,7 +6833,7 @@
     }
   },
   {
-    "__docId__": 212,
+    "__docId__": 236,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6149,7 +6850,7 @@
     }
   },
   {
-    "__docId__": 213,
+    "__docId__": 237,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6202,7 +6903,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 238,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6267,7 +6968,7 @@
     }
   },
   {
-    "__docId__": 215,
+    "__docId__": 239,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6337,7 +7038,7 @@
     }
   },
   {
-    "__docId__": 216,
+    "__docId__": 240,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6418,7 +7119,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 241,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6483,7 +7184,7 @@
     }
   },
   {
-    "__docId__": 218,
+    "__docId__": 242,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6529,7 +7230,7 @@
     }
   },
   {
-    "__docId__": 219,
+    "__docId__": 243,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6565,7 +7266,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 244,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6611,7 +7312,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 245,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6643,7 +7344,7 @@
     "return": null
   },
   {
-    "__docId__": 238,
+    "__docId__": 262,
     "kind": "file",
     "name": "src/Badger.js",
     "content": "export * from './Badger/Component.js';\nexport * from './Badger/Codecs/index.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Filesystem/Directory.js';\nexport * from './Badger/Filesystem/File.js';\nexport * from './Badger/Filesystem/Path.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/Color.js';\nexport * from './Badger/Utils/DataPath.js';\nexport * from './Badger/Utils/Debug.js';\nexport * from './Badger/Utils/Misc.js';\nexport * from './Badger/Utils/Options.js';\nexport * from './Badger/Utils/Params.js';\nexport * from './Badger/Utils/Prompt.js';\nexport * from './Badger/Utils/Text.js';\nexport * from './Badger/Workspace.js';\n",
@@ -6654,7 +7355,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 239,
+    "__docId__": 263,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -6670,7 +7371,7 @@
     "interface": false
   },
   {
-    "__docId__": 240,
+    "__docId__": 264,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -6684,7 +7385,7 @@
     "undocument": true
   },
   {
-    "__docId__": 241,
+    "__docId__": 265,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -6701,7 +7402,7 @@
     }
   },
   {
-    "__docId__": 242,
+    "__docId__": 266,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -6718,7 +7419,7 @@
     }
   },
   {
-    "__docId__": 243,
+    "__docId__": 267,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -6734,7 +7435,7 @@
     "return": null
   },
   {
-    "__docId__": 244,
+    "__docId__": 268,
     "kind": "variable",
     "name": "codecs",
     "memberof": "src/Badger.js",
@@ -6754,7 +7455,7 @@
     }
   },
   {
-    "__docId__": 245,
+    "__docId__": 269,
     "kind": "function",
     "name": "codec",
     "memberof": "src/Badger.js",
@@ -6780,7 +7481,7 @@
     "return": null
   },
   {
-    "__docId__": 246,
+    "__docId__": 270,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -6799,7 +7500,7 @@
     ]
   },
   {
-    "__docId__": 247,
+    "__docId__": 271,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -6868,7 +7569,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 272,
     "kind": "method",
     "name": "firstFileWithExt",
     "memberof": "src/Badger.js~Config",
@@ -6921,7 +7622,7 @@
     }
   },
   {
-    "__docId__": 249,
+    "__docId__": 273,
     "kind": "method",
     "name": "jsFile",
     "memberof": "src/Badger.js~Config",
@@ -6954,7 +7655,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 274,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -6987,7 +7688,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 275,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -7030,7 +7731,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 276,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -7062,7 +7763,7 @@
     "return": null
   },
   {
-    "__docId__": 253,
+    "__docId__": 277,
     "kind": "class",
     "name": "Directory",
     "memberof": "src/Badger.js",
@@ -7081,7 +7782,7 @@
     ]
   },
   {
-    "__docId__": 254,
+    "__docId__": 278,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Directory",
@@ -7146,7 +7847,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 279,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~Directory",
@@ -7211,7 +7912,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 280,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Directory",
@@ -7246,7 +7947,7 @@
     ]
   },
   {
-    "__docId__": 257,
+    "__docId__": 281,
     "kind": "method",
     "name": "parent",
     "memberof": "src/Badger.js~Directory",
@@ -7301,7 +8002,7 @@
     }
   },
   {
-    "__docId__": 258,
+    "__docId__": 282,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Directory",
@@ -7323,7 +8024,7 @@
     "params": []
   },
   {
-    "__docId__": 259,
+    "__docId__": 283,
     "kind": "method",
     "name": "isEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -7345,7 +8046,7 @@
     "params": []
   },
   {
-    "__docId__": 260,
+    "__docId__": 284,
     "kind": "method",
     "name": "notEmpty",
     "memberof": "src/Badger.js~Directory",
@@ -7367,7 +8068,7 @@
     "params": []
   },
   {
-    "__docId__": 261,
+    "__docId__": 285,
     "kind": "method",
     "name": "empty",
     "memberof": "src/Badger.js~Directory",
@@ -7420,7 +8121,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 286,
     "kind": "method",
     "name": "mkdir",
     "memberof": "src/Badger.js~Directory",
@@ -7463,7 +8164,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 287,
     "kind": "method",
     "name": "rmdir",
     "memberof": "src/Badger.js~Directory",
@@ -7526,7 +8227,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 288,
     "kind": "method",
     "name": "create",
     "memberof": "src/Badger.js~Directory",
@@ -7571,7 +8272,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 289,
     "kind": "method",
     "name": "destroy",
     "memberof": "src/Badger.js~Directory",
@@ -7640,7 +8341,7 @@
     }
   },
   {
-    "__docId__": 266,
+    "__docId__": 290,
     "kind": "method",
     "name": "mustExist",
     "memberof": "src/Badger.js~Directory",
@@ -7703,7 +8404,7 @@
     }
   },
   {
-    "__docId__": 267,
+    "__docId__": 291,
     "kind": "function",
     "name": "dir",
     "memberof": "src/Badger.js",
@@ -7739,7 +8440,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 292,
     "kind": "function",
     "name": "cwd",
     "memberof": "src/Badger.js",
@@ -7769,7 +8470,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 293,
     "kind": "function",
     "name": "bin",
     "memberof": "src/Badger.js",
@@ -7806,7 +8507,7 @@
     }
   },
   {
-    "__docId__": 270,
+    "__docId__": 294,
     "kind": "class",
     "name": "File",
     "memberof": "src/Badger.js",
@@ -7825,7 +8526,7 @@
     ]
   },
   {
-    "__docId__": 271,
+    "__docId__": 295,
     "kind": "method",
     "name": "directory",
     "memberof": "src/Badger.js~File",
@@ -7880,7 +8581,7 @@
     }
   },
   {
-    "__docId__": 272,
+    "__docId__": 296,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~File",
@@ -7910,7 +8611,7 @@
     ]
   },
   {
-    "__docId__": 273,
+    "__docId__": 297,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~File",
@@ -7970,7 +8671,7 @@
     }
   },
   {
-    "__docId__": 274,
+    "__docId__": 298,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~File",
@@ -8041,7 +8742,7 @@
     }
   },
   {
-    "__docId__": 275,
+    "__docId__": 299,
     "kind": "method",
     "name": "delete",
     "memberof": "src/Badger.js~File",
@@ -8086,7 +8787,7 @@
     }
   },
   {
-    "__docId__": 276,
+    "__docId__": 300,
     "kind": "function",
     "name": "file",
     "memberof": "src/Badger.js",
@@ -8122,7 +8823,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 301,
     "kind": "class",
     "name": "Path",
     "memberof": "src/Badger.js",
@@ -8138,7 +8839,7 @@
     "interface": false
   },
   {
-    "__docId__": 278,
+    "__docId__": 302,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Path",
@@ -8203,7 +8904,7 @@
     }
   },
   {
-    "__docId__": 279,
+    "__docId__": 303,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Path",
@@ -8220,7 +8921,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 304,
     "kind": "method",
     "name": "path",
     "memberof": "src/Badger.js~Path",
@@ -8242,7 +8943,7 @@
     "params": []
   },
   {
-    "__docId__": 281,
+    "__docId__": 305,
     "kind": "method",
     "name": "relativePath",
     "memberof": "src/Badger.js~Path",
@@ -8278,7 +8979,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 306,
     "kind": "method",
     "name": "options",
     "memberof": "src/Badger.js~Path",
@@ -8314,7 +9015,7 @@
     }
   },
   {
-    "__docId__": 283,
+    "__docId__": 307,
     "kind": "method",
     "name": "exists",
     "memberof": "src/Badger.js~Path",
@@ -8339,7 +9040,7 @@
     "params": []
   },
   {
-    "__docId__": 284,
+    "__docId__": 308,
     "kind": "method",
     "name": "stat",
     "memberof": "src/Badger.js~Path",
@@ -8364,7 +9065,7 @@
     "params": []
   },
   {
-    "__docId__": 285,
+    "__docId__": 309,
     "kind": "method",
     "name": "unstat",
     "memberof": "src/Badger.js~Path",
@@ -8383,7 +9084,7 @@
     }
   },
   {
-    "__docId__": 286,
+    "__docId__": 310,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -8402,7 +9103,7 @@
     ]
   },
   {
-    "__docId__": 287,
+    "__docId__": 311,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -8458,7 +9159,7 @@
     }
   },
   {
-    "__docId__": 288,
+    "__docId__": 312,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Library",
@@ -8491,7 +9192,7 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 313,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -8523,7 +9224,7 @@
     "return": null
   },
   {
-    "__docId__": 290,
+    "__docId__": 314,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger.js",
@@ -8562,7 +9263,7 @@
     }
   },
   {
-    "__docId__": 291,
+    "__docId__": 315,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger.js",
@@ -8595,7 +9296,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 316,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger.js",
@@ -8614,7 +9315,7 @@
     "return": null
   },
   {
-    "__docId__": 293,
+    "__docId__": 317,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger.js",
@@ -8640,7 +9341,7 @@
     "return": null
   },
   {
-    "__docId__": 294,
+    "__docId__": 318,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger.js",
@@ -8670,7 +9371,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 319,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger.js",
@@ -8700,7 +9401,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 320,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger.js",
@@ -8730,7 +9431,7 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 321,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger.js",
@@ -8766,7 +9467,7 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 322,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger.js",
@@ -8811,7 +9512,7 @@
     }
   },
   {
-    "__docId__": 299,
+    "__docId__": 323,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger.js",
@@ -8858,7 +9559,7 @@
     "return": null
   },
   {
-    "__docId__": 300,
+    "__docId__": 324,
     "kind": "function",
     "name": "isString",
     "memberof": "src/Badger.js",
@@ -8888,7 +9589,7 @@
     }
   },
   {
-    "__docId__": 301,
+    "__docId__": 325,
     "kind": "function",
     "name": "isInteger",
     "memberof": "src/Badger.js",
@@ -8918,7 +9619,7 @@
     }
   },
   {
-    "__docId__": 302,
+    "__docId__": 326,
     "kind": "function",
     "name": "isArray",
     "memberof": "src/Badger.js",
@@ -8948,7 +9649,7 @@
     }
   },
   {
-    "__docId__": 303,
+    "__docId__": 327,
     "kind": "function",
     "name": "isFunction",
     "memberof": "src/Badger.js",
@@ -8978,7 +9679,7 @@
     }
   },
   {
-    "__docId__": 304,
+    "__docId__": 328,
     "kind": "function",
     "name": "isObject",
     "memberof": "src/Badger.js",
@@ -9008,7 +9709,7 @@
     }
   },
   {
-    "__docId__": 305,
+    "__docId__": 329,
     "kind": "function",
     "name": "isUndefined",
     "memberof": "src/Badger.js",
@@ -9038,7 +9739,7 @@
     }
   },
   {
-    "__docId__": 306,
+    "__docId__": 330,
     "kind": "function",
     "name": "isNull",
     "memberof": "src/Badger.js",
@@ -9068,7 +9769,7 @@
     }
   },
   {
-    "__docId__": 307,
+    "__docId__": 331,
     "kind": "function",
     "name": "hasValue",
     "memberof": "src/Badger.js",
@@ -9098,7 +9799,7 @@
     }
   },
   {
-    "__docId__": 308,
+    "__docId__": 332,
     "kind": "function",
     "name": "haveValue",
     "memberof": "src/Badger.js",
@@ -9129,7 +9830,7 @@
     }
   },
   {
-    "__docId__": 309,
+    "__docId__": 333,
     "kind": "function",
     "name": "noValue",
     "memberof": "src/Badger.js",
@@ -9159,7 +9860,7 @@
     }
   },
   {
-    "__docId__": 310,
+    "__docId__": 334,
     "kind": "function",
     "name": "fail",
     "memberof": "src/Badger.js",
@@ -9186,7 +9887,7 @@
     "return": null
   },
   {
-    "__docId__": 311,
+    "__docId__": 335,
     "kind": "function",
     "name": "rethrow",
     "memberof": "src/Badger.js",
@@ -9212,7 +9913,7 @@
     "return": null
   },
   {
-    "__docId__": 312,
+    "__docId__": 336,
     "kind": "function",
     "name": "doNothing",
     "memberof": "src/Badger.js",
@@ -9231,7 +9932,7 @@
     "return": null
   },
   {
-    "__docId__": 313,
+    "__docId__": 337,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger.js",
@@ -9262,7 +9963,7 @@
     }
   },
   {
-    "__docId__": 314,
+    "__docId__": 338,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger.js",
@@ -9282,7 +9983,7 @@
     }
   },
   {
-    "__docId__": 315,
+    "__docId__": 339,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger.js",
@@ -9312,7 +10013,7 @@
     }
   },
   {
-    "__docId__": 316,
+    "__docId__": 340,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger.js",
@@ -9338,7 +10039,7 @@
     "return": null
   },
   {
-    "__docId__": 317,
+    "__docId__": 341,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger.js",
@@ -9364,7 +10065,7 @@
     "return": null
   },
   {
-    "__docId__": 318,
+    "__docId__": 342,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -9403,7 +10104,7 @@
     }
   },
   {
-    "__docId__": 319,
+    "__docId__": 343,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -9442,7 +10143,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 344,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -9462,7 +10163,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 345,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -9498,7 +10199,7 @@
     }
   },
   {
-    "__docId__": 322,
+    "__docId__": 346,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger.js",
@@ -9537,7 +10238,7 @@
     }
   },
   {
-    "__docId__": 323,
+    "__docId__": 347,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger.js",
@@ -9572,7 +10273,7 @@
     "return": null
   },
   {
-    "__docId__": 324,
+    "__docId__": 348,
     "kind": "function",
     "name": "splitList",
     "memberof": "src/Badger.js",
@@ -9602,7 +10303,7 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 349,
     "kind": "function",
     "name": "joinList",
     "memberof": "src/Badger.js",
@@ -9650,7 +10351,7 @@
     }
   },
   {
-    "__docId__": 326,
+    "__docId__": 350,
     "kind": "function",
     "name": "joinListAnd",
     "memberof": "src/Badger.js",
@@ -9698,7 +10399,7 @@
     }
   },
   {
-    "__docId__": 327,
+    "__docId__": 351,
     "kind": "function",
     "name": "joinListOr",
     "memberof": "src/Badger.js",
@@ -9746,7 +10447,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 352,
     "kind": "function",
     "name": "capitalise",
     "memberof": "src/Badger.js",
@@ -9776,7 +10477,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 353,
     "kind": "function",
     "name": "snakeToStudly",
     "memberof": "src/Badger.js",
@@ -9806,7 +10507,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 354,
     "kind": "function",
     "name": "snakeToCamel",
     "memberof": "src/Badger.js",
@@ -9836,7 +10537,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 355,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -9852,7 +10553,7 @@
     "interface": false
   },
   {
-    "__docId__": 332,
+    "__docId__": 356,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -9937,7 +10638,7 @@
     }
   },
   {
-    "__docId__": 333,
+    "__docId__": 357,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -9954,7 +10655,7 @@
     }
   },
   {
-    "__docId__": 334,
+    "__docId__": 358,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -10007,7 +10708,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 359,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -10072,7 +10773,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 360,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -10142,7 +10843,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 361,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -10223,7 +10924,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 362,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -10288,7 +10989,7 @@
     }
   },
   {
-    "__docId__": 339,
+    "__docId__": 363,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -10334,7 +11035,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 364,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Workspace",
@@ -10370,7 +11071,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 365,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -10416,7 +11117,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 366,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",

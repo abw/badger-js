@@ -618,6 +618,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~parseduration",
+    "function/index.html#static-function-parseDuration",
+    "<span>parseDuration</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~prompt",
     "function/index.html#static-function-prompt",
     "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -675,6 +681,12 @@ window.esdocSearchIndex = [
     "@abw/badger~section",
     "function/index.html#static-function-section",
     "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~singulardurations",
+    "function/index.html#static-function-singularDurations",
+    "<span>singularDurations</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -1656,15 +1668,105 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/timestamp.js~timestamp#adjust",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-adjust",
+    "src/Badger/Timestamp.js~Timestamp#adjust",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#after",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-after",
+    "src/Badger/Timestamp.js~Timestamp#after",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#before",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-before",
+    "src/Badger/Timestamp.js~Timestamp#before",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#compare",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-compare",
+    "src/Badger/Timestamp.js~Timestamp#compare",
+    "method"
+  ],
+  [
     "src/badger/timestamp.js~timestamp#constructor",
     "class/src/Badger/Timestamp.js~Timestamp.html#instance-constructor-constructor",
     "src/Badger/Timestamp.js~Timestamp#constructor",
     "method"
   ],
   [
+    "src/badger/timestamp.js~timestamp#copy",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-copy",
+    "src/Badger/Timestamp.js~Timestamp#copy",
+    "method"
+  ],
+  [
     "src/badger/timestamp.js~timestamp#date",
     "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-date",
     "src/Badger/Timestamp.js~Timestamp#date",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#dateobject",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-dateObject",
+    "src/Badger/Timestamp.js~Timestamp#dateObject",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#day",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-day",
+    "src/Badger/Timestamp.js~Timestamp#day",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#epochseconds",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-epochSeconds",
+    "src/Badger/Timestamp.js~Timestamp#epochSeconds",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#equal",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-equal",
+    "src/Badger/Timestamp.js~Timestamp#equal",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#hours",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-hours",
+    "src/Badger/Timestamp.js~Timestamp#hours",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#milliseconds",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-milliseconds",
+    "src/Badger/Timestamp.js~Timestamp#milliseconds",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#minutes",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-minutes",
+    "src/Badger/Timestamp.js~Timestamp#minutes",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#month",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-month",
+    "src/Badger/Timestamp.js~Timestamp#month",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#notafter",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-notAfter",
+    "src/Badger/Timestamp.js~Timestamp#notAfter",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#notbefore",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-notBefore",
+    "src/Badger/Timestamp.js~Timestamp#notBefore",
     "method"
   ],
   [
@@ -1680,6 +1782,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/badger/timestamp.js~timestamp#seconds",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-seconds",
+    "src/Badger/Timestamp.js~Timestamp#seconds",
+    "method"
+  ],
+  [
     "src/badger/timestamp.js~timestamp#stamp",
     "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-stamp",
     "src/Badger/Timestamp.js~Timestamp#stamp",
@@ -1689,6 +1797,12 @@ window.esdocSearchIndex = [
     "src/badger/timestamp.js~timestamp#time",
     "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-time",
     "src/Badger/Timestamp.js~Timestamp#time",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#year",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-year",
+    "src/Badger/Timestamp.js~Timestamp#year",
     "method"
   ],
   [
