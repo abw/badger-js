@@ -56,7 +56,7 @@ located alongside it then you can do something like this:
 import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
-  bin(import.meta.url).parent().dir('config')
+  bin().parent().dir('config')
 )
 ```
 
@@ -66,7 +66,7 @@ Or more succinctly like this:
 import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
-  bin(import.meta.url).dir('../config')
+  bin().dir('../config')
 )
 ```
 
@@ -79,7 +79,9 @@ you want to read configuration files from your project root directory and/or a
 `config` directory then you could do this:
 
 ```js
-const rootDir = bin(import.meta.url).parent()
+import { bin, Config } from '@abw/badger'
+
+const rootDir = bin().parent()
 
 const configDir = new Config(
   [rootDir, rootDir.dir('config')]

@@ -34,7 +34,7 @@ for the parent directory like so:
 import { bin, Workspace } from '@abw/badger'
 
 const workspace = new Workspace(
-  bin(import.meta.url).parent()
+  bin().parent()
 )
 ```
 
