@@ -6,6 +6,8 @@ const MATCH_TIME  = '(\\d{1,2})\\D(\\d{2})\\D(\\d{2})';
 const MATCH_STAMP = `^\\s*${MATCH_DATE}(?:(?:T|\\s)${MATCH_TIME})?`;
 const STAMP_REGEX = new RegExp(MATCH_STAMP);
 const STAMP_PARTS = [undefined, 'year', 'month', 'day', 'hours', 'minutes', 'seconds'];
+const DURATIONS   = ['year', 'month', 'day', 'hour', 'minute', 'second'];
+const PLURALS     = { hour: 'hours', minute: 'minutes', second: 'seconds' };
 
 /**
  * Default configuration options.
@@ -44,6 +46,10 @@ export class Timestamp {
       // use current time if no argument provided
       this.parts = unpackNow()
     }
+    else if (ts instanceof Timestamp) {
+      // copy constructor
+      this.parts = { ...ts.parts };
+    }
     else if (isTimestamp(ts)) {
       // split timestamp string
       this.parts = splitTimestamp(ts)
@@ -79,6 +85,79 @@ export class Timestamp {
     }
   }
   /**
+   * Method to return a new object as a copy of the current object
+   * @return {Object} - new `Timestamp` object
+   */
+  copy() {
+    return new Timestamp(this.parts);
+  }
+  /**
+   * Method to get or set the year.
+   * @param {Integer} [year] - optional new value for year
+   * @return {Integer} - the year
+   */
+  year(year) {
+    if (hasValue(year)) {
+      this.parts.year = year;
+    }
+    return this.parts.year;
+  }
+  /**
+   * Method to get or set the month.
+   * @param {Integer} [month] - optional new value for month
+   * @return {Integer} - the month
+   */
+  month(month) {
+    if (hasValue(month)) {
+      this.parts.month = month;
+    }
+    return this.parts.month;
+  }
+  /**
+   * Method to get or set the day.
+   * @param {Integer} [day] - optional new value for day
+   * @return {Integer} - the day
+   */
+  day(day) {
+    if (hasValue(day)) {
+      this.parts.day = day;
+    }
+    return this.parts.day;
+  }
+  /**
+   * Method to get or set the hours.
+   * @param {Integer} [hours] - optional new value for hours
+   * @return {Integer} - the hours
+   */
+  hours(hours) {
+    if (hasValue(hours)) {
+      this.parts.hours = hours;
+    }
+    return this.parts.hours;
+  }
+  /**
+   * Method to get or set the minutes.
+   * @param {Integer} [minutes] - optional new value for minutes
+   * @return {Integer} - the minutes
+   */
+  minutes(minutes) {
+    if (hasValue(minutes)) {
+      this.parts.minutes = minutes;
+    }
+    return this.parts.minutes;
+  }
+  /**
+   * Method to get or set the seconds.
+   * @param {Integer} [seconds] - optional new value for seconds
+   * @return {Integer} - the seconds
+   */
+  seconds(seconds) {
+    if (hasValue(seconds)) {
+      this.parts.seconds = seconds;
+    }
+    return this.parts.seconds;
+  }
+  /**
    * Method to return a formatted date string in the form `YYYY-MM-DD`.
    * @param {String} [joint='-'] - optional joining character
    * @return {String} - formatted date string
@@ -104,6 +183,193 @@ export class Timestamp {
    */
   stamp(options={}) {
     return joinTimestamp(this.parts, { ...this.props, ...options })
+  }
+  /**
+   * Method to return a `Date` object
+   * @return {Date} - new date object
+   */
+  dateObject() {
+    return new Date(this.stamp({ joint: 'T', dateJoint: '-', timeJoint: ':' }));
+  }
+  /**
+   * Method to return the number of millseconds since the Unix epoch
+   * @return {Integer} - the number of milliseconds
+   */
+  milliseconds() {
+    return this.dateObject().getTime();
+  }
+  /**
+   * Method to return the number of seconds since the Unix epoch
+   * @return {Integer} - the number of seconds
+   */
+  epochSeconds() {
+    return Math.floor(this.milliseconds() / 1000);
+  }
+  /**
+   * Method to adjust the timestamp.  The duration can be specified as a string containing
+   * one or more items to adjust in either singular or plural form, e.g. `"1 year, 1 month"`,
+   * `"2 years 2 months"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,
+   * `{ years: 2, months: 2 }`, etc.
+   * @param {String|Object} duration - a string or object of adjustments
+   * @example
+   * ts.adjust("1 year 2 months 3 hours")
+   * @example
+   * ts.adjust({ year: 1, months: 2, hours: 3 })
+   */
+  adjust(duration) {
+    let p = this.parts;
+    const d = isString(duration)
+      ? parseDuration(duration)         // parse string to object
+      : singularDurations(duration);    // convert plurals (e.g. "hours") to singular form (e.g. "hour")
+    DURATIONS.forEach(
+      unit => {
+        const value = d[unit];
+        if (hasValue(value)) {
+          // By convention we store date elements in singular (year, month, day) and time
+          // elements in plural (hours, minutes, seconds), but we convert all durations to
+          // singluar in parseDuration() and singularDuration() (because it's easier to drop
+          // an 's' from the end of plural than optionally add one.  Here we use the PLURALS
+          // lookup table to map singular hour, minute and second back to their plurals.
+          p[PLURALS[unit]||unit] += value;
+        }
+      }
+    );
+
+    // time underflow
+    while (p.seconds < 0) {
+      p.seconds += 60;
+      p.minutes--;
+    }
+    while (p.minutes < 0) {
+      p.minutes += 60;
+      p.hours--;
+    }
+    while (p.hours < 0) {
+      p.hours += 24;
+      p.day--;
+    }
+
+    // time overflow
+    if (p.seconds > 59) {
+      p.minutes += Math.floor(p.seconds / 60);
+      p.seconds %= 60;
+    }
+    if (p.minutes > 59) {
+      p.hours += Math.floor(p.minutes / 60);
+      p.minutes %= 60;
+    }
+    if (p.hours > 23) {
+      p.day += Math.floor(p.hours / 24);
+      p.hours %= 24;
+    }
+
+    // date underflow
+    while (p.day <= 0) {
+      p.month--;
+      if (p.month <= 0) {
+        p.month += 12;
+        p.year--;
+      }
+      p.day += daysInMonth(p.month, p.year);
+    }
+    while (p.month <= 0) {
+      p.month += 12;
+      p.year--;
+    }
+
+    // month overflow
+    while (p.month > 12) {
+      p.month -= 12;
+      p.year++;
+    }
+
+    // day overflow
+    let dim;
+    while (p.day > (dim = daysInMonth(p.month, p.year))) {
+      p.day -= dim;
+      if (p.month == 12) {
+        p.month = 1;
+        p.year++;
+      }
+      else {
+        p.month++;
+      }
+    }
+
+    return this;
+  }
+  /**
+   * Method to compare the timestamp to another.  The arguments can be any that are accepted
+   * by the constructor.
+   * one or more items to adjust in either singular or plural form, e.g. `"1 year, 1 month"`,
+   * `"2 years 2 months"`, etc. Or it can be specified as an object: `{ year: 1, month: 1 }`,
+   * `{ years: 2, months: 2 }`, etc.
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Integer} - -1 if the timestamp is before the comparator, 0 if it's equal, +1 if it's after.
+   */
+  compare(...args) {
+    const that  = new Timestamp(...args);
+    const thisp = this.parts;
+    const thatp = that.parts;
+    this.debug("this: ", thisp)
+    this.debug("that: ", thisp)
+
+    for (let p of STAMP_PARTS) {
+      if (p) {
+        if (thisp[p] < thatp[p]) {
+          this.debug("[%s] this[%s] < that[%s]", p, thisp[p], thatp[p])
+          return -1;
+        }
+        else if (thisp[p] > thatp[p]) {
+          this.debug("[%s] this[%s] > that[%s]", p, thisp[p], thatp[p])
+          return 1;
+        }
+        else {
+          this.debug("[%s] this[%s] = that[%s]", p, thisp[p], thatp[p])
+        }
+      }
+    }
+    return 0;
+  }
+  /**
+   * Method to compare one timestamp to another for equality
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Boolean} - true if the timestamp is equal to the operand
+   */
+  equal(...args) {
+    return this.compare(...args) == 0;
+  }
+  /**
+   * Method to test for the timestamp coming before another timestamp
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Boolean} - true if the timestamp is before the operand
+   */
+  before(...args) {
+    return this.compare(...args) == -1;
+  }
+  /**
+   * Method to test for the timestamp coming after another timestamp
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Boolean} - true if the timestamp is after the operand
+   */
+  after(...args) {
+    return this.compare(...args) == 1;
+  }
+  /**
+   * Method to test for the timestamp being equal to or coming after another timestamp
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Boolean} - true if the timestamp is equal to or coming after the operand
+   */
+  notBefore(...args) {
+    return this.compare(...args) >= 0;
+  }
+  /**
+   * Method to test for the timestamp being equal to or coming before another timestamp
+   * @param {Array} args - any argument(s) accepted by the constructor
+   * @return {Boolean} - true if the timestamp is equal to or coming before the operand
+   */
+  notAfter(...args) {
+    return this.compare(...args) <= 0;
   }
 }
 
@@ -172,6 +438,40 @@ export const unpackDate = date => ({
 })
 
 /**
+ * Function to parse a duration string, e.g. `1 hour 3 minutes`.
+ * Quantities must be integers. Units can be singular (e.g. `hour`) or plural (e.g. `hours`).
+ * Other characters may appear between sections, e.g. `1 hour, 2 minutes and 3 seconds`.
+ * @param {Date} duration - duration string
+ * @return {Object} - object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`.
+ */
+export const parseDuration = duration => {
+  const match = duration.matchAll(/(-?\d+)\s*(\w+)/g);
+  let result = { };
+
+  for (let m of match) {
+    const n = parseInt(m[1]);           // convert quantity to integer
+    const d = m[2].replace(/s$/, '');   // convert plural to singular
+    result[d] = n;
+  }
+  return result;
+}
+
+/**
+ * Function to convert an object containing any plural duration units (e.g. `hours`) to the singular counterpart (e.g. `hour`).
+ * @param {Object} duration - object containing duration elements, either plural or singluar.
+ * @return {Object} - object containing any of `year`, `month`, `day`, `hour`, `minute` and `second`.
+ */
+export const singularDurations = duration => {
+  let result = { };
+  Object.entries(duration).forEach(
+    ([key, value]) => {
+      result[key.replace(/s$/, '')] = value;
+    }
+  )
+  return result;
+}
+
+/**
  * Function to join the constituent parts of a time stamp into a string
  * @param {Object} ts - object containing `year`, `month`, `day`, and optionally, `hours`, `minutes` and `seconds`.
  * @param {String} ts.year - the year as an integer
@@ -229,6 +529,35 @@ export const joinTime = (ts, joint=defaults.timeJoint) =>
     String(ts.minutes).padStart(2, '0'),
     String(ts.seconds).padStart(2, '0'),
   ].join(joint)
+
+
+const daysInMonth = (m, y) => {
+  if (m === 4 || m === 6 || m === 9 || m === 11) {
+    return 30;
+  }
+  else if (m == 2) {
+    return leapYear(y) ? 29 : 28;
+  }
+  else {
+    return 31;
+  }
+}
+
+const leapYear = y => {
+  if (y % 4) {
+    return 0;
+  }
+  else if (y % 400 === 0) {
+    return 1;
+  }
+  else if (y % 100 == 0) {
+    return 0;
+  }
+  else {
+    return 1;
+  }
+}
+
 
 /**
  * Function to create a new `Timestamp` object

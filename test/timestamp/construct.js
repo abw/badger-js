@@ -44,6 +44,22 @@ test(
 );
 
 test(
+  'timestamp copy constructor',
+  t => {
+    const stamp1 = timestamp('2022/08/09 01:02:03');
+    const stamp2 = timestamp(stamp1);
+    t.is( stamp2.parts.year, 2022 );
+    t.is( stamp2.parts.month, 8 );
+    t.is( stamp2.parts.day, 9 );
+    t.is( stamp2.parts.hours, 1 );
+    t.is( stamp2.parts.minutes, 2 );
+    t.is( stamp2.parts.seconds, 3 );
+    t.is( stamp1.year(2023), 2023 );
+    t.is( stamp2.year(), 2022 );
+  }
+);
+
+test(
   'date string constructor',
   t => {
     const stamp = timestamp('9 August 2022 22:23:24');
