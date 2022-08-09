@@ -141,7 +141,7 @@ for the parent directory like so:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Workspace } from '@abw/badger'
 
 const workspace = new Workspace(
-  bin(import.meta.url).parent()
+  bin().parent()
 )</code></code></pre>
 <h2 id="directories">Directories</h2><p>The <a href="class/src/Badger.js~Workspace#instance-method-dir">dir()</a> method is a shortcut
 to fetch a <a href="class/src/Badger/Filesystem/Directory.js~Directory">Directory</a> object for any

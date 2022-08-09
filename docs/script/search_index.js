@@ -126,6 +126,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger~timestamp",
+    "class/src/Badger/Timestamp.js~Timestamp.html",
+    "<span>Timestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "class"
+  ],
+  [
     "@abw/badger~workspace",
     "class/src/Badger/Workspace.js~Workspace.html",
     "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -402,6 +408,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~isdate",
+    "function/index.html#static-function-isDate",
+    "<span>isDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~isfunction",
     "function/index.html#static-function-isFunction",
     "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -411,6 +423,18 @@ window.esdocSearchIndex = [
     "@abw/badger~isfunction",
     "function/index.html#static-function-isFunction",
     "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isinteger",
+    "function/index.html#static-function-isInteger",
+    "<span>isInteger</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~isinteger",
+    "function/index.html#static-function-isInteger",
+    "<span>isInteger</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -450,6 +474,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~istimestamp",
+    "function/index.html#static-function-isTimestamp",
+    "<span>isTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~isundefined",
     "function/index.html#static-function-isUndefined",
     "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -459,6 +489,12 @@ window.esdocSearchIndex = [
     "@abw/badger~isundefined",
     "function/index.html#static-function-isUndefined",
     "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~joindate",
+    "function/index.html#static-function-joinDate",
+    "<span>joinDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -495,6 +531,18 @@ window.esdocSearchIndex = [
     "@abw/badger~joinlistor",
     "function/index.html#static-function-joinListOr",
     "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~jointime",
+    "function/index.html#static-function-joinTime",
+    "<span>joinTime</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~jointimestamp",
+    "function/index.html#static-function-joinTimestamp",
+    "<span>joinTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -564,6 +612,12 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~parsedate",
+    "function/index.html#static-function-parseDate",
+    "<span>parseDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~prompt",
     "function/index.html#static-function-prompt",
     "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -669,6 +723,30 @@ window.esdocSearchIndex = [
     "@abw/badger~splitlist",
     "function/index.html#static-function-splitList",
     "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~splittimestamp",
+    "function/index.html#static-function-splitTimestamp",
+    "<span>splitTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~timestamp",
+    "function/index.html#static-function-timestamp",
+    "<span>timestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~unpackdate",
+    "function/index.html#static-function-unpackDate",
+    "<span>unpackDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~unpacknow",
+    "function/index.html#static-function-unpackNow",
+    "<span>unpackNow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -1569,6 +1647,48 @@ window.esdocSearchIndex = [
     "src/badger/library.js~library#library",
     "class/src/Badger/Library.js~Library.html#instance-method-library",
     "src/Badger/Library.js~Library#library",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js",
+    "file/src/Badger/Timestamp.js.html",
+    "src/Badger/Timestamp.js",
+    "file"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#constructor",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-constructor-constructor",
+    "src/Badger/Timestamp.js~Timestamp#constructor",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#date",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-date",
+    "src/Badger/Timestamp.js~Timestamp#date",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#parts",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-member-parts",
+    "src/Badger/Timestamp.js~Timestamp#parts",
+    "member"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#props",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-member-props",
+    "src/Badger/Timestamp.js~Timestamp#props",
+    "member"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#stamp",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-stamp",
+    "src/Badger/Timestamp.js~Timestamp#stamp",
+    "method"
+  ],
+  [
+    "src/badger/timestamp.js~timestamp#time",
+    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-time",
+    "src/Badger/Timestamp.js~Timestamp#time",
     "method"
   ],
   [

@@ -157,20 +157,22 @@ located alongside it then you can do something like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
-  bin(import.meta.url).parent().dir('config')
+  bin().parent().dir('config')
 )</code></code></pre>
 <p>Or more succinctly like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Config } from '@abw/badger'
 
 const configDir = new Config(
-  bin(import.meta.url).dir('../config')
+  bin().dir('../config')
 )</code></code></pre>
 <h2 id="multiple-config-directories">Multiple Config Directories</h2><p>If you have multiple locations that you want to read configuration files
 from then you can specify them as an array.  The values of the array can be
 either Directory objects or strings, or a mixture of the two.  For example if
 you want to read configuration files from your project root directory and/or a
 <code>config</code> directory then you could do this:</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">const rootDir = bin(import.meta.url).parent()
+<pre><code class="lang-js"><code class="source-code prettyprint">import { bin, Config } from '@abw/badger'
+
+const rootDir = bin().parent()
 
 const configDir = new Config(
   [rootDir, rootDir.dir('config')]
