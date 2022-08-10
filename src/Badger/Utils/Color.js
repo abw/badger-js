@@ -1,4 +1,4 @@
-import { isObject } from "./Misc.js";
+import { isObject } from "@abw/badger-utils";
 
 const ANSIStart  = '\u001B[';
 const ANSIEnd    = 'm';

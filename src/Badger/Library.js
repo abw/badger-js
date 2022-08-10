@@ -1,8 +1,7 @@
 import { DirPath } from "./Filesystem/DirPath.js";
 import { addDebug } from "./Utils/Debug.js";
-import { splitList } from "./Utils/Text.js";
-import { fail } from "./Utils/Misc.js";
 import { dataPath } from "./Utils/DataPath.js";
+import { fail, splitList } from "@abw/badger-utils";
 
 /**
  * Default configuration options.

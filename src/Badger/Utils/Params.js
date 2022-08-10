@@ -1,5 +1,4 @@
-import { hasValue, fail } from "./Misc.js";
-import { joinListOr, splitList } from "./Text.js";
+import { joinListOr, splitList, hasValue, fail } from "@abw/badger-utils";
 
 /**
  * Assert that a parameter object contains an item with a defined/non-null value

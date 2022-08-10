@@ -2,7 +2,7 @@ import process from 'node:process';
 import path from 'node:path';
 import Path from './Path.js'
 import { file } from './File.js'
-import { fail } from '../Utils/Misc.js';
+import { fail } from '@abw/badger-utils';
 import { rm, mkdir, rmdir, readdir } from 'node:fs/promises'
 
 /**

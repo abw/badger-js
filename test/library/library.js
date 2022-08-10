@@ -1,5 +1,6 @@
 import test from 'ava';
-import { bin, library, splitList } from '../../src/Badger.js'
+import { bin, library } from '../../src/Badger.js'
+import { splitList } from '@abw/badger-utils'
 
 const DEBUG = false;
 const testDir = bin(import.meta.url).dir('test_libs');

@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { stat } from 'node:fs/promises'
-import { rethrow } from '../Utils/Misc.js';
+import { rethrow } from '@abw/badger-utils';
 import { addDebug } from '../Utils/Debug.js';
 
 /**

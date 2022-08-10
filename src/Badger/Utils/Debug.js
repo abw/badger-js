@@ -1,5 +1,5 @@
 import { ANSIescape, ANSIreset } from './Color.js'
-import { doNothing } from './Misc.js';
+import { doNothing } from '@abw/badger-utils';
 
 /**
  * Returns a debugging function which is enabled by the first `enabled` argument.

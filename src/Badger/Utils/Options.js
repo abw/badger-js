@@ -2,7 +2,7 @@ import process from 'node:process';
 import prompter from 'prompts'
 import { Command } from 'commander';
 import { color } from './Color.js';
-import { hasValue } from './Misc.js';
+import { hasValue } from '@abw/badger-utils';
 
 export const defaults = {
   verboseColor:     'magenta',

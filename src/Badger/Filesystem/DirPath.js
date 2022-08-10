@@ -1,5 +1,5 @@
+import { splitList } from "@abw/badger-utils";
 import { dir as fsDir } from "./Directory.js";
-import { splitList } from "../Utils/Text.js";
 
 /**
  * The DirPath class implements a base class for objects that
