@@ -126,12 +126,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "@abw/badger~timestamp",
-    "class/src/Badger/Timestamp.js~Timestamp.html",
-    "<span>Timestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
     "@abw/badger~workspace",
     "class/src/Badger/Workspace.js~Workspace.html",
     "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -216,18 +210,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~capitalise",
-    "function/index.html#static-function-capitalise",
-    "<span>capitalise</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~capitalise",
-    "function/index.html#static-function-capitalise",
-    "<span>capitalise</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~codec",
     "function/index.html#static-function-codec",
     "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -336,30 +318,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~donothing",
-    "function/index.html#static-function-doNothing",
-    "<span>doNothing</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~donothing",
-    "function/index.html#static-function-doNothing",
-    "<span>doNothing</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~fail",
-    "function/index.html#static-function-fail",
-    "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~fail",
-    "function/index.html#static-function-fail",
-    "<span>fail</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~file",
     "function/index.html#static-function-file",
     "<span>file</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -369,180 +327,6 @@ window.esdocSearchIndex = [
     "@abw/badger~file",
     "function/index.html#static-function-file",
     "<span>file</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~hasvalue",
-    "function/index.html#static-function-hasValue",
-    "<span>hasValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~hasvalue",
-    "function/index.html#static-function-hasValue",
-    "<span>hasValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~havevalue",
-    "function/index.html#static-function-haveValue",
-    "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~havevalue",
-    "function/index.html#static-function-haveValue",
-    "<span>haveValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isarray",
-    "function/index.html#static-function-isArray",
-    "<span>isArray</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isarray",
-    "function/index.html#static-function-isArray",
-    "<span>isArray</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isdate",
-    "function/index.html#static-function-isDate",
-    "<span>isDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isfunction",
-    "function/index.html#static-function-isFunction",
-    "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isfunction",
-    "function/index.html#static-function-isFunction",
-    "<span>isFunction</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isinteger",
-    "function/index.html#static-function-isInteger",
-    "<span>isInteger</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isinteger",
-    "function/index.html#static-function-isInteger",
-    "<span>isInteger</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isnull",
-    "function/index.html#static-function-isNull",
-    "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isnull",
-    "function/index.html#static-function-isNull",
-    "<span>isNull</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isobject",
-    "function/index.html#static-function-isObject",
-    "<span>isObject</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isobject",
-    "function/index.html#static-function-isObject",
-    "<span>isObject</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isstring",
-    "function/index.html#static-function-isString",
-    "<span>isString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isstring",
-    "function/index.html#static-function-isString",
-    "<span>isString</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~istimestamp",
-    "function/index.html#static-function-isTimestamp",
-    "<span>isTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isundefined",
-    "function/index.html#static-function-isUndefined",
-    "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~isundefined",
-    "function/index.html#static-function-isUndefined",
-    "<span>isUndefined</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joindate",
-    "function/index.html#static-function-joinDate",
-    "<span>joinDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlist",
-    "function/index.html#static-function-joinList",
-    "<span>joinList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlist",
-    "function/index.html#static-function-joinList",
-    "<span>joinList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlistand",
-    "function/index.html#static-function-joinListAnd",
-    "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlistand",
-    "function/index.html#static-function-joinListAnd",
-    "<span>joinListAnd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlistor",
-    "function/index.html#static-function-joinListOr",
-    "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~joinlistor",
-    "function/index.html#static-function-joinListOr",
-    "<span>joinListOr</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~jointime",
-    "function/index.html#static-function-joinTime",
-    "<span>joinTime</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~jointimestamp",
-    "function/index.html#static-function-joinTimestamp",
-    "<span>joinTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -588,18 +372,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~novalue",
-    "function/index.html#static-function-noValue",
-    "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~novalue",
-    "function/index.html#static-function-noValue",
-    "<span>noValue</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~options",
     "function/index.html#static-function-options",
     "<span>options</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -609,18 +381,6 @@ window.esdocSearchIndex = [
     "@abw/badger~options",
     "function/index.html#static-function-options",
     "<span>options</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~parsedate",
-    "function/index.html#static-function-parseDate",
-    "<span>parseDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~parseduration",
-    "function/index.html#static-function-parseDuration",
-    "<span>parseDuration</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -660,18 +420,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~rethrow",
-    "function/index.html#static-function-rethrow",
-    "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~rethrow",
-    "function/index.html#static-function-rethrow",
-    "<span>rethrow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~section",
     "function/index.html#static-function-section",
     "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -684,36 +432,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~singulardurations",
-    "function/index.html#static-function-singularDurations",
-    "<span>singularDurations</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~snaketocamel",
-    "function/index.html#static-function-snakeToCamel",
-    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~snaketocamel",
-    "function/index.html#static-function-snakeToCamel",
-    "<span>snakeToCamel</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~snaketostudly",
-    "function/index.html#static-function-snakeToStudly",
-    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~snaketostudly",
-    "function/index.html#static-function-snakeToStudly",
-    "<span>snakeToStudly</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~splitdatapath",
     "function/index.html#static-function-splitDataPath",
     "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -723,42 +441,6 @@ window.esdocSearchIndex = [
     "@abw/badger~splitdatapath",
     "function/index.html#static-function-splitDataPath",
     "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~splitlist",
-    "function/index.html#static-function-splitList",
-    "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~splitlist",
-    "function/index.html#static-function-splitList",
-    "<span>splitList</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~splittimestamp",
-    "function/index.html#static-function-splitTimestamp",
-    "<span>splitTimestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~timestamp",
-    "function/index.html#static-function-timestamp",
-    "<span>timestamp</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~unpackdate",
-    "function/index.html#static-function-unpackDate",
-    "<span>unpackDate</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~unpacknow",
-    "function/index.html#static-function-unpackNow",
-    "<span>unpackNow</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -1662,150 +1344,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/timestamp.js",
-    "file/src/Badger/Timestamp.js.html",
-    "src/Badger/Timestamp.js",
-    "file"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#adjust",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-adjust",
-    "src/Badger/Timestamp.js~Timestamp#adjust",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#after",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-after",
-    "src/Badger/Timestamp.js~Timestamp#after",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#before",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-before",
-    "src/Badger/Timestamp.js~Timestamp#before",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#compare",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-compare",
-    "src/Badger/Timestamp.js~Timestamp#compare",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#constructor",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-constructor-constructor",
-    "src/Badger/Timestamp.js~Timestamp#constructor",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#copy",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-copy",
-    "src/Badger/Timestamp.js~Timestamp#copy",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#date",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-date",
-    "src/Badger/Timestamp.js~Timestamp#date",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#dateobject",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-dateObject",
-    "src/Badger/Timestamp.js~Timestamp#dateObject",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#day",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-day",
-    "src/Badger/Timestamp.js~Timestamp#day",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#epochseconds",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-epochSeconds",
-    "src/Badger/Timestamp.js~Timestamp#epochSeconds",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#equal",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-equal",
-    "src/Badger/Timestamp.js~Timestamp#equal",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#hours",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-hours",
-    "src/Badger/Timestamp.js~Timestamp#hours",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#milliseconds",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-milliseconds",
-    "src/Badger/Timestamp.js~Timestamp#milliseconds",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#minutes",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-minutes",
-    "src/Badger/Timestamp.js~Timestamp#minutes",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#month",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-month",
-    "src/Badger/Timestamp.js~Timestamp#month",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#notafter",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-notAfter",
-    "src/Badger/Timestamp.js~Timestamp#notAfter",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#notbefore",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-notBefore",
-    "src/Badger/Timestamp.js~Timestamp#notBefore",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#parts",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-member-parts",
-    "src/Badger/Timestamp.js~Timestamp#parts",
-    "member"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#props",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-member-props",
-    "src/Badger/Timestamp.js~Timestamp#props",
-    "member"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#seconds",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-seconds",
-    "src/Badger/Timestamp.js~Timestamp#seconds",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#stamp",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-stamp",
-    "src/Badger/Timestamp.js~Timestamp#stamp",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#time",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-time",
-    "src/Badger/Timestamp.js~Timestamp#time",
-    "method"
-  ],
-  [
-    "src/badger/timestamp.js~timestamp#year",
-    "class/src/Badger/Timestamp.js~Timestamp.html#instance-method-year",
-    "src/Badger/Timestamp.js~Timestamp#year",
-    "method"
-  ],
-  [
     "src/badger/utils/color.js",
     "file/src/Badger/Utils/Color.js.html",
     "src/Badger/Utils/Color.js",
@@ -1845,12 +1383,6 @@ window.esdocSearchIndex = [
     "src/badger/utils/prompt.js",
     "file/src/Badger/Utils/Prompt.js.html",
     "src/Badger/Utils/Prompt.js",
-    "file"
-  ],
-  [
-    "src/badger/utils/text.js",
-    "file/src/Badger/Utils/Text.js.html",
-    "src/Badger/Utils/Text.js",
     "file"
   ],
   [
