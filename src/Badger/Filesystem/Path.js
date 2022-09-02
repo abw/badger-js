@@ -50,6 +50,12 @@ export class Path {
    * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there
    */
   relativePath(...parts) {
+    if (parts.length === 1 && parts[0] instanceof Path) {
+      return parts[0].path();
+    }
+    if (path.isAbsolute(parts[0])) {
+      return path.join(...parts);
+    }
     return path.join(this.state.path, ...parts);
   }
 
