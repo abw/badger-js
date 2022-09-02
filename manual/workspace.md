@@ -143,6 +143,19 @@ const workspace = new Workspace(
 )
 ```
 
+You can specify multiple directories to search for configuration files.
+
+```js
+const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    config: {
+      dir:   ['cfg', 'config'],
+    }
+  }
+)
+```
+
 The `library` option can be provided to configure the [Library](class/src/Badger/Library.js~Library)
 object that the workspace used to load Javascript libraries.
 
@@ -151,8 +164,21 @@ const workspace = new Workspace(
   '/path/to/workspace',
   {
     library: {
-        dir:   'lib',
-        jsExt: 'js',
+      dir:   'lib',
+      jsExt: 'js',
+    }
+  }
+)
+```
+
+You can specify multiple directories to search for Javascript libraries.
+
+```js
+const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    library: {
+      dir: ['src', 'lib'],
     }
   }
 )
