@@ -34,7 +34,7 @@ export class Workspace {
    */
   constructor(dir, options={}) {
     const rootDir = fsDir(dir);
-    const cfgDir  = rootDir.dir(options.config?.dir || defaults.config.dir);
+    const cfgDir  = splitList(options.config?.dir || defaults.config.dir).map( dir => rootDir.dir(dir) );
     const cfgOpts = { ...defaults.config, ...(options.config||{}) };
     const config  = new Config(cfgDir, cfgOpts);
     const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );
@@ -49,7 +49,7 @@ export class Workspace {
 
     addDebug(this, options.debug, options.debugPrefix, options.debugColor);
     this.debug('root dir: ', rootDir.path());
-    this.debug('config dir: ', cfgDir.path());
+    this.debug('config dir: ', cfgDir.map( d => d.path() ));
     this.debug('libDirs: ', libDirs);
     this.debug('libOpts: ', libOpts);
   }
