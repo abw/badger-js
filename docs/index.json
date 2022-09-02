@@ -2613,7 +2613,7 @@
     "__docId__": 107,
     "kind": "file",
     "name": "src/Badger/Filesystem/Path.js",
-    "content": "import path from 'node:path';\nimport { stat } from 'node:fs/promises'\nimport { rethrow } from '@abw/badger-utils';\nimport { addDebug } from '../Utils/Debug.js';\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  encoding: 'utf8'\n}\n\n/**\n * The Path class implements a base class for the {@link File} and {@link Directory}\n * classes.  It implements the common functionality for representing a filesystem path.\n */\nexport class Path {\n  /**\n   * Constructor for filesystem paths.\n   * @param {string} path - file path\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.encoding=utf8] - file encoding\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Path} object\n   */\n  constructor(path, options={}) {\n    // allow path/file/directory to be constructed from an existing object\n    if (path instanceof Path) {\n      path = path.path();\n    }\n    this.state = { path, options: { ...defaults, ...options } };\n    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);\n  }\n\n  /**\n   * Accessor method to return the filesystem path.\n   * @return {String} the filesystem path\n   */\n  path() {\n    return this.state.path;\n  }\n\n  /**\n   * Create a path relative to the current path.\n   * @param {String[]} parts - part(s) of the filesystem path\n   * @return {String} the new path\n   * @example\n   * const p = new Path('/path/to/here')\n   * const q = p.relativePath('there')          // -> /path/to/here/there\n   * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there\n   */\n  relativePath(...parts) {\n    return path.join(this.state.path, ...parts);\n  }\n\n  /**\n   * Internal method to merge any options with the pre-defined options passed to the\n   * constructor.  Options passed as arguments will take precedence.\n   * @param {Object} options - new options\n   * @return {Object} the merged options\n   * @example\n   * const p = new Path('/path/to/here', { option1: 'hello' })\n   * const q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }\n   */\n  options(options={}) {\n    return { ...this.state.options, ...options };\n  }\n\n  /**\n   * Method to assert that the path exists.\n   * @return {Promise} fulfills with `true` if the path exists or rejects if the path doesn't\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.exists()\n   *   .then( console.log('path exists') )\n   *   .catch( console.log('path does not exist') )\n   */\n  async exists() {\n    try {\n      await this.stat();\n      return true;\n    }\n    catch (error) {\n      return error.code === 'ENOENT'\n        ? false\n        : rethrow(error);\n    }\n  }\n\n  /**\n   * Method to fetch stats for the path.  Uses the `stat` function from `node:fs/promises`.\n   * Stats are cached internally (subject to change)\n   * @return {Promise} fulfills with path stats returned from the `stat` function\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.stat()\n   *   .then( stats => console.log('path stats:', stats) )\n   *   .catch( console.log('path does not exist') )\n   */\n  async stat() {\n    const stats = await stat(this.state.path);\n    return this.state.stats = stats;\n  }\n\n  /**\n   * Method to clear internal cache of path stats (subject to change)\n   */\n  unstat() {\n    this.state.stats = undefined;\n    return this;\n  }\n}\n\nexport default Path\n",
+    "content": "import path from 'node:path';\nimport { stat } from 'node:fs/promises'\nimport { rethrow } from '@abw/badger-utils';\nimport { addDebug } from '../Utils/Debug.js';\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  encoding: 'utf8'\n}\n\n/**\n * The Path class implements a base class for the {@link File} and {@link Directory}\n * classes.  It implements the common functionality for representing a filesystem path.\n */\nexport class Path {\n  /**\n   * Constructor for filesystem paths.\n   * @param {string} path - file path\n   * @param {Object} [options] - configuration options\n   * @param {String} [options.encoding=utf8] - file encoding\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} the {@link Path} object\n   */\n  constructor(path, options={}) {\n    // allow path/file/directory to be constructed from an existing object\n    if (path instanceof Path) {\n      path = path.path();\n    }\n    this.state = { path, options: { ...defaults, ...options } };\n    addDebug(this, options.debug, options.debugPrefix || 'Path', options.debugColor);\n  }\n\n  /**\n   * Accessor method to return the filesystem path.\n   * @return {String} the filesystem path\n   */\n  path() {\n    return this.state.path;\n  }\n\n  /**\n   * Create a path relative to the current path.\n   * @param {String[]} parts - part(s) of the filesystem path\n   * @return {String} the new path\n   * @example\n   * const p = new Path('/path/to/here')\n   * const q = p.relativePath('there')          // -> /path/to/here/there\n   * const r = p.relativePath('and', 'there')   // -> /path/to/here/and/there\n   */\n  relativePath(...parts) {\n    if (parts.length === 1 && parts[0] instanceof Path) {\n      return parts[0].path();\n    }\n    if (path.isAbsolute(parts[0])) {\n      return path.join(...parts);\n    }\n    return path.join(this.state.path, ...parts);\n  }\n\n  /**\n   * Internal method to merge any options with the pre-defined options passed to the\n   * constructor.  Options passed as arguments will take precedence.\n   * @param {Object} options - new options\n   * @return {Object} the merged options\n   * @example\n   * const p = new Path('/path/to/here', { option1: 'hello' })\n   * const q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }\n   */\n  options(options={}) {\n    return { ...this.state.options, ...options };\n  }\n\n  /**\n   * Method to assert that the path exists.\n   * @return {Promise} fulfills with `true` if the path exists or rejects if the path doesn't\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.exists()\n   *   .then( console.log('path exists') )\n   *   .catch( console.log('path does not exist') )\n   */\n  async exists() {\n    try {\n      await this.stat();\n      return true;\n    }\n    catch (error) {\n      return error.code === 'ENOENT'\n        ? false\n        : rethrow(error);\n    }\n  }\n\n  /**\n   * Method to fetch stats for the path.  Uses the `stat` function from `node:fs/promises`.\n   * Stats are cached internally (subject to change)\n   * @return {Promise} fulfills with path stats returned from the `stat` function\n   * @example\n   * const p = new Path('/path/to/here')\n   * p.stat()\n   *   .then( stats => console.log('path stats:', stats) )\n   *   .catch( console.log('path does not exist') )\n   */\n  async stat() {\n    const stats = await stat(this.state.path);\n    return this.state.stats = stats;\n  }\n\n  /**\n   * Method to clear internal cache of path stats (subject to change)\n   */\n  unstat() {\n    this.state.stats = undefined;\n    return this;\n  }\n}\n\nexport default Path\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Filesystem/Path.js",
     "access": "public",
@@ -2809,7 +2809,7 @@
     "examples": [
       "const p = new Path('/path/to/here', { option1: 'hello' })\nconst q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }"
     ],
-    "lineNumber": 65,
+    "lineNumber": 71,
     "params": [
       {
         "nullable": null,
@@ -2845,7 +2845,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.exists()\n  .then( console.log('path exists') )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 78,
+    "lineNumber": 84,
     "return": {
       "nullable": null,
       "types": [
@@ -2870,7 +2870,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.stat()\n  .then( stats => console.log('path stats:', stats) )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 100,
+    "lineNumber": 106,
     "return": {
       "nullable": null,
       "types": [
@@ -2892,7 +2892,7 @@
     "longname": "src/Badger/Filesystem/Path.js~Path#unstat",
     "access": "public",
     "description": "Method to clear internal cache of path stats (subject to change)",
-    "lineNumber": 108,
+    "lineNumber": 114,
     "params": [],
     "return": {
       "types": [
@@ -6490,7 +6490,7 @@
     "examples": [
       "const p = new Path('/path/to/here', { option1: 'hello' })\nconst q = p.options({ option2: 'world' })  // -> { option1: 'hello', options2: 'world' }"
     ],
-    "lineNumber": 65,
+    "lineNumber": 71,
     "params": [
       {
         "nullable": null,
@@ -6526,7 +6526,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.exists()\n  .then( console.log('path exists') )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 78,
+    "lineNumber": 84,
     "return": {
       "nullable": null,
       "types": [
@@ -6551,7 +6551,7 @@
     "examples": [
       "const p = new Path('/path/to/here')\np.stat()\n  .then( stats => console.log('path stats:', stats) )\n  .catch( console.log('path does not exist') )"
     ],
-    "lineNumber": 100,
+    "lineNumber": 106,
     "return": {
       "nullable": null,
       "types": [
@@ -6573,7 +6573,7 @@
     "longname": "src/Badger.js~Path#unstat",
     "access": "public",
     "description": "Method to clear internal cache of path stats (subject to change)",
-    "lineNumber": 108,
+    "lineNumber": 114,
     "params": [],
     "return": {
       "types": [
@@ -8019,7 +8019,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.9\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"@abw/badger-utils\": \"^1.0.2\",\n    \"commander\": \"^9.4.0\",\n    \"js-yaml\": \"^4.1.0\",\n    \"prompts\": \"^2.4.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.0.10\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^11.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^7.1.3\",\n    \"ava\": \"^4.3.0\",\n    \"eslint\": \"^8.20.0\",\n    \"rollup\": \"^2\",\n    \"rollup-plugin-terser\": \"^7.0.2\"\n  },\n  \"dependencies\": {\n    \"@abw/badger-utils\": \"^1.0.2\",\n    \"commander\": \"^9.4.0\",\n    \"js-yaml\": \"^4.1.0\",\n    \"prompts\": \"^2.4.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,
