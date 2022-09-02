@@ -203,14 +203,32 @@ object that the workspace used to load configuration files.</p>
     }
   }
 )</code></code></pre>
+<p>You can specify multiple directories to search for configuration files.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    config: {
+      dir:   ['cfg', 'config'],
+    }
+  }
+)</code></code></pre>
 <p>The <code>library</code> option can be provided to configure the <a href="class/src/Badger/Library.js~Library">Library</a>
 object that the workspace used to load Javascript libraries.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(
   '/path/to/workspace',
   {
     library: {
-        dir:   'lib',
-        jsExt: 'js',
+      dir:   'lib',
+      jsExt: 'js',
+    }
+  }
+)</code></code></pre>
+<p>You can specify multiple directories to search for Javascript libraries.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const workspace = new Workspace(
+  '/path/to/workspace',
+  {
+    library: {
+      dir: ['src', 'lib'],
     }
   }
 )</code></code></pre>
