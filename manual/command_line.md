@@ -6,6 +6,7 @@ and prompt the user for any missing configuration options (using [prompts](https
 
 - [Simple Example](#simple-example)
 - [Special Options](#special-options)
+- [Commands](#commands)
 - [Sections](#sections)
 - [Generated Configuration](#generated-configuration)
 
@@ -100,7 +101,7 @@ function will suppress any optional output.
 ```js
 const config = await options({
   name: 'options.js',
-  description: 'CLI to test command line options and prompting',
+  description: 'Example showing command line options and prompting',
   version: '0.0.1',
   yes: true,
   verbose: true,
@@ -126,6 +127,75 @@ Options:
   -u, --username <text>      Username
   -p, --password <password>  Password
   -h, --help                 display help for command
+```
+
+## Commands
+
+You can also add `commands` to the configuration. For example, you might
+have a script where you want to `start` or `stop` one or more services.
+
+```js
+const config = await options({
+  name: 'commands.js',
+  description: 'Example showing command line commands',
+  version: '0.0.1',
+  verbose: true,
+  quiet: true,
+  commands: [
+    {
+      name:    'start',
+      pattern: '<service>',
+      about:   'Start a service'
+    },
+    {
+      name:     'stop',
+      pattern:  '<service>',
+      about:    'Stop a service'
+    },
+    {
+      name:     'status',
+      about:    'Show service status'
+    }
+  ]
+})
+```
+
+When run with the `-h` option the output will be:
+
+```sh
+$ node examples/commands.js -h
+Usage: commands.js [options] [command]
+
+Example showing command line commands.
+
+Options:
+  -V, --version       output the version number
+  -v, --verbose       Verbose output
+  -q, --quiet         Quiet output
+  -h, --help          display help for command
+
+Commands:
+  start <service>  Start a service
+  stop <service>   Stop a service
+  status           Show service status
+  help [command]   display help for command
+```
+
+If a command should accept multiple arguments then define the pattern
+using ellipses.
+
+```js
+const config = await options({
+  // ...etc...
+  commands: [
+    {
+      name:    'start',
+      pattern: '<service...>',
+      about:   'Start one or more services'
+    },
+    // ...etc...
+  ]
+})
 ```
 
 ## Sections
@@ -157,6 +227,8 @@ Press RETURN to accept defaults.
 
 ## Generated Configuration
 
-The function returns a Promise which fulfills to an object containing the configuration
-values.  Each key will be the `name` of the option, and the corresponding value will be
-that read from the command line or by prompting the user.
+The function returns a Promise which fulfills to an object containing the
+configuration values.  Each key will be the `name` of the option or command,
+and the corresponding value will be that read from the command line or by
+prompting the user.  In the case of [commands](#commands) the value or values
+will be in an array.
