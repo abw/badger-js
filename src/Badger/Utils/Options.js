@@ -102,7 +102,6 @@ export const options = async config => {
       }
       cmd.action(
         args => {
-          console.log({ name, args });
           commands[name] = args;
         }
       )
