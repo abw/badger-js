@@ -2,7 +2,7 @@ import { dir as fsDir } from "./Filesystem/Directory.js";
 import { addDebug } from "./Utils/Debug.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
-import { fail, hasValue, splitList } from "@abw/badger-utils";
+import { fail, hasValue, splitList, snakeToStudly } from "@abw/badger-utils";
 
 /**
  * Default configuration options.
@@ -177,14 +177,15 @@ export class Workspace {
    * @param {Object} [props] - optional configuration properties
    * @return {Promise} fulfills to a newly instantiated component
    * @example
-   * workspace.component(mycomp').then(
+   * workspace.component('mycomp').then(
    *   component => console.log("Created component: ", component)
    * );
    */
   async component(uri, props) {
     const [base, fragment] = uri.split('#', 2);
     const config  = await this.config(base, {});
-    const lib     = await this.library(config.component?.library || base);
+    const libname = config.component?.library || snakeToStudly(base);
+    const lib     = await this.library(libname);
     const exp     = fragment || config.component?.export || 'default';
     const compcls = lib[exp] || fail("No '", exp, "' export from component library: ", uri);
     const comp    = new compcls(this, { ...config, ...props });

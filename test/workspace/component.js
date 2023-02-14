@@ -78,6 +78,14 @@ test(
 );
 
 test(
+  'fetch my/test',
+  async t => {
+    const test = await testSpace.component('my/test');
+    t.is( await test.message(), 'Hello World!' );
+  }
+);
+
+test(
   'fetch hello component',
   async t => {
     const hello = await testSpace.component('Hello');
