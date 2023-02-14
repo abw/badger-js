@@ -972,6 +972,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~workspace#case",
+    "class/src/Badger.js~Workspace.html#instance-member-case",
+    "src/Badger.js~Workspace#case",
+    "member"
+  ],
+  [
     "src/badger.js~workspace#component",
     "class/src/Badger.js~Workspace.html#instance-method-component",
     "src/Badger.js~Workspace#component",
@@ -993,6 +999,12 @@ window.esdocSearchIndex = [
     "src/badger.js~workspace#constructor",
     "class/src/Badger.js~Workspace.html#instance-constructor-constructor",
     "src/Badger.js~Workspace#constructor",
+    "method"
+  ],
+  [
+    "src/badger.js~workspace#convertcase",
+    "class/src/Badger.js~Workspace.html#instance-method-convertCase",
+    "src/Badger.js~Workspace#convertCase",
     "method"
   ],
   [
@@ -1392,6 +1404,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/workspace.js~workspace#case",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-member-case",
+    "src/Badger/Workspace.js~Workspace#case",
+    "member"
+  ],
+  [
     "src/badger/workspace.js~workspace#component",
     "class/src/Badger/Workspace.js~Workspace.html#instance-method-component",
     "src/Badger/Workspace.js~Workspace#component",
@@ -1413,6 +1431,12 @@ window.esdocSearchIndex = [
     "src/badger/workspace.js~workspace#constructor",
     "class/src/Badger/Workspace.js~Workspace.html#instance-constructor-constructor",
     "src/Badger/Workspace.js~Workspace#constructor",
+    "method"
+  ],
+  [
+    "src/badger/workspace.js~workspace#convertcase",
+    "class/src/Badger/Workspace.js~Workspace.html#instance-method-convertCase",
+    "src/Badger/Workspace.js~Workspace#convertCase",
     "method"
   ],
   [

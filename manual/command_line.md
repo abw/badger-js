@@ -123,9 +123,9 @@ Options:
   -y, --yes                  Accept default answers
   -v, --verbose              Verbose output
   -q, --quiet                Quiet output
-  -d, --database <text>      Database
-  -u, --username <text>      Username
-  -p, --password <password>  Password
+  -d, --database &lt;text&gt;      Database
+  -u, --username &lt;text&gt;      Username
+  -p, --password &lt;password&gt;  Password
   -h, --help                 display help for command
 ```
 
@@ -144,12 +144,12 @@ const config = await options({
   commands: [
     {
       name:    'start',
-      pattern: '<service>',
+      pattern: '&lt;service&gt;',
       about:   'Start a service'
     },
     {
       name:     'stop',
-      pattern:  '<service>',
+      pattern:  '&lt;service&gt;',
       about:    'Stop a service'
     },
     {
@@ -175,8 +175,8 @@ Options:
   -h, --help          display help for command
 
 Commands:
-  start <service>  Start a service
-  stop <service>   Stop a service
+  start &lt;service&gt;  Start a service
+  stop &lt;service&gt;   Stop a service
   status           Show service status
   help [command]   display help for command
 ```
@@ -190,7 +190,7 @@ const config = await options({
   commands: [
     {
       name:    'start',
-      pattern: '<service...>',
+      pattern: '&lt;service...&gt;',
       about:   'Start one or more services'
     },
     // ...etc...

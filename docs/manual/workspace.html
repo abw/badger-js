@@ -109,6 +109,7 @@
     <li data-ice="manualNav" class="indent-h1" data-link="manual/command_line.html"><a href="manual/command_line.html" data-ice="link">Command Line Options</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#simple-example" data-ice="link">Simple Example</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#special-options" data-ice="link">Special Options</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#commands" data-ice="link">Commands</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#sections" data-ice="link">Sections</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
 </ul>
@@ -190,6 +191,30 @@ workspace and the configuration options.</p>
   config =&gt; workspace.library('Hello')
     .then( library =&gt; new library.default(workspace, config) )
     .then( hello =&gt; console.log('loaded Hello component: ', hello) )
+)</code></code></pre>
+<p>The default behaviour is to look for configuration and library files with
+the same case as specified.  For example, requesting a component named
+<code>my/component</code> will look for a <code>my/component.(js|mjs|yaml|json)</code>
+configuration file and a <code>my/component.(js|mjs)</code> library file.</p>
+<p>The <code>case</code> option can be used to provide functions for mapping <code>config</code> or
+<code>library</code> file names to a different case.  For example, if your
+configuration files use snake case but your library modules are defined
+in Pascal case (aka StudlyCaps), then you can map the <code>library</code> names using
+the <a href="https://abw.github.io/badger-utils/docs/manual/text.html#snaketostudly-snake-">snakeToStudly</a>
+function provided by <a href="https://github.com/abw/badger-utils">@abw/badger-utils</a>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { Workspace } from '@abw/badger'
+import { snakeToStudly } from '@abw/badger-utils'
+
+const workspace = new Workspace(
+  '/path/to/project',
+  case: {
+    library: snakeToStudly
+  }
+)
+workspace.component('my/component').then(
+  // config file should be something like config/my/component.yaml
+  // library file should be something like lib/My/Component.js
+  // ...etc...
 )</code></code></pre>
 <h2 id="configuration-options">Configuration Options</h2><p>The <code>config</code> option can be provided to configure the <a href="class/src/Badger/Config.js~Config">Config</a>
 object that the workspace used to load configuration files.</p>
