@@ -125,6 +125,35 @@ workspace.config('Hello').then(
 )
 ```
 
+The default behaviour is to look for configuration and library files with
+the same case as specified.  For example, requesting a component named
+`my/component` will look for a `my/component.(js|mjs|yaml|json)`
+configuration file and a `my/component.(js|mjs)` library file.
+
+The `case` option can be used to provide functions for mapping `config` or
+`library` file names to a different case.  For example, if your
+configuration files use snake case but your library modules are defined
+in Pascal case (aka StudlyCaps), then you can map the `library` names using
+the [snakeToStudly](https://abw.github.io/badger-utils/docs/manual/text.html#snaketostudly-snake-)
+function provided by [@abw/badger-utils](https://github.com/abw/badger-utils).
+
+```js
+import { Workspace } from '@abw/badger'
+import { snakeToStudly } from '@abw/badger-utils'
+
+const workspace = new Workspace(
+  '/path/to/project',
+  case: {
+    library: snakeToStudly
+  }
+)
+workspace.component('my/component').then(
+  // config file should be something like config/my/component.yaml
+  // library file should be something like lib/My/Component.js
+  // ...etc...
+)
+```
+
 ## Configuration Options
 
 The `config` option can be provided to configure the [Config](class/src/Badger/Config.js~Config)
