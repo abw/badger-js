@@ -1,5 +1,6 @@
 import test from 'ava';
 import { bin, workspace } from '../../src/Badger.js'
+import { snakeToStudly } from '@abw/badger-utils'
 
 const DEBUG = false;
 const testDir = bin(import.meta.url).dir('test_space');
@@ -18,6 +19,9 @@ const testSpace = workspace(
       debug: DEBUG,
       debugPrefix: '    library > ',
       debugColor: 'yellow'
+    },
+    case: {
+      library: snakeToStudly
     }
   }
 );

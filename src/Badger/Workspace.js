@@ -2,7 +2,7 @@ import { dir as fsDir } from "./Filesystem/Directory.js";
 import { addDebug } from "./Utils/Debug.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
-import { fail, hasValue, splitList, snakeToStudly } from "@abw/badger-utils";
+import { fail, hasValue, splitList } from "@abw/badger-utils";
 
 /**
  * Default configuration options.
@@ -13,6 +13,9 @@ const defaults = {
   },
   library: {
     dir: 'lib library src components',
+  },
+  case: {
+    // config and/or library case conversion functions
   }
 }
 
@@ -40,6 +43,11 @@ export class Workspace {
     const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );
     const libOpts = { ...defaults.library, ...(options.library||{}) };
     const library = new Library(libDirs, libOpts);
+
+    this.case = {
+      ...defaults.case,
+      ...(options.case||{})
+    };
 
     this.state = {
       rootDir,
@@ -183,13 +191,21 @@ export class Workspace {
    */
   async component(uri, props) {
     const [base, fragment] = uri.split('#', 2);
-    const config  = await this.config(base, {});
-    const libname = config.component?.library || snakeToStudly(base);
+    const cfgname = this.convertCase('config', base);
+    const config  = await this.config(cfgname, {});
+    const libname = config.component?.library || this.convertCase('library', base);
     const lib     = await this.library(libname);
     const exp     = fragment || config.component?.export || 'default';
     const compcls = lib[exp] || fail("No '", exp, "' export from component library: ", uri);
     const comp    = new compcls(this, { ...config, ...props });
     return comp;
+  }
+
+  convertCase(type, uri) {
+    const fn = this.case[type];
+    return fn
+      ? fn(uri)
+      : uri;
   }
 }
 
