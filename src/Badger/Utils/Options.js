@@ -43,7 +43,7 @@ export const options = async config => {
 
   // add in other command line options
   config.options
-    .filter(
+    ?.filter(
       option => {
         if (hasValue(option.arg) && ! option.arg) {
           // allow arg: false to indicate no command line argument
@@ -83,6 +83,34 @@ export const options = async config => {
       }
     )
 
+  let commands = { };
+
+  config.commands?.map(
+    option => {
+      const name    = option.name;
+      const about   = option.about;
+      const type    = option.type;
+      const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);
+      let string    = name;
+      let cmd = command.command(string)
+      if (hasValue(pattern)) {
+        cmd.argument(pattern);
+        // string = `${string} ${pattern}`;
+      }
+      if (hasValue(about)) {
+        cmd.description(about);
+      }
+      cmd.action(
+        args => {
+          console.log({ name, args });
+          commands[name] = args;
+        }
+      )
+      //console.log({ args });
+      //command.command(...args)
+    }
+  )
+
   // parse the command line arguments
   command.parse();
   const cmdline = command.opts();
@@ -102,7 +130,7 @@ export const options = async config => {
 
   // build up the list of prompts for interactive questions
   let prompts = [ ];
-  config.options.map(
+  config.options?.map(
     option => {
       const type     = option.type || 'text';
       const name     = option.name;
@@ -167,7 +195,7 @@ export const options = async config => {
   const answers = await prompter(prompts);
 
   return {
-    ...cmdline, ...answers
+    ...cmdline, ...answers, ...commands
   }
 }
 
