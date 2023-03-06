@@ -1,7 +1,7 @@
 <!DOCTYPE html><html><head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl">
-  <title data-ice="title">Home | Badger</title>
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/Badger/Utils/AppStatus.js | Badger</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -236,17 +236,28 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="badger-js">badger-js</h1><p>This is an application toolkit for Javascript projects.  It provides a number of
-classes and utility functions to make life easier.</p>
-<p>It is loosely based around the <a href="https://github.com/abw/Badger">Badger</a> toolkit for
-Perl and was written primarily to help migrate some old Perl projects to Javascript.</p>
-<h2 id="installation">Installation</h2><p>Install <code>badger</code> using your favourite package manager.</p>
-<h3 id="npm">npm</h3><pre><code><code class="source-code prettyprint">npm install @abw/badger</code></code></pre><h3 id="pnpm">pnpm</h3><pre><code><code class="source-code prettyprint">pnpm install @abw/badger</code></code></pre><h3 id="yarn">yarn</h3><pre><code><code class="source-code prettyprint">yarn add @abw/badger</code></code></pre><h2 id="manual">Manual</h2><p>Read the <a href="https://abw.github.io/badger-js/docs/manual/">Manual</a> for an introduction to the
-toolkit and examples of use.</p>
-<h2 id="api-documentation">API Documentation</h2><p>Read the <a href="https://abw.github.io/badger-js/docs/">API documentation</a> for further information
-about the classes, methods and utility functions provided.</p>
-<h2 id="author">Author</h2><p>Andy Wardley <a href="mailto:abw@wardley.org">abw@wardley.org</a></p>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">src/Badger/Utils/AppStatus.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import process from 'node:process'
+import { brightGreen, brightRed } from './Color.js';
+
+export const appStatus = app =&gt; async function(...args) {
+  try {
+    const message = await app(...args);
+    if (message) {
+      console.log(brightGreen(`✓ ${message}`));
+    }
+  }
+  catch (error) {
+    console.log(
+      process.env.DEBUG
+        ? error
+        : brightRed(`✗ ${error.message||error}`)
+    )
+  }
+}
+
+export default appStatus</code></pre>
+
 </div>
 
 <footer class="footer">

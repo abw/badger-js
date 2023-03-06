@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 2782,
+  "end": 4101,
   "loc": {
     "start": {
       "line": 1,
@@ -9,16 +9,16 @@
       "index": 0
     },
     "end": {
-      "line": 90,
-      "column": 50,
-      "index": 2782
+      "line": 119,
+      "column": 0,
+      "index": 4101
     }
   },
   "errors": [],
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 2782,
+    "end": 4101,
     "loc": {
       "start": {
         "line": 1,
@@ -26,9 +26,9 @@
         "index": 0
       },
       "end": {
-        "line": 90,
-        "column": 50,
-        "index": 2782
+        "line": 119,
+        "column": 0,
+        "index": 4101
       }
     },
     "sourceType": "module",
@@ -4947,6 +4947,3705 @@
             }
           }
         ]
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2784,
+        "end": 2828,
+        "loc": {
+          "start": {
+            "line": 92,
+            "column": 0,
+            "index": 2784
+          },
+          "end": {
+            "line": 92,
+            "column": 44,
+            "index": 2828
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2791,
+          "end": 2828,
+          "loc": {
+            "start": {
+              "line": 92,
+              "column": 7,
+              "index": 2791
+            },
+            "end": {
+              "line": 92,
+              "column": 44,
+              "index": 2828
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2797,
+              "end": 2827,
+              "loc": {
+                "start": {
+                  "line": 92,
+                  "column": 13,
+                  "index": 2797
+                },
+                "end": {
+                  "line": 92,
+                  "column": 43,
+                  "index": 2827
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2797,
+                "end": 2802,
+                "loc": {
+                  "start": {
+                    "line": 92,
+                    "column": 13,
+                    "index": 2797
+                  },
+                  "end": {
+                    "line": 92,
+                    "column": 18,
+                    "index": 2802
+                  },
+                  "identifierName": "black"
+                },
+                "name": "black"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 2813,
+                "end": 2827,
+                "loc": {
+                  "start": {
+                    "line": 92,
+                    "column": 29,
+                    "index": 2813
+                  },
+                  "end": {
+                    "line": 92,
+                    "column": 43,
+                    "index": 2827
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 2813,
+                  "end": 2818,
+                  "loc": {
+                    "start": {
+                      "line": 92,
+                      "column": 29,
+                      "index": 2813
+                    },
+                    "end": {
+                      "line": 92,
+                      "column": 34,
+                      "index": 2818
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 2819,
+                    "end": 2826,
+                    "loc": {
+                      "start": {
+                        "line": 92,
+                        "column": 35,
+                        "index": 2819
+                      },
+                      "end": {
+                        "line": 92,
+                        "column": 42,
+                        "index": 2826
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "black",
+                      "raw": "'black'"
+                    },
+                    "value": "black"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2829,
+        "end": 2871,
+        "loc": {
+          "start": {
+            "line": 93,
+            "column": 0,
+            "index": 2829
+          },
+          "end": {
+            "line": 93,
+            "column": 42,
+            "index": 2871
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2836,
+          "end": 2871,
+          "loc": {
+            "start": {
+              "line": 93,
+              "column": 7,
+              "index": 2836
+            },
+            "end": {
+              "line": 93,
+              "column": 42,
+              "index": 2871
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2842,
+              "end": 2870,
+              "loc": {
+                "start": {
+                  "line": 93,
+                  "column": 13,
+                  "index": 2842
+                },
+                "end": {
+                  "line": 93,
+                  "column": 41,
+                  "index": 2870
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2842,
+                "end": 2845,
+                "loc": {
+                  "start": {
+                    "line": 93,
+                    "column": 13,
+                    "index": 2842
+                  },
+                  "end": {
+                    "line": 93,
+                    "column": 16,
+                    "index": 2845
+                  },
+                  "identifierName": "red"
+                },
+                "name": "red"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 2858,
+                "end": 2870,
+                "loc": {
+                  "start": {
+                    "line": 93,
+                    "column": 29,
+                    "index": 2858
+                  },
+                  "end": {
+                    "line": 93,
+                    "column": 41,
+                    "index": 2870
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 2858,
+                  "end": 2863,
+                  "loc": {
+                    "start": {
+                      "line": 93,
+                      "column": 29,
+                      "index": 2858
+                    },
+                    "end": {
+                      "line": 93,
+                      "column": 34,
+                      "index": 2863
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 2864,
+                    "end": 2869,
+                    "loc": {
+                      "start": {
+                        "line": 93,
+                        "column": 35,
+                        "index": 2864
+                      },
+                      "end": {
+                        "line": 93,
+                        "column": 40,
+                        "index": 2869
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "red",
+                      "raw": "'red'"
+                    },
+                    "value": "red"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2872,
+        "end": 2916,
+        "loc": {
+          "start": {
+            "line": 94,
+            "column": 0,
+            "index": 2872
+          },
+          "end": {
+            "line": 94,
+            "column": 44,
+            "index": 2916
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2879,
+          "end": 2916,
+          "loc": {
+            "start": {
+              "line": 94,
+              "column": 7,
+              "index": 2879
+            },
+            "end": {
+              "line": 94,
+              "column": 44,
+              "index": 2916
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2885,
+              "end": 2915,
+              "loc": {
+                "start": {
+                  "line": 94,
+                  "column": 13,
+                  "index": 2885
+                },
+                "end": {
+                  "line": 94,
+                  "column": 43,
+                  "index": 2915
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2885,
+                "end": 2890,
+                "loc": {
+                  "start": {
+                    "line": 94,
+                    "column": 13,
+                    "index": 2885
+                  },
+                  "end": {
+                    "line": 94,
+                    "column": 18,
+                    "index": 2890
+                  },
+                  "identifierName": "green"
+                },
+                "name": "green"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 2901,
+                "end": 2915,
+                "loc": {
+                  "start": {
+                    "line": 94,
+                    "column": 29,
+                    "index": 2901
+                  },
+                  "end": {
+                    "line": 94,
+                    "column": 43,
+                    "index": 2915
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 2901,
+                  "end": 2906,
+                  "loc": {
+                    "start": {
+                      "line": 94,
+                      "column": 29,
+                      "index": 2901
+                    },
+                    "end": {
+                      "line": 94,
+                      "column": 34,
+                      "index": 2906
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 2907,
+                    "end": 2914,
+                    "loc": {
+                      "start": {
+                        "line": 94,
+                        "column": 35,
+                        "index": 2907
+                      },
+                      "end": {
+                        "line": 94,
+                        "column": 42,
+                        "index": 2914
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "green",
+                      "raw": "'green'"
+                    },
+                    "value": "green"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2917,
+        "end": 2962,
+        "loc": {
+          "start": {
+            "line": 95,
+            "column": 0,
+            "index": 2917
+          },
+          "end": {
+            "line": 95,
+            "column": 45,
+            "index": 2962
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2924,
+          "end": 2962,
+          "loc": {
+            "start": {
+              "line": 95,
+              "column": 7,
+              "index": 2924
+            },
+            "end": {
+              "line": 95,
+              "column": 45,
+              "index": 2962
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2930,
+              "end": 2961,
+              "loc": {
+                "start": {
+                  "line": 95,
+                  "column": 13,
+                  "index": 2930
+                },
+                "end": {
+                  "line": 95,
+                  "column": 44,
+                  "index": 2961
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2930,
+                "end": 2936,
+                "loc": {
+                  "start": {
+                    "line": 95,
+                    "column": 13,
+                    "index": 2930
+                  },
+                  "end": {
+                    "line": 95,
+                    "column": 19,
+                    "index": 2936
+                  },
+                  "identifierName": "yellow"
+                },
+                "name": "yellow"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 2946,
+                "end": 2961,
+                "loc": {
+                  "start": {
+                    "line": 95,
+                    "column": 29,
+                    "index": 2946
+                  },
+                  "end": {
+                    "line": 95,
+                    "column": 44,
+                    "index": 2961
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 2946,
+                  "end": 2951,
+                  "loc": {
+                    "start": {
+                      "line": 95,
+                      "column": 29,
+                      "index": 2946
+                    },
+                    "end": {
+                      "line": 95,
+                      "column": 34,
+                      "index": 2951
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 2952,
+                    "end": 2960,
+                    "loc": {
+                      "start": {
+                        "line": 95,
+                        "column": 35,
+                        "index": 2952
+                      },
+                      "end": {
+                        "line": 95,
+                        "column": 43,
+                        "index": 2960
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "yellow",
+                      "raw": "'yellow'"
+                    },
+                    "value": "yellow"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 2963,
+        "end": 3006,
+        "loc": {
+          "start": {
+            "line": 96,
+            "column": 0,
+            "index": 2963
+          },
+          "end": {
+            "line": 96,
+            "column": 43,
+            "index": 3006
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 2970,
+          "end": 3006,
+          "loc": {
+            "start": {
+              "line": 96,
+              "column": 7,
+              "index": 2970
+            },
+            "end": {
+              "line": 96,
+              "column": 43,
+              "index": 3006
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 2976,
+              "end": 3005,
+              "loc": {
+                "start": {
+                  "line": 96,
+                  "column": 13,
+                  "index": 2976
+                },
+                "end": {
+                  "line": 96,
+                  "column": 42,
+                  "index": 3005
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 2976,
+                "end": 2980,
+                "loc": {
+                  "start": {
+                    "line": 96,
+                    "column": 13,
+                    "index": 2976
+                  },
+                  "end": {
+                    "line": 96,
+                    "column": 17,
+                    "index": 2980
+                  },
+                  "identifierName": "blue"
+                },
+                "name": "blue"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 2992,
+                "end": 3005,
+                "loc": {
+                  "start": {
+                    "line": 96,
+                    "column": 29,
+                    "index": 2992
+                  },
+                  "end": {
+                    "line": 96,
+                    "column": 42,
+                    "index": 3005
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 2992,
+                  "end": 2997,
+                  "loc": {
+                    "start": {
+                      "line": 96,
+                      "column": 29,
+                      "index": 2992
+                    },
+                    "end": {
+                      "line": 96,
+                      "column": 34,
+                      "index": 2997
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 2998,
+                    "end": 3004,
+                    "loc": {
+                      "start": {
+                        "line": 96,
+                        "column": 35,
+                        "index": 2998
+                      },
+                      "end": {
+                        "line": 96,
+                        "column": 41,
+                        "index": 3004
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "blue",
+                      "raw": "'blue'"
+                    },
+                    "value": "blue"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3007,
+        "end": 3053,
+        "loc": {
+          "start": {
+            "line": 97,
+            "column": 0,
+            "index": 3007
+          },
+          "end": {
+            "line": 97,
+            "column": 46,
+            "index": 3053
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3014,
+          "end": 3053,
+          "loc": {
+            "start": {
+              "line": 97,
+              "column": 7,
+              "index": 3014
+            },
+            "end": {
+              "line": 97,
+              "column": 46,
+              "index": 3053
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3020,
+              "end": 3052,
+              "loc": {
+                "start": {
+                  "line": 97,
+                  "column": 13,
+                  "index": 3020
+                },
+                "end": {
+                  "line": 97,
+                  "column": 45,
+                  "index": 3052
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3020,
+                "end": 3027,
+                "loc": {
+                  "start": {
+                    "line": 97,
+                    "column": 13,
+                    "index": 3020
+                  },
+                  "end": {
+                    "line": 97,
+                    "column": 20,
+                    "index": 3027
+                  },
+                  "identifierName": "magenta"
+                },
+                "name": "magenta"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3036,
+                "end": 3052,
+                "loc": {
+                  "start": {
+                    "line": 97,
+                    "column": 29,
+                    "index": 3036
+                  },
+                  "end": {
+                    "line": 97,
+                    "column": 45,
+                    "index": 3052
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3036,
+                  "end": 3041,
+                  "loc": {
+                    "start": {
+                      "line": 97,
+                      "column": 29,
+                      "index": 3036
+                    },
+                    "end": {
+                      "line": 97,
+                      "column": 34,
+                      "index": 3041
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3042,
+                    "end": 3051,
+                    "loc": {
+                      "start": {
+                        "line": 97,
+                        "column": 35,
+                        "index": 3042
+                      },
+                      "end": {
+                        "line": 97,
+                        "column": 44,
+                        "index": 3051
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "magenta",
+                      "raw": "'magenta'"
+                    },
+                    "value": "magenta"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3054,
+        "end": 3097,
+        "loc": {
+          "start": {
+            "line": 98,
+            "column": 0,
+            "index": 3054
+          },
+          "end": {
+            "line": 98,
+            "column": 43,
+            "index": 3097
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3061,
+          "end": 3097,
+          "loc": {
+            "start": {
+              "line": 98,
+              "column": 7,
+              "index": 3061
+            },
+            "end": {
+              "line": 98,
+              "column": 43,
+              "index": 3097
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3067,
+              "end": 3096,
+              "loc": {
+                "start": {
+                  "line": 98,
+                  "column": 13,
+                  "index": 3067
+                },
+                "end": {
+                  "line": 98,
+                  "column": 42,
+                  "index": 3096
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3067,
+                "end": 3071,
+                "loc": {
+                  "start": {
+                    "line": 98,
+                    "column": 13,
+                    "index": 3067
+                  },
+                  "end": {
+                    "line": 98,
+                    "column": 17,
+                    "index": 3071
+                  },
+                  "identifierName": "cyan"
+                },
+                "name": "cyan"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3083,
+                "end": 3096,
+                "loc": {
+                  "start": {
+                    "line": 98,
+                    "column": 29,
+                    "index": 3083
+                  },
+                  "end": {
+                    "line": 98,
+                    "column": 42,
+                    "index": 3096
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3083,
+                  "end": 3088,
+                  "loc": {
+                    "start": {
+                      "line": 98,
+                      "column": 29,
+                      "index": 3083
+                    },
+                    "end": {
+                      "line": 98,
+                      "column": 34,
+                      "index": 3088
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3089,
+                    "end": 3095,
+                    "loc": {
+                      "start": {
+                        "line": 98,
+                        "column": 35,
+                        "index": 3089
+                      },
+                      "end": {
+                        "line": 98,
+                        "column": 41,
+                        "index": 3095
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "cyan",
+                      "raw": "'cyan'"
+                    },
+                    "value": "cyan"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3098,
+        "end": 3141,
+        "loc": {
+          "start": {
+            "line": 99,
+            "column": 0,
+            "index": 3098
+          },
+          "end": {
+            "line": 99,
+            "column": 43,
+            "index": 3141
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3105,
+          "end": 3141,
+          "loc": {
+            "start": {
+              "line": 99,
+              "column": 7,
+              "index": 3105
+            },
+            "end": {
+              "line": 99,
+              "column": 43,
+              "index": 3141
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3111,
+              "end": 3140,
+              "loc": {
+                "start": {
+                  "line": 99,
+                  "column": 13,
+                  "index": 3111
+                },
+                "end": {
+                  "line": 99,
+                  "column": 42,
+                  "index": 3140
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3111,
+                "end": 3115,
+                "loc": {
+                  "start": {
+                    "line": 99,
+                    "column": 13,
+                    "index": 3111
+                  },
+                  "end": {
+                    "line": 99,
+                    "column": 17,
+                    "index": 3115
+                  },
+                  "identifierName": "grey"
+                },
+                "name": "grey"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3127,
+                "end": 3140,
+                "loc": {
+                  "start": {
+                    "line": 99,
+                    "column": 29,
+                    "index": 3127
+                  },
+                  "end": {
+                    "line": 99,
+                    "column": 42,
+                    "index": 3140
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3127,
+                  "end": 3132,
+                  "loc": {
+                    "start": {
+                      "line": 99,
+                      "column": 29,
+                      "index": 3127
+                    },
+                    "end": {
+                      "line": 99,
+                      "column": 34,
+                      "index": 3132
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3133,
+                    "end": 3139,
+                    "loc": {
+                      "start": {
+                        "line": 99,
+                        "column": 35,
+                        "index": 3133
+                      },
+                      "end": {
+                        "line": 99,
+                        "column": 41,
+                        "index": 3139
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "grey",
+                      "raw": "'grey'"
+                    },
+                    "value": "grey"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3142,
+        "end": 3186,
+        "loc": {
+          "start": {
+            "line": 100,
+            "column": 0,
+            "index": 3142
+          },
+          "end": {
+            "line": 100,
+            "column": 44,
+            "index": 3186
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3149,
+          "end": 3186,
+          "loc": {
+            "start": {
+              "line": 100,
+              "column": 7,
+              "index": 3149
+            },
+            "end": {
+              "line": 100,
+              "column": 44,
+              "index": 3186
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3155,
+              "end": 3185,
+              "loc": {
+                "start": {
+                  "line": 100,
+                  "column": 13,
+                  "index": 3155
+                },
+                "end": {
+                  "line": 100,
+                  "column": 43,
+                  "index": 3185
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3155,
+                "end": 3160,
+                "loc": {
+                  "start": {
+                    "line": 100,
+                    "column": 13,
+                    "index": 3155
+                  },
+                  "end": {
+                    "line": 100,
+                    "column": 18,
+                    "index": 3160
+                  },
+                  "identifierName": "white"
+                },
+                "name": "white"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3171,
+                "end": 3185,
+                "loc": {
+                  "start": {
+                    "line": 100,
+                    "column": 29,
+                    "index": 3171
+                  },
+                  "end": {
+                    "line": 100,
+                    "column": 43,
+                    "index": 3185
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3171,
+                  "end": 3176,
+                  "loc": {
+                    "start": {
+                      "line": 100,
+                      "column": 29,
+                      "index": 3171
+                    },
+                    "end": {
+                      "line": 100,
+                      "column": 34,
+                      "index": 3176
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3177,
+                    "end": 3184,
+                    "loc": {
+                      "start": {
+                        "line": 100,
+                        "column": 35,
+                        "index": 3177
+                      },
+                      "end": {
+                        "line": 100,
+                        "column": 42,
+                        "index": 3184
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "white",
+                      "raw": "'white'"
+                    },
+                    "value": "white"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3187,
+        "end": 3238,
+        "loc": {
+          "start": {
+            "line": 101,
+            "column": 0,
+            "index": 3187
+          },
+          "end": {
+            "line": 101,
+            "column": 51,
+            "index": 3238
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3194,
+          "end": 3238,
+          "loc": {
+            "start": {
+              "line": 101,
+              "column": 7,
+              "index": 3194
+            },
+            "end": {
+              "line": 101,
+              "column": 51,
+              "index": 3238
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3200,
+              "end": 3237,
+              "loc": {
+                "start": {
+                  "line": 101,
+                  "column": 13,
+                  "index": 3200
+                },
+                "end": {
+                  "line": 101,
+                  "column": 50,
+                  "index": 3237
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3200,
+                "end": 3211,
+                "loc": {
+                  "start": {
+                    "line": 101,
+                    "column": 13,
+                    "index": 3200
+                  },
+                  "end": {
+                    "line": 101,
+                    "column": 24,
+                    "index": 3211
+                  },
+                  "identifierName": "brightBlack"
+                },
+                "name": "brightBlack"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3216,
+                "end": 3237,
+                "loc": {
+                  "start": {
+                    "line": 101,
+                    "column": 29,
+                    "index": 3216
+                  },
+                  "end": {
+                    "line": 101,
+                    "column": 50,
+                    "index": 3237
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3216,
+                  "end": 3221,
+                  "loc": {
+                    "start": {
+                      "line": 101,
+                      "column": 29,
+                      "index": 3216
+                    },
+                    "end": {
+                      "line": 101,
+                      "column": 34,
+                      "index": 3221
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3222,
+                    "end": 3236,
+                    "loc": {
+                      "start": {
+                        "line": 101,
+                        "column": 35,
+                        "index": 3222
+                      },
+                      "end": {
+                        "line": 101,
+                        "column": 49,
+                        "index": 3236
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright black",
+                      "raw": "'bright black'"
+                    },
+                    "value": "bright black"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3239,
+        "end": 3288,
+        "loc": {
+          "start": {
+            "line": 102,
+            "column": 0,
+            "index": 3239
+          },
+          "end": {
+            "line": 102,
+            "column": 49,
+            "index": 3288
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3246,
+          "end": 3288,
+          "loc": {
+            "start": {
+              "line": 102,
+              "column": 7,
+              "index": 3246
+            },
+            "end": {
+              "line": 102,
+              "column": 49,
+              "index": 3288
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3252,
+              "end": 3287,
+              "loc": {
+                "start": {
+                  "line": 102,
+                  "column": 13,
+                  "index": 3252
+                },
+                "end": {
+                  "line": 102,
+                  "column": 48,
+                  "index": 3287
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3252,
+                "end": 3261,
+                "loc": {
+                  "start": {
+                    "line": 102,
+                    "column": 13,
+                    "index": 3252
+                  },
+                  "end": {
+                    "line": 102,
+                    "column": 22,
+                    "index": 3261
+                  },
+                  "identifierName": "brightRed"
+                },
+                "name": "brightRed"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3268,
+                "end": 3287,
+                "loc": {
+                  "start": {
+                    "line": 102,
+                    "column": 29,
+                    "index": 3268
+                  },
+                  "end": {
+                    "line": 102,
+                    "column": 48,
+                    "index": 3287
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3268,
+                  "end": 3273,
+                  "loc": {
+                    "start": {
+                      "line": 102,
+                      "column": 29,
+                      "index": 3268
+                    },
+                    "end": {
+                      "line": 102,
+                      "column": 34,
+                      "index": 3273
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3274,
+                    "end": 3286,
+                    "loc": {
+                      "start": {
+                        "line": 102,
+                        "column": 35,
+                        "index": 3274
+                      },
+                      "end": {
+                        "line": 102,
+                        "column": 47,
+                        "index": 3286
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright red",
+                      "raw": "'bright red'"
+                    },
+                    "value": "bright red"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3289,
+        "end": 3340,
+        "loc": {
+          "start": {
+            "line": 103,
+            "column": 0,
+            "index": 3289
+          },
+          "end": {
+            "line": 103,
+            "column": 51,
+            "index": 3340
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3296,
+          "end": 3340,
+          "loc": {
+            "start": {
+              "line": 103,
+              "column": 7,
+              "index": 3296
+            },
+            "end": {
+              "line": 103,
+              "column": 51,
+              "index": 3340
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3302,
+              "end": 3339,
+              "loc": {
+                "start": {
+                  "line": 103,
+                  "column": 13,
+                  "index": 3302
+                },
+                "end": {
+                  "line": 103,
+                  "column": 50,
+                  "index": 3339
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3302,
+                "end": 3313,
+                "loc": {
+                  "start": {
+                    "line": 103,
+                    "column": 13,
+                    "index": 3302
+                  },
+                  "end": {
+                    "line": 103,
+                    "column": 24,
+                    "index": 3313
+                  },
+                  "identifierName": "brightGreen"
+                },
+                "name": "brightGreen"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3318,
+                "end": 3339,
+                "loc": {
+                  "start": {
+                    "line": 103,
+                    "column": 29,
+                    "index": 3318
+                  },
+                  "end": {
+                    "line": 103,
+                    "column": 50,
+                    "index": 3339
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3318,
+                  "end": 3323,
+                  "loc": {
+                    "start": {
+                      "line": 103,
+                      "column": 29,
+                      "index": 3318
+                    },
+                    "end": {
+                      "line": 103,
+                      "column": 34,
+                      "index": 3323
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3324,
+                    "end": 3338,
+                    "loc": {
+                      "start": {
+                        "line": 103,
+                        "column": 35,
+                        "index": 3324
+                      },
+                      "end": {
+                        "line": 103,
+                        "column": 49,
+                        "index": 3338
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright green",
+                      "raw": "'bright green'"
+                    },
+                    "value": "bright green"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3341,
+        "end": 3393,
+        "loc": {
+          "start": {
+            "line": 104,
+            "column": 0,
+            "index": 3341
+          },
+          "end": {
+            "line": 104,
+            "column": 52,
+            "index": 3393
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3348,
+          "end": 3393,
+          "loc": {
+            "start": {
+              "line": 104,
+              "column": 7,
+              "index": 3348
+            },
+            "end": {
+              "line": 104,
+              "column": 52,
+              "index": 3393
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3354,
+              "end": 3392,
+              "loc": {
+                "start": {
+                  "line": 104,
+                  "column": 13,
+                  "index": 3354
+                },
+                "end": {
+                  "line": 104,
+                  "column": 51,
+                  "index": 3392
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3354,
+                "end": 3366,
+                "loc": {
+                  "start": {
+                    "line": 104,
+                    "column": 13,
+                    "index": 3354
+                  },
+                  "end": {
+                    "line": 104,
+                    "column": 25,
+                    "index": 3366
+                  },
+                  "identifierName": "brightYellow"
+                },
+                "name": "brightYellow"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3370,
+                "end": 3392,
+                "loc": {
+                  "start": {
+                    "line": 104,
+                    "column": 29,
+                    "index": 3370
+                  },
+                  "end": {
+                    "line": 104,
+                    "column": 51,
+                    "index": 3392
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3370,
+                  "end": 3375,
+                  "loc": {
+                    "start": {
+                      "line": 104,
+                      "column": 29,
+                      "index": 3370
+                    },
+                    "end": {
+                      "line": 104,
+                      "column": 34,
+                      "index": 3375
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3376,
+                    "end": 3391,
+                    "loc": {
+                      "start": {
+                        "line": 104,
+                        "column": 35,
+                        "index": 3376
+                      },
+                      "end": {
+                        "line": 104,
+                        "column": 50,
+                        "index": 3391
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright yellow",
+                      "raw": "'bright yellow'"
+                    },
+                    "value": "bright yellow"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3394,
+        "end": 3444,
+        "loc": {
+          "start": {
+            "line": 105,
+            "column": 0,
+            "index": 3394
+          },
+          "end": {
+            "line": 105,
+            "column": 50,
+            "index": 3444
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3401,
+          "end": 3444,
+          "loc": {
+            "start": {
+              "line": 105,
+              "column": 7,
+              "index": 3401
+            },
+            "end": {
+              "line": 105,
+              "column": 50,
+              "index": 3444
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3407,
+              "end": 3443,
+              "loc": {
+                "start": {
+                  "line": 105,
+                  "column": 13,
+                  "index": 3407
+                },
+                "end": {
+                  "line": 105,
+                  "column": 49,
+                  "index": 3443
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3407,
+                "end": 3417,
+                "loc": {
+                  "start": {
+                    "line": 105,
+                    "column": 13,
+                    "index": 3407
+                  },
+                  "end": {
+                    "line": 105,
+                    "column": 23,
+                    "index": 3417
+                  },
+                  "identifierName": "brightBlue"
+                },
+                "name": "brightBlue"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3423,
+                "end": 3443,
+                "loc": {
+                  "start": {
+                    "line": 105,
+                    "column": 29,
+                    "index": 3423
+                  },
+                  "end": {
+                    "line": 105,
+                    "column": 49,
+                    "index": 3443
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3423,
+                  "end": 3428,
+                  "loc": {
+                    "start": {
+                      "line": 105,
+                      "column": 29,
+                      "index": 3423
+                    },
+                    "end": {
+                      "line": 105,
+                      "column": 34,
+                      "index": 3428
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3429,
+                    "end": 3442,
+                    "loc": {
+                      "start": {
+                        "line": 105,
+                        "column": 35,
+                        "index": 3429
+                      },
+                      "end": {
+                        "line": 105,
+                        "column": 48,
+                        "index": 3442
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright blue",
+                      "raw": "'bright blue'"
+                    },
+                    "value": "bright blue"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3445,
+        "end": 3498,
+        "loc": {
+          "start": {
+            "line": 106,
+            "column": 0,
+            "index": 3445
+          },
+          "end": {
+            "line": 106,
+            "column": 53,
+            "index": 3498
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3452,
+          "end": 3498,
+          "loc": {
+            "start": {
+              "line": 106,
+              "column": 7,
+              "index": 3452
+            },
+            "end": {
+              "line": 106,
+              "column": 53,
+              "index": 3498
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3458,
+              "end": 3497,
+              "loc": {
+                "start": {
+                  "line": 106,
+                  "column": 13,
+                  "index": 3458
+                },
+                "end": {
+                  "line": 106,
+                  "column": 52,
+                  "index": 3497
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3458,
+                "end": 3471,
+                "loc": {
+                  "start": {
+                    "line": 106,
+                    "column": 13,
+                    "index": 3458
+                  },
+                  "end": {
+                    "line": 106,
+                    "column": 26,
+                    "index": 3471
+                  },
+                  "identifierName": "brightMagenta"
+                },
+                "name": "brightMagenta"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3474,
+                "end": 3497,
+                "loc": {
+                  "start": {
+                    "line": 106,
+                    "column": 29,
+                    "index": 3474
+                  },
+                  "end": {
+                    "line": 106,
+                    "column": 52,
+                    "index": 3497
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3474,
+                  "end": 3479,
+                  "loc": {
+                    "start": {
+                      "line": 106,
+                      "column": 29,
+                      "index": 3474
+                    },
+                    "end": {
+                      "line": 106,
+                      "column": 34,
+                      "index": 3479
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3480,
+                    "end": 3496,
+                    "loc": {
+                      "start": {
+                        "line": 106,
+                        "column": 35,
+                        "index": 3480
+                      },
+                      "end": {
+                        "line": 106,
+                        "column": 51,
+                        "index": 3496
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright magenta",
+                      "raw": "'bright magenta'"
+                    },
+                    "value": "bright magenta"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3499,
+        "end": 3549,
+        "loc": {
+          "start": {
+            "line": 107,
+            "column": 0,
+            "index": 3499
+          },
+          "end": {
+            "line": 107,
+            "column": 50,
+            "index": 3549
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3506,
+          "end": 3549,
+          "loc": {
+            "start": {
+              "line": 107,
+              "column": 7,
+              "index": 3506
+            },
+            "end": {
+              "line": 107,
+              "column": 50,
+              "index": 3549
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3512,
+              "end": 3548,
+              "loc": {
+                "start": {
+                  "line": 107,
+                  "column": 13,
+                  "index": 3512
+                },
+                "end": {
+                  "line": 107,
+                  "column": 49,
+                  "index": 3548
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3512,
+                "end": 3522,
+                "loc": {
+                  "start": {
+                    "line": 107,
+                    "column": 13,
+                    "index": 3512
+                  },
+                  "end": {
+                    "line": 107,
+                    "column": 23,
+                    "index": 3522
+                  },
+                  "identifierName": "brightCyan"
+                },
+                "name": "brightCyan"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3528,
+                "end": 3548,
+                "loc": {
+                  "start": {
+                    "line": 107,
+                    "column": 29,
+                    "index": 3528
+                  },
+                  "end": {
+                    "line": 107,
+                    "column": 49,
+                    "index": 3548
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3528,
+                  "end": 3533,
+                  "loc": {
+                    "start": {
+                      "line": 107,
+                      "column": 29,
+                      "index": 3528
+                    },
+                    "end": {
+                      "line": 107,
+                      "column": 34,
+                      "index": 3533
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3534,
+                    "end": 3547,
+                    "loc": {
+                      "start": {
+                        "line": 107,
+                        "column": 35,
+                        "index": 3534
+                      },
+                      "end": {
+                        "line": 107,
+                        "column": 48,
+                        "index": 3547
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright cyan",
+                      "raw": "'bright cyan'"
+                    },
+                    "value": "bright cyan"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3550,
+        "end": 3600,
+        "loc": {
+          "start": {
+            "line": 108,
+            "column": 0,
+            "index": 3550
+          },
+          "end": {
+            "line": 108,
+            "column": 50,
+            "index": 3600
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3557,
+          "end": 3600,
+          "loc": {
+            "start": {
+              "line": 108,
+              "column": 7,
+              "index": 3557
+            },
+            "end": {
+              "line": 108,
+              "column": 50,
+              "index": 3600
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3563,
+              "end": 3599,
+              "loc": {
+                "start": {
+                  "line": 108,
+                  "column": 13,
+                  "index": 3563
+                },
+                "end": {
+                  "line": 108,
+                  "column": 49,
+                  "index": 3599
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3563,
+                "end": 3573,
+                "loc": {
+                  "start": {
+                    "line": 108,
+                    "column": 13,
+                    "index": 3563
+                  },
+                  "end": {
+                    "line": 108,
+                    "column": 23,
+                    "index": 3573
+                  },
+                  "identifierName": "brightGrey"
+                },
+                "name": "brightGrey"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3579,
+                "end": 3599,
+                "loc": {
+                  "start": {
+                    "line": 108,
+                    "column": 29,
+                    "index": 3579
+                  },
+                  "end": {
+                    "line": 108,
+                    "column": 49,
+                    "index": 3599
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3579,
+                  "end": 3584,
+                  "loc": {
+                    "start": {
+                      "line": 108,
+                      "column": 29,
+                      "index": 3579
+                    },
+                    "end": {
+                      "line": 108,
+                      "column": 34,
+                      "index": 3584
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3585,
+                    "end": 3598,
+                    "loc": {
+                      "start": {
+                        "line": 108,
+                        "column": 35,
+                        "index": 3585
+                      },
+                      "end": {
+                        "line": 108,
+                        "column": 48,
+                        "index": 3598
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright grey",
+                      "raw": "'bright grey'"
+                    },
+                    "value": "bright grey"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3601,
+        "end": 3652,
+        "loc": {
+          "start": {
+            "line": 109,
+            "column": 0,
+            "index": 3601
+          },
+          "end": {
+            "line": 109,
+            "column": 51,
+            "index": 3652
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3608,
+          "end": 3652,
+          "loc": {
+            "start": {
+              "line": 109,
+              "column": 7,
+              "index": 3608
+            },
+            "end": {
+              "line": 109,
+              "column": 51,
+              "index": 3652
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3614,
+              "end": 3651,
+              "loc": {
+                "start": {
+                  "line": 109,
+                  "column": 13,
+                  "index": 3614
+                },
+                "end": {
+                  "line": 109,
+                  "column": 50,
+                  "index": 3651
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3614,
+                "end": 3625,
+                "loc": {
+                  "start": {
+                    "line": 109,
+                    "column": 13,
+                    "index": 3614
+                  },
+                  "end": {
+                    "line": 109,
+                    "column": 24,
+                    "index": 3625
+                  },
+                  "identifierName": "brightWhite"
+                },
+                "name": "brightWhite"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3630,
+                "end": 3651,
+                "loc": {
+                  "start": {
+                    "line": 109,
+                    "column": 29,
+                    "index": 3630
+                  },
+                  "end": {
+                    "line": 109,
+                    "column": 50,
+                    "index": 3651
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3630,
+                  "end": 3635,
+                  "loc": {
+                    "start": {
+                      "line": 109,
+                      "column": 29,
+                      "index": 3630
+                    },
+                    "end": {
+                      "line": 109,
+                      "column": 34,
+                      "index": 3635
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3636,
+                    "end": 3650,
+                    "loc": {
+                      "start": {
+                        "line": 109,
+                        "column": 35,
+                        "index": 3636
+                      },
+                      "end": {
+                        "line": 109,
+                        "column": 49,
+                        "index": 3650
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "bright white",
+                      "raw": "'bright white'"
+                    },
+                    "value": "bright white"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3653,
+        "end": 3702,
+        "loc": {
+          "start": {
+            "line": 110,
+            "column": 0,
+            "index": 3653
+          },
+          "end": {
+            "line": 110,
+            "column": 49,
+            "index": 3702
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3660,
+          "end": 3702,
+          "loc": {
+            "start": {
+              "line": 110,
+              "column": 7,
+              "index": 3660
+            },
+            "end": {
+              "line": 110,
+              "column": 49,
+              "index": 3702
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3666,
+              "end": 3701,
+              "loc": {
+                "start": {
+                  "line": 110,
+                  "column": 13,
+                  "index": 3666
+                },
+                "end": {
+                  "line": 110,
+                  "column": 48,
+                  "index": 3701
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3666,
+                "end": 3675,
+                "loc": {
+                  "start": {
+                    "line": 110,
+                    "column": 13,
+                    "index": 3666
+                  },
+                  "end": {
+                    "line": 110,
+                    "column": 22,
+                    "index": 3675
+                  },
+                  "identifierName": "darkBlack"
+                },
+                "name": "darkBlack"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3682,
+                "end": 3701,
+                "loc": {
+                  "start": {
+                    "line": 110,
+                    "column": 29,
+                    "index": 3682
+                  },
+                  "end": {
+                    "line": 110,
+                    "column": 48,
+                    "index": 3701
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3682,
+                  "end": 3687,
+                  "loc": {
+                    "start": {
+                      "line": 110,
+                      "column": 29,
+                      "index": 3682
+                    },
+                    "end": {
+                      "line": 110,
+                      "column": 34,
+                      "index": 3687
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3688,
+                    "end": 3700,
+                    "loc": {
+                      "start": {
+                        "line": 110,
+                        "column": 35,
+                        "index": 3688
+                      },
+                      "end": {
+                        "line": 110,
+                        "column": 47,
+                        "index": 3700
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark black",
+                      "raw": "'dark black'"
+                    },
+                    "value": "dark black"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3703,
+        "end": 3750,
+        "loc": {
+          "start": {
+            "line": 111,
+            "column": 0,
+            "index": 3703
+          },
+          "end": {
+            "line": 111,
+            "column": 47,
+            "index": 3750
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3710,
+          "end": 3750,
+          "loc": {
+            "start": {
+              "line": 111,
+              "column": 7,
+              "index": 3710
+            },
+            "end": {
+              "line": 111,
+              "column": 47,
+              "index": 3750
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3716,
+              "end": 3749,
+              "loc": {
+                "start": {
+                  "line": 111,
+                  "column": 13,
+                  "index": 3716
+                },
+                "end": {
+                  "line": 111,
+                  "column": 46,
+                  "index": 3749
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3716,
+                "end": 3723,
+                "loc": {
+                  "start": {
+                    "line": 111,
+                    "column": 13,
+                    "index": 3716
+                  },
+                  "end": {
+                    "line": 111,
+                    "column": 20,
+                    "index": 3723
+                  },
+                  "identifierName": "darkRed"
+                },
+                "name": "darkRed"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3732,
+                "end": 3749,
+                "loc": {
+                  "start": {
+                    "line": 111,
+                    "column": 29,
+                    "index": 3732
+                  },
+                  "end": {
+                    "line": 111,
+                    "column": 46,
+                    "index": 3749
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3732,
+                  "end": 3737,
+                  "loc": {
+                    "start": {
+                      "line": 111,
+                      "column": 29,
+                      "index": 3732
+                    },
+                    "end": {
+                      "line": 111,
+                      "column": 34,
+                      "index": 3737
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3738,
+                    "end": 3748,
+                    "loc": {
+                      "start": {
+                        "line": 111,
+                        "column": 35,
+                        "index": 3738
+                      },
+                      "end": {
+                        "line": 111,
+                        "column": 45,
+                        "index": 3748
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark red",
+                      "raw": "'dark red'"
+                    },
+                    "value": "dark red"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3751,
+        "end": 3800,
+        "loc": {
+          "start": {
+            "line": 112,
+            "column": 0,
+            "index": 3751
+          },
+          "end": {
+            "line": 112,
+            "column": 49,
+            "index": 3800
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3758,
+          "end": 3800,
+          "loc": {
+            "start": {
+              "line": 112,
+              "column": 7,
+              "index": 3758
+            },
+            "end": {
+              "line": 112,
+              "column": 49,
+              "index": 3800
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3764,
+              "end": 3799,
+              "loc": {
+                "start": {
+                  "line": 112,
+                  "column": 13,
+                  "index": 3764
+                },
+                "end": {
+                  "line": 112,
+                  "column": 48,
+                  "index": 3799
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3764,
+                "end": 3773,
+                "loc": {
+                  "start": {
+                    "line": 112,
+                    "column": 13,
+                    "index": 3764
+                  },
+                  "end": {
+                    "line": 112,
+                    "column": 22,
+                    "index": 3773
+                  },
+                  "identifierName": "darkGreen"
+                },
+                "name": "darkGreen"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3780,
+                "end": 3799,
+                "loc": {
+                  "start": {
+                    "line": 112,
+                    "column": 29,
+                    "index": 3780
+                  },
+                  "end": {
+                    "line": 112,
+                    "column": 48,
+                    "index": 3799
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3780,
+                  "end": 3785,
+                  "loc": {
+                    "start": {
+                      "line": 112,
+                      "column": 29,
+                      "index": 3780
+                    },
+                    "end": {
+                      "line": 112,
+                      "column": 34,
+                      "index": 3785
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3786,
+                    "end": 3798,
+                    "loc": {
+                      "start": {
+                        "line": 112,
+                        "column": 35,
+                        "index": 3786
+                      },
+                      "end": {
+                        "line": 112,
+                        "column": 47,
+                        "index": 3798
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark green",
+                      "raw": "'dark green'"
+                    },
+                    "value": "dark green"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3801,
+        "end": 3851,
+        "loc": {
+          "start": {
+            "line": 113,
+            "column": 0,
+            "index": 3801
+          },
+          "end": {
+            "line": 113,
+            "column": 50,
+            "index": 3851
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3808,
+          "end": 3851,
+          "loc": {
+            "start": {
+              "line": 113,
+              "column": 7,
+              "index": 3808
+            },
+            "end": {
+              "line": 113,
+              "column": 50,
+              "index": 3851
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3814,
+              "end": 3850,
+              "loc": {
+                "start": {
+                  "line": 113,
+                  "column": 13,
+                  "index": 3814
+                },
+                "end": {
+                  "line": 113,
+                  "column": 49,
+                  "index": 3850
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3814,
+                "end": 3824,
+                "loc": {
+                  "start": {
+                    "line": 113,
+                    "column": 13,
+                    "index": 3814
+                  },
+                  "end": {
+                    "line": 113,
+                    "column": 23,
+                    "index": 3824
+                  },
+                  "identifierName": "darkYellow"
+                },
+                "name": "darkYellow"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3830,
+                "end": 3850,
+                "loc": {
+                  "start": {
+                    "line": 113,
+                    "column": 29,
+                    "index": 3830
+                  },
+                  "end": {
+                    "line": 113,
+                    "column": 49,
+                    "index": 3850
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3830,
+                  "end": 3835,
+                  "loc": {
+                    "start": {
+                      "line": 113,
+                      "column": 29,
+                      "index": 3830
+                    },
+                    "end": {
+                      "line": 113,
+                      "column": 34,
+                      "index": 3835
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3836,
+                    "end": 3849,
+                    "loc": {
+                      "start": {
+                        "line": 113,
+                        "column": 35,
+                        "index": 3836
+                      },
+                      "end": {
+                        "line": 113,
+                        "column": 48,
+                        "index": 3849
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark yellow",
+                      "raw": "'dark yellow'"
+                    },
+                    "value": "dark yellow"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3852,
+        "end": 3900,
+        "loc": {
+          "start": {
+            "line": 114,
+            "column": 0,
+            "index": 3852
+          },
+          "end": {
+            "line": 114,
+            "column": 48,
+            "index": 3900
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3859,
+          "end": 3900,
+          "loc": {
+            "start": {
+              "line": 114,
+              "column": 7,
+              "index": 3859
+            },
+            "end": {
+              "line": 114,
+              "column": 48,
+              "index": 3900
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3865,
+              "end": 3899,
+              "loc": {
+                "start": {
+                  "line": 114,
+                  "column": 13,
+                  "index": 3865
+                },
+                "end": {
+                  "line": 114,
+                  "column": 47,
+                  "index": 3899
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3865,
+                "end": 3873,
+                "loc": {
+                  "start": {
+                    "line": 114,
+                    "column": 13,
+                    "index": 3865
+                  },
+                  "end": {
+                    "line": 114,
+                    "column": 21,
+                    "index": 3873
+                  },
+                  "identifierName": "darkBlue"
+                },
+                "name": "darkBlue"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3881,
+                "end": 3899,
+                "loc": {
+                  "start": {
+                    "line": 114,
+                    "column": 29,
+                    "index": 3881
+                  },
+                  "end": {
+                    "line": 114,
+                    "column": 47,
+                    "index": 3899
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3881,
+                  "end": 3886,
+                  "loc": {
+                    "start": {
+                      "line": 114,
+                      "column": 29,
+                      "index": 3881
+                    },
+                    "end": {
+                      "line": 114,
+                      "column": 34,
+                      "index": 3886
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3887,
+                    "end": 3898,
+                    "loc": {
+                      "start": {
+                        "line": 114,
+                        "column": 35,
+                        "index": 3887
+                      },
+                      "end": {
+                        "line": 114,
+                        "column": 46,
+                        "index": 3898
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark blue",
+                      "raw": "'dark blue'"
+                    },
+                    "value": "dark blue"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3901,
+        "end": 3952,
+        "loc": {
+          "start": {
+            "line": 115,
+            "column": 0,
+            "index": 3901
+          },
+          "end": {
+            "line": 115,
+            "column": 51,
+            "index": 3952
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3908,
+          "end": 3952,
+          "loc": {
+            "start": {
+              "line": 115,
+              "column": 7,
+              "index": 3908
+            },
+            "end": {
+              "line": 115,
+              "column": 51,
+              "index": 3952
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3914,
+              "end": 3951,
+              "loc": {
+                "start": {
+                  "line": 115,
+                  "column": 13,
+                  "index": 3914
+                },
+                "end": {
+                  "line": 115,
+                  "column": 50,
+                  "index": 3951
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3914,
+                "end": 3925,
+                "loc": {
+                  "start": {
+                    "line": 115,
+                    "column": 13,
+                    "index": 3914
+                  },
+                  "end": {
+                    "line": 115,
+                    "column": 24,
+                    "index": 3925
+                  },
+                  "identifierName": "darkMagenta"
+                },
+                "name": "darkMagenta"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3930,
+                "end": 3951,
+                "loc": {
+                  "start": {
+                    "line": 115,
+                    "column": 29,
+                    "index": 3930
+                  },
+                  "end": {
+                    "line": 115,
+                    "column": 50,
+                    "index": 3951
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3930,
+                  "end": 3935,
+                  "loc": {
+                    "start": {
+                      "line": 115,
+                      "column": 29,
+                      "index": 3930
+                    },
+                    "end": {
+                      "line": 115,
+                      "column": 34,
+                      "index": 3935
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3936,
+                    "end": 3950,
+                    "loc": {
+                      "start": {
+                        "line": 115,
+                        "column": 35,
+                        "index": 3936
+                      },
+                      "end": {
+                        "line": 115,
+                        "column": 49,
+                        "index": 3950
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark magenta",
+                      "raw": "'dark magenta'"
+                    },
+                    "value": "dark magenta"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 3953,
+        "end": 4001,
+        "loc": {
+          "start": {
+            "line": 116,
+            "column": 0,
+            "index": 3953
+          },
+          "end": {
+            "line": 116,
+            "column": 48,
+            "index": 4001
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 3960,
+          "end": 4001,
+          "loc": {
+            "start": {
+              "line": 116,
+              "column": 7,
+              "index": 3960
+            },
+            "end": {
+              "line": 116,
+              "column": 48,
+              "index": 4001
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 3966,
+              "end": 4000,
+              "loc": {
+                "start": {
+                  "line": 116,
+                  "column": 13,
+                  "index": 3966
+                },
+                "end": {
+                  "line": 116,
+                  "column": 47,
+                  "index": 4000
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 3966,
+                "end": 3974,
+                "loc": {
+                  "start": {
+                    "line": 116,
+                    "column": 13,
+                    "index": 3966
+                  },
+                  "end": {
+                    "line": 116,
+                    "column": 21,
+                    "index": 3974
+                  },
+                  "identifierName": "darkCyan"
+                },
+                "name": "darkCyan"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 3982,
+                "end": 4000,
+                "loc": {
+                  "start": {
+                    "line": 116,
+                    "column": 29,
+                    "index": 3982
+                  },
+                  "end": {
+                    "line": 116,
+                    "column": 47,
+                    "index": 4000
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 3982,
+                  "end": 3987,
+                  "loc": {
+                    "start": {
+                      "line": 116,
+                      "column": 29,
+                      "index": 3982
+                    },
+                    "end": {
+                      "line": 116,
+                      "column": 34,
+                      "index": 3987
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 3988,
+                    "end": 3999,
+                    "loc": {
+                      "start": {
+                        "line": 116,
+                        "column": 35,
+                        "index": 3988
+                      },
+                      "end": {
+                        "line": 116,
+                        "column": 46,
+                        "index": 3999
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark cyan",
+                      "raw": "'dark cyan'"
+                    },
+                    "value": "dark cyan"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 4002,
+        "end": 4050,
+        "loc": {
+          "start": {
+            "line": 117,
+            "column": 0,
+            "index": 4002
+          },
+          "end": {
+            "line": 117,
+            "column": 48,
+            "index": 4050
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 4009,
+          "end": 4050,
+          "loc": {
+            "start": {
+              "line": 117,
+              "column": 7,
+              "index": 4009
+            },
+            "end": {
+              "line": 117,
+              "column": 48,
+              "index": 4050
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 4015,
+              "end": 4049,
+              "loc": {
+                "start": {
+                  "line": 117,
+                  "column": 13,
+                  "index": 4015
+                },
+                "end": {
+                  "line": 117,
+                  "column": 47,
+                  "index": 4049
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 4015,
+                "end": 4023,
+                "loc": {
+                  "start": {
+                    "line": 117,
+                    "column": 13,
+                    "index": 4015
+                  },
+                  "end": {
+                    "line": 117,
+                    "column": 21,
+                    "index": 4023
+                  },
+                  "identifierName": "darkGrey"
+                },
+                "name": "darkGrey"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 4031,
+                "end": 4049,
+                "loc": {
+                  "start": {
+                    "line": 117,
+                    "column": 29,
+                    "index": 4031
+                  },
+                  "end": {
+                    "line": 117,
+                    "column": 47,
+                    "index": 4049
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 4031,
+                  "end": 4036,
+                  "loc": {
+                    "start": {
+                      "line": 117,
+                      "column": 29,
+                      "index": 4031
+                    },
+                    "end": {
+                      "line": 117,
+                      "column": 34,
+                      "index": 4036
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 4037,
+                    "end": 4048,
+                    "loc": {
+                      "start": {
+                        "line": 117,
+                        "column": 35,
+                        "index": 4037
+                      },
+                      "end": {
+                        "line": 117,
+                        "column": 46,
+                        "index": 4048
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark grey",
+                      "raw": "'dark grey'"
+                    },
+                    "value": "dark grey"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
+      },
+      {
+        "type": "ExportNamedDeclaration",
+        "start": 4051,
+        "end": 4100,
+        "loc": {
+          "start": {
+            "line": 118,
+            "column": 0,
+            "index": 4051
+          },
+          "end": {
+            "line": 118,
+            "column": 49,
+            "index": 4100
+          }
+        },
+        "specifiers": [],
+        "source": null,
+        "declaration": {
+          "type": "VariableDeclaration",
+          "start": 4058,
+          "end": 4100,
+          "loc": {
+            "start": {
+              "line": 118,
+              "column": 7,
+              "index": 4058
+            },
+            "end": {
+              "line": 118,
+              "column": 49,
+              "index": 4100
+            }
+          },
+          "declarations": [
+            {
+              "type": "VariableDeclarator",
+              "start": 4064,
+              "end": 4099,
+              "loc": {
+                "start": {
+                  "line": 118,
+                  "column": 13,
+                  "index": 4064
+                },
+                "end": {
+                  "line": 118,
+                  "column": 48,
+                  "index": 4099
+                }
+              },
+              "id": {
+                "type": "Identifier",
+                "start": 4064,
+                "end": 4073,
+                "loc": {
+                  "start": {
+                    "line": 118,
+                    "column": 13,
+                    "index": 4064
+                  },
+                  "end": {
+                    "line": 118,
+                    "column": 22,
+                    "index": 4073
+                  },
+                  "identifierName": "darkWhite"
+                },
+                "name": "darkWhite"
+              },
+              "init": {
+                "type": "CallExpression",
+                "start": 4080,
+                "end": 4099,
+                "loc": {
+                  "start": {
+                    "line": 118,
+                    "column": 29,
+                    "index": 4080
+                  },
+                  "end": {
+                    "line": 118,
+                    "column": 48,
+                    "index": 4099
+                  }
+                },
+                "callee": {
+                  "type": "Identifier",
+                  "start": 4080,
+                  "end": 4085,
+                  "loc": {
+                    "start": {
+                      "line": 118,
+                      "column": 29,
+                      "index": 4080
+                    },
+                    "end": {
+                      "line": 118,
+                      "column": 34,
+                      "index": 4085
+                    },
+                    "identifierName": "color"
+                  },
+                  "name": "color"
+                },
+                "arguments": [
+                  {
+                    "type": "StringLiteral",
+                    "start": 4086,
+                    "end": 4098,
+                    "loc": {
+                      "start": {
+                        "line": 118,
+                        "column": 35,
+                        "index": 4086
+                      },
+                      "end": {
+                        "line": 118,
+                        "column": 47,
+                        "index": 4098
+                      }
+                    },
+                    "extra": {
+                      "rawValue": "dark white",
+                      "raw": "'dark white'"
+                    },
+                    "value": "dark white"
+                  }
+                ]
+              }
+            }
+          ],
+          "kind": "const",
+          "leadingComments": [],
+          "trailingComments": []
+        }
       }
     ],
     "directives": []
