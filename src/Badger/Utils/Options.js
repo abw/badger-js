@@ -83,8 +83,6 @@ export const options = async config => {
         if (hasValue(deflt)) {
           args.push(deflt);
         }
-        console.log('command option: ', args);
-
         command.option(...args)
       }
     )
