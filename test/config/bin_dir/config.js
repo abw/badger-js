@@ -1,5 +1,6 @@
 import test from 'ava';
-import { bin, config } from '../../../src/Badger.js'
+import { config } from '../../../src/Badger.js'
+import { bin } from '@abw/badger-filesystem'
 
 // current directory where this script is located
 const thisDir = bin(import.meta.url);

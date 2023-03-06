@@ -1,7 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@abw/badger-utils': ^1.0.2
+  '@abw/badger-codecs': ^1.0.1
+  '@abw/badger-filesystem': ^1.0.1
+  '@abw/badger-utils': ^1.0.16
   '@itsjamie/esdoc-cli': ^0.5.0
   '@itsjamie/esdoc-core': ^0.5.0
   '@itsjamie/esdoc-importpath-plugin': ^0.5.0
@@ -18,7 +20,9 @@ specifiers:
   rollup-plugin-terser: ^7.0.2
 
 dependencies:
-  '@abw/badger-utils': 1.0.2
+  '@abw/badger-codecs': 1.0.1
+  '@abw/badger-filesystem': 1.0.1
+  '@abw/badger-utils': 1.0.16
   commander: 9.4.0
   js-yaml: 4.1.0
   prompts: 2.4.2
@@ -38,8 +42,22 @@ devDependencies:
 
 packages:
 
-  /@abw/badger-utils/1.0.2:
-    resolution: {integrity: sha512-6VcMAElFlxYHjBQe1muqKS14oXiVXh2Gh2QTQli0JlY7IYiOkstObXI2V2OoiU1AkmNbju/UaHtFvLXRODNMMQ==}
+  /@abw/badger-codecs/1.0.1:
+    resolution: {integrity: sha512-hjvfKKTHSBhuDaROciR0ztaxVLAcRVI7ICUn5e8gKJLp6G+bXgX/VYYjFHPGR5pcKInsoBGsbIyifTEwgGvOKg==}
+    dependencies:
+      '@abw/badger-utils': 1.0.16
+      js-yaml: 4.1.0
+    dev: false
+
+  /@abw/badger-filesystem/1.0.1:
+    resolution: {integrity: sha512-RO81zXhrAkpMxbgZ1bzT9QgXOSs2NBAsx9WN9hxeFdupbykHdYBzI1t3Kt7jfeqCxDwS0cnFY5z6j37V9+6CeA==}
+    dependencies:
+      '@abw/badger-codecs': 1.0.1
+      '@abw/badger-utils': 1.0.16
+    dev: false
+
+  /@abw/badger-utils/1.0.16:
+    resolution: {integrity: sha512-fozmV5pbtMrGREjZQFfYluAPTq/LtSxEDBuTmgQrJyovv8ddH5gxIfrThsFTixHSGoXy5PlIeF1FgBQ/C8AwbQ==}
     dev: false
 
   /@ampproject/remapping/2.2.0:

@@ -1,4 +1,4 @@
-import { DirPath } from './Filesystem/DirPath.js';
+import { DirPath } from '@abw/badger-filesystem';
 import { addDebug } from './Utils/Debug.js';
 import { dataPath } from '../Badger/Utils/DataPath.js';
 import { doNothing, fail, splitList } from '@abw/badger-utils';

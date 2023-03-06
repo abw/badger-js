@@ -1,7 +1,7 @@
-import { dir as fsDir } from "./Filesystem/Directory.js";
 import { addDebug } from "./Utils/Debug.js";
 import { Config } from "./Config.js";
 import { Library } from "./Library.js";
+import { dir as fsDir } from "@abw/badger-filesystem";
 import { fail, hasValue, splitList } from "@abw/badger-utils";
 
 /**

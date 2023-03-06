@@ -1,5 +1,6 @@
 import test from 'ava';
-import { bin, workspace } from '../../src/Badger.js'
+import { workspace } from '../../src/Badger.js'
+import { bin } from '@abw/badger-filesystem'
 
 const DEBUG = false;
 const thisDir = bin(import.meta.url);

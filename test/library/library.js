@@ -1,5 +1,6 @@
 import test from 'ava';
-import { bin, library } from '../../src/Badger.js'
+import { library } from '../../src/Badger.js'
+import { bin } from '@abw/badger-filesystem'
 import { splitList } from '@abw/badger-utils'
 
 const DEBUG = false;
