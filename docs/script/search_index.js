@@ -96,36 +96,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~dirpath",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html",
-    "<span>DirPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~directory",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html",
-    "<span>Directory</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~directory",
-    "class/src/Badger.js~Directory.html",
-    "<span>Directory</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~file",
-    "class/src/Badger/Filesystem/File.js~File.html",
-    "<span>File</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~file",
-    "class/src/Badger.js~File.html",
-    "<span>File</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
     "@abw/badger~library",
     "class/src/Badger/Library.js~Library.html",
     "<span>Library</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -135,18 +105,6 @@ window.esdocSearchIndex = [
     "@abw/badger~library",
     "class/src/Badger.js~Library.html",
     "<span>Library</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~path",
-    "class/src/Badger/Filesystem/Path.js~Path.html",
-    "<span>Path</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "class"
-  ],
-  [
-    "@abw/badger~path",
-    "class/src/Badger.js~Path.html",
-    "<span>Path</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "class"
   ],
   [
@@ -312,18 +270,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~bin",
-    "function/index.html#static-function-bin",
-    "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~bin",
-    "function/index.html#static-function-bin",
-    "<span>bin</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~black",
     "variable/index.html#static-variable-black",
     "<span>black</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -556,30 +502,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-cmdLineArgs",
     "<span>cmdLineArgs</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
-  ],
-  [
-    "@abw/badger~codec",
-    "function/index.html#static-function-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~codec",
-    "function/index.html#static-function-codec",
-    "<span>codec</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~codecs",
-    "variable/index.html#static-variable-codecs",
-    "<span>codecs</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger~codecs",
-    "variable/index.html#static-variable-codecs",
-    "<span>codecs</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "variable"
   ],
   [
     "@abw/badger~color",
@@ -630,18 +552,6 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
-    "@abw/badger~cwd",
-    "function/index.html#static-function-cwd",
-    "<span>cwd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~cwd",
-    "function/index.html#static-function-cwd",
-    "<span>cwd</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~cyan",
     "variable/index.html#static-variable-cyan",
     "<span>cyan</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -858,18 +768,6 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
-    "@abw/badger~dir",
-    "function/index.html#static-function-dir",
-    "<span>dir</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~dir",
-    "function/index.html#static-function-dir",
-    "<span>dir</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
     "@abw/badger~exit",
     "function/index.html#static-function-exit",
     "<span>exit</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -885,18 +783,6 @@ window.esdocSearchIndex = [
     "@abw/badger~exit",
     "function/index.html#static-function-exit",
     "<span>exit</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~file",
-    "function/index.html#static-function-file",
-    "<span>file</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "function"
-  ],
-  [
-    "@abw/badger~file",
-    "function/index.html#static-function-file",
-    "<span>file</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -933,12 +819,6 @@ window.esdocSearchIndex = [
     "@abw/badger~grey",
     "variable/index.html#static-variable-grey",
     "<span>grey</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "variable"
-  ],
-  [
-    "@abw/badger~jsoncodec",
-    "variable/index.html#static-variable-jsonCodec",
-    "<span>jsonCodec</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "variable"
   ],
   [
@@ -1204,12 +1084,6 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-workspace",
     "<span>workspace</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
-  ],
-  [
-    "@abw/badger~yamlcodec",
-    "variable/index.html#static-variable-yamlCodec",
-    "<span>yamlCodec</span> <span class=\"search-result-import-path\">@abw/badger</span>",
-    "variable"
   ],
   [
     "@abw/badger~yellow",
@@ -1572,114 +1446,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger.js~directory#create",
-    "class/src/Badger.js~Directory.html#instance-method-create",
-    "src/Badger.js~Directory#create",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#destroy",
-    "class/src/Badger.js~Directory.html#instance-method-destroy",
-    "src/Badger.js~Directory#destroy",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#dir",
-    "class/src/Badger.js~Directory.html#instance-method-dir",
-    "src/Badger.js~Directory#dir",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#directory",
-    "class/src/Badger.js~Directory.html#instance-method-directory",
-    "src/Badger.js~Directory#directory",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#empty",
-    "class/src/Badger.js~Directory.html#instance-method-empty",
-    "src/Badger.js~Directory#empty",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#file",
-    "class/src/Badger.js~Directory.html#instance-method-file",
-    "src/Badger.js~Directory#file",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#isempty",
-    "class/src/Badger.js~Directory.html#instance-method-isEmpty",
-    "src/Badger.js~Directory#isEmpty",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#mkdir",
-    "class/src/Badger.js~Directory.html#instance-method-mkdir",
-    "src/Badger.js~Directory#mkdir",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#mustexist",
-    "class/src/Badger.js~Directory.html#instance-method-mustExist",
-    "src/Badger.js~Directory#mustExist",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#notempty",
-    "class/src/Badger.js~Directory.html#instance-method-notEmpty",
-    "src/Badger.js~Directory#notEmpty",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#parent",
-    "class/src/Badger.js~Directory.html#instance-method-parent",
-    "src/Badger.js~Directory#parent",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#read",
-    "class/src/Badger.js~Directory.html#instance-method-read",
-    "src/Badger.js~Directory#read",
-    "method"
-  ],
-  [
-    "src/badger.js~directory#rmdir",
-    "class/src/Badger.js~Directory.html#instance-method-rmdir",
-    "src/Badger.js~Directory#rmdir",
-    "method"
-  ],
-  [
-    "src/badger.js~file#delete",
-    "class/src/Badger.js~File.html#instance-method-delete",
-    "src/Badger.js~File#delete",
-    "method"
-  ],
-  [
-    "src/badger.js~file#dir",
-    "class/src/Badger.js~File.html#instance-method-dir",
-    "src/Badger.js~File#dir",
-    "method"
-  ],
-  [
-    "src/badger.js~file#directory",
-    "class/src/Badger.js~File.html#instance-method-directory",
-    "src/Badger.js~File#directory",
-    "method"
-  ],
-  [
-    "src/badger.js~file#read",
-    "class/src/Badger.js~File.html#instance-method-read",
-    "src/Badger.js~File#read",
-    "method"
-  ],
-  [
-    "src/badger.js~file#write",
-    "class/src/Badger.js~File.html#instance-method-write",
-    "src/Badger.js~File#write",
-    "method"
-  ],
-  [
     "src/badger.js~library#constructor",
     "class/src/Badger.js~Library.html#instance-constructor-constructor",
     "src/Badger.js~Library#constructor",
@@ -1689,54 +1455,6 @@ window.esdocSearchIndex = [
     "src/badger.js~library#library",
     "class/src/Badger.js~Library.html#instance-method-library",
     "src/Badger.js~Library#library",
-    "method"
-  ],
-  [
-    "src/badger.js~path#constructor",
-    "class/src/Badger.js~Path.html#instance-constructor-constructor",
-    "src/Badger.js~Path#constructor",
-    "method"
-  ],
-  [
-    "src/badger.js~path#exists",
-    "class/src/Badger.js~Path.html#instance-method-exists",
-    "src/Badger.js~Path#exists",
-    "method"
-  ],
-  [
-    "src/badger.js~path#options",
-    "class/src/Badger.js~Path.html#instance-method-options",
-    "src/Badger.js~Path#options",
-    "method"
-  ],
-  [
-    "src/badger.js~path#path",
-    "class/src/Badger.js~Path.html#instance-method-path",
-    "src/Badger.js~Path#path",
-    "method"
-  ],
-  [
-    "src/badger.js~path#relativepath",
-    "class/src/Badger.js~Path.html#instance-method-relativePath",
-    "src/Badger.js~Path#relativePath",
-    "method"
-  ],
-  [
-    "src/badger.js~path#stat",
-    "class/src/Badger.js~Path.html#instance-method-stat",
-    "src/Badger.js~Path#stat",
-    "method"
-  ],
-  [
-    "src/badger.js~path#state",
-    "class/src/Badger.js~Path.html#instance-member-state",
-    "src/Badger.js~Path#state",
-    "member"
-  ],
-  [
-    "src/badger.js~path#unstat",
-    "class/src/Badger.js~Path.html#instance-method-unstat",
-    "src/Badger.js~Path#unstat",
     "method"
   ],
   [
@@ -1812,24 +1530,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/badger/codecs/json.js",
-    "file/src/Badger/Codecs/Json.js.html",
-    "src/Badger/Codecs/Json.js",
-    "file"
-  ],
-  [
-    "src/badger/codecs/yaml.js",
-    "file/src/Badger/Codecs/Yaml.js.html",
-    "src/Badger/Codecs/Yaml.js",
-    "file"
-  ],
-  [
-    "src/badger/codecs/index.js",
-    "file/src/Badger/Codecs/index.js.html",
-    "src/Badger/Codecs/index.js",
-    "file"
-  ],
-  [
     "src/badger/component.js",
     "file/src/Badger/Component.js.html",
     "src/Badger/Component.js",
@@ -1893,216 +1593,6 @@ window.esdocSearchIndex = [
     "src/badger/config.js~config#jsfile",
     "class/src/Badger/Config.js~Config.html#instance-method-jsFile",
     "src/Badger/Config.js~Config#jsFile",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js",
-    "file/src/Badger/Filesystem/DirPath.js.html",
-    "src/Badger/Filesystem/DirPath.js",
-    "file"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js~dirpath#constructor",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-constructor-constructor",
-    "src/Badger/Filesystem/DirPath.js~DirPath#constructor",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js~dirpath#dirs",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-dirs",
-    "src/Badger/Filesystem/DirPath.js~DirPath#dirs",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js~dirpath#dirsexist",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-dirsExist",
-    "src/Badger/Filesystem/DirPath.js~DirPath#dirsExist",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js~dirpath#initdirs",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-method-initDirs",
-    "src/Badger/Filesystem/DirPath.js~DirPath#initDirs",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/dirpath.js~dirpath#state",
-    "class/src/Badger/Filesystem/DirPath.js~DirPath.html#instance-member-state",
-    "src/Badger/Filesystem/DirPath.js~DirPath#state",
-    "member"
-  ],
-  [
-    "src/badger/filesystem/directory.js",
-    "file/src/Badger/Filesystem/Directory.js.html",
-    "src/Badger/Filesystem/Directory.js",
-    "file"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#create",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-create",
-    "src/Badger/Filesystem/Directory.js~Directory#create",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#destroy",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-destroy",
-    "src/Badger/Filesystem/Directory.js~Directory#destroy",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#dir",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-dir",
-    "src/Badger/Filesystem/Directory.js~Directory#dir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#directory",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-directory",
-    "src/Badger/Filesystem/Directory.js~Directory#directory",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#empty",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-empty",
-    "src/Badger/Filesystem/Directory.js~Directory#empty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#file",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-file",
-    "src/Badger/Filesystem/Directory.js~Directory#file",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#isempty",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-isEmpty",
-    "src/Badger/Filesystem/Directory.js~Directory#isEmpty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#mkdir",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-mkdir",
-    "src/Badger/Filesystem/Directory.js~Directory#mkdir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#mustexist",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-mustExist",
-    "src/Badger/Filesystem/Directory.js~Directory#mustExist",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#notempty",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-notEmpty",
-    "src/Badger/Filesystem/Directory.js~Directory#notEmpty",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#parent",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-parent",
-    "src/Badger/Filesystem/Directory.js~Directory#parent",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#read",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-read",
-    "src/Badger/Filesystem/Directory.js~Directory#read",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/directory.js~directory#rmdir",
-    "class/src/Badger/Filesystem/Directory.js~Directory.html#instance-method-rmdir",
-    "src/Badger/Filesystem/Directory.js~Directory#rmdir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/file.js",
-    "file/src/Badger/Filesystem/File.js.html",
-    "src/Badger/Filesystem/File.js",
-    "file"
-  ],
-  [
-    "src/badger/filesystem/file.js~file#delete",
-    "class/src/Badger/Filesystem/File.js~File.html#instance-method-delete",
-    "src/Badger/Filesystem/File.js~File#delete",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/file.js~file#dir",
-    "class/src/Badger/Filesystem/File.js~File.html#instance-method-dir",
-    "src/Badger/Filesystem/File.js~File#dir",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/file.js~file#directory",
-    "class/src/Badger/Filesystem/File.js~File.html#instance-method-directory",
-    "src/Badger/Filesystem/File.js~File#directory",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/file.js~file#read",
-    "class/src/Badger/Filesystem/File.js~File.html#instance-method-read",
-    "src/Badger/Filesystem/File.js~File#read",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/file.js~file#write",
-    "class/src/Badger/Filesystem/File.js~File.html#instance-method-write",
-    "src/Badger/Filesystem/File.js~File#write",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js",
-    "file/src/Badger/Filesystem/Path.js.html",
-    "src/Badger/Filesystem/Path.js",
-    "file"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#constructor",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-constructor-constructor",
-    "src/Badger/Filesystem/Path.js~Path#constructor",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#exists",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-exists",
-    "src/Badger/Filesystem/Path.js~Path#exists",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#options",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-options",
-    "src/Badger/Filesystem/Path.js~Path#options",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#path",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-path",
-    "src/Badger/Filesystem/Path.js~Path#path",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#relativepath",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-relativePath",
-    "src/Badger/Filesystem/Path.js~Path#relativePath",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#stat",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-stat",
-    "src/Badger/Filesystem/Path.js~Path#stat",
-    "method"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#state",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-member-state",
-    "src/Badger/Filesystem/Path.js~Path#state",
-    "member"
-  ],
-  [
-    "src/badger/filesystem/path.js~path#unstat",
-    "class/src/Badger/Filesystem/Path.js~Path.html#instance-method-unstat",
-    "src/Badger/Filesystem/Path.js~Path#unstat",
     "method"
   ],
   [
