@@ -56,11 +56,12 @@ export const options = async config => {
         return hasValue(option.name);
       }
     )
-    .map(
+    .forEach(
       option => {
         const name    = option.name;
         const about   = option.about;
         const deflt   = option.default;
+        const handler = option.handler;
         const short   = option.short;
         const type    = option.type;
         const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);
@@ -76,16 +77,21 @@ export const options = async config => {
         if (hasValue(about)) {
           args.push(about);
         }
+        if (hasValue(handler)) {
+          args.push(handler);
+        }
         if (hasValue(deflt)) {
           args.push(deflt);
         }
+        console.log('command option: ', args);
+
         command.option(...args)
       }
     )
 
   let commands = { };
 
-  config.commands?.map(
+  config.commands?.forEach(
     option => {
       const name    = option.name;
       const about   = option.about;
@@ -129,7 +135,7 @@ export const options = async config => {
 
   // build up the list of prompts for interactive questions
   let prompts = [ ];
-  config.options?.map(
+  config.options?.forEach(
     option => {
       const type     = option.type || 'text';
       const name     = option.name;

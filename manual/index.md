@@ -12,6 +12,7 @@ This is the manual for the `badger` Javascript toolkit.
 * [Data Paths](manual/data_paths.html)
 * [Workspace](manual/workspace.html)
 * [Command Line Options](manual/command_line.html)
+* [Miscellaneous Functions](manual/miscellaneous.html)
 
 # Author
 [Andy Wardley](https://github.com/abw)

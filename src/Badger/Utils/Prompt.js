@@ -1,3 +1,4 @@
+import { isString } from '@abw/badger-utils';
 import prompts from 'prompts'
 
 /**
@@ -14,6 +15,10 @@ import prompts from 'prompts'
  *   .then( name => console.log(`Hello ${name}`) );
  */
 export const prompt = async (question, options={}) => {
+  options = isString(options)
+    ? { default: options }
+    : options;
+
   const name = options.name || 'answer';
   const answers = await prompts([
     {

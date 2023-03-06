@@ -88,3 +88,31 @@ export const ANSIreset = () => ANSIescapeCode('reset', false)
  */
 export const color = (colors) =>
   text => ANSIescape(colors) + text + ANSIreset();
+
+export const black         = color('black');
+export const red           = color('red');
+export const green         = color('green');
+export const yellow        = color('yellow');
+export const blue          = color('blue');
+export const magenta       = color('magenta');
+export const cyan          = color('cyan');
+export const grey          = color('grey');
+export const white         = color('white');
+export const brightBlack   = color('bright black');
+export const brightRed     = color('bright red');
+export const brightGreen   = color('bright green');
+export const brightYellow  = color('bright yellow');
+export const brightBlue    = color('bright blue');
+export const brightMagenta = color('bright magenta');
+export const brightCyan    = color('bright cyan');
+export const brightGrey    = color('bright grey');
+export const brightWhite   = color('bright white');
+export const darkBlack     = color('dark black');
+export const darkRed       = color('dark red');
+export const darkGreen     = color('dark green');
+export const darkYellow    = color('dark yellow');
+export const darkBlue      = color('dark blue');
+export const darkMagenta   = color('dark magenta');
+export const darkCyan      = color('dark cyan');
+export const darkGrey      = color('dark grey');
+export const darkWhite     = color('dark white');

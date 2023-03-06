@@ -3,6 +3,10 @@
 The filesystem utilities provide a simple and convenient way to
 handle common  directory and file operations.
 
+**NOTE**: The filesystem utilities have been moved out to a separate
+[badger-filesystem](https://www.npmjs.com/package/@abw/badger-filesystem)
+module.
+
 - [Directories](#directories)
 - [Reading Files](#reading-files)
 - [Writing Files](#writing-files)

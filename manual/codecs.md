@@ -3,6 +3,10 @@
 Codecs are used to encode and decode data to and from serialised text.
 The badger toolkit comes with two built-in codecs for `json` and `yaml` files.
 
+**NOTE**: The codec utilities have been moved out to a separate
+[badger-codecs](https://www.npmjs.com/package/@abw/badger-codecs)
+module.
+
 - [Read Data File](#read-data-files)
 - [Write Data Files](#write-data-files)
 

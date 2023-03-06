@@ -230,5 +230,5 @@ Press RETURN to accept defaults.
 The function returns a Promise which fulfills to an object containing the
 configuration values.  Each key will be the `name` of the option or command,
 and the corresponding value will be that read from the command line or by
-prompting the user.  In the case of [commands](#commands) the value or values
-will be in an array.
+prompting the user.  In the case of [commands](#commands) with multiple values
+they will be stored as an array.
