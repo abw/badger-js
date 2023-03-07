@@ -305,7 +305,7 @@ export const ANSIreset = () =&gt; ANSIescapeCode('reset', false)
  * @return {Function} function to display strings in the pre-defined color(s)
  */
 export const color = (colors) =&gt;
-  text =&gt; ANSIescape(colors) + text + ANSIreset();
+  (...text) =&gt; ANSIescape(colors) + text.join('') + ANSIreset();
 
 export const black         = color('black');
 export const red           = color('red');
