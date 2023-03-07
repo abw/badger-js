@@ -7,6 +7,7 @@ export const appStatus = app => async function(...args) {
     if (message) {
       console.log(brightGreen(`✓ ${message}`));
     }
+    return true;
   }
   catch (error) {
     console.log(
@@ -14,6 +15,7 @@ export const appStatus = app => async function(...args) {
         ? error
         : brightRed(`✗ ${error.message||error}`)
     )
+    return false;
   }
 }
 
