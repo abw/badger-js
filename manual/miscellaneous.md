@@ -6,6 +6,7 @@
 - [User Input](#user-input)
 - [Command Line Args](#command-line-args)
 - [App Status](#app-status)
+- [Progress](#progress)
 
 ## ANSI Colors
 
@@ -196,7 +197,10 @@ abort('Big plate of failed')
 ## User Input
 
 The [prompt()](function#static-function-prompt) is a quick-and-easy way to
-ask a user to enter some input.  The first argument is the prompt.
+ask a user to enter some input.  It is implemented as a wrapper around the
+[prompt](https://www.npmjs.com/package/prompts) module.
+
+The first argument is the question to ask the user.
 
 ```js
 import { prompt } from '@abw/badger'
@@ -225,9 +229,43 @@ prompt the user to confirm an action by pressing `y` for `yes` or `n` for
 ```js
 import { confirm } from '@abw/badger'
 
-const yes = await confirm("Are you sure?", { default: true });
+const yes = await confirm("Are you sure?");
 console.log('You said "%s"', yes ? 'YES' : 'NO');
 ```
+
+The default answer is `N`, returning a `false` value, but you can pass
+`true` as the second argument to make `Y` the default.
+
+```js
+const yes = await confirm("Are you sure?", true);
+console.log('You said "%s"', yes ? 'YES' : 'NO');
+```
+
+The [select()](function#static-function-select) function is another wrapper
+of convenience for getting the user to select an option from a list.  Here
+the second argument should be an array of options, with each as an object
+containing a `title` and `value`, or you can pass an object where each keys
+is a `value` mapped to a `title`.
+
+```js
+import { select } from '@abw/badger'
+
+const animal = await select(
+  'What is your favourite animal?',
+  {
+    aardvark: 'An amazing aardvark',
+    badger:   'A brilliant badger',
+    cat:      'A cool cat',
+    dog:      'A dapper dog'
+  },
+  1
+);
+console.log('You chose:', animal);  // aardvark, badger, cat or dog
+```
+
+These are the three functions that I find myself using a lot.  For anything
+more complicated you should probably cut out the middle-man and go straight
+to [prompts](https://www.npmjs.com/package/prompts).
 
 ## Command Line Args
 
@@ -316,4 +354,78 @@ red.
 ✔ Enter an even number … 3
 ✗ 3 is not an even number
 ```
+
+## Progress
+
+The [progress()](function#static-function-progress) function returns an
+object which can be used to give a visual display of the progress of a long
+running process.  It is intended to be used in cases where you know in advance
+how many actions you need to complete (e.g. importing 1000 records into a
+database).
+
+```js
+import { progress } from '@abw/badger'
+
+const records = [
+  // lots of records
+]
+const p = progress(records.length);
+
+for (record of records) {
+  // do something with record
+  p.printProgress();
+}
+```
+
+The `printProgress()` method accepts an argument which is the number of
+items you have processed in that loop (i.e. it's the delta, not the total
+number processed so far).  It defaults to 1.
+
+As the method is called it will print a few more "pixels" to the screen to
+display a nice colourful image of an hourglass.  I can't show you the pretty
+colours here, so I suggest you run the [examples/progress.js](examples/progress.js)
+script to see for yourself.
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
+│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
+│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │
+│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │
+│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
+│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
+│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
+│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │
+│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │
+│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │
+│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+└────────────────────────────────────────────────────────────────┘
+```
+
+You can change the colours or use your own picture.  See the
+[examples/progress.js](examples/progress.js) file for examples.
 
