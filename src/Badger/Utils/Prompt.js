@@ -52,7 +52,7 @@ export const confirm = async (question, options={}) => {
 
 /**
  * Prompt user to select an option.
- * @param {String} question - question to prompt user to answer
+ * @param {String} message - question to prompt user to answer
  * @param {Object} choices - array of title and value or object mapping value to title
  * @param {String} [initial] - initial value
  * @return {Promise} fulfills with selected option value
@@ -71,7 +71,7 @@ export const confirm = async (question, options={}) => {
  * ).then( colour => console.log('You chose "%s"', colour) );
  */
 
-export const select = async (question, choices, initial) => {
+export const select = async (message, choices, initial) => {
   const choice = await prompts([
     {
       type: 'select',
