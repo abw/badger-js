@@ -8,4 +8,5 @@ export * from './Misc.js';
 export * from './Options.js';
 export * from './Params.js';
 export * from './Params.js';
+export * from './Progress.js';
 export * from './Prompt.js';
