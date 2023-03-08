@@ -108,6 +108,24 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "@abw/badger~progress",
+    "class/src/Badger/Utils/Progress.js~Progress.html",
+    "<span>Progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "class"
+  ],
+  [
+    "@abw/badger~progress",
+    "class/src/Badger/Utils/index.js~Progress.html",
+    "<span>Progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "class"
+  ],
+  [
+    "@abw/badger~progress",
+    "class/src/Badger.js~Progress.html",
+    "<span>Progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "class"
+  ],
+  [
     "@abw/badger~workspace",
     "class/src/Badger/Workspace.js~Workspace.html",
     "<span>Workspace</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -468,6 +486,24 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger~chartypes",
+    "variable/index.html#static-variable-charTypes",
+    "<span>charTypes</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~chartypes",
+    "variable/index.html#static-variable-charTypes",
+    "<span>charTypes</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~chartypes",
+    "variable/index.html#static-variable-charTypes",
+    "<span>charTypes</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
     "@abw/badger~cmdlinearg",
     "function/index.html#static-function-cmdLineArg",
     "<span>cmdLineArg</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -520,6 +556,24 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-color",
     "<span>color</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
+  ],
+  [
+    "@abw/badger~colours",
+    "variable/index.html#static-variable-colours",
+    "<span>colours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~colours",
+    "variable/index.html#static-variable-colours",
+    "<span>colours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~colours",
+    "variable/index.html#static-variable-colours",
+    "<span>colours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
   ],
   [
     "@abw/badger~config",
@@ -786,6 +840,42 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~formatelapsed",
+    "function/index.html#static-function-formatElapsed",
+    "<span>formatElapsed</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~formatelapsed",
+    "function/index.html#static-function-formatElapsed",
+    "<span>formatElapsed</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~formatelapsed",
+    "function/index.html#static-function-formatElapsed",
+    "<span>formatElapsed</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~formatpicture",
+    "function/index.html#static-function-formatPicture",
+    "<span>formatPicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~formatpicture",
+    "function/index.html#static-function-formatPicture",
+    "<span>formatPicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~formatpicture",
+    "function/index.html#static-function-formatPicture",
+    "<span>formatPicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~green",
     "variable/index.html#static-variable-green",
     "<span>green</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -906,6 +996,78 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~picture",
+    "variable/index.html#static-variable-picture",
+    "<span>picture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~picture",
+    "variable/index.html#static-variable-picture",
+    "<span>picture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~picture",
+    "variable/index.html#static-variable-picture",
+    "<span>picture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~preparecolours",
+    "function/index.html#static-function-prepareColours",
+    "<span>prepareColours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~preparecolours",
+    "function/index.html#static-function-prepareColours",
+    "<span>prepareColours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~preparecolours",
+    "function/index.html#static-function-prepareColours",
+    "<span>prepareColours</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~preparepicture",
+    "function/index.html#static-function-preparePicture",
+    "<span>preparePicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~preparepicture",
+    "function/index.html#static-function-preparePicture",
+    "<span>preparePicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~preparepicture",
+    "function/index.html#static-function-preparePicture",
+    "<span>preparePicture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~progress",
+    "function/index.html#static-function-progress",
+    "<span>progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~progress",
+    "function/index.html#static-function-progress",
+    "<span>progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~progress",
+    "function/index.html#static-function-progress",
+    "<span>progress</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~prompt",
     "function/index.html#static-function-prompt",
     "<span>prompt</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -1035,6 +1197,24 @@ window.esdocSearchIndex = [
     "@abw/badger~section",
     "function/index.html#static-function-section",
     "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~select",
+    "function/index.html#static-function-select",
+    "<span>select</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~select",
+    "function/index.html#static-function-select",
+    "<span>select</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~select",
+    "function/index.html#static-function-select",
+    "<span>select</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -1458,6 +1638,132 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/badger.js~progress#chartype",
+    "class/src/Badger.js~Progress.html#instance-member-charType",
+    "src/Badger.js~Progress#charType",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#colours",
+    "class/src/Badger.js~Progress.html#instance-member-colours",
+    "src/Badger.js~Progress#colours",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#constructor",
+    "class/src/Badger.js~Progress.html#instance-constructor-constructor",
+    "src/Badger.js~Progress#constructor",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#count",
+    "class/src/Badger.js~Progress.html#instance-member-count",
+    "src/Badger.js~Progress#count",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#debugging",
+    "class/src/Badger.js~Progress.html#instance-member-debugging",
+    "src/Badger.js~Progress#debugging",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#elapsed",
+    "class/src/Badger.js~Progress.html#instance-member-elapsed",
+    "src/Badger.js~Progress#elapsed",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#elapsedcol",
+    "class/src/Badger.js~Progress.html#instance-member-elapsedCol",
+    "src/Badger.js~Progress#elapsedCol",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#lastcount",
+    "class/src/Badger.js~Progress.html#instance-member-lastCount",
+    "src/Badger.js~Progress#lastCount",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#lastpixel",
+    "class/src/Badger.js~Progress.html#instance-member-lastPixel",
+    "src/Badger.js~Progress#lastPixel",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#length",
+    "class/src/Badger.js~Progress.html#instance-member-length",
+    "src/Badger.js~Progress#length",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#linelength",
+    "class/src/Badger.js~Progress.html#instance-member-lineLength",
+    "src/Badger.js~Progress#lineLength",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#picture",
+    "class/src/Badger.js~Progress.html#instance-member-picture",
+    "src/Badger.js~Progress#picture",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#picturesegment",
+    "class/src/Badger.js~Progress.html#instance-method-pictureSegment",
+    "src/Badger.js~Progress#pictureSegment",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#pixels",
+    "class/src/Badger.js~Progress.html#instance-member-pixels",
+    "src/Badger.js~Progress#pixels",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#printprogress",
+    "class/src/Badger.js~Progress.html#instance-method-printProgress",
+    "src/Badger.js~Progress#printProgress",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#printremains",
+    "class/src/Badger.js~Progress.html#instance-method-printRemains",
+    "src/Badger.js~Progress#printRemains",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#progress",
+    "class/src/Badger.js~Progress.html#instance-method-progress",
+    "src/Badger.js~Progress#progress",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#remains",
+    "class/src/Badger.js~Progress.html#instance-method-remains",
+    "src/Badger.js~Progress#remains",
+    "method"
+  ],
+  [
+    "src/badger.js~progress#showelapsed",
+    "class/src/Badger.js~Progress.html#instance-member-showElapsed",
+    "src/Badger.js~Progress#showElapsed",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#size",
+    "class/src/Badger.js~Progress.html#instance-member-size",
+    "src/Badger.js~Progress#size",
+    "member"
+  ],
+  [
+    "src/badger.js~progress#starttime",
+    "class/src/Badger.js~Progress.html#instance-member-startTime",
+    "src/Badger.js~Progress#startTime",
+    "member"
+  ],
+  [
     "src/badger.js~workspace#case",
     "class/src/Badger.js~Workspace.html#instance-member-case",
     "src/Badger.js~Workspace#case",
@@ -1668,6 +1974,138 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/badger/utils/progress.js",
+    "file/src/Badger/Utils/Progress.js.html",
+    "src/Badger/Utils/Progress.js",
+    "file"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#chartype",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-charType",
+    "src/Badger/Utils/Progress.js~Progress#charType",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#colours",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-colours",
+    "src/Badger/Utils/Progress.js~Progress#colours",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#constructor",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-constructor-constructor",
+    "src/Badger/Utils/Progress.js~Progress#constructor",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#count",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-count",
+    "src/Badger/Utils/Progress.js~Progress#count",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#debugging",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-debugging",
+    "src/Badger/Utils/Progress.js~Progress#debugging",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#elapsed",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-elapsed",
+    "src/Badger/Utils/Progress.js~Progress#elapsed",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#elapsedcol",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-elapsedCol",
+    "src/Badger/Utils/Progress.js~Progress#elapsedCol",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#lastcount",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-lastCount",
+    "src/Badger/Utils/Progress.js~Progress#lastCount",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#lastpixel",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-lastPixel",
+    "src/Badger/Utils/Progress.js~Progress#lastPixel",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#length",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-length",
+    "src/Badger/Utils/Progress.js~Progress#length",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#linelength",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-lineLength",
+    "src/Badger/Utils/Progress.js~Progress#lineLength",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#picture",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-picture",
+    "src/Badger/Utils/Progress.js~Progress#picture",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#picturesegment",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-method-pictureSegment",
+    "src/Badger/Utils/Progress.js~Progress#pictureSegment",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#pixels",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-pixels",
+    "src/Badger/Utils/Progress.js~Progress#pixels",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#printprogress",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-method-printProgress",
+    "src/Badger/Utils/Progress.js~Progress#printProgress",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#printremains",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-method-printRemains",
+    "src/Badger/Utils/Progress.js~Progress#printRemains",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#progress",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-method-progress",
+    "src/Badger/Utils/Progress.js~Progress#progress",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#remains",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-method-remains",
+    "src/Badger/Utils/Progress.js~Progress#remains",
+    "method"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#showelapsed",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-showElapsed",
+    "src/Badger/Utils/Progress.js~Progress#showElapsed",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#size",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-size",
+    "src/Badger/Utils/Progress.js~Progress#size",
+    "member"
+  ],
+  [
+    "src/badger/utils/progress.js~progress#starttime",
+    "class/src/Badger/Utils/Progress.js~Progress.html#instance-member-startTime",
+    "src/Badger/Utils/Progress.js~Progress#startTime",
+    "member"
+  ],
+  [
     "src/badger/utils/prompt.js",
     "file/src/Badger/Utils/Prompt.js.html",
     "src/Badger/Utils/Prompt.js",
@@ -1678,6 +2116,132 @@ window.esdocSearchIndex = [
     "file/src/Badger/Utils/index.js.html",
     "src/Badger/Utils/index.js",
     "file"
+  ],
+  [
+    "src/badger/utils/index.js~progress#chartype",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-charType",
+    "src/Badger/Utils/index.js~Progress#charType",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#colours",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-colours",
+    "src/Badger/Utils/index.js~Progress#colours",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#constructor",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-constructor-constructor",
+    "src/Badger/Utils/index.js~Progress#constructor",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#count",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-count",
+    "src/Badger/Utils/index.js~Progress#count",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#debugging",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-debugging",
+    "src/Badger/Utils/index.js~Progress#debugging",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#elapsed",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-elapsed",
+    "src/Badger/Utils/index.js~Progress#elapsed",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#elapsedcol",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-elapsedCol",
+    "src/Badger/Utils/index.js~Progress#elapsedCol",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#lastcount",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-lastCount",
+    "src/Badger/Utils/index.js~Progress#lastCount",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#lastpixel",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-lastPixel",
+    "src/Badger/Utils/index.js~Progress#lastPixel",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#length",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-length",
+    "src/Badger/Utils/index.js~Progress#length",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#linelength",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-lineLength",
+    "src/Badger/Utils/index.js~Progress#lineLength",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#picture",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-picture",
+    "src/Badger/Utils/index.js~Progress#picture",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#picturesegment",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-method-pictureSegment",
+    "src/Badger/Utils/index.js~Progress#pictureSegment",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#pixels",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-pixels",
+    "src/Badger/Utils/index.js~Progress#pixels",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#printprogress",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-method-printProgress",
+    "src/Badger/Utils/index.js~Progress#printProgress",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#printremains",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-method-printRemains",
+    "src/Badger/Utils/index.js~Progress#printRemains",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#progress",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-method-progress",
+    "src/Badger/Utils/index.js~Progress#progress",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#remains",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-method-remains",
+    "src/Badger/Utils/index.js~Progress#remains",
+    "method"
+  ],
+  [
+    "src/badger/utils/index.js~progress#showelapsed",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-showElapsed",
+    "src/Badger/Utils/index.js~Progress#showElapsed",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#size",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-size",
+    "src/Badger/Utils/index.js~Progress#size",
+    "member"
+  ],
+  [
+    "src/badger/utils/index.js~progress#starttime",
+    "class/src/Badger/Utils/index.js~Progress.html#instance-member-startTime",
+    "src/Badger/Utils/index.js~Progress#startTime",
+    "member"
   ],
   [
     "src/badger/workspace.js",

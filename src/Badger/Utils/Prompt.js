@@ -71,7 +71,7 @@ export const confirm = async (question, options={}) => {
  * ).then( colour => console.log('You chose "%s"', colour) );
  */
 
-export const select = async (message, choices, initial) => {
+export const select = async (question, choices, initial) => {
   const choice = await prompts([
     {
       type: 'select',

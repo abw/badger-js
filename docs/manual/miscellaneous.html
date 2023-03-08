@@ -124,6 +124,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#user-input" data-ice="link">User Input</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#command-line-args" data-ice="link">Command Line Args</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#app-status" data-ice="link">App Status</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#progress" data-ice="link">Progress</a></li>
 </ul>
   </div>
 </div>
@@ -136,6 +137,7 @@
 <li><a href="#user-input">User Input</a></li>
 <li><a href="#command-line-args">Command Line Args</a></li>
 <li><a href="#app-status">App Status</a></li>
+<li><a href="#progress">Progress</a></li>
 </ul>
 <h2 id="ansi-colors">ANSI Colors</h2><p>The <a href="function#static-function-color">color()</a> function provides a simple way
 to use ANSI escape codes to generate colored text.</p>
@@ -260,7 +262,9 @@ code to 1 to indicate an error condition.</p>
 
 abort('Big plate of failed')</code></code></pre>
 <h2 id="user-input">User Input</h2><p>The <a href="function#static-function-prompt">prompt()</a> is a quick-and-easy way to
-ask a user to enter some input.  The first argument is the prompt.</p>
+ask a user to enter some input.  It is implemented as a wrapper around the
+<a href="https://www.npmjs.com/package/prompts">prompt</a> module.</p>
+<p>The first argument is the question to ask the user.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { prompt } from '@abw/badger'
 
 const name = await prompt("What is your name?");
@@ -275,8 +279,33 @@ prompt the user to confirm an action by pressing <code>y</code> for <code>yes</c
 <code>no</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { confirm } from '@abw/badger'
 
-const yes = await confirm("Are you sure?", { default: true });
+const yes = await confirm("Are you sure?");
 console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
+<p>The default answer is <code>N</code>, returning a <code>false</code> value, but you can pass
+<code>true</code> as the second argument to make <code>Y</code> the default.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const yes = await confirm("Are you sure?", true);
+console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
+<p>The <a href="function#static-function-select">select()</a> function is another wrapper
+of convenience for getting the user to select an option from a list.  Here
+the second argument should be an array of options, with each as an object
+containing a <code>title</code> and <code>value</code>, or you can pass an object where each keys
+is a <code>value</code> mapped to a <code>title</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { select } from '@abw/badger'
+
+const animal = await select(
+  'What is your favourite animal?',
+  {
+    aardvark: 'An amazing aardvark',
+    badger:   'A brilliant badger',
+    cat:      'A cool cat',
+    dog:      'A dapper dog'
+  },
+  1
+);
+console.log('You chose:', animal);  // aardvark, badger, cat or dog</code></code></pre>
+<p>These are the three functions that I find myself using a lot.  For anything
+more complicated you should probably cut out the middle-man and go straight
+to <a href="https://www.npmjs.com/package/prompts">prompts</a>.</p>
 <h2 id="command-line-args">Command Line Args</h2><p>The <a href="function#static-function-cmdLineArg">cmdLineArg()</a> function is a
 quick and dirty hack to read an argument from the command line or prompt
 the user to enter it.</p>
@@ -333,7 +362,68 @@ displayed to the user (in bright green, although you can't see that here).</p>
 ✓ You entered 2</code></code></pre><p>If an error is thrown then the error message will be displayed in bright
 red.</p>
 <pre><code><code class="source-code prettyprint">✔ Enter an even number … 3
-✗ 3 is not an even number</code></code></pre></div>
+✗ 3 is not an even number</code></code></pre><h2 id="progress">Progress</h2><p>The <a href="function#static-function-progress">progress()</a> function returns an
+object which can be used to give a visual display of the progress of a long
+running process.  It is intended to be used in cases where you know in advance
+how many actions you need to complete (e.g. importing 1000 records into a
+database).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { progress } from '@abw/badger'
+
+const records = [
+  // lots of records
+]
+const p = progress(records.length);
+
+for (record of records) {
+  // do something with record
+  p.printProgress();
+}</code></code></pre>
+<p>The <code>printProgress()</code> method accepts an argument which is the number of
+items you have processed in that loop (i.e. it's the delta, not the total
+number processed so far).  It defaults to 1.</p>
+<p>As the method is called it will print a few more "pixels" to the screen to
+display a nice colourful image of an hourglass.  I can't show you the pretty
+colours here, so I suggest you run the <a href="examples/progress.js">examples/progress.js</a>
+script to see for yourself.</p>
+<pre><code><code class="source-code prettyprint">┌────────────────────────────────────────────────────────────────┐
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
+│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
+│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │
+│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │
+│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
+│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │
+│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
+│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
+│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │
+│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │
+│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │
+│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
+│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
+└────────────────────────────────────────────────────────────────┘</code></code></pre><p>You can change the colours or use your own picture.  See the
+<a href="examples/progress.js">examples/progress.js</a> file for examples.</p>
+</div>
 </div>
 
 <footer class="footer">
