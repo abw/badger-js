@@ -30,6 +30,8 @@ export default [
     external: [
       "@abw/badger-codecs",
       "@abw/badger-filesystem",
+      "@abw/badger-timestamp",
+      "@abw/badger-utils",
       "node:fs",
       "node:path",
       "node:process",

@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@abw/badger-codecs': ^1.0.1
   '@abw/badger-filesystem': ^1.0.1
+  '@abw/badger-timestamp': ^1.0.4
   '@abw/badger-utils': ^1.0.16
   '@itsjamie/esdoc-cli': ^0.5.0
   '@itsjamie/esdoc-core': ^0.5.0
@@ -22,6 +23,7 @@ specifiers:
 dependencies:
   '@abw/badger-codecs': 1.0.1
   '@abw/badger-filesystem': 1.0.1
+  '@abw/badger-timestamp': 1.0.4
   '@abw/badger-utils': 1.0.16
   commander: 9.4.0
   js-yaml: 4.1.0
@@ -53,6 +55,12 @@ packages:
     resolution: {integrity: sha512-RO81zXhrAkpMxbgZ1bzT9QgXOSs2NBAsx9WN9hxeFdupbykHdYBzI1t3Kt7jfeqCxDwS0cnFY5z6j37V9+6CeA==}
     dependencies:
       '@abw/badger-codecs': 1.0.1
+      '@abw/badger-utils': 1.0.16
+    dev: false
+
+  /@abw/badger-timestamp/1.0.4:
+    resolution: {integrity: sha512-7JBcF9rxwihiiEG1UQlv1/jdntg8BJmzTADAj5psTWbRNvDh4XHkdeoVnbf0nRCq08q5472mx8wbpgNzrwb2RQ==}
+    dependencies:
       '@abw/badger-utils': 1.0.16
     dev: false
 
