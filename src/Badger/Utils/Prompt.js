@@ -1,4 +1,4 @@
-import { isString } from '@abw/badger-utils';
+import { isArray, isBoolean, isString } from '@abw/badger-utils';
 import prompts from 'prompts'
 
 /**
@@ -41,7 +41,49 @@ export const prompt = async (question, options={}) => {
  * confirm("Are you sure?")
  *   .then( yes => console.log('You said "%s"', yes ? 'YES' : 'NO') );
  */
-export const confirm = async (question, options={}) =>
-  prompt(question, { ...options, type: 'confirm' });
+export const confirm = async (question, options={}) => {
+  options = isBoolean(options)
+    ? { default: options }
+    : options;
+  return prompt(
+    question,
+    { ...options, type: 'confirm' });
+}
 
-export default prompt
+/**
+ * Prompt user to select an option.
+ * @param {String} question - question to prompt user to answer
+ * @param {Object} choices - array of title and value or object mapping value to title
+ * @param {String} [initial] - initial value
+ * @return {Promise} fulfills with selected option value
+ * @example
+ * select("Pick a colour", { red: 'Red', green: 'Green', blue: 'Blue'})
+ *   .then( colour => console.log('You chose "%s"', colour) );
+ * @example
+ * select(
+ *   "Pick a colour",
+ *   [
+ *     { value: 'red':   title: 'Red' },
+ *     { value: 'green', title: 'Green' },
+ *     { value: 'blue',  title: 'Blue' },
+ *   ],
+ *   0
+ * ).then( colour => console.log('You chose "%s"', colour) );
+ */
+
+export const select = async (message, choices, initial) => {
+  const choice = await prompts([
+    {
+      type: 'select',
+      name: 'selected',
+      message,
+      initial,
+      choices: isArray(choices)
+        ? choices
+        : Object.entries(choices).map(
+          ([value, title]) => ({ value, title }),
+        )
+    }
+  ]);
+  return choice.selected;
+}
