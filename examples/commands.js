@@ -21,8 +21,15 @@ const main = async () => {
         pattern: '<service>',
         about: 'Stop a service'
       },
+      // list of services
       {
-        name: 'multiargs',
+        name: 'list',
+        pattern: '<service...>',
+        about: 'List service(s)'
+      },
+      // multiple arguments
+      {
+        name: 'multi',
         arguments: '<one> <two> <three>',
         about: 'Stop a service'
       },
