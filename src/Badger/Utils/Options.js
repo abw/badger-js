@@ -2,7 +2,7 @@ import process from 'node:process';
 import prompter from 'prompts'
 import { Command } from 'commander';
 import { color } from './Color.js';
-import { hasValue } from '@abw/badger-utils';
+import { fail, hasValue, splitList } from '@abw/badger-utils';
 
 export const defaults = {
   verboseColor:     'magenta',
@@ -95,18 +95,30 @@ export const options = async config => {
       const about   = option.about;
       const type    = option.type;
       const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);
-      let string    = name;
-      let cmd = command.command(string)
+      let   names   = [];
+      let   string  = name;
+      let   cmd     = command.command(string)
       if (hasValue(pattern)) {
+        names.push(matchArgName(pattern));
         cmd.argument(pattern);
-        // string = `${string} ${pattern}`;
       }
       if (hasValue(about)) {
         cmd.description(about);
       }
+      if (hasValue(option.arguments)) {
+        splitList(option.arguments).forEach(
+          argument => {
+            names.push(matchArgName(argument));
+            cmd.argument(argument)
+          }
+        )
+      }
       cmd.action(
-        args => {
-          commands[name] = args;
+        (...args) => {
+          commands[name] = args[0];
+          names.forEach(
+            name => commands[name] = args.shift()
+          )
         }
       )
       //console.log({ args });
@@ -200,6 +212,14 @@ export const options = async config => {
   return {
     ...cmdline, ...answers, ...commands
   }
+}
+
+function matchArgName(argument) {
+  const match = argument.match(/(\w+)/);
+  if (! match) {
+    fail("Can't parse argument name: ", argument);
+  }
+  return match[1];
 }
 
 export const section = option => {

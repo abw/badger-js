@@ -22,6 +22,11 @@ const main = async () => {
         about: 'Stop a service'
       },
       {
+        name: 'multiargs',
+        arguments: '<one> <two> <three>',
+        about: 'Stop a service'
+      },
+      {
         name: 'status',
         about: 'Show service status'
       }
