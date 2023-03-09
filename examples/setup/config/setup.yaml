@@ -24,6 +24,14 @@ options:
     save:       false
     required:   false
 
+  -
+    name:       root
+    about:      Project directory
+    prompt:     Where is the project root directory on this machine?
+    type:       text
+    required:   true
+    envvar:     MYAPP_ROOT_DIR
+
   # main options
   -
     title:      Database Configuration
@@ -69,7 +77,7 @@ options:
     title:      Programs
     about:      Paths to programs
     info: |
-                We need to know the location of various other programs.
+                We need to know the location of some programs on this machine.
   -
     name:       gzip
     about:      Path to gzip

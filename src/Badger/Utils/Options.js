@@ -211,11 +211,22 @@ export const options = async config => {
   );
 
   // prompt the user to answer/confirm questions
-  const answers = await prompter(prompts);
+  let cancelled = false;
+  const answers = await prompter(
+    prompts,
+    {
+      onCancel: () => {
+        cancelled = true;
+        return false;
+      }
+    }
+  );
 
-  return {
-    ...cmdline, ...answers, ...commands
-  }
+  return cancelled
+    ? undefined
+    : {
+      ...cmdline, ...answers, ...commands
+    }
 }
 
 function matchArgName(argument) {
