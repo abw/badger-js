@@ -343,11 +343,10 @@ export const options = async config =&gt; {
       const about   = option.about;
       const type    = option.type;
       const pattern = option.pattern || (hasValue(type) ? `&lt;${type}&gt;` : undefined);
-      let   names   = [];
+      let   args    = [];
       let   string  = name;
       let   cmd     = command.command(string)
       if (hasValue(pattern)) {
-        names.push(matchArgName(pattern));
         cmd.argument(pattern);
       }
       if (hasValue(about)) {
@@ -356,17 +355,22 @@ export const options = async config =&gt; {
       if (hasValue(option.arguments)) {
         splitList(option.arguments).forEach(
           argument =&gt; {
-            names.push(matchArgName(argument));
+            args.push(matchArgName(argument));
             cmd.argument(argument)
           }
         )
       }
       cmd.action(
-        (...args) =&gt; {
-          commands[name] = args[0];
-          names.forEach(
-            name =&gt; commands[name] = args.shift()
-          )
+        (...values) =&gt; {
+          commands[name] = args.length
+            ? args.reduce(
+              (opts, arg) =&gt; {
+                opts[arg] = values.shift()
+                return opts;
+              },
+              { }
+            )
+            : values[0]
         }
       )
       //console.log({ args });
