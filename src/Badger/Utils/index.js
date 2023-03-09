@@ -10,3 +10,4 @@ export * from './Params.js';
 export * from './Params.js';
 export * from './Progress.js';
 export * from './Prompt.js';
+export * from './Setup.js';

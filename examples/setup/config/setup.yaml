@@ -1,0 +1,86 @@
+# metadata
+name:           setup.js
+version:        0.0.1
+description:    Example project setup.
+
+# standard options
+yes:            true
+verbose:        true
+quiet:          true
+
+# custom project options
+options:
+  # additional flags for the setup script
+  -
+    name:       debug
+    short:      d
+    about:      Enable debugging
+    save:       false
+    required:   false
+  -
+    name:       progress
+    short:      p
+    about:      Show progress
+    save:       false
+    required:   false
+
+  # main options
+  -
+    title:      Database Configuration
+    about:      Database connection details
+    info: |
+                Enter the connection details for the database.
+  -
+    name:       db_name
+    about:      Database name
+    prompt:     Enter the name of the database
+    type:       text
+    required:   true
+    default:    badger
+  -
+    name:       db_host
+    about:      Database host
+    prompt:     Enter the name of the database host
+    type:       text
+    required:   true
+    default:    localhost
+  -
+    name:       db_port
+    about:      Database port
+    prompt:     Enter the port on which the database is running
+    type:       text
+    required:   true
+    default:    3306
+  -
+    name:       db_user
+    about:      Database user
+    prompt:     Enter the username for connecting to the database
+    type:       text
+    required:   true
+    default:    badger
+  -
+    name:       db_pass
+    about:      Database password
+    prompt:     Enter the password for connecting to the database
+    type:       text
+    required:   true
+
+  -
+    title:      Programs
+    about:      Paths to programs
+    info: |
+                We need to know the location of various other programs.
+  -
+    name:       gzip
+    about:      Path to gzip
+    program:    gzip
+    type:       text
+    prompt:     Enter the full path to the gzip program
+    mandatory:  true
+  -
+    name:       gzcat
+    about:      Path to gzcat (or zcat)
+    program:    gzcat zcat
+    type:       text
+    prompt:     Enter the full path to the gzcat (or zcat) program
+    mandatory:  true
