@@ -5,11 +5,15 @@ import { setup } from '../../../src/Badger/Utils/Setup.js'
 await setup({
   rootDir: bin().up(),
   writeEnv: true,
-  // Defaults:
-  // configFile:   'config/setup.yaml',
-  // dataFile:     '.env.yaml',
-  // writeData:    true,
-  // envFile:      '.env',
-  // writeEnv:     false,
-  // allDone:      'All configuration options have been set'
+  // envExtra: '.env.extra',
+  // Other options:
+  //   configFile:   'config/setup.yaml',
+  //   dataFile:     '.env.yaml',
+  //   writeData:    true,
+  //   envFile:      '.env',
+  //   writeEnv:     false,
+  //   envComments:  true,
+  //   envSections:  true,
+  //   compact:      false,
+  //   allDone:      'All configuration options have been set'
 });

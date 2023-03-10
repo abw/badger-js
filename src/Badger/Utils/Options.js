@@ -225,8 +225,8 @@ export const options = async config => {
   return cancelled
     ? undefined
     : {
-      ...cmdline, ...answers, ...commands
-    }
+        ...cmdline, ...answers, ...commands
+      }
 }
 
 function matchArgName(argument) {

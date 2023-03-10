@@ -1,7 +1,7 @@
 # metadata
-name:           setup.js
-version:        0.0.1
-description:    Example project setup.
+# name:           bin/setup.js
+# version:        0.0.1
+# description:    Example project setup.
 
 # standard options
 yes:            true
@@ -23,72 +23,92 @@ options:
     about:      Show progress
     save:       false
     required:   false
-
+  #---------------------------------------------------------------------------
+  # Project
+  #---------------------------------------------------------------------------
+  -
+    title:      Project Configuration
+    info:       Please answer the following questions to setup the project.
   -
     name:       root
     about:      Project directory
     prompt:     Where is the project root directory on this machine?
-    type:       text
+    pattern:    <dir>
     required:   true
     envvar:     MYAPP_ROOT_DIR
+  -
+    name:       deployment
+    about:      Deployment type
+    prompt:     What kind of deployment is this?
+    type:       select
+    pattern:    <type>
+    required:   true
+    default:    development
+    choices:
+      -
+        title:  development
+        value:  development
+      -
+        title:  staging
+        value:  staging
+      -
+        title:  production
+        value:  production
 
-  # main options
+  #---------------------------------------------------------------------------
+  # Database
+  #---------------------------------------------------------------------------
   -
     title:      Database Configuration
-    about:      Database connection details
-    info: |
-                Enter the connection details for the database.
+    info:       Enter the connection details for the database.
   -
     name:       db_name
     about:      Database name
     prompt:     Enter the name of the database
-    type:       text
+    pattern:    <dbname>
     required:   true
     default:    badger
   -
     name:       db_host
     about:      Database host
     prompt:     Enter the name of the database host
-    type:       text
+    pattern:    <hostname>
     required:   true
     default:    localhost
   -
     name:       db_port
     about:      Database port
     prompt:     Enter the port on which the database is running
-    type:       text
+    pattern:    <port>
     required:   true
     default:    3306
   -
     name:       db_user
     about:      Database user
     prompt:     Enter the username for connecting to the database
-    type:       text
+    pattern:    <username>
     required:   true
     default:    badger
   -
     name:       db_pass
     about:      Database password
     prompt:     Enter the password for connecting to the database
-    type:       text
+    pattern:    <password>
+    type:       password
     required:   true
 
   -
     title:      Programs
-    about:      Paths to programs
-    info: |
-                We need to know the location of some programs on this machine.
+    info:       We need to know the location of some programs on this machine.
   -
     name:       gzip
     about:      Path to gzip
     program:    gzip
-    type:       text
     prompt:     Enter the full path to the gzip program
     mandatory:  true
   -
     name:       gzcat
     about:      Path to gzcat (or zcat)
     program:    gzcat zcat
-    type:       text
     prompt:     Enter the full path to the gzcat (or zcat) program
     mandatory:  true
