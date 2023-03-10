@@ -465,8 +465,13 @@ async function envFileText(rootDir, config, setup, answers) {
     }
     if (name) {
       const value = answers[name];
-      const safe = value.toString().match(/[#\r\n]/) ? `"$value"` : value;
-      output.push(`${envvar || name.toUpperCase()}=${safe}`)
+      if (hasValue(value)) {
+        const safe = value.toString().match(/[#\r\n]/) ? `"$value"` : value;
+        output.push(`${envvar || name.toUpperCase()}=${safe}`)
+      }
+      else {
+        output.push(comment(`No value for ${envvar || name.toUpperCase()}`))
+      }
     }
   }
   if (config.envExtra) {

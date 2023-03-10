@@ -428,6 +428,9 @@ quiet:          true</code></code></pre>
 If an <code>envvar</code> is defined then this will be the name used for the environment
 variable in the <code>.env</code> file (<code>MYAPP_ROOT_DIR</code> in this example).  Otherwise it
 defaults to an upper can version of the <code>name</code> (e.g. <code>ROOT</code>).</p>
+<p>If you don't want an answer to be saved either in the <code>.env</code> file or in the
+cached answers file then set the <code>save</code> property to <code>false</code>.</p>
+<pre><code class="lang-yaml"><code class="source-code prettyprint">    save:       false</code></code></pre>
 <p>The <code>about</code> property is displayed in the help text.  It will also be added as
 a comment to the <code>.env</code> file.  The <code>prompt</code> is the prompt used to request user
 input.  If this is not defined then the user will not be prompted to enter a
