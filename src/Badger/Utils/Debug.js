@@ -26,12 +26,12 @@ export function Debugger(enabled, prefix='', color) {
   return enabled
     ? prefix
       ? (format, ...args) =>
-        console.log(
-          '%s' + prefix + '%s' + format,
-          color ? ANSIescape(color) : '',
-          ANSIreset(),
-          ...args,
-        )
+          console.log(
+            '%s' + prefix + '%s' + format,
+            color ? ANSIescape(color) : '',
+            ANSIreset(),
+            ...args,
+          )
       : console.log.bind(console)
     : doNothing;
 }
