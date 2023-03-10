@@ -340,6 +340,13 @@ If an `envvar` is defined then this will be the name used for the environment
 variable in the `.env` file (`MYAPP_ROOT_DIR` in this example).  Otherwise it
 defaults to an upper can version of the `name` (e.g. `ROOT`).
 
+If you don't want an answer to be saved either in the `.env` file or in the
+cached answers file then set the `save` property to `false`.
+
+```yaml
+    save:       false
+```
+
 The `about` property is displayed in the help text.  It will also be added as
 a comment to the `.env` file.  The `prompt` is the prompt used to request user
 input.  If this is not defined then the user will not be prompted to enter a
