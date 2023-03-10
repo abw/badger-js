@@ -2673,7 +2673,7 @@
     "__docId__": 126,
     "kind": "file",
     "name": "src/Badger/Utils/Options.js",
-    "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { fail, hasValue, splitList } from '@abw/badger-utils';\n\nexport const defaults = {\n  verboseColor:     'magenta',\n  titleColor:       'bright yellow',\n  underlineColor:   'dark yellow',\n  infoColor:        'cyan',\n  tickColor:        'green',\n  questionColor:    'bright white',\n  answerColor:      'bright green',\n  sectionNewlines:  true\n};\n\nexport const options = async config => {\n  const vcol = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n  if (config.quiet) {\n    command.option('-q, --quiet', 'Quiet output')\n  }\n\n  // add in other command line options\n  config.options\n    ?.filter(\n      option => {\n        if (hasValue(option.arg) && ! option.arg) {\n          // allow arg: false to indicate no command line argument\n          return false;\n        }\n        if (option.title) {\n          // section break\n          return;\n        }\n        return hasValue(option.name);\n      }\n    )\n    .forEach(\n      option => {\n        const name    = option.name;\n        const about   = option.about;\n        const deflt   = option.default;\n        const handler = option.handler;\n        const short   = option.short;\n        const type    = option.type;\n        const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n        let string    = `--${name}`;\n        let args      = [];\n        if (hasValue(short)) {\n          string = `-${short}, ${string}`;\n        }\n        if (hasValue(pattern)) {\n          string = `${string} ${pattern}`;\n        }\n        args.push(string);\n        if (hasValue(about)) {\n          args.push(about);\n        }\n        if (hasValue(handler)) {\n          args.push(handler);\n        }\n        if (hasValue(deflt)) {\n          args.push(deflt);\n        }\n        command.option(...args)\n      }\n    )\n\n  let commands = { };\n\n  config.commands?.forEach(\n    option => {\n      const name    = option.name;\n      const about   = option.about;\n      const type    = option.type;\n      const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n      let   args    = [];\n      let   string  = name;\n      let   cmd     = command.command(string)\n      if (hasValue(pattern)) {\n        cmd.argument(pattern);\n      }\n      if (hasValue(about)) {\n        cmd.description(about);\n      }\n      if (hasValue(option.arguments)) {\n        splitList(option.arguments).forEach(\n          argument => {\n            args.push(matchArgName(argument));\n            cmd.argument(argument)\n          }\n        )\n      }\n      cmd.action(\n        (...values) => {\n          commands[name] = args.length\n            ? args.reduce(\n              (opts, arg) => {\n                opts[arg] = values.shift()\n                return opts;\n              },\n              { }\n            )\n            : values[0]\n        }\n      )\n      //console.log({ args });\n      //command.command(...args)\n    }\n  )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  const yes     = config.yes && cmdline.yes;\n  const verbose = config.verbose && cmdline.verbose;\n  const quiet   = config.quiet && cmdline.quiet;\n\n  if (yes) {\n    if (verbose && ! quiet) {\n      process.stdout.write(vcol('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options?.forEach(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.toString().length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          // console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type: (\n              hasValue(initial)\n                ? () => {\n                    yes && (quiet || answer({ question: prompt, answer: initial }));\n                    return type;\n                  }\n                : type\n            ),\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n      else if (option.title || option.info) {\n        prompts.push(\n          {\n            type: () => {\n              quiet || section(option);\n              return false;\n            }\n          }\n        );\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  const answers = await prompter(prompts);\n\n  return {\n    ...cmdline, ...answers, ...commands\n  }\n}\n\nfunction matchArgName(argument) {\n  const match = argument.match(/(\\w+)/);\n  if (! match) {\n    fail(\"Can't parse argument name: \", argument);\n  }\n  return match[1];\n}\n\nexport const section = option => {\n  const title = option.title;\n  const tcol  = color(option.titleColor || defaults.titleColor);\n  const ucol  = color(option.underlineColor || defaults.underlineColor);\n  const icol  = color(option.infoColor || defaults.infoColor);\n  const nl    = (hasValue(option.newlines) ? option.newlines : defaults.sectionNewlines) ? \"\\n\" : \"\";\n\n  if (title) {\n    const uline = '-'.repeat(title.length);\n    process.stdout.write(nl + tcol(title) + \"\\n\" + ucol(uline) + \"\\n\" + nl);\n  }\n\n  if (option.info) {\n    process.stdout.write(icol(option.info) + \"\\n\" + nl);\n  }\n}\n\nexport const answer = option => {\n  const tcol  = color(option.tickColor || defaults.tickColor);\n  const qcol  = color(option.questionColor || defaults.questionColor);\n  const acol  = color(option.answerColor || defaults.answerColor);\n  process.stdout.write(tcol(\"✔ \") + qcol(option.question) + \" \" + acol(option.answer) + \"\\n\");\n}\n\nexport default options",
+    "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { fail, hasValue, splitList } from '@abw/badger-utils';\n\nexport const defaults = {\n  verboseColor:     'magenta',\n  titleColor:       'bright yellow',\n  underlineColor:   'dark yellow',\n  infoColor:        'cyan',\n  tickColor:        'green',\n  questionColor:    'bright white',\n  answerColor:      'bright green',\n  sectionNewlines:  true\n};\n\nexport const options = async config => {\n  const vcol = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n  if (config.quiet) {\n    command.option('-q, --quiet', 'Quiet output')\n  }\n\n  // add in other command line options\n  config.options\n    ?.filter(\n      option => {\n        if (hasValue(option.arg) && ! option.arg) {\n          // allow arg: false to indicate no command line argument\n          return false;\n        }\n        if (option.title) {\n          // section break\n          return;\n        }\n        return hasValue(option.name);\n      }\n    )\n    .forEach(\n      option => {\n        const name    = option.name;\n        const about   = option.about;\n        const deflt   = option.default;\n        const handler = option.handler;\n        const short   = option.short;\n        const type    = option.type;\n        const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n        let string    = `--${name}`;\n        let args      = [];\n        if (hasValue(short)) {\n          string = `-${short}, ${string}`;\n        }\n        if (hasValue(pattern)) {\n          string = `${string} ${pattern}`;\n        }\n        args.push(string);\n        if (hasValue(about)) {\n          args.push(about);\n        }\n        if (hasValue(handler)) {\n          args.push(handler);\n        }\n        if (hasValue(deflt)) {\n          args.push(deflt);\n        }\n        command.option(...args)\n      }\n    )\n\n  let commands = { };\n\n  config.commands?.forEach(\n    option => {\n      const name    = option.name;\n      const about   = option.about;\n      const type    = option.type;\n      const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n      let   args    = [];\n      let   string  = name;\n      let   cmd     = command.command(string)\n      if (hasValue(pattern)) {\n        cmd.argument(pattern);\n      }\n      if (hasValue(about)) {\n        cmd.description(about);\n      }\n      if (hasValue(option.arguments)) {\n        splitList(option.arguments).forEach(\n          argument => {\n            args.push(matchArgName(argument));\n            cmd.argument(argument)\n          }\n        )\n      }\n      cmd.action(\n        (...values) => {\n          commands[name] = args.length\n            ? args.reduce(\n              (opts, arg) => {\n                opts[arg] = values.shift()\n                return opts;\n              },\n              { }\n            )\n            : values[0]\n        }\n      )\n      //console.log({ args });\n      //command.command(...args)\n    }\n  )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  const yes     = config.yes && cmdline.yes;\n  const verbose = config.verbose && cmdline.verbose;\n  const quiet   = config.quiet && cmdline.quiet;\n\n  if (yes) {\n    if (verbose && ! quiet) {\n      process.stdout.write(vcol('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options?.forEach(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.toString().length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          // console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type: (\n              hasValue(initial)\n                ? () => {\n                    yes && (quiet || answer({ question: prompt, answer: initial }));\n                    return type;\n                  }\n                : type\n            ),\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n      else if (option.title || option.info) {\n        prompts.push(\n          {\n            type: () => {\n              quiet || section(option);\n              return false;\n            }\n          }\n        );\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  let cancelled = false;\n  const answers = await prompter(\n    prompts,\n    {\n      onCancel: () => {\n        cancelled = true;\n        return false;\n      }\n    }\n  );\n\n  return cancelled\n    ? undefined\n    : {\n        ...cmdline, ...answers, ...commands\n      }\n}\n\nfunction matchArgName(argument) {\n  const match = argument.match(/(\\w+)/);\n  if (! match) {\n    fail(\"Can't parse argument name: \", argument);\n  }\n  return match[1];\n}\n\nexport const section = option => {\n  const title = option.title;\n  const tcol  = color(option.titleColor || defaults.titleColor);\n  const ucol  = color(option.underlineColor || defaults.underlineColor);\n  const icol  = color(option.infoColor || defaults.infoColor);\n  const nl    = (hasValue(option.newlines) ? option.newlines : defaults.sectionNewlines) ? \"\\n\" : \"\";\n\n  if (title) {\n    const uline = '-'.repeat(title.length);\n    process.stdout.write(nl + tcol(title) + \"\\n\" + ucol(uline) + \"\\n\" + nl);\n  }\n\n  if (option.info) {\n    process.stdout.write(icol(option.info) + \"\\n\" + nl);\n  }\n}\n\nexport const answer = option => {\n  const tcol  = color(option.tickColor || defaults.tickColor);\n  const qcol  = color(option.questionColor || defaults.questionColor);\n  const acol  = color(option.answerColor || defaults.answerColor);\n  process.stdout.write(tcol(\"✔ \") + qcol(option.question) + \" \" + acol(option.answer) + \"\\n\");\n}\n\nexport default options",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Options.js",
     "access": "public",
@@ -2726,7 +2726,7 @@
     ],
     "return": {
       "types": [
-        "{...cmdline: Object, ...answers: Object, ...commands: Object}"
+        "*"
       ]
     }
   },
@@ -2744,7 +2744,7 @@
     "importPath": "@abw/badger",
     "importStyle": null,
     "description": null,
-    "lineNumber": 221,
+    "lineNumber": 232,
     "undocument": true,
     "params": [
       {
@@ -2775,7 +2775,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{section}",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 240,
     "undocument": true,
     "params": [
       {
@@ -2801,7 +2801,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{answer}",
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 257,
     "undocument": true,
     "params": [
       {
@@ -3861,10 +3861,241 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 178,
+    "kind": "file",
+    "name": "src/Badger/Utils/Setup.js",
+    "content": "import options from './Options.js';\nimport process from 'node:process'\nimport dotenv from 'dotenv'\nimport { cwd, dir } from '@abw/badger-filesystem';\nimport { fail, hasValue, isBoolean, splitLines, splitList } from '@abw/badger-utils';\nimport { brightGreen, brightRed, brightYellow } from './Color.js';\nimport { now } from '@abw/badger-timestamp';\nimport { quit } from './Exit.js';\nimport { appStatus } from './AppStatus.js';\n\nconst defaults = {\n  description:  'Project setup script.',\n  configFiles:  [\n    'config/setup.yaml', 'config/setup.json',\n    'setup.yaml', 'setup.json',\n    '.setup.yaml', '.setup.json'\n  ],\n  dataFile:     '.env.yaml',\n  envFile:      '.env',\n  envComments:  true,\n  envSections:  true,\n  writeData:    true,\n  writeEnv:     false,\n  compact:      false,\n  cancelled:    'Setup cancelled',\n  allDone:      'All configuration options have been set',\n  warning:      config => `\n#=============================================================================\n# WARNING: This file is generated automatically when the ${config.scriptName}\n# script is run.  Any changes made here may be lost.\n#\n# Generated: ${now()}\n#=============================================================================\n\n`\n}\n\nexport const setup = appStatus(\n  async config => {\n    await runSetup(config)\n  }\n)\n\nexport async function runSetup(props) {\n  const config = { ...defaults, ...props };\n  const rootDir = config.rootDir\n    ? dir(config.rootDir)\n    : cwd();\n\n  // read the environment file (.env) if it exists\n  const envFile  = rootDir.file(config.envFile);\n  dotenv.config({ path: envFile.path() });\n  const env = process.env;\n\n  // read the data file (.env.yaml) if it exists\n  const dataFile = rootDir.file(config.dataFile, { codec: 'auto' });\n  const data = (await dataFile.exists())\n    ? await dataFile.read()\n    : { };\n\n  // look for a setup file - if it's provided as configFile then it's treated\n  // as definitive, otherwise we look for the first of configFiles\n  const configFile = config.configFile\n    ? rootDir(config.configFile, { codec: 'auto' })\n    : await findFirstFile(rootDir, config.configFiles);\n\n  // read the setup file\n  const setup = await configFile.read();\n\n  setup.name        ||= config.name\n                    ||  process.argv[1].replace(rootDir.path() + '/', '');\n  setup.version     ||= config.version;\n  setup.description ||= config.description;\n\n  // caller may have provided us with some values\n  const values = {\n    root: rootDir.path(),\n    ...(config.values || { })\n  };\n\n  // process the options\n  for (let option of setup.options) {\n    const name = option.name;\n\n    // section headings don't have names\n    if (! name) {\n      continue;\n    }\n\n    // the type is nearly always 'text'\n    option.type ||= 'text';\n\n    // look to see if we've got a value in the environment or data file\n    const envVar  = option.envvar ||= name.toUpperCase();\n\n    if (hasValue(env[envVar])) {\n      // set the value from the environment\n      option.default = env[envVar];\n    }\n    else if (hasValue(data[name])) {\n      // set the value from the data file\n      option.default = data[name];\n    }\n    else if (hasValue(values[name])) {\n      // set the value from the data file\n      option.default = values[name];\n    }\n    else if (option.program) {\n      // look for a program in the path\n      option.default = await findProgram(option.program)\n      option.pattern ||= '<path>'\n    }\n  }\n\n  // Read command line arguments or prompt user to enter values\n  const answers = await options(setup);\n  if (! answers) {\n    quit('\\n👎 ' + brightRed(config.cancelled));\n  }\n\n  // extract the options that shouldn't be preserved\n  const { debug, verbose, quiet } = answers;\n  delete answers.quiet\n  delete answers.verbose\n  delete answers.yes\n\n  if (debug) {\n    // console.log('\\nGenerated configuration:', data);\n  }\n  if (config.allDone && ! quiet) {\n    console.log('\\n👍 ', brightYellow(config.allDone), '\\n');\n  }\n\n  if (config.writeData) {\n    await dataFile.write(answers);\n    if (verbose) {\n      console.log(brightGreen(`✓ Wrote data file: ${dataFile}`));\n    }\n  }\n\n  if (config.writeEnv) {\n    await envFile.write(\n      await envFileText(rootDir, config, setup, answers)\n    )\n    if (verbose) {\n      console.log(brightGreen(`✓ Wrote .env file: ${envFile}`));\n    }\n  }\n\n  return answers;\n}\n\nexport async function findFirstFile(root, names=[]) {\n  for (let name of names) {\n    const file = root.file(name, { codec: 'auto' });\n    if (await file.exists()) {\n      return file;\n    }\n  }\n  fail(\"Can't find a configFile: \", names.join(', '));\n}\n\nexport async function findProgram(names) {\n  for (let name of splitList(names)) {\n    for (let path of process.env.PATH.split(':')) {\n      const file   = dir(path).file(name);\n      const exists = await file.exists();\n      if (exists) {\n        return file.path();\n      }\n    }\n  }\n}\n\nasync function envFileText(rootDir, config, setup, answers) {\n  const { compact, envComments, envSections } = config;\n  const gap = compact ? '' : \"\\n\";\n  let output = [\n    comment(config.warning(config))\n  ];\n  const line  = '#' + '-'.repeat(77)\n  const line2 = '#' + '='.repeat(77)\n  for (let option of setup.options) {\n    const { name, envvar, title, about, save } = option\n    if (isBoolean(save) && ! save) {\n      continue;\n    }\n    if (title && envSections) {\n      output.push(\n        `${gap}\\n${line}\\n${comment(title)}\\n${line}`\n      )\n      continue;\n    }\n    if (! compact) {\n      output.push(\"\");\n    }\n    if (about && envComments) {\n      output.push(`${comment(about)}`)\n    }\n    if (name) {\n      const value = answers[name];\n      const safe = value.toString().match(/[#\\r\\n]/) ? `\"$value\"` : value;\n      output.push(`${envvar || name.toUpperCase()}=${safe}`)\n    }\n  }\n  if (config.envExtra) {\n    const extraFile = rootDir.file(config.envExtra);\n    if (! await extraFile.exists()) {\n      fail(`Cannot find envExtra file: ${config.envExtra}`);\n    }\n    if (envSections) {\n      output.push(\n        \"\\n\",\n        line2,\n        comment(` Additional configuration copied from ${config.envExtra}`),\n        line2,\n        \"\",\n      )\n    }\n    output.push(await extraFile.read())\n  }\n  return output.join(\"\\n\") + \"\\n\";\n}\n\nfunction comment(text) {\n  return splitLines(text.trim())\n    .map( line => line.match(/^#/) ? line : `# ${line}` )\n    .join(\"\\n\");\n}",
+    "static": true,
+    "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Setup.js",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 179,
+    "kind": "variable",
+    "name": "defaults",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~defaults",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "{\"description\": string, \"configFiles\": *, \"dataFile\": string, \"envFile\": string, \"envComments\": boolean, \"envSections\": boolean, \"writeData\": boolean, \"writeEnv\": *, \"compact\": *, \"cancelled\": string, \"allDone\": string, \"warning\": *}"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 180,
+    "kind": "variable",
+    "name": "setup",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~setup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{setup}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 181,
+    "kind": "function",
+    "name": "runSetup",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~runSetup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{runSetup}",
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 182,
+    "kind": "function",
+    "name": "findFirstFile",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~findFirstFile",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findFirstFile}",
+    "description": null,
+    "lineNumber": 153,
+    "undocument": true,
+    "params": [
+      {
+        "name": "root",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 183,
+    "kind": "function",
+    "name": "findProgram",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~findProgram",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findProgram}",
+    "description": null,
+    "lineNumber": 163,
+    "undocument": true,
+    "params": [
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 184,
+    "kind": "function",
+    "name": "envFileText",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~envFileText",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 175,
+    "undocument": true,
+    "params": [
+      {
+        "name": "rootDir",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "setup",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "answers",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 185,
+    "kind": "function",
+    "name": "comment",
+    "memberof": "src/Badger/Utils/Setup.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/Setup.js~comment",
+    "access": "public",
+    "export": false,
+    "importPath": "@abw/badger",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 225,
+    "undocument": true,
+    "params": [
+      {
+        "name": "text",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "ignore": true
+  },
+  {
+    "__docId__": 199,
     "kind": "file",
     "name": "src/Badger/Utils/index.js",
-    "content": "export * from './AppStatus.js';\nexport * from './CmdLine.js';\nexport * from './Color.js';\nexport * from './DataPath.js';\nexport * from './Debug.js';\nexport * from './Exit.js';\nexport * from './Misc.js';\nexport * from './Options.js';\nexport * from './Params.js';\nexport * from './Params.js';\nexport * from './Progress.js';\nexport * from './Prompt.js';",
+    "content": "export * from './AppStatus.js';\nexport * from './CmdLine.js';\nexport * from './Color.js';\nexport * from './DataPath.js';\nexport * from './Debug.js';\nexport * from './Exit.js';\nexport * from './Misc.js';\nexport * from './Options.js';\nexport * from './Params.js';\nexport * from './Params.js';\nexport * from './Progress.js';\nexport * from './Prompt.js';\nexport * from './Setup.js';",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/index.js",
     "access": "public",
@@ -3872,7 +4103,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 191,
+    "__docId__": 200,
     "kind": "function",
     "name": "appStatus",
     "memberof": "src/Badger/Utils/index.js",
@@ -3902,7 +4133,7 @@
     }
   },
   {
-    "__docId__": 192,
+    "__docId__": 201,
     "kind": "function",
     "name": "cmdLine",
     "memberof": "src/Badger/Utils/index.js",
@@ -3921,7 +4152,7 @@
     "return": null
   },
   {
-    "__docId__": 193,
+    "__docId__": 202,
     "kind": "function",
     "name": "cmdLineFlags",
     "memberof": "src/Badger/Utils/index.js",
@@ -3957,7 +4188,7 @@
     }
   },
   {
-    "__docId__": 194,
+    "__docId__": 203,
     "kind": "function",
     "name": "cmdLineArg",
     "memberof": "src/Badger/Utils/index.js",
@@ -3994,7 +4225,7 @@
     }
   },
   {
-    "__docId__": 195,
+    "__docId__": 204,
     "kind": "function",
     "name": "cmdLineArgs",
     "memberof": "src/Badger/Utils/index.js",
@@ -4031,7 +4262,7 @@
     }
   },
   {
-    "__docId__": 196,
+    "__docId__": 205,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger/Utils/index.js",
@@ -4070,7 +4301,7 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 206,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger/Utils/index.js",
@@ -4103,7 +4334,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 207,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger/Utils/index.js",
@@ -4122,7 +4353,7 @@
     "return": null
   },
   {
-    "__docId__": 199,
+    "__docId__": 208,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger/Utils/index.js",
@@ -4148,7 +4379,7 @@
     "return": null
   },
   {
-    "__docId__": 200,
+    "__docId__": 209,
     "kind": "variable",
     "name": "black",
     "memberof": "src/Badger/Utils/index.js",
@@ -4168,7 +4399,7 @@
     }
   },
   {
-    "__docId__": 201,
+    "__docId__": 210,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Badger/Utils/index.js",
@@ -4188,7 +4419,7 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 211,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Badger/Utils/index.js",
@@ -4208,7 +4439,7 @@
     }
   },
   {
-    "__docId__": 203,
+    "__docId__": 212,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4228,7 +4459,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 213,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4248,7 +4479,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 214,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4268,7 +4499,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 215,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4288,7 +4519,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 216,
     "kind": "variable",
     "name": "grey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4308,7 +4539,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 217,
     "kind": "variable",
     "name": "white",
     "memberof": "src/Badger/Utils/index.js",
@@ -4328,7 +4559,7 @@
     }
   },
   {
-    "__docId__": 209,
+    "__docId__": 218,
     "kind": "variable",
     "name": "brightBlack",
     "memberof": "src/Badger/Utils/index.js",
@@ -4348,7 +4579,7 @@
     }
   },
   {
-    "__docId__": 210,
+    "__docId__": 219,
     "kind": "variable",
     "name": "brightRed",
     "memberof": "src/Badger/Utils/index.js",
@@ -4368,7 +4599,7 @@
     }
   },
   {
-    "__docId__": 211,
+    "__docId__": 220,
     "kind": "variable",
     "name": "brightGreen",
     "memberof": "src/Badger/Utils/index.js",
@@ -4388,7 +4619,7 @@
     }
   },
   {
-    "__docId__": 212,
+    "__docId__": 221,
     "kind": "variable",
     "name": "brightYellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4408,7 +4639,7 @@
     }
   },
   {
-    "__docId__": 213,
+    "__docId__": 222,
     "kind": "variable",
     "name": "brightBlue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4428,7 +4659,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 223,
     "kind": "variable",
     "name": "brightMagenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4448,7 +4679,7 @@
     }
   },
   {
-    "__docId__": 215,
+    "__docId__": 224,
     "kind": "variable",
     "name": "brightCyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4468,7 +4699,7 @@
     }
   },
   {
-    "__docId__": 216,
+    "__docId__": 225,
     "kind": "variable",
     "name": "brightGrey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4488,7 +4719,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 226,
     "kind": "variable",
     "name": "brightWhite",
     "memberof": "src/Badger/Utils/index.js",
@@ -4508,7 +4739,7 @@
     }
   },
   {
-    "__docId__": 218,
+    "__docId__": 227,
     "kind": "variable",
     "name": "darkBlack",
     "memberof": "src/Badger/Utils/index.js",
@@ -4528,7 +4759,7 @@
     }
   },
   {
-    "__docId__": 219,
+    "__docId__": 228,
     "kind": "variable",
     "name": "darkRed",
     "memberof": "src/Badger/Utils/index.js",
@@ -4548,7 +4779,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 229,
     "kind": "variable",
     "name": "darkGreen",
     "memberof": "src/Badger/Utils/index.js",
@@ -4568,7 +4799,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 230,
     "kind": "variable",
     "name": "darkYellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4588,7 +4819,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 231,
     "kind": "variable",
     "name": "darkBlue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4608,7 +4839,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 232,
     "kind": "variable",
     "name": "darkMagenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4628,7 +4859,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 233,
     "kind": "variable",
     "name": "darkCyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4648,7 +4879,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 234,
     "kind": "variable",
     "name": "darkGrey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4668,7 +4899,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 235,
     "kind": "variable",
     "name": "darkWhite",
     "memberof": "src/Badger/Utils/index.js",
@@ -4688,7 +4919,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 236,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger/Utils/index.js",
@@ -4718,7 +4949,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 237,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger/Utils/index.js",
@@ -4748,7 +4979,7 @@
     }
   },
   {
-    "__docId__": 229,
+    "__docId__": 238,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger/Utils/index.js",
@@ -4778,7 +5009,7 @@
     }
   },
   {
-    "__docId__": 230,
+    "__docId__": 239,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger/Utils/index.js",
@@ -4814,7 +5045,7 @@
     }
   },
   {
-    "__docId__": 231,
+    "__docId__": 240,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/index.js",
@@ -4859,7 +5090,7 @@
     }
   },
   {
-    "__docId__": 232,
+    "__docId__": 241,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/index.js",
@@ -4906,7 +5137,7 @@
     "return": null
   },
   {
-    "__docId__": 233,
+    "__docId__": 242,
     "kind": "function",
     "name": "exit",
     "memberof": "src/Badger/Utils/index.js",
@@ -4938,7 +5169,7 @@
     "return": null
   },
   {
-    "__docId__": 234,
+    "__docId__": 243,
     "kind": "function",
     "name": "quit",
     "memberof": "src/Badger/Utils/index.js",
@@ -4964,7 +5195,7 @@
     "return": null
   },
   {
-    "__docId__": 235,
+    "__docId__": 244,
     "kind": "function",
     "name": "abort",
     "memberof": "src/Badger/Utils/index.js",
@@ -4990,7 +5221,7 @@
     "return": null
   },
   {
-    "__docId__": 236,
+    "__docId__": 245,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger/Utils/index.js",
@@ -5021,7 +5252,7 @@
     }
   },
   {
-    "__docId__": 237,
+    "__docId__": 246,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Utils/index.js",
@@ -5041,7 +5272,7 @@
     }
   },
   {
-    "__docId__": 238,
+    "__docId__": 247,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger/Utils/index.js",
@@ -5066,12 +5297,12 @@
     ],
     "return": {
       "types": [
-        "{...cmdline: Object, ...answers: Object, ...commands: Object}"
+        "*"
       ]
     }
   },
   {
-    "__docId__": 239,
+    "__docId__": 248,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger/Utils/index.js",
@@ -5084,7 +5315,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{section}",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 240,
     "undocument": true,
     "params": [
       {
@@ -5097,7 +5328,7 @@
     "return": null
   },
   {
-    "__docId__": 240,
+    "__docId__": 249,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger/Utils/index.js",
@@ -5110,7 +5341,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{answer}",
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 257,
     "undocument": true,
     "params": [
       {
@@ -5123,7 +5354,7 @@
     "return": null
   },
   {
-    "__docId__": 241,
+    "__docId__": 250,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/index.js",
@@ -5162,7 +5393,7 @@
     }
   },
   {
-    "__docId__": 242,
+    "__docId__": 251,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5201,7 +5432,7 @@
     }
   },
   {
-    "__docId__": 243,
+    "__docId__": 252,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5221,7 +5452,7 @@
     }
   },
   {
-    "__docId__": 244,
+    "__docId__": 253,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5257,7 +5488,7 @@
     }
   },
   {
-    "__docId__": 245,
+    "__docId__": 254,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/index.js",
@@ -5296,7 +5527,7 @@
     }
   },
   {
-    "__docId__": 246,
+    "__docId__": 255,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5335,7 +5566,7 @@
     }
   },
   {
-    "__docId__": 247,
+    "__docId__": 256,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5355,7 +5586,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 257,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/index.js",
@@ -5391,7 +5622,7 @@
     }
   },
   {
-    "__docId__": 249,
+    "__docId__": 258,
     "kind": "variable",
     "name": "charTypes",
     "memberof": "src/Badger/Utils/index.js",
@@ -5411,7 +5642,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 259,
     "kind": "variable",
     "name": "colours",
     "memberof": "src/Badger/Utils/index.js",
@@ -5431,7 +5662,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 260,
     "kind": "variable",
     "name": "picture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5451,7 +5682,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 261,
     "kind": "function",
     "name": "preparePicture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5481,7 +5712,7 @@
     }
   },
   {
-    "__docId__": 253,
+    "__docId__": 262,
     "kind": "function",
     "name": "prepareColours",
     "memberof": "src/Badger/Utils/index.js",
@@ -5511,7 +5742,7 @@
     }
   },
   {
-    "__docId__": 254,
+    "__docId__": 263,
     "kind": "function",
     "name": "formatPicture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5541,7 +5772,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 264,
     "kind": "function",
     "name": "formatElapsed",
     "memberof": "src/Badger/Utils/index.js",
@@ -5571,7 +5802,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 265,
     "kind": "class",
     "name": "Progress",
     "memberof": "src/Badger/Utils/index.js",
@@ -5587,7 +5818,7 @@
     "interface": false
   },
   {
-    "__docId__": 257,
+    "__docId__": 266,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5601,7 +5832,7 @@
     "undocument": true
   },
   {
-    "__docId__": 258,
+    "__docId__": 267,
     "kind": "member",
     "name": "size",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5618,7 +5849,7 @@
     }
   },
   {
-    "__docId__": 259,
+    "__docId__": 268,
     "kind": "member",
     "name": "picture",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5635,7 +5866,7 @@
     }
   },
   {
-    "__docId__": 260,
+    "__docId__": 269,
     "kind": "member",
     "name": "pixels",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5652,7 +5883,7 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 270,
     "kind": "member",
     "name": "length",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5669,7 +5900,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 271,
     "kind": "member",
     "name": "lineLength",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5686,7 +5917,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 272,
     "kind": "member",
     "name": "charType",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5703,7 +5934,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 273,
     "kind": "member",
     "name": "colours",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5720,7 +5951,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 274,
     "kind": "member",
     "name": "count",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5737,7 +5968,7 @@
     }
   },
   {
-    "__docId__": 266,
+    "__docId__": 275,
     "kind": "member",
     "name": "lastCount",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5754,7 +5985,7 @@
     }
   },
   {
-    "__docId__": 267,
+    "__docId__": 276,
     "kind": "member",
     "name": "lastPixel",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5771,7 +6002,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 277,
     "kind": "member",
     "name": "startTime",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5788,7 +6019,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 278,
     "kind": "member",
     "name": "elapsed",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5805,7 +6036,7 @@
     }
   },
   {
-    "__docId__": 270,
+    "__docId__": 279,
     "kind": "member",
     "name": "elapsedCol",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5822,7 +6053,7 @@
     }
   },
   {
-    "__docId__": 271,
+    "__docId__": 280,
     "kind": "member",
     "name": "showElapsed",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5839,7 +6070,7 @@
     }
   },
   {
-    "__docId__": 272,
+    "__docId__": 281,
     "kind": "member",
     "name": "debugging",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5856,7 +6087,7 @@
     }
   },
   {
-    "__docId__": 273,
+    "__docId__": 282,
     "kind": "method",
     "name": "progress",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5886,7 +6117,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 286,
     "kind": "method",
     "name": "remains",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5906,7 +6137,7 @@
     }
   },
   {
-    "__docId__": 280,
+    "__docId__": 289,
     "kind": "method",
     "name": "pictureSegment",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5939,7 +6170,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 290,
     "kind": "method",
     "name": "printProgress",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5965,7 +6196,7 @@
     "return": null
   },
   {
-    "__docId__": 282,
+    "__docId__": 291,
     "kind": "method",
     "name": "printRemains",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5981,7 +6212,7 @@
     "return": null
   },
   {
-    "__docId__": 283,
+    "__docId__": 292,
     "kind": "function",
     "name": "progress",
     "memberof": "src/Badger/Utils/index.js",
@@ -6007,7 +6238,7 @@
     "return": null
   },
   {
-    "__docId__": 284,
+    "__docId__": 293,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger/Utils/index.js",
@@ -6046,7 +6277,7 @@
     }
   },
   {
-    "__docId__": 285,
+    "__docId__": 294,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger/Utils/index.js",
@@ -6085,7 +6316,7 @@
     }
   },
   {
-    "__docId__": 286,
+    "__docId__": 295,
     "kind": "function",
     "name": "select",
     "memberof": "src/Badger/Utils/index.js",
@@ -6127,7 +6358,126 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 296,
+    "kind": "variable",
+    "name": "setup",
+    "memberof": "src/Badger/Utils/index.js",
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~setup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{setup}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 297,
+    "kind": "function",
+    "name": "runSetup",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~runSetup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{runSetup}",
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 298,
+    "kind": "function",
+    "name": "findFirstFile",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~findFirstFile",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findFirstFile}",
+    "description": null,
+    "lineNumber": 153,
+    "undocument": true,
+    "params": [
+      {
+        "name": "root",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 299,
+    "kind": "function",
+    "name": "findProgram",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~findProgram",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findProgram}",
+    "description": null,
+    "lineNumber": 163,
+    "undocument": true,
+    "params": [
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 300,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
     "content": "import { addDebug } from \"./Utils/Debug.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\nimport { dir as fsDir } from \"@abw/badger-filesystem\";\nimport { fail, hasValue, splitList } from \"@abw/badger-utils\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  },\n  case: {\n    // config and/or library case conversion functions\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = splitList(options.config?.dir || defaults.config.dir).map( dir => rootDir.dir(dir) );\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.case = {\n      ...defaults.case,\n      ...(options.case||{})\n    };\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.map( d => d.path() ));\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory and instantiates a\n   * component.\n   * @param {String} uri - component base name\n   * @param {Object} [props] - optional configuration properties\n   * @return {Promise} fulfills to a newly instantiated component\n   * @example\n   * workspace.component('mycomp').then(\n   *   component => console.log(\"Created component: \", component)\n   * );\n   */\n  async component(uri, props) {\n    const [base, fragment] = uri.split('#', 2);\n    const cfgname = this.convertCase('config', base);\n    const config  = await this.config(cfgname, {});\n    const libname = config.component?.library || this.convertCase('library', base);\n    const lib     = await this.library(libname);\n    const exp     = fragment || config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    return comp;\n  }\n\n  convertCase(type, uri) {\n    const fn = this.case[type];\n    return fn\n      ? fn(uri)\n      : uri;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
@@ -6138,7 +6488,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 288,
+    "__docId__": 301,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -6158,7 +6508,7 @@
     "ignore": true
   },
   {
-    "__docId__": 289,
+    "__docId__": 302,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6173,7 +6523,7 @@
     "interface": false
   },
   {
-    "__docId__": 290,
+    "__docId__": 303,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6258,7 +6608,7 @@
     }
   },
   {
-    "__docId__": 291,
+    "__docId__": 304,
     "kind": "member",
     "name": "case",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6275,7 +6625,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 305,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6292,7 +6642,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 306,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6345,7 +6695,7 @@
     }
   },
   {
-    "__docId__": 294,
+    "__docId__": 307,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6410,7 +6760,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 308,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6480,7 +6830,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 309,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6561,7 +6911,7 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 310,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6626,7 +6976,7 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 311,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6672,7 +7022,7 @@
     }
   },
   {
-    "__docId__": 299,
+    "__docId__": 312,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6708,7 +7058,7 @@
     }
   },
   {
-    "__docId__": 300,
+    "__docId__": 313,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6754,7 +7104,7 @@
     }
   },
   {
-    "__docId__": 301,
+    "__docId__": 314,
     "kind": "method",
     "name": "convertCase",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6787,7 +7137,7 @@
     }
   },
   {
-    "__docId__": 302,
+    "__docId__": 315,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6819,7 +7169,7 @@
     "return": null
   },
   {
-    "__docId__": 320,
+    "__docId__": 334,
     "kind": "file",
     "name": "src/Badger.js",
     "content": "export * from './Badger/Component.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/index.js';\nexport * from './Badger/Workspace.js';\n\n// These used to be part of badger but have been moved out to separate modules.\n// I'm re-exporting them here for backwards compatability but this will be\n// removed in a future version.\nexport * from '@abw/badger-filesystem'\nexport * from '@abw/badger-codecs'\n\n",
@@ -6830,7 +7180,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 321,
+    "__docId__": 335,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -6846,7 +7196,7 @@
     "interface": false
   },
   {
-    "__docId__": 322,
+    "__docId__": 336,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -6860,7 +7210,7 @@
     "undocument": true
   },
   {
-    "__docId__": 323,
+    "__docId__": 337,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -6877,7 +7227,7 @@
     }
   },
   {
-    "__docId__": 324,
+    "__docId__": 338,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -6894,7 +7244,7 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 339,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -6910,7 +7260,7 @@
     "return": null
   },
   {
-    "__docId__": 326,
+    "__docId__": 340,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -6929,7 +7279,7 @@
     ]
   },
   {
-    "__docId__": 327,
+    "__docId__": 341,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -6998,7 +7348,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 342,
     "kind": "method",
     "name": "firstFileWithExt",
     "memberof": "src/Badger.js~Config",
@@ -7051,7 +7401,7 @@
     }
   },
   {
-    "__docId__": 329,
+    "__docId__": 343,
     "kind": "method",
     "name": "jsFile",
     "memberof": "src/Badger.js~Config",
@@ -7084,7 +7434,7 @@
     }
   },
   {
-    "__docId__": 330,
+    "__docId__": 344,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -7117,7 +7467,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 345,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -7160,7 +7510,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 346,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -7192,7 +7542,7 @@
     "return": null
   },
   {
-    "__docId__": 333,
+    "__docId__": 347,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -7211,7 +7561,7 @@
     ]
   },
   {
-    "__docId__": 334,
+    "__docId__": 348,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -7267,7 +7617,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 349,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Library",
@@ -7300,7 +7650,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 350,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -7332,7 +7682,7 @@
     "return": null
   },
   {
-    "__docId__": 337,
+    "__docId__": 351,
     "kind": "function",
     "name": "appStatus",
     "memberof": "src/Badger.js",
@@ -7362,7 +7712,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 352,
     "kind": "function",
     "name": "cmdLine",
     "memberof": "src/Badger.js",
@@ -7381,7 +7731,7 @@
     "return": null
   },
   {
-    "__docId__": 339,
+    "__docId__": 353,
     "kind": "function",
     "name": "cmdLineFlags",
     "memberof": "src/Badger.js",
@@ -7417,7 +7767,7 @@
     }
   },
   {
-    "__docId__": 340,
+    "__docId__": 354,
     "kind": "function",
     "name": "cmdLineArg",
     "memberof": "src/Badger.js",
@@ -7454,7 +7804,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 355,
     "kind": "function",
     "name": "cmdLineArgs",
     "memberof": "src/Badger.js",
@@ -7491,7 +7841,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 356,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger.js",
@@ -7530,7 +7880,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 357,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger.js",
@@ -7563,7 +7913,7 @@
     }
   },
   {
-    "__docId__": 344,
+    "__docId__": 358,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger.js",
@@ -7582,7 +7932,7 @@
     "return": null
   },
   {
-    "__docId__": 345,
+    "__docId__": 359,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger.js",
@@ -7608,7 +7958,7 @@
     "return": null
   },
   {
-    "__docId__": 346,
+    "__docId__": 360,
     "kind": "variable",
     "name": "black",
     "memberof": "src/Badger.js",
@@ -7628,7 +7978,7 @@
     }
   },
   {
-    "__docId__": 347,
+    "__docId__": 361,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Badger.js",
@@ -7648,7 +7998,7 @@
     }
   },
   {
-    "__docId__": 348,
+    "__docId__": 362,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Badger.js",
@@ -7668,7 +8018,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 363,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Badger.js",
@@ -7688,7 +8038,7 @@
     }
   },
   {
-    "__docId__": 350,
+    "__docId__": 364,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Badger.js",
@@ -7708,7 +8058,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 365,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Badger.js",
@@ -7728,7 +8078,7 @@
     }
   },
   {
-    "__docId__": 352,
+    "__docId__": 366,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Badger.js",
@@ -7748,7 +8098,7 @@
     }
   },
   {
-    "__docId__": 353,
+    "__docId__": 367,
     "kind": "variable",
     "name": "grey",
     "memberof": "src/Badger.js",
@@ -7768,7 +8118,7 @@
     }
   },
   {
-    "__docId__": 354,
+    "__docId__": 368,
     "kind": "variable",
     "name": "white",
     "memberof": "src/Badger.js",
@@ -7788,7 +8138,7 @@
     }
   },
   {
-    "__docId__": 355,
+    "__docId__": 369,
     "kind": "variable",
     "name": "brightBlack",
     "memberof": "src/Badger.js",
@@ -7808,7 +8158,7 @@
     }
   },
   {
-    "__docId__": 356,
+    "__docId__": 370,
     "kind": "variable",
     "name": "brightRed",
     "memberof": "src/Badger.js",
@@ -7828,7 +8178,7 @@
     }
   },
   {
-    "__docId__": 357,
+    "__docId__": 371,
     "kind": "variable",
     "name": "brightGreen",
     "memberof": "src/Badger.js",
@@ -7848,7 +8198,7 @@
     }
   },
   {
-    "__docId__": 358,
+    "__docId__": 372,
     "kind": "variable",
     "name": "brightYellow",
     "memberof": "src/Badger.js",
@@ -7868,7 +8218,7 @@
     }
   },
   {
-    "__docId__": 359,
+    "__docId__": 373,
     "kind": "variable",
     "name": "brightBlue",
     "memberof": "src/Badger.js",
@@ -7888,7 +8238,7 @@
     }
   },
   {
-    "__docId__": 360,
+    "__docId__": 374,
     "kind": "variable",
     "name": "brightMagenta",
     "memberof": "src/Badger.js",
@@ -7908,7 +8258,7 @@
     }
   },
   {
-    "__docId__": 361,
+    "__docId__": 375,
     "kind": "variable",
     "name": "brightCyan",
     "memberof": "src/Badger.js",
@@ -7928,7 +8278,7 @@
     }
   },
   {
-    "__docId__": 362,
+    "__docId__": 376,
     "kind": "variable",
     "name": "brightGrey",
     "memberof": "src/Badger.js",
@@ -7948,7 +8298,7 @@
     }
   },
   {
-    "__docId__": 363,
+    "__docId__": 377,
     "kind": "variable",
     "name": "brightWhite",
     "memberof": "src/Badger.js",
@@ -7968,7 +8318,7 @@
     }
   },
   {
-    "__docId__": 364,
+    "__docId__": 378,
     "kind": "variable",
     "name": "darkBlack",
     "memberof": "src/Badger.js",
@@ -7988,7 +8338,7 @@
     }
   },
   {
-    "__docId__": 365,
+    "__docId__": 379,
     "kind": "variable",
     "name": "darkRed",
     "memberof": "src/Badger.js",
@@ -8008,7 +8358,7 @@
     }
   },
   {
-    "__docId__": 366,
+    "__docId__": 380,
     "kind": "variable",
     "name": "darkGreen",
     "memberof": "src/Badger.js",
@@ -8028,7 +8378,7 @@
     }
   },
   {
-    "__docId__": 367,
+    "__docId__": 381,
     "kind": "variable",
     "name": "darkYellow",
     "memberof": "src/Badger.js",
@@ -8048,7 +8398,7 @@
     }
   },
   {
-    "__docId__": 368,
+    "__docId__": 382,
     "kind": "variable",
     "name": "darkBlue",
     "memberof": "src/Badger.js",
@@ -8068,7 +8418,7 @@
     }
   },
   {
-    "__docId__": 369,
+    "__docId__": 383,
     "kind": "variable",
     "name": "darkMagenta",
     "memberof": "src/Badger.js",
@@ -8088,7 +8438,7 @@
     }
   },
   {
-    "__docId__": 370,
+    "__docId__": 384,
     "kind": "variable",
     "name": "darkCyan",
     "memberof": "src/Badger.js",
@@ -8108,7 +8458,7 @@
     }
   },
   {
-    "__docId__": 371,
+    "__docId__": 385,
     "kind": "variable",
     "name": "darkGrey",
     "memberof": "src/Badger.js",
@@ -8128,7 +8478,7 @@
     }
   },
   {
-    "__docId__": 372,
+    "__docId__": 386,
     "kind": "variable",
     "name": "darkWhite",
     "memberof": "src/Badger.js",
@@ -8148,7 +8498,7 @@
     }
   },
   {
-    "__docId__": 373,
+    "__docId__": 387,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger.js",
@@ -8178,7 +8528,7 @@
     }
   },
   {
-    "__docId__": 374,
+    "__docId__": 388,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger.js",
@@ -8208,7 +8558,7 @@
     }
   },
   {
-    "__docId__": 375,
+    "__docId__": 389,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger.js",
@@ -8238,7 +8588,7 @@
     }
   },
   {
-    "__docId__": 376,
+    "__docId__": 390,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger.js",
@@ -8274,7 +8624,7 @@
     }
   },
   {
-    "__docId__": 377,
+    "__docId__": 391,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger.js",
@@ -8319,7 +8669,7 @@
     }
   },
   {
-    "__docId__": 378,
+    "__docId__": 392,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger.js",
@@ -8366,7 +8716,7 @@
     "return": null
   },
   {
-    "__docId__": 379,
+    "__docId__": 393,
     "kind": "function",
     "name": "exit",
     "memberof": "src/Badger.js",
@@ -8398,7 +8748,7 @@
     "return": null
   },
   {
-    "__docId__": 380,
+    "__docId__": 394,
     "kind": "function",
     "name": "quit",
     "memberof": "src/Badger.js",
@@ -8424,7 +8774,7 @@
     "return": null
   },
   {
-    "__docId__": 381,
+    "__docId__": 395,
     "kind": "function",
     "name": "abort",
     "memberof": "src/Badger.js",
@@ -8450,7 +8800,7 @@
     "return": null
   },
   {
-    "__docId__": 382,
+    "__docId__": 396,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger.js",
@@ -8481,7 +8831,7 @@
     }
   },
   {
-    "__docId__": 383,
+    "__docId__": 397,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger.js",
@@ -8501,7 +8851,7 @@
     }
   },
   {
-    "__docId__": 384,
+    "__docId__": 398,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger.js",
@@ -8526,12 +8876,12 @@
     ],
     "return": {
       "types": [
-        "{...cmdline: Object, ...answers: Object, ...commands: Object}"
+        "*"
       ]
     }
   },
   {
-    "__docId__": 385,
+    "__docId__": 399,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger.js",
@@ -8544,7 +8894,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{section}",
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 240,
     "undocument": true,
     "params": [
       {
@@ -8557,7 +8907,7 @@
     "return": null
   },
   {
-    "__docId__": 386,
+    "__docId__": 400,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger.js",
@@ -8570,7 +8920,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{answer}",
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 257,
     "undocument": true,
     "params": [
       {
@@ -8583,7 +8933,7 @@
     "return": null
   },
   {
-    "__docId__": 387,
+    "__docId__": 401,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -8622,7 +8972,7 @@
     }
   },
   {
-    "__docId__": 388,
+    "__docId__": 402,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -8661,7 +9011,7 @@
     }
   },
   {
-    "__docId__": 389,
+    "__docId__": 403,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -8681,7 +9031,7 @@
     }
   },
   {
-    "__docId__": 390,
+    "__docId__": 404,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -8717,7 +9067,7 @@
     }
   },
   {
-    "__docId__": 391,
+    "__docId__": 405,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger.js",
@@ -8756,7 +9106,7 @@
     }
   },
   {
-    "__docId__": 392,
+    "__docId__": 406,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger.js",
@@ -8795,7 +9145,7 @@
     }
   },
   {
-    "__docId__": 393,
+    "__docId__": 407,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger.js",
@@ -8815,7 +9165,7 @@
     }
   },
   {
-    "__docId__": 394,
+    "__docId__": 408,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger.js",
@@ -8851,7 +9201,7 @@
     }
   },
   {
-    "__docId__": 395,
+    "__docId__": 409,
     "kind": "variable",
     "name": "charTypes",
     "memberof": "src/Badger.js",
@@ -8871,7 +9221,7 @@
     }
   },
   {
-    "__docId__": 396,
+    "__docId__": 410,
     "kind": "variable",
     "name": "colours",
     "memberof": "src/Badger.js",
@@ -8891,7 +9241,7 @@
     }
   },
   {
-    "__docId__": 397,
+    "__docId__": 411,
     "kind": "variable",
     "name": "picture",
     "memberof": "src/Badger.js",
@@ -8911,7 +9261,7 @@
     }
   },
   {
-    "__docId__": 398,
+    "__docId__": 412,
     "kind": "function",
     "name": "preparePicture",
     "memberof": "src/Badger.js",
@@ -8941,7 +9291,7 @@
     }
   },
   {
-    "__docId__": 399,
+    "__docId__": 413,
     "kind": "function",
     "name": "prepareColours",
     "memberof": "src/Badger.js",
@@ -8971,7 +9321,7 @@
     }
   },
   {
-    "__docId__": 400,
+    "__docId__": 414,
     "kind": "function",
     "name": "formatPicture",
     "memberof": "src/Badger.js",
@@ -9001,7 +9351,7 @@
     }
   },
   {
-    "__docId__": 401,
+    "__docId__": 415,
     "kind": "function",
     "name": "formatElapsed",
     "memberof": "src/Badger.js",
@@ -9031,7 +9381,7 @@
     }
   },
   {
-    "__docId__": 402,
+    "__docId__": 416,
     "kind": "class",
     "name": "Progress",
     "memberof": "src/Badger.js",
@@ -9047,7 +9397,7 @@
     "interface": false
   },
   {
-    "__docId__": 403,
+    "__docId__": 417,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Progress",
@@ -9061,7 +9411,7 @@
     "undocument": true
   },
   {
-    "__docId__": 404,
+    "__docId__": 418,
     "kind": "member",
     "name": "size",
     "memberof": "src/Badger.js~Progress",
@@ -9078,7 +9428,7 @@
     }
   },
   {
-    "__docId__": 405,
+    "__docId__": 419,
     "kind": "member",
     "name": "picture",
     "memberof": "src/Badger.js~Progress",
@@ -9095,7 +9445,7 @@
     }
   },
   {
-    "__docId__": 406,
+    "__docId__": 420,
     "kind": "member",
     "name": "pixels",
     "memberof": "src/Badger.js~Progress",
@@ -9112,7 +9462,7 @@
     }
   },
   {
-    "__docId__": 407,
+    "__docId__": 421,
     "kind": "member",
     "name": "length",
     "memberof": "src/Badger.js~Progress",
@@ -9129,7 +9479,7 @@
     }
   },
   {
-    "__docId__": 408,
+    "__docId__": 422,
     "kind": "member",
     "name": "lineLength",
     "memberof": "src/Badger.js~Progress",
@@ -9146,7 +9496,7 @@
     }
   },
   {
-    "__docId__": 409,
+    "__docId__": 423,
     "kind": "member",
     "name": "charType",
     "memberof": "src/Badger.js~Progress",
@@ -9163,7 +9513,7 @@
     }
   },
   {
-    "__docId__": 410,
+    "__docId__": 424,
     "kind": "member",
     "name": "colours",
     "memberof": "src/Badger.js~Progress",
@@ -9180,7 +9530,7 @@
     }
   },
   {
-    "__docId__": 411,
+    "__docId__": 425,
     "kind": "member",
     "name": "count",
     "memberof": "src/Badger.js~Progress",
@@ -9197,7 +9547,7 @@
     }
   },
   {
-    "__docId__": 412,
+    "__docId__": 426,
     "kind": "member",
     "name": "lastCount",
     "memberof": "src/Badger.js~Progress",
@@ -9214,7 +9564,7 @@
     }
   },
   {
-    "__docId__": 413,
+    "__docId__": 427,
     "kind": "member",
     "name": "lastPixel",
     "memberof": "src/Badger.js~Progress",
@@ -9231,7 +9581,7 @@
     }
   },
   {
-    "__docId__": 414,
+    "__docId__": 428,
     "kind": "member",
     "name": "startTime",
     "memberof": "src/Badger.js~Progress",
@@ -9248,7 +9598,7 @@
     }
   },
   {
-    "__docId__": 415,
+    "__docId__": 429,
     "kind": "member",
     "name": "elapsed",
     "memberof": "src/Badger.js~Progress",
@@ -9265,7 +9615,7 @@
     }
   },
   {
-    "__docId__": 416,
+    "__docId__": 430,
     "kind": "member",
     "name": "elapsedCol",
     "memberof": "src/Badger.js~Progress",
@@ -9282,7 +9632,7 @@
     }
   },
   {
-    "__docId__": 417,
+    "__docId__": 431,
     "kind": "member",
     "name": "showElapsed",
     "memberof": "src/Badger.js~Progress",
@@ -9299,7 +9649,7 @@
     }
   },
   {
-    "__docId__": 418,
+    "__docId__": 432,
     "kind": "member",
     "name": "debugging",
     "memberof": "src/Badger.js~Progress",
@@ -9316,7 +9666,7 @@
     }
   },
   {
-    "__docId__": 419,
+    "__docId__": 433,
     "kind": "method",
     "name": "progress",
     "memberof": "src/Badger.js~Progress",
@@ -9346,7 +9696,7 @@
     }
   },
   {
-    "__docId__": 423,
+    "__docId__": 437,
     "kind": "method",
     "name": "remains",
     "memberof": "src/Badger.js~Progress",
@@ -9366,7 +9716,7 @@
     }
   },
   {
-    "__docId__": 426,
+    "__docId__": 440,
     "kind": "method",
     "name": "pictureSegment",
     "memberof": "src/Badger.js~Progress",
@@ -9399,7 +9749,7 @@
     }
   },
   {
-    "__docId__": 427,
+    "__docId__": 441,
     "kind": "method",
     "name": "printProgress",
     "memberof": "src/Badger.js~Progress",
@@ -9425,7 +9775,7 @@
     "return": null
   },
   {
-    "__docId__": 428,
+    "__docId__": 442,
     "kind": "method",
     "name": "printRemains",
     "memberof": "src/Badger.js~Progress",
@@ -9441,7 +9791,7 @@
     "return": null
   },
   {
-    "__docId__": 429,
+    "__docId__": 443,
     "kind": "function",
     "name": "progress",
     "memberof": "src/Badger.js",
@@ -9467,7 +9817,7 @@
     "return": null
   },
   {
-    "__docId__": 430,
+    "__docId__": 444,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger.js",
@@ -9506,7 +9856,7 @@
     }
   },
   {
-    "__docId__": 431,
+    "__docId__": 445,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger.js",
@@ -9545,7 +9895,7 @@
     }
   },
   {
-    "__docId__": 432,
+    "__docId__": 446,
     "kind": "function",
     "name": "select",
     "memberof": "src/Badger.js",
@@ -9587,7 +9937,126 @@
     }
   },
   {
-    "__docId__": 433,
+    "__docId__": 447,
+    "kind": "variable",
+    "name": "setup",
+    "memberof": "src/Badger.js",
+    "static": true,
+    "longname": "src/Badger.js~setup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{setup}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 448,
+    "kind": "function",
+    "name": "runSetup",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~runSetup",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{runSetup}",
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "params": [
+      {
+        "name": "props",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 449,
+    "kind": "function",
+    "name": "findFirstFile",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~findFirstFile",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findFirstFile}",
+    "description": null,
+    "lineNumber": 153,
+    "undocument": true,
+    "params": [
+      {
+        "name": "root",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "optional": true,
+        "types": [
+          "*[]"
+        ],
+        "defaultRaw": [],
+        "defaultValue": "[]"
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 450,
+    "kind": "function",
+    "name": "findProgram",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": true,
+    "static": true,
+    "longname": "src/Badger.js~findProgram",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{findProgram}",
+    "description": null,
+    "lineNumber": 163,
+    "undocument": true,
+    "params": [
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 451,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -9603,7 +10072,7 @@
     "interface": false
   },
   {
-    "__docId__": 434,
+    "__docId__": 452,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -9688,7 +10157,7 @@
     }
   },
   {
-    "__docId__": 435,
+    "__docId__": 453,
     "kind": "member",
     "name": "case",
     "memberof": "src/Badger.js~Workspace",
@@ -9705,7 +10174,7 @@
     }
   },
   {
-    "__docId__": 436,
+    "__docId__": 454,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -9722,7 +10191,7 @@
     }
   },
   {
-    "__docId__": 437,
+    "__docId__": 455,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -9775,7 +10244,7 @@
     }
   },
   {
-    "__docId__": 438,
+    "__docId__": 456,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -9840,7 +10309,7 @@
     }
   },
   {
-    "__docId__": 439,
+    "__docId__": 457,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -9910,7 +10379,7 @@
     }
   },
   {
-    "__docId__": 440,
+    "__docId__": 458,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -9991,7 +10460,7 @@
     }
   },
   {
-    "__docId__": 441,
+    "__docId__": 459,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -10056,7 +10525,7 @@
     }
   },
   {
-    "__docId__": 442,
+    "__docId__": 460,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -10102,7 +10571,7 @@
     }
   },
   {
-    "__docId__": 443,
+    "__docId__": 461,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Workspace",
@@ -10138,7 +10607,7 @@
     }
   },
   {
-    "__docId__": 444,
+    "__docId__": 462,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -10184,7 +10653,7 @@
     }
   },
   {
-    "__docId__": 445,
+    "__docId__": 463,
     "kind": "method",
     "name": "convertCase",
     "memberof": "src/Badger.js~Workspace",
@@ -10217,7 +10686,7 @@
     }
   },
   {
-    "__docId__": 446,
+    "__docId__": 464,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",
@@ -10258,7 +10727,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.1.7\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^24.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^15.0.1\",\n    \"@rollup/plugin-terser\": \"^0.4.0\",\n    \"ava\": \"^5.2.0\",\n    \"eslint\": \"^8.35.0\",\n    \"rollup\": \"^3.18.0\"\n  },\n  \"dependencies\": {\n    \"@abw/badger-codecs\": \"^1.0.1\",\n    \"@abw/badger-filesystem\": \"^1.0.1\",\n    \"@abw/badger-timestamp\": \"^1.0.4\",\n    \"@abw/badger-utils\": \"^1.0.16\",\n    \"commander\": \"^9.5.0\",\n    \"js-yaml\": \"^4.1.0\",\n    \"prompts\": \"^2.4.2\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"@abw/badger\",\n  \"version\": \"1.1.8\",\n  \"description\": \"Component based framework and utility modules\",\n  \"type\": \"module\",\n  \"main\": \"dist/badger.cjs.js\",\n  \"module\": \"dist/badger.esm.js\",\n  \"exports\": \"./dist/badger.esm.js\",\n  \"author\": \"Andy Wardley\",\n  \"license\": \"MIT\",\n  \"files\": [\n    \"dist\"\n  ],\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/abw/badger-js.git\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/abw/badger-js/issues\"\n  },\n  \"scripts\": {\n    \"build\": \"rollup -c\",\n    \"dev\": \"rollup -c -w\",\n    \"lint\": \"eslint 'src/**/*'\",\n    \"docs:build\": \"esdoc\",\n    \"docs:serve\": \"serve docs\",\n    \"test\": \"ava --serial\",\n    \"pretest\": \"pnpm run build\"\n  },\n  \"keywords\": [\n    \"badger\",\n    \"project\",\n    \"framework\",\n    \"utility\"\n  ],\n  \"devDependencies\": {\n    \"@itsjamie/esdoc-cli\": \"^0.5.0\",\n    \"@itsjamie/esdoc-core\": \"^0.5.0\",\n    \"@itsjamie/esdoc-importpath-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-inject-style-plugin\": \"^0.5.0\",\n    \"@itsjamie/esdoc-standard-plugin\": \"^0.5.0\",\n    \"@rollup/plugin-commonjs\": \"^24.0.1\",\n    \"@rollup/plugin-node-resolve\": \"^15.0.1\",\n    \"@rollup/plugin-terser\": \"^0.4.0\",\n    \"ava\": \"^5.2.0\",\n    \"eslint\": \"^8.35.0\",\n    \"rollup\": \"^3.18.0\"\n  },\n  \"dependencies\": {\n    \"@abw/badger-codecs\": \"^1.0.2\",\n    \"@abw/badger-filesystem\": \"^1.0.2\",\n    \"@abw/badger-timestamp\": \"^1.0.4\",\n    \"@abw/badger-utils\": \"^1.0.16\",\n    \"commander\": \"^9.5.0\",\n    \"dotenv\": \"^16.0.3\",\n    \"js-yaml\": \"^4.1.0\",\n    \"prompts\": \"^2.4.2\"\n  }\n}\n",
     "longname": "/Users/abw/js/badger-js/package.json",
     "name": "package.json",
     "static": true,
@@ -10266,7 +10735,7 @@
   },
   {
     "kind": "manualIndex",
-    "content": "# badger\n\n<img src=\"./manual/asset/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger` Javascript toolkit.\n\n* [Introduction](manual/introduction.html)\n* [Filesystem Utilities](manual/filesystem.html)\n* [Data Codecs](manual/codecs.html)\n* [Configuration Files](manual/config_files.html)\n* [Library Modules](manual/library_modules.html)\n* [Data Paths](manual/data_paths.html)\n* [Workspace](manual/workspace.html)\n* [User Input](manual/user_input.html)\n* [Miscellaneous Functions](manual/miscellaneous.html)\n\n# Author\n[Andy Wardley](https://github.com/abw)\n",
+    "content": "# badger\n\n<img src=\"./manual/asset/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger` Javascript toolkit.\n\n* [Introduction](manual/introduction.html)\n* [Filesystem Utilities](manual/filesystem.html)\n* [Data Codecs](manual/codecs.html)\n* [Configuration Files](manual/config_files.html)\n* [Library Modules](manual/library_modules.html)\n* [Data Paths](manual/data_paths.html)\n* [Workspace](manual/workspace.html)\n* [User Input](manual/user_input.html)\n* [Project Setup](manual/setup.html)\n* [Miscellaneous Functions](manual/miscellaneous.html)\n\n# Author\n[Andy Wardley](https://github.com/abw)\n",
     "longname": "/Users/abw/js/badger-js/manual/index.md",
     "name": "./manual/index.md",
     "static": true,
@@ -10340,6 +10809,14 @@
     "longname": "/Users/abw/js/badger-js/manual/user_input.md",
     "name": "./manual/user_input.md",
     "content": "# User Input\n\nThere are a number of function to help with processing command line arguments\nand getting input from users. Some of them are quick and easy functions of\nconvenience to make simple things simple.  At the other end of the scale the\n[options](function#static-function-options) function provides an integrated\nway to process command line arguments\n(using [commander](https://www.npmjs.com/package/commander))\nand prompt the user for any missing configuration options\n(using [prompts](https://www.npmjs.com/package/prompts)).\n\n- [User Input](#user-input)\n- [Command Line Arguments](#command-line-arguments)\n- [Simple Options Example](#simple-example)\n- [Special Options](#special-options)\n- [Commands](#commands)\n- [Sections](#sections)\n- [Generated Configuration](#generated-configuration)\n\n## User Input\n\nThe [prompt()](function#static-function-prompt) is a quick-and-easy way to\nask a user to enter some input.  It is implemented as a wrapper around the\n[prompt](https://www.npmjs.com/package/prompts) module.\n\nThe first argument is the question to ask the user.\n\n```js\nimport { prompt } from '@abw/badger'\n\nconst name = await prompt(\"What is your name?\");\nconsole.log('Hello ', name);\n```\n\nAn optional second argument can be the default answer:\n\n```js\nconst name = await prompt(\"What is your name?\", 'Mr Badger');\n```\n\nThis is a convenient short-hand for passing an object with a `default`\nproperty.\n\n```js\nconst name = await prompt(\"What is your name?\", { default: 'Mr Badger' });\n```\n\nThe [confirm()](function#static-function-confirm) function allows you to\nprompt the user to confirm an action by pressing `y` for `yes` or `n` for\n`no`.\n\n```js\nimport { confirm } from '@abw/badger'\n\nconst yes = await confirm(\"Are you sure?\");\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe default answer is `N`, returning a `false` value, but you can pass\n`true` as the second argument to make `Y` the default.\n\n```js\nconst yes = await confirm(\"Are you sure?\", true);\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe [select()](function#static-function-select) function is another wrapper\nof convenience for getting the user to select an option from a list.  Here\nthe second argument should be an array of options, with each as an object\ncontaining a `title` and `value`, or you can pass an object where each keys\nis a `value` mapped to a `title`.\n\n```js\nimport { select } from '@abw/badger'\n\nconst animal = await select(\n  'What is your favourite animal?',\n  {\n    aardvark: 'An amazing aardvark',\n    badger:   'A brilliant badger',\n    cat:      'A cool cat',\n    dog:      'A dapper dog'\n  },\n  1\n);\nconsole.log('You chose:', animal);  // aardvark, badger, cat or dog\n```\n\nThese are the three functions that I find myself using a lot.  For anything\nmore complicated you should probably cut out the middle-man and go straight\nto [prompts](https://www.npmjs.com/package/prompts).\n\n## Command Line Arguments\n\nIf you've got a script that expects a command line argument then the\n[cmdLineArg()](function#static-function-cmdLineArg) function is your friend.\nIt will return the first argument from the command line after your script\nname.\n\n```js\nimport { cmdLineArg } from '@abw/badger'\n\nconst arg = await cmdLineArg();\n```\n\nIf the script is run like so:\n\n```bash\n$ node your-script.js foo\n```\n\nThen the `arg` variable will be set to `foo`.  If you don't specify any\ncommand line arguments after the script name then it will be `undefined`.\nIf the program can't continue without the argument then you might want to\nuse the [quit()](function#static-function-quit) function to exit with a\nhelpful message.\n\n```js\nconst arg = await cmdLineArg();\n  || quit('No argument provided')\n```\n\nIf you pass a message prompt as an argument then the function will prompt\nthe user to enter a value if there isn't one provided on the command line.\n\n```js\nconst name = await cmdLineArg('What is your name?')\n  || quit('No name provided')\nconsole.log(`Hello ${name}`)\n```\n\nRunning the script would look something like this:\n\n```bash\n$ node your-script.js\n✔ What is your name? … Bobby Badger\nHello Bobby Badger\n```\n\nIf you want to process several command line arguments then you can use the\n[cmdLineArgs()](function#static-function-cmdLineArgs) function (note the extra\n\"s\" on the end).  Here the first argument should be an array of prompts for\neach argument.\n\n```js\nconst [forename, surname] = await cmdLineArgs(\n  ['What is your first name?', 'What is your surname']\n) || quit('No name provided')\n\nconsole.log(`Hello ${forename} ${surname}`);\n```\n\nIf you don't specify an prompts then it returns all arguments.\n\nNote that both of the above functions take a copy of the command line\narguments to work with (`process.argv.slice(2)`).  They don't modify the\noriginal list of argument so if you call either function multiple times then\nyou'll end up with the same arguments being returned, starting from\n`process.argv[2]` each time.\n\nIn this case you should take your own copy of the arguments and pass that as\nthe second option to the function(s).  You can use the `process.argv.slice(2)`\ntrick, or call the `cmdLine()` function to do it for you with less typing.\n\n```js\nimport { cmdLine, cmdLineArg, cmdLineArgs, quit } from '@abw/badger';\n\n// take a copy of the command line arguments to work with\nconst args = cmdLine();\n\nconst [forename, surname] = await cmdLineArgs(\n  ['What is your first name?', 'What is your surname'],\n  args\n) || quit('No name provided')\n\nconst age = await cmdLineArg(\n  `Hello ${forename} ${surname}, how old are you?`,\n  args\n) || quit('No age provided')\n\nconsole.log(`${age} is a fine age`);\n```\n\nYou can run this script with no arguments, one argument (forename), two\narguments (forename, surname) or three (forename, surname, age).  It will\nprompt you to enter any that you omitted.\n\nIf your script supports command line flags (e.g. `-v` or `--verbose`) then\nthe [cmdLineFlags()](function#static-function-cmdLineFlags) function can\nbe used to remove them from an argument list in advance.  This should only\nbe used in simple cases where you want to detect the presence of a boolean\nflag.  It doesn't support flags that expect an argument (although you can\nhandle this yourself with an `on` handlers, shown below).\n\n```js\nimport { cmdLineFlags } from '@abw/badger';\n\nconst { flags, args } = cmdLineFlags()\nconsole.log('flags:', flags);\nconsole.log('args:', args);\n```\n\nHere's an example of the script being run:\n\n```\n$ node flags-example.js -d --verbose foo -x bar\nflags: { d: true, verbose: true, x: true }\nargs: [ 'foo', 'bar' ]\n```\n\nThere are a number of configuration options you can pass to the function.\nThe `short` option allows you to map short options (e.g. `-v`) to longer\nequivalents (e.g. `--verbose`).\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    short: {\n      v: 'verbose',\n      d: 'debug',\n    }\n  },\n);\n```\n\nIn this case, the `-v` or `--verbose` option will result in `verbose` being\nset `true` in the returned `flags`.\n\nThe `options` option allows you to specify which options are valid.  You\ncan specify this as an object, where the valid options are the keys and\ncorresponding values should be `true`:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: {\n      verbose: true,\n      debug:   true,\n    }\n  },\n);\n```\n\nOr you can use the short-hand form where you pass an array:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: ['verbose', 'debug'],\n  },\n);\n```\n\nOr the even shorter-hand form where you pass a whitespace delimited string:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n  },\n);\n```\n\nIf you provide the `options` option then any flags that aren't explicitly\nnamed will cause an error to be throw.\n\nYou can specify the `others` option to change this behaviour.  Set it to\n`keep` to keep the rogue flag in the argument list, `remove` to remove it\naltogether and pretend it never happened, or `collect` to accept it and\nreturn it in the flags.  The default value is `error`.\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n    others:  'keep',\n  },\n);\n```\n\nHere's an example of the earlier script being run with this configuration:\n\n```\n$ node flags-example.js --verbose foo -x bar\nflags: { verbose: true }\nargs: [ 'foo','-x', 'bar' ]\n```\n\nThe `on` option can be used to trigger a function when a flag is detected.\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n    on: {\n      help:    () => quit(\"Help message...\"),\n      version: () => quit(\"Version 1.2.3\"),\n      n:       (name, arg, args, flags) => {\n        // Handle something like: -n <number>\n        flags.number = args.shift();\n      }\n    }\n  },\n);\n```\n\nThe `on` handler will be passed four arguments.  The first is the argument\nname with the leading hyphens removed.  If it's a `short` option (e.g. `-v`)\nwhich is mapped to a longer name (e.g. `verbose`) then the longer name will\nbe passed.  The second argument is the flag as it was specified (e.g. `-v`\nor `--verbose`).  The third argument is the array of remaining arguments\nremaining after the current argument.  The fourth argument is an object\ncontaining the flags collected so far.  You can modify the arguments list\nor the flags if you want to.\n\nThe function should return `true` if it has handled the argument and no\nfurther processing needs to be done.  If it doesn't return a true value then\nprocessing of the flag continues as normal.\n\nOptions that have `on` handlers don't need to be explicitly listed in the\n`options` list.\n\n## Simple Options Example\n\nWhen you have multiple arguments and/or flags then\n[options](function#static-function-options) function may be a better choice.\nIt handles the logic of processing flags, arguments and prompting the user\nto enter any that are missing.\n\nThis simple example shows how options are specified.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  version: '0.0.1',\n  description: 'Example showing command line options and prompting',\n  options: [\n    {\n      name:     'database',\n      short:    'd',\n      about:    'Database',\n      type:     'text',\n      prompt:   'What is the name of the database?',\n      required: true,\n    },\n    {\n      name:     'username',\n      short:    'u',\n      about:    'Username',\n      type:     'text',\n      prompt:   'What is the database username?',\n    },\n    {\n      name:     'password',\n      short:    'p',\n      about:    'Password',\n      type:     'password',\n      prompt:   'What is the database password?',\n    },\n  ]\n});\nconsole.log('config: ', config);\n```\n\nRun the script with the `-h` option to view the help.\n\n```sh\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\nThe `name`, `version` and `description` are optional items that will be displayed in\nthe help.\n\nThe `options` array defines the valid options.  Each can have a `name` which is\naccessible as the \"long option\", e.g. `--database`, `--username` and `--password`,\nand a `short` option, e.g. `-d`, `-u` and `-p`.  The `about` item provides information\nabout the option.\n\nAfter processing the command line arguments, the function will prompt the user to\nconfirm any values specified as arguments, and enter any missing values.  The `prompt`\nitem is used to prompt the user.  If this is omitted then the user will not be prompted\nto enter a value.  The `type` can be set to one of the [types provided by the prompts\npackage](https://www.npmjs.com/package/prompts#-types).  The `required` option can be\nset `true` to force the user to enter a value.\n\n```sh\n$ node examples/options.js -d wibble\n✔ What is the name of the database? … wibble\n✔ What is the database username? …\n✔ What is the database password? …\n```\n\n## Special Options\n\nThe `yes` configuration item can be specified to have the `-y` / `--yes`\noptional automatically added.  When this is specifed on the command line the\nfunction will automatically accept the default answer.\n\nThe `verbose` configuration item can be specified to have the `-v` / `--verbose`\noptional automatically added.  When this is specifed on the command line the\nfunction will print additional output.\n\nThe `quiet` configuration item can be specified to have the `-q` / `--quiet`\noptional automatically added.  When this is specifed on the command line the\nfunction will suppress any optional output.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  description: 'Example showing command line options and prompting',\n  version: '0.0.1',\n  yes: true,\n  verbose: true,\n  quiet: true,\n  options: [\n    ...\n  ]\n})\n```\n\n```sh\n$ node examples/options.js -h\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -y, --yes                  Accept default answers\n  -v, --verbose              Verbose output\n  -q, --quiet                Quiet output\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\n## Commands\n\nYou can also add `commands` to the configuration. For example, you might\nhave a script where you want to `start` or `stop` one or more services.\n\n```js\nconst config = await options({\n  name: 'commands.js',\n  description: 'Example showing command line commands',\n  version: '0.0.1',\n  verbose: true,\n  quiet: true,\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service&gt;',\n      about:   'Start a service'\n    },\n    {\n      name:     'stop',\n      pattern:  '&lt;service&gt;',\n      about:    'Stop a service'\n    },\n    {\n      name:     'status',\n      about:    'Show service status'\n    }\n  ]\n})\n```\n\nWhen run with the `-h` option the output will be:\n\n```sh\n$ node examples/commands.js -h\nUsage: commands.js [options] [command]\n\nExample showing command line commands.\n\nOptions:\n  -V, --version       output the version number\n  -v, --verbose       Verbose output\n  -q, --quiet         Quiet output\n  -h, --help          display help for command\n\nCommands:\n  start &lt;service&gt;  Start a service\n  stop &lt;service&gt;   Stop a service\n  status           Show service status\n  help [command]   display help for command\n```\n\nIf a command should accept multiple arguments then define the pattern\nusing ellipses.\n\n```js\nconst config = await options({\n  // ...etc...\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service...&gt;',\n      about:   'Start one or more services'\n    },\n    // ...etc...\n  ]\n})\n```\n\n## Sections\n\nIf you have lots of questions then you might want to break them up\ninto sections.  Add an item to the `options` array like the following\nto print a section title and information.  Both `title` and `info` are\noptional, so you can omit either one.\n\n```js\noptions: [\n  {\n    title: \"Configuration Options\",\n    info:  \"Please answer the following questions.\\nPress RETURN to accept defaults.\"\n  },\n  ...\n]\n```\n\nThis generates the following output:\n\n```sh\nConfiguration Options\n---------------------\n\nPlease answer the following questions.\nPress RETURN to accept defaults.\n```\n\n## Generated Configuration\n\nThe function returns a Promise which fulfills to an object containing the\nconfiguration values.  Each key will be the `name` of the option or command,\nand the corresponding value will be that read from the command line or by\nprompting the user.  In the case of [commands](#commands) with multiple values\nthey will be stored as an array.",
+    "static": true,
+    "access": "public"
+  },
+  {
+    "kind": "manual",
+    "longname": "/Users/abw/js/badger-js/manual/setup.md",
+    "name": "./manual/setup.md",
+    "content": "# Project Setup\n\nIt's considered good practice to define any sensitive information (e.g.\npasswords) in a `.env` environment file along with any other information that\nis specific to the machine it's running on or the deployment environment\n(e.g. development, staging, production, etc).\n\nThe [setup()](function#static-function-setup) function can help you automate\nthis process.  It allows you to create a setup script that users can run when\nthey first check out a project to a machine, or when configuration options\nchange.  It uses a configuration file to define the command line arguments\nthat the script will accept, and will prompt the user to enter any that\nhaven't been specified.  It will then generate the `.env` file.\n\n- [Setup Script](#setup-script)\n- [Configuration File](#configuration-files)\n- [Setup Options](#setup-options)\n\n## Setup Script\n\nYou should define a setup script for your project.  A good place for this\nis `bin/setup.js`.  It should look something like this:\n\n```js\n#!/usr/bin/env node\nimport { bin } from '@abw/badger-filesystem';\nimport { setup } from '@abw/badger'\n\nawait setup({\n  rootDir: bin().up(),\n  writeEnv: true,\n});\n```\n\nThe `rootDir` option specifies where the root directory for your project is.\nIt's usually not necessary as it defaults to the current working directory.\nIf you run the script from the project root then it will work as expected.\nBut it doesn't hurt to be explicit.  Here we're using the `bin()` function\nfrom `badger-filesystem` which returns a directory object for the directory\nin which the script is located (appropriately called `bin`).\n\nThe `up()` method returns the directory one level up.  If your\nscript is located in a lower level directory (e.g. `bin/project/setup.js`)\nthen you should go up another level (e.g. `bin().up(2)`).  If your script is\nalready in the top-level directory then `bin()` will suffice.\n\nThe benefit of being explicit is that you can then run this script from any\ndirectory and it will work correctly.\n\nThe `writeEnv` option tells it to write a `.env` file when it's done.\nThe `envFile` option can be used to specify the name for the file, relative\nto the `rootDir` directory.  The default is `.env`.\n\nYou'll need to define a setup configuration file to make it work.  We'll\ngo through that in the next section.  But first here's a sneak preview of\nwhat happens when you run the script with an example configuration.  This\nexample is in [examples/setup](https://github.com/abw/badger-js/blob/master/examples/setup)\nif you want to play along at home.\n\n```\n$ bin/setup.js\n\nProject Configuration\n---------------------\n\nPlease enter the following questions to setup the project.\n\n✔ Where is the project root directory on this machine? … /home/abw/my-project\n✔ What kind of deployment is this? › development\n\nDatabase Configuration\n----------------------\n\nEnter the connection details for the database.\n\n✔ Enter the name of the database … badger\n✔ Enter the name of the database host … localhost\n✔ Enter the port on which the database is running … 3306\n✔ Enter the username for connecting to the database … badger\n✔ Enter the password for connecting to the database … *********\n\nPrograms\n--------\n\nWe need to know the location of some programs on this machine.\n\n✔ Enter the full path to the gzip program … /usr/bin/gzip\n✔ Enter the full path to the gzcat (or zcat) program … /usr/bin/gzcat\n\n👍  All configuration options have been set\n```\n\nThe script will prompt you to confirm or enter values for each of the options\nin your configuration file.  It will then write a nicely formatted `.env` file\nand also a `.env.yaml` file containing the raw data.\n\nHere's what the `.env` file might look like:\n\n```\n#=============================================================================\n# WARNING: This file is generated automatically when the undefined\n# script is run.  Any changes made here may be lost.\n#\n# Generated: 2023-03-10 11:02:59\n#=============================================================================\n\n#-----------------------------------------------------------------------------\n# Project Configuration\n#-----------------------------------------------------------------------------\n\n# Project directory\nMYAPP_ROOT_DIR=/home/abw/my-project\n\n# Deployment type\nDEPLOYMENT=development\n\n\n#-----------------------------------------------------------------------------\n# Database Configuration\n#-----------------------------------------------------------------------------\n\n# Database name\nDB_NAME=badger\n\n# Database host\nDB_HOST=localhost\n\n# Database port\nDB_PORT=3306\n\n# Database user\nDB_USER=badger\n\n# Database password\nDB_PASS=TOP_SECRET\n\n\n#-----------------------------------------------------------------------------\n# Programs\n#-----------------------------------------------------------------------------\n\n# Path to gzip\nGZIP=/usr/bin/gzip\n\n# Path to gzcat (or zcat)\nGZCAT=/usr/bin/gzcat\n```\n\nThe `-v` or `--verbose` options can be added to get some extra messages\ngenerated.  The `-h` or `--help` options can be used to view the help for the\nscript:\n\n```\n$ bin/setup.js -h\nUsage: bin/setup.js [options]\n\nProject setup script.\n\nOptions:\n  -y, --yes              Accept default answers\n  -v, --verbose          Verbose output\n  -q, --quiet            Quiet output\n  --root &lt;dir&gt;           Project directory (default: \"/home/abw/my-project\")\n  --deployment &lt;type&gt;    Deployment type (default: \"development\")\n  --db_name &lt;dbname&gt;     Database name (default: \"badger\")\n  --db_host &lt;hostname&gt;   Database host (default: \"localhost\")\n  --db_port &lt;port&gt;       Database port (default: 3306)\n  --db_user &lt;username&gt;   Database user (default: \"badger\")\n  --db_pass &lt;password&gt;   Database password\n  --gzip &lt;path&gt;          Path to gzip (default: \"/usr/bin/gzip\")\n  --gzcat &lt;path&gt;         Path to gzcat (or zcat) (default: \"/usr/bin/gzcat\")\n  -h, --help             display help for command\n```\n\nIn this example the options from `--deployment` down to `--gzcat` are specific\nto the configuration file and everything else comes as standard.\n\nIf you need to change an option you can go through the questions over again\n(it will remember the answers you previously gave by looking at the generated\n`.env` and/or `.env.yaml` files), or you can use a command line option to\nset the relevant value along with `-y` or `--yes` to automatically accept all\nthe other value.  The `-q` or `--quiet` option can be used to supress any\nother output.\n\nFor example, to update the database password:\n\n```\n$ bin/setup.js --db_pass NEWPASSWORD -y -q\n```\n\nThe `.env` file will then be re-generated with the new value for `DB_PASS`.\n\n## Configuration file\n\nYou need to define a configuration file to tell the script what data you\nneed to capture.  It can be in any one of the standard locations, relative\nto your project root:\n\n* `config/setup.yaml`\n* `config/setup.json`\n* `setup.yaml`\n* `setup.json`\n* `.setup.yaml`\n* `.setup.json`\n\nYou can use the `configFile` option to specify a different location if you\ndon't like the look of any of those.\n\nHere's the configuration file used in the earlier example.\n\n```yaml\n# standard options\nyes:            true\nverbose:        true\nquiet:          true\n\n# custom project options\noptions:\n  #---------------------------------------------------------------------------\n  # Project\n  #---------------------------------------------------------------------------\n  -\n    title:      Project Configuration\n    info:       Please answer the following questions to setup the project.\n  -\n    name:       root\n    about:      Project directory\n    prompt:     Where is the project root directory on this machine?\n    pattern:    &lt;dir&gt;\n    required:   true\n    envvar:     MYAPP_ROOT_DIR\n  -\n    name:       deployment\n    about:      Deployment type\n    prompt:     What kind of deployment is this?\n    type:       select\n    pattern:    &lt;type&gt;\n    required:   true\n    default:    development\n    choices:\n      -\n        title:  development\n        value:  development\n      -\n        title:  staging\n        value:  staging\n      -\n        title:  production\n        value:  production\n\n  #---------------------------------------------------------------------------\n  # Database\n  #---------------------------------------------------------------------------\n  -\n    title:      Database Configuration\n    info:       Enter the connection details for the database.\n  -\n    name:       db_name\n    about:      Database name\n    prompt:     Enter the name of the database\n    pattern:    &lt;dbname&gt;\n    required:   true\n    default:    badger\n  -\n    name:       db_host\n    about:      Database host\n    prompt:     Enter the name of the database host\n    pattern:    &lt;hostname&gt;\n    required:   true\n    default:    localhost\n  -\n    name:       db_port\n    about:      Database port\n    prompt:     Enter the port on which the database is running\n    pattern:    &lt;port&gt;\n    required:   true\n    default:    3306\n  -\n    name:       db_user\n    about:      Database user\n    prompt:     Enter the username for connecting to the database\n    pattern:    &lt;username&gt;\n    required:   true\n    default:    badger\n  -\n    name:       db_pass\n    about:      Database password\n    prompt:     Enter the password for connecting to the database\n    pattern:    &lt;password&gt;\n    type:       password\n    required:   true\n\n  #---------------------------------------------------------------------------\n  # Programs\n  #---------------------------------------------------------------------------\n  -\n    title:      Programs\n    info:       We need to know the location of some programs on this machine.\n  -\n    name:       gzip\n    about:      Path to gzip\n    program:    gzip\n    prompt:     Enter the full path to the gzip program\n    mandatory:  true\n  -\n    name:       gzcat\n    about:      Path to gzcat (or zcat)\n    program:    gzcat zcat\n    prompt:     Enter the full path to the gzcat (or zcat) program\n    mandatory:  true\n```\n\nThe first section contains the standard options that enable the `-y` / `--yes`,\n`-v` / `--verbose` and `-q` / `--quiet` options.\n\n```yaml\n# standard options\nyes:            true\nverbose:        true\nquiet:          true\n```\n\nFollowing that we have the `options` section.  Each option must contain a\n`name` and can have various other parameters.\n\n```yaml\noptions:\n  -\n    name:       root\n    envvar:     MYAPP_ROOT_DIR\n    about:      Project directory\n    prompt:     Where is the project root directory on this machine?\n    required:   true\n    pattern:    &lt;dir&gt;\n  # ...etc.\n```\n\nThe `name` is used as the command line option for the script, e.g. `--root`.\nIf an `envvar` is defined then this will be the name used for the environment\nvariable in the `.env` file (`MYAPP_ROOT_DIR` in this example).  Otherwise it\ndefaults to an upper can version of the `name` (e.g. `ROOT`).\n\nThe `about` property is displayed in the help text.  It will also be added as\na comment to the `.env` file.  The `prompt` is the prompt used to request user\ninput.  If this is not defined then the user will not be prompted to enter a\nvalue for it.  The `pattern` is displayed against the option in the help text,\ne.g.\n\n```\n   --root &lt;dir&gt;           Project directory (default: ...)\n```\n\nIf you don't specify it then it defaults to `<text>` (or `<path>` for program\noptions)\n\nThe `required` flag indicates that a value must be provided.\n\nThe default input type is `text`, but you can explicitly set it to `password`\nwhere appropriate:\n\n```yaml\n  -\n    name:       db_pass\n    about:      Database password\n    prompt:     Enter the password for connecting to the database\n    pattern:    &lt;password&gt;\n    type:       password\n    required:   true\n```\n\nThe `select` type can be be used to provide a list of values to select from:\n\n```yaml\n  -\n    name:       deployment\n    about:      Deployment type\n    prompt:     What kind of deployment is this?\n    type:       select\n    pattern:    &lt;type&gt;\n    required:   true\n    default:    development\n    choices:\n      -\n        title:  development\n        value:  development\n      -\n        title:  staging\n        value:  staging\n      -\n        title:  production\n        value:  production\n```\n\nThe `program` option provides some extra magic.  It will look for the named\nprogram in your `PATH` and set the default value to be the first location\nit finds.\n\n```yaml\n  -\n    name:       gzip\n    about:      Path to gzip\n    program:    gzip\n    prompt:     Enter the full path to the gzip program\n    mandatory:  true\n```\n\nIf you don't set the `pattern` for a `program` option then it defaults to\n`<path>`.  If there are different names for acceptable programs then you\ncan specify multiple values to the `program` option.  For example, `gzcat`\nand `zcat` both do the same thing.\n\n```yaml\n    program:    gzcat zcat\n```\n\nLots of questions can be a bit overwhelming to a user.  You can break them\nup into sections to relieve the monotony by defining a `title` option.\n\n```yaml\n  -\n    title:      Programs\n    info:       We need to know the location of some programs on this machine.\n```\n\n## Setup Options\n\nHere's a summary of the options that you can pass to the `setup()`\nfunction.\n\n|Option|Description|Default|\n|-|-|-|\n|rootDir|Your project root directory|Current working directory|\n|description|A description for the help text|Project setup script.|\n|version|The version number for the help text||\n|configFile|The path to your setup configuration file, relative to `rootDir`|`config/setup.yaml`, `config/setup.json`, `setup.yaml`, `setup.json`, `.setup.yaml` or `.setup.json`|\n|envFile|The name of your environment file, relative to `rootDir`|`.env`|\n|writeEnv|Should it automatically write the `envFile` file?|`false`|\n|envExtra|Additional file to append to `envFile`, e.g. `.env.extra`||\n|envSections|Add section block comments to `envFile`|`true`|\n|envComments|Add item comments to `envFile`|`true`|\n|compact|Don't add blank spacing lines in `envFile`|`false`|\n|dataFile|JSON or YAML file for caching answers|`.env.yaml`|\n|writeData|Should it automatically write the `dataFile` file?|`true`|\n|cancelled|Text to display when script is cancelled (by hitting escape or Ctrl-C)|`Setup cancelled`|\n|allDone|Text to display when all questions have been answered|`All configuration options have been set`|\n|warning|Warning text to add to top of `envFile`|(WARNING text block)|\n\n",
     "static": true,
     "access": "public"
   },

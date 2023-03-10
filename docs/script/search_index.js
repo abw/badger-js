@@ -876,6 +876,42 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~findfirstfile",
+    "function/index.html#static-function-findFirstFile",
+    "<span>findFirstFile</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~findfirstfile",
+    "function/index.html#static-function-findFirstFile",
+    "<span>findFirstFile</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~findfirstfile",
+    "function/index.html#static-function-findFirstFile",
+    "<span>findFirstFile</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~findprogram",
+    "function/index.html#static-function-findProgram",
+    "<span>findProgram</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~findprogram",
+    "function/index.html#static-function-findProgram",
+    "<span>findProgram</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~findprogram",
+    "function/index.html#static-function-findProgram",
+    "<span>findProgram</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~formatelapsed",
     "function/index.html#static-function-formatElapsed",
     "<span>formatElapsed</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -1218,6 +1254,24 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~runsetup",
+    "function/index.html#static-function-runSetup",
+    "<span>runSetup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~runsetup",
+    "function/index.html#static-function-runSetup",
+    "<span>runSetup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~runsetup",
+    "function/index.html#static-function-runSetup",
+    "<span>runSetup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~section",
     "function/index.html#static-function-section",
     "<span>section</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -1252,6 +1306,24 @@ window.esdocSearchIndex = [
     "function/index.html#static-function-select",
     "<span>select</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
+  ],
+  [
+    "@abw/badger~setup",
+    "variable/index.html#static-variable-setup",
+    "<span>setup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~setup",
+    "variable/index.html#static-variable-setup",
+    "<span>setup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~setup",
+    "variable/index.html#static-variable-setup",
+    "<span>setup</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
   ],
   [
     "@abw/badger~splitdatapath",
@@ -2145,6 +2217,12 @@ window.esdocSearchIndex = [
     "src/badger/utils/prompt.js",
     "file/src/Badger/Utils/Prompt.js.html",
     "src/Badger/Utils/Prompt.js",
+    "file"
+  ],
+  [
+    "src/badger/utils/setup.js",
+    "file/src/Badger/Utils/Setup.js.html",
+    "src/Badger/Utils/Setup.js",
     "file"
   ],
   [
