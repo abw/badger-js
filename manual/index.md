@@ -12,6 +12,7 @@ This is the manual for the `badger` Javascript toolkit.
 * [Data Paths](manual/data_paths.html)
 * [Workspace](manual/workspace.html)
 * [User Input](manual/user_input.html)
+* [Project Setup](manual/setup.html)
 * [Miscellaneous Functions](manual/miscellaneous.html)
 
 # Author
