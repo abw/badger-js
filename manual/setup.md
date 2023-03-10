@@ -13,7 +13,7 @@ that the script will accept, and will prompt the user to enter any that
 haven't been specified.  It will then generate the `.env` file.
 
 - [Setup Script](#setup-script)
-- [Configuration File](#configuration-files)
+- [Configuration File](#configuration-file)
 - [Setup Options](#setup-options)
 
 ## Setup Script
