@@ -3,8 +3,6 @@
 - [ANSI Colors](#ansi-colors)
 - [Debugging](#debugging)
 - [Exit](#exit)
-- [User Input](#user-input)
-- [Command Line Args](#command-line-args)
 - [App Status](#app-status)
 - [Progress](#progress)
 
