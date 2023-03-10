@@ -327,7 +327,7 @@ export async function runSetup(props) {
   // look for a setup file - if it's provided as configFile then it's treated
   // as definitive, otherwise we look for the first of configFiles
   const configFile = config.configFile
-    ? rootDir(config.configFile, { codec: 'auto' })
+    ? rootDir.file(config.configFile, { codec: 'auto' })
     : await findFirstFile(rootDir, config.configFiles);
 
   // read the setup file
