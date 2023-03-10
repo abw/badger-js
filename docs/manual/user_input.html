@@ -106,12 +106,14 @@
 <div data-ice="manual">
     <ul class="manual-toc">
       
-    <li data-ice="manualNav" class="indent-h1" data-link="manual/command_line.html"><a href="manual/command_line.html" data-ice="link">Command Line Options</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#simple-example" data-ice="link">Simple Example</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#special-options" data-ice="link">Special Options</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#commands" data-ice="link">Commands</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#sections" data-ice="link">Sections</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/command_line.html"><a href="manual/command_line.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
+    <li data-ice="manualNav" class="indent-h1" data-link="manual/user_input.html"><a href="manual/user_input.html" data-ice="link">User Input</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#user-input" data-ice="link">User Input</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#command-line-arguments" data-ice="link">Command Line Arguments</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#simple-options-example" data-ice="link">Simple Options Example</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#special-options" data-ice="link">Special Options</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#commands" data-ice="link">Commands</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#sections" data-ice="link">Sections</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -121,8 +123,6 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#ansi-colors" data-ice="link">ANSI Colors</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#debugging" data-ice="link">Debugging</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#exit" data-ice="link">Exit</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#user-input" data-ice="link">User Input</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#command-line-args" data-ice="link">Command Line Args</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#app-status" data-ice="link">App Status</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#progress" data-ice="link">Progress</a></li>
 </ul>
@@ -130,17 +130,227 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="command-line-options">Command Line Options</h1><p>The <a href="function#static-function-options">options</a> function provides an
-integrated way to process command line arguments (using <a href="https://www.npmjs.com/package/commander">commander</a>)
-and prompt the user for any missing configuration options (using <a href="https://www.npmjs.com/package/prompts">prompts</a>).</p>
+<div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="user-input">User Input</h1><p>There are a number of function to help with processing command line arguments
+and getting input from users. Some of them are quick and easy functions of
+convenience to make simple things simple.  At the other end of the scale the
+<a href="function#static-function-options">options</a> function provides an integrated
+way to process command line arguments
+(using <a href="https://www.npmjs.com/package/commander">commander</a>)
+and prompt the user for any missing configuration options
+(using <a href="https://www.npmjs.com/package/prompts">prompts</a>).</p>
 <ul>
-<li><a href="#simple-example">Simple Example</a></li>
+<li><a href="#user-input">User Input</a></li>
+<li><a href="#command-line-arguments">Command Line Arguments</a></li>
+<li><a href="#simple-example">Simple Options Example</a></li>
 <li><a href="#special-options">Special Options</a></li>
 <li><a href="#commands">Commands</a></li>
 <li><a href="#sections">Sections</a></li>
 <li><a href="#generated-configuration">Generated Configuration</a></li>
 </ul>
-<h2 id="simple-example">Simple Example</h2><p>This simple example shows how options are specified.</p>
+<h2 id="user-input">User Input</h2><p>The <a href="function#static-function-prompt">prompt()</a> is a quick-and-easy way to
+ask a user to enter some input.  It is implemented as a wrapper around the
+<a href="https://www.npmjs.com/package/prompts">prompt</a> module.</p>
+<p>The first argument is the question to ask the user.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { prompt } from '@abw/badger'
+
+const name = await prompt("What is your name?");
+console.log('Hello ', name);</code></code></pre>
+<p>An optional second argument can be the default answer:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const name = await prompt("What is your name?", 'Mr Badger');</code></code></pre>
+<p>This is a convenient short-hand for passing an object with a <code>default</code>
+property.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const name = await prompt("What is your name?", { default: 'Mr Badger' });</code></code></pre>
+<p>The <a href="function#static-function-confirm">confirm()</a> function allows you to
+prompt the user to confirm an action by pressing <code>y</code> for <code>yes</code> or <code>n</code> for
+<code>no</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { confirm } from '@abw/badger'
+
+const yes = await confirm("Are you sure?");
+console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
+<p>The default answer is <code>N</code>, returning a <code>false</code> value, but you can pass
+<code>true</code> as the second argument to make <code>Y</code> the default.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const yes = await confirm("Are you sure?", true);
+console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
+<p>The <a href="function#static-function-select">select()</a> function is another wrapper
+of convenience for getting the user to select an option from a list.  Here
+the second argument should be an array of options, with each as an object
+containing a <code>title</code> and <code>value</code>, or you can pass an object where each keys
+is a <code>value</code> mapped to a <code>title</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { select } from '@abw/badger'
+
+const animal = await select(
+  'What is your favourite animal?',
+  {
+    aardvark: 'An amazing aardvark',
+    badger:   'A brilliant badger',
+    cat:      'A cool cat',
+    dog:      'A dapper dog'
+  },
+  1
+);
+console.log('You chose:', animal);  // aardvark, badger, cat or dog</code></code></pre>
+<p>These are the three functions that I find myself using a lot.  For anything
+more complicated you should probably cut out the middle-man and go straight
+to <a href="https://www.npmjs.com/package/prompts">prompts</a>.</p>
+<h2 id="command-line-arguments">Command Line Arguments</h2><p>If you've got a script that expects a command line argument then the
+<a href="function#static-function-cmdLineArg">cmdLineArg()</a> function is your friend.
+It will return the first argument from the command line after your script
+name.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { cmdLineArg } from '@abw/badger'
+
+const arg = await cmdLineArg();</code></code></pre>
+<p>If the script is run like so:</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">$ node your-script.js foo</code></code></pre>
+<p>Then the <code>arg</code> variable will be set to <code>foo</code>.  If you don't specify any
+command line arguments after the script name then it will be <code>undefined</code>.
+If the program can't continue without the argument then you might want to
+use the <a href="function#static-function-quit">quit()</a> function to exit with a
+helpful message.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const arg = await cmdLineArg();
+  || quit('No argument provided')</code></code></pre>
+<p>If you pass a message prompt as an argument then the function will prompt
+the user to enter a value if there isn't one provided on the command line.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const name = await cmdLineArg('What is your name?')
+  || quit('No name provided')
+console.log(`Hello ${name}`)</code></code></pre>
+<p>Running the script would look something like this:</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">$ node your-script.js
+✔ What is your name? … Bobby Badger
+Hello Bobby Badger</code></code></pre>
+<p>If you want to process several command line arguments then you can use the
+<a href="function#static-function-cmdLineArgs">cmdLineArgs()</a> function (note the extra
+"s" on the end).  Here the first argument should be an array of prompts for
+each argument.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const [forename, surname] = await cmdLineArgs(
+  ['What is your first name?', 'What is your surname']
+) || quit('No name provided')
+
+console.log(`Hello ${forename} ${surname}`);</code></code></pre>
+<p>If you don't specify an prompts then it returns all arguments.</p>
+<p>Note that both of the above functions take a copy of the command line
+arguments to work with (<code>process.argv.slice(2)</code>).  They don't modify the
+original list of argument so if you call either function multiple times then
+you'll end up with the same arguments being returned, starting from
+<code>process.argv[2]</code> each time.</p>
+<p>In this case you should take your own copy of the arguments and pass that as
+the second option to the function(s).  You can use the <code>process.argv.slice(2)</code>
+trick, or call the <code>cmdLine()</code> function to do it for you with less typing.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { cmdLine, cmdLineArg, cmdLineArgs, quit } from '@abw/badger';
+
+// take a copy of the command line arguments to work with
+const args = cmdLine();
+
+const [forename, surname] = await cmdLineArgs(
+  ['What is your first name?', 'What is your surname'],
+  args
+) || quit('No name provided')
+
+const age = await cmdLineArg(
+  `Hello ${forename} ${surname}, how old are you?`,
+  args
+) || quit('No age provided')
+
+console.log(`${age} is a fine age`);</code></code></pre>
+<p>You can run this script with no arguments, one argument (forename), two
+arguments (forename, surname) or three (forename, surname, age).  It will
+prompt you to enter any that you omitted.</p>
+<p>If your script supports command line flags (e.g. <code>-v</code> or <code>--verbose</code>) then
+the <a href="function#static-function-cmdLineFlags">cmdLineFlags()</a> function can
+be used to remove them from an argument list in advance.  This should only
+be used in simple cases where you want to detect the presence of a boolean
+flag.  It doesn't support flags that expect an argument (although you can
+handle this yourself with an <code>on</code> handlers, shown below).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { cmdLineFlags } from '@abw/badger';
+
+const { flags, args } = cmdLineFlags()
+console.log('flags:', flags);
+console.log('args:', args);</code></code></pre>
+<p>Here's an example of the script being run:</p>
+<pre><code><code class="source-code prettyprint">$ node flags-example.js -d --verbose foo -x bar
+flags: { d: true, verbose: true, x: true }
+args: [ 'foo', 'bar' ]</code></code></pre><p>There are a number of configuration options you can pass to the function.
+The <code>short</code> option allows you to map short options (e.g. <code>-v</code>) to longer
+equivalents (e.g. <code>--verbose</code>).</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    short: {
+      v: 'verbose',
+      d: 'debug',
+    }
+  },
+);</code></code></pre>
+<p>In this case, the <code>-v</code> or <code>--verbose</code> option will result in <code>verbose</code> being
+set <code>true</code> in the returned <code>flags</code>.</p>
+<p>The <code>options</code> option allows you to specify which options are valid.  You
+can specify this as an object, where the valid options are the keys and
+corresponding values should be <code>true</code>:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    options: {
+      verbose: true,
+      debug:   true,
+    }
+  },
+);</code></code></pre>
+<p>Or you can use the short-hand form where you pass an array:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    options: ['verbose', 'debug'],
+  },
+);</code></code></pre>
+<p>Or the even shorter-hand form where you pass a whitespace delimited string:</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    options: 'verbose debug',
+  },
+);</code></code></pre>
+<p>If you provide the <code>options</code> option then any flags that aren't explicitly
+named will cause an error to be throw.</p>
+<p>You can specify the <code>others</code> option to change this behaviour.  Set it to
+<code>keep</code> to keep the rogue flag in the argument list, <code>remove</code> to remove it
+altogether and pretend it never happened, or <code>collect</code> to accept it and
+return it in the flags.  The default value is <code>error</code>.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    options: 'verbose debug',
+    others:  'keep',
+  },
+);</code></code></pre>
+<p>Here's an example of the earlier script being run with this configuration:</p>
+<pre><code><code class="source-code prettyprint">$ node flags-example.js --verbose foo -x bar
+flags: { verbose: true }
+args: [ 'foo','-x', 'bar' ]</code></code></pre><p>The <code>on</code> option can be used to trigger a function when a flag is detected.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
+  {
+    options: 'verbose debug',
+    on: {
+      help:    () =&gt; quit("Help message..."),
+      version: () =&gt; quit("Version 1.2.3"),
+      n:       (name, arg, args, flags) =&gt; {
+        // Handle something like: -n 
+        flags.number = args.shift();
+      }
+    }
+  },
+);</code></code></pre>
+<p>The <code>on</code> handler will be passed four arguments.  The first is the argument
+name with the leading hyphens removed.  If it's a <code>short</code> option (e.g. <code>-v</code>)
+which is mapped to a longer name (e.g. <code>verbose</code>) then the longer name will
+be passed.  The second argument is the flag as it was specified (e.g. <code>-v</code>
+or <code>--verbose</code>).  The third argument is the array of remaining arguments
+remaining after the current argument.  The fourth argument is an object
+containing the flags collected so far.  You can modify the arguments list
+or the flags if you want to.</p>
+<p>The function should return <code>true</code> if it has handled the argument and no
+further processing needs to be done.  If it doesn't return a true value then
+processing of the flag continues as normal.</p>
+<p>Options that have <code>on</code> handlers don't need to be explicitly listed in the
+<code>options</code> list.</p>
+<h2 id="simple-options-example">Simple Options Example</h2><p>When you have multiple arguments and/or flags then
+<a href="function#static-function-options">options</a> function may be a better choice.
+It handles the logic of processing flags, arguments and prompting the user
+to enter any that are missing.</p>
+<p>This simple example shows how options are specified.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const config = await options({
   name: 'options.js',
   version: '0.0.1',

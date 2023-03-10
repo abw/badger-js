@@ -185,9 +185,9 @@ export const options = async config => {
             type: (
               hasValue(initial)
                 ? () => {
-                  yes && (quiet || answer({ question: prompt, answer: initial }));
-                  return type;
-                }
+                    yes && (quiet || answer({ question: prompt, answer: initial }));
+                    return type;
+                  }
                 : type
             ),
             name,

@@ -504,6 +504,24 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "@abw/badger~cmdline",
+    "function/index.html#static-function-cmdLine",
+    "<span>cmdLine</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~cmdline",
+    "function/index.html#static-function-cmdLine",
+    "<span>cmdLine</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~cmdline",
+    "function/index.html#static-function-cmdLine",
+    "<span>cmdLine</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~cmdlinearg",
     "function/index.html#static-function-cmdLineArg",
     "<span>cmdLineArg</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -537,6 +555,24 @@ window.esdocSearchIndex = [
     "@abw/badger~cmdlineargs",
     "function/index.html#static-function-cmdLineArgs",
     "<span>cmdLineArgs</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~cmdlineflags",
+    "function/index.html#static-function-cmdLineFlags",
+    "<span>cmdLineFlags</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~cmdlineflags",
+    "function/index.html#static-function-cmdLineFlags",
+    "<span>cmdLineFlags</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~cmdlineflags",
+    "function/index.html#static-function-cmdLineFlags",
+    "<span>cmdLineFlags</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [

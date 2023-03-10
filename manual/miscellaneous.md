@@ -3,8 +3,6 @@
 - [ANSI Colors](#ansi-colors)
 - [Debugging](#debugging)
 - [Exit](#exit)
-- [User Input](#user-input)
-- [Command Line Args](#command-line-args)
 - [App Status](#app-status)
 - [Progress](#progress)
 
@@ -194,129 +192,6 @@ import { abort } from '@abw/badger'
 abort('Big plate of failed')
 ```
 
-## User Input
-
-The [prompt()](function#static-function-prompt) is a quick-and-easy way to
-ask a user to enter some input.  It is implemented as a wrapper around the
-[prompt](https://www.npmjs.com/package/prompts) module.
-
-The first argument is the question to ask the user.
-
-```js
-import { prompt } from '@abw/badger'
-
-const name = await prompt("What is your name?");
-console.log('Hello ', name);
-```
-
-An optional second argument can be the default answer:
-
-```js
-const name = await prompt("What is your name?", 'Mr Badger');
-```
-
-This is a convenient short-hand for passing an object with a `default`
-property.
-
-```js
-const name = await prompt("What is your name?", { default: 'Mr Badger' });
-```
-
-The [confirm()](function#static-function-confirm) function allows you to
-prompt the user to confirm an action by pressing `y` for `yes` or `n` for
-`no`.
-
-```js
-import { confirm } from '@abw/badger'
-
-const yes = await confirm("Are you sure?");
-console.log('You said "%s"', yes ? 'YES' : 'NO');
-```
-
-The default answer is `N`, returning a `false` value, but you can pass
-`true` as the second argument to make `Y` the default.
-
-```js
-const yes = await confirm("Are you sure?", true);
-console.log('You said "%s"', yes ? 'YES' : 'NO');
-```
-
-The [select()](function#static-function-select) function is another wrapper
-of convenience for getting the user to select an option from a list.  Here
-the second argument should be an array of options, with each as an object
-containing a `title` and `value`, or you can pass an object where each keys
-is a `value` mapped to a `title`.
-
-```js
-import { select } from '@abw/badger'
-
-const animal = await select(
-  'What is your favourite animal?',
-  {
-    aardvark: 'An amazing aardvark',
-    badger:   'A brilliant badger',
-    cat:      'A cool cat',
-    dog:      'A dapper dog'
-  },
-  1
-);
-console.log('You chose:', animal);  // aardvark, badger, cat or dog
-```
-
-These are the three functions that I find myself using a lot.  For anything
-more complicated you should probably cut out the middle-man and go straight
-to [prompts](https://www.npmjs.com/package/prompts).
-
-## Command Line Args
-
-The [cmdLineArg()](function#static-function-cmdLineArg) function is a
-quick and dirty hack to read an argument from the command line or prompt
-the user to enter it.
-
-```js
-import { cmdLineArg, quit } from '../src/Badger.js';
-
-const name = await cmdLineArg('What is your name?')
-  || quit('No name provided')
-
-console.log(`Hello ${name}`);
-```
-
-The [cmdLineArgs()](function#static-function-cmdLineArgs) function is another
-quick and dirty hack to read multiple argument from the command line or prompt
-the user to enter them.
-
-```js
-import { cmdLineArgs, quit } from '../src/Badger.js';
-
-const [forename, surname] = await cmdLineArgs(
-  ['What is your first name?', 'What is your surname']
-) || quit('No name provided')
-
-console.log(`Hello ${forename} ${surname}`);
-```
-
-Be warned that these are one-shot functions that take a copy of the command
-line arguments in `process.argv` and then mutate that copy.  I did said they
-were quick and dirty hacks.
-
-If you want to call either function multiple times then you should first
-take a copy of `process.argv` from the third argument onwards and pass them
-as the second argument.
-
-```js
-let args = process.argv.slice(2);
-
-const name = await cmdLineArg('What is your name?', args)
-  || quit('No name provided')
-
-const animal = await cmdLineArg('What is your favourite animal?', args)
-  || quit('No animal provided')
-```
-
-See the [Command Line Options](manual/command_line) section for information
-about a more robust way to parse command line arguments.
-
 ## App Status
 
 The [appStatus()](function#static-function-appStatus) function is a simple
@@ -382,50 +257,11 @@ items you have processed in that loop (i.e. it's the delta, not the total
 number processed so far).  It defaults to 1.
 
 As the method is called it will print a few more "pixels" to the screen to
-display a nice colourful image of an hourglass.  I can't show you the pretty
-colours here, so I suggest you run the [examples/progress.js](examples/progress.js)
-script to see for yourself.
+display a nice colourful image of an hourglass.
 
-```
-┌────────────────────────────────────────────────────────────────┐
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
-│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
-│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
-│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │
-│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │
-│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │
-│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
-│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │
-│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │
-│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │
-│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │
-│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │
-│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │
-│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │
-│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
-│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │
-│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │
-└────────────────────────────────────────────────────────────────┘
-```
+![Progress](/manual/asset/progress.png)
 
 You can change the colours or use your own picture.  See the
-[examples/progress.js](examples/progress.js) file for examples.
+[examples/progress.js](https://github.com/abw/badger-js/blob/master/examples/progress.js)
+file for examples.
 
