@@ -1248,7 +1248,7 @@
     "__docId__": 71,
     "kind": "file",
     "name": "src/Badger/Utils/CmdLine.js",
-    "content": "import process from 'node:process'\nimport { prompt } from './Prompt.js';\n\n// quick hacks - use with caution\nexport async function cmdLineArg(argPrompt, args=process.argv.slice(2)) {\n  if (args.length) {\n    return args.shift();\n  }\n  else if (argPrompt) {\n    return await prompt(argPrompt);\n  }\n  return undefined;\n}\n\nexport async function cmdLineArgs(argPrompts, args=process.argv.slice(2)) {\n  let results = [ ];\n  for (let argPrompt of argPrompts) {\n    const response = await cmdLineArg(argPrompt, args);\n    if (! response?.length) {\n      return undefined;\n    }\n    results.push(response);\n  }\n  return results;\n}",
+    "content": "import { fail, hasValue, isArray, splitHash } from '@abw/badger-utils';\nimport process from 'node:process'\nimport { prompt } from './Prompt.js';\n\nexport const cmdLine = () => process.argv.slice(2);\n\nexport function cmdLineFlags(config, args) {\n  // allow config and/or args to be undefined, and also allow an array of\n  // arguments to be passed as the first argument\n  if (! config) {\n    config = { }\n  }\n  else if (isArray(config)) {\n    args = config;\n    config = { };\n  }\n  if (! args) {\n    args ||= cmdLine()\n  }\n\n  const options = config.options ? splitHash(config.options) : false;\n  const others  = config.others || 'error';\n  const short   = config.short || { };\n  const on      = config.on || { }\n  let   n       = 0;\n  let   flags   = { };\n\n  while (n < args.length) {\n    const match = args[n].match(/^-(-)?(.*)/);\n    if (match) {\n      const long = match[1] === '-';\n      const name = (! long && hasValue(short[match[2]]))\n        ? short[match[2]]\n        : match[2];\n\n      if (on[name]) {\n        if (on[name](name, args.splice(n, 1)[0], args, flags)) {\n          continue;\n        }\n        else {\n          args.splice(n, 0, match[0]);\n        }\n      }\n\n      if (options && ! options[name]) {\n        switch (others) {\n          case 'collect':\n            break\n          case 'remove':\n            args.splice(n, 1)[0];\n          // eslint-disable-next-line no-fallthrough\n          case 'keep':\n            n++;\n            continue;\n          case 'error':\n            return fail(`Invalid command line flag: ${match[0]}`);\n          default:\n            return fail(`Invalid \"others\" option: ${others}`)\n        }\n      }\n\n      args.splice(n, 1);\n      flags[name] = true;\n    }\n    else {\n      n++;\n    }\n  }\n  return { flags, args }\n}\n\nexport async function cmdLineArg(argPrompt, args=cmdLine()) {\n  if (args.length) {\n    return args.shift();\n  }\n  else if (argPrompt) {\n    return await prompt(argPrompt);\n  }\n  return undefined;\n}\n\nexport async function cmdLineArgs(argPrompts, args=cmdLine()) {\n  let results = [ ];\n  if (argPrompts) {\n    for (let argPrompt of argPrompts) {\n      const response = await cmdLineArg(argPrompt, args);\n      if (! response?.length) {\n        return undefined;\n      }\n      results.push(response);\n    }\n    return results;\n  }\n  else {\n    return args;\n  }\n}",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/CmdLine.js",
     "access": "public",
@@ -1257,6 +1257,61 @@
   },
   {
     "__docId__": 72,
+    "kind": "function",
+    "name": "cmdLine",
+    "memberof": "src/Badger/Utils/CmdLine.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/CmdLine.js~cmdLine",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLine}",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 73,
+    "kind": "function",
+    "name": "cmdLineFlags",
+    "memberof": "src/Badger/Utils/CmdLine.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/CmdLine.js~cmdLineFlags",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLineFlags}",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{\"flags\": *, \"args\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 74,
     "kind": "function",
     "name": "cmdLineArg",
     "memberof": "src/Badger/Utils/CmdLine.js",
@@ -1269,7 +1324,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArg}",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 72,
     "undocument": true,
     "params": [
       {
@@ -1293,7 +1348,7 @@
     }
   },
   {
-    "__docId__": 73,
+    "__docId__": 75,
     "kind": "function",
     "name": "cmdLineArgs",
     "memberof": "src/Badger/Utils/CmdLine.js",
@@ -1306,7 +1361,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArgs}",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 82,
     "undocument": true,
     "params": [
       {
@@ -1330,7 +1385,7 @@
     }
   },
   {
-    "__docId__": 74,
+    "__docId__": 76,
     "kind": "file",
     "name": "src/Badger/Utils/Color.js",
     "content": "import { isObject } from \"@abw/badger-utils\";\n\nconst ANSIStart  = '\\u001B[';\nconst ANSIEnd    = 'm';\nconst ANSIColors = {\n  reset:    0,\n  bold:     1,\n  bright:   1,\n  dark:     2,\n  black:    0,\n  red:      1,\n  green:    2,\n  yellow:   3,\n  blue:     4,\n  magenta:  5,\n  cyan:     6,\n  grey:     7,\n  white:    8,\n  fg:      30,\n  bg:      40,\n};\n\n/**\n * Returns an ANSI escape code for a color string.  This can be a single color\n * name, e.g. `red`, `green`, etc., or a color prefixed with `bright` or `dark`,\n * e.g. `bright red`, `dark green`, etc.  An optional section argument can be\n * set to `fg` (default) to set a foreground color or `bg` for a background color.\n * @param {String} color - color name with optional modifier prefix\n * @param {String} [base='fg'] - `fg` or `bg` to set foreground or background color respectively\n * @return {String} ANSI escape code string\n * @example\n * const str = escapeCode('red')\n * @example\n * const str = escapeCode('bright red')\n * @example\n * const str = escapeCode('bright red', 'bg')\n */\nexport const ANSIescapeCode = (color, base='fg') => {\n  let   codes = [ ];\n  let   pair  = color.split(/ /, 2);\n  const hue   = pair.pop();\n  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];\n  codes.push(code);\n  if (pair.length) {\n    const shade = pair.length ? pair.shift() : 'dark';\n    codes.push(ANSIColors[shade])\n  }\n  // console.log('escapeCode(%s, %s) => ', color, base, codes.join(';'));\n  return ANSIStart + codes.join(';') + ANSIEnd;\n}\n\n/**\n * Returns an ANSI escape code for a color string or combination of foreground and\n * background colors.\n * @param {String|Object} colors - either a simple color name or object contain foreground and background colors\n * @param {String} [colors.fg] - foreground color\n * @param {String} [colors.fg] - background color\n * @return {String} ANSI escape code string\n * @example\n * const str = escape('red')\n * @example\n * const str = escape('bright red')\n * @example\n * const str = escape({ fg: 'bright yellow', bg: 'blue' })\n */\nexport const ANSIescape = (colors={}) => {\n  const col = isObject(colors) ? colors : { fg: colors };\n  let escapes = [ ];\n  if (col.bg) {\n    escapes.push(ANSIescapeCode(col.bg, 'bg'));\n  }\n  if (col.fg) {\n    escapes.push(ANSIescapeCode(col.fg, 'fg'));\n  }\n  return escapes.join('');\n}\n\n/**\n * Returns an ANSI escape code to reset all colors.\n * @return {String} ANSI escape reset string\n */\nexport const ANSIreset = () => ANSIescapeCode('reset', false)\n\n/**\n * Returns a function to display strings in a particular color.\n * @param {String} colors - color(s) to display string\n * @return {Function} function to display strings in the pre-defined color(s)\n */\nexport const color = (colors) =>\n  (...text) => ANSIescape(colors) + text.join('') + ANSIreset();\n\nexport const black         = color('black');\nexport const red           = color('red');\nexport const green         = color('green');\nexport const yellow        = color('yellow');\nexport const blue          = color('blue');\nexport const magenta       = color('magenta');\nexport const cyan          = color('cyan');\nexport const grey          = color('grey');\nexport const white         = color('white');\nexport const brightBlack   = color('bright black');\nexport const brightRed     = color('bright red');\nexport const brightGreen   = color('bright green');\nexport const brightYellow  = color('bright yellow');\nexport const brightBlue    = color('bright blue');\nexport const brightMagenta = color('bright magenta');\nexport const brightCyan    = color('bright cyan');\nexport const brightGrey    = color('bright grey');\nexport const brightWhite   = color('bright white');\nexport const darkBlack     = color('dark black');\nexport const darkRed       = color('dark red');\nexport const darkGreen     = color('dark green');\nexport const darkYellow    = color('dark yellow');\nexport const darkBlue      = color('dark blue');\nexport const darkMagenta   = color('dark magenta');\nexport const darkCyan      = color('dark cyan');\nexport const darkGrey      = color('dark grey');\nexport const darkWhite     = color('dark white');\n",
@@ -1341,7 +1396,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 75,
+    "__docId__": 77,
     "kind": "variable",
     "name": "ANSIStart",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1362,7 +1417,7 @@
     "ignore": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 78,
     "kind": "variable",
     "name": "ANSIEnd",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1383,7 +1438,7 @@
     "ignore": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 79,
     "kind": "variable",
     "name": "ANSIColors",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1404,7 +1459,7 @@
     "ignore": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 80,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1457,7 +1512,7 @@
     }
   },
   {
-    "__docId__": 79,
+    "__docId__": 81,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1519,7 +1574,7 @@
     }
   },
   {
-    "__docId__": 80,
+    "__docId__": 82,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1544,7 +1599,7 @@
     "params": []
   },
   {
-    "__docId__": 81,
+    "__docId__": 83,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1580,7 +1635,7 @@
     }
   },
   {
-    "__docId__": 82,
+    "__docId__": 84,
     "kind": "variable",
     "name": "black",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1600,7 +1655,7 @@
     }
   },
   {
-    "__docId__": 83,
+    "__docId__": 85,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1620,7 +1675,7 @@
     }
   },
   {
-    "__docId__": 84,
+    "__docId__": 86,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1640,7 +1695,7 @@
     }
   },
   {
-    "__docId__": 85,
+    "__docId__": 87,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1660,7 +1715,7 @@
     }
   },
   {
-    "__docId__": 86,
+    "__docId__": 88,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1680,7 +1735,7 @@
     }
   },
   {
-    "__docId__": 87,
+    "__docId__": 89,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1700,7 +1755,7 @@
     }
   },
   {
-    "__docId__": 88,
+    "__docId__": 90,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1720,7 +1775,7 @@
     }
   },
   {
-    "__docId__": 89,
+    "__docId__": 91,
     "kind": "variable",
     "name": "grey",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1740,7 +1795,7 @@
     }
   },
   {
-    "__docId__": 90,
+    "__docId__": 92,
     "kind": "variable",
     "name": "white",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1760,7 +1815,7 @@
     }
   },
   {
-    "__docId__": 91,
+    "__docId__": 93,
     "kind": "variable",
     "name": "brightBlack",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1780,7 +1835,7 @@
     }
   },
   {
-    "__docId__": 92,
+    "__docId__": 94,
     "kind": "variable",
     "name": "brightRed",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1800,7 +1855,7 @@
     }
   },
   {
-    "__docId__": 93,
+    "__docId__": 95,
     "kind": "variable",
     "name": "brightGreen",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1820,7 +1875,7 @@
     }
   },
   {
-    "__docId__": 94,
+    "__docId__": 96,
     "kind": "variable",
     "name": "brightYellow",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1840,7 +1895,7 @@
     }
   },
   {
-    "__docId__": 95,
+    "__docId__": 97,
     "kind": "variable",
     "name": "brightBlue",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1860,7 +1915,7 @@
     }
   },
   {
-    "__docId__": 96,
+    "__docId__": 98,
     "kind": "variable",
     "name": "brightMagenta",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1880,7 +1935,7 @@
     }
   },
   {
-    "__docId__": 97,
+    "__docId__": 99,
     "kind": "variable",
     "name": "brightCyan",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1900,7 +1955,7 @@
     }
   },
   {
-    "__docId__": 98,
+    "__docId__": 100,
     "kind": "variable",
     "name": "brightGrey",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1920,7 +1975,7 @@
     }
   },
   {
-    "__docId__": 99,
+    "__docId__": 101,
     "kind": "variable",
     "name": "brightWhite",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1940,7 +1995,7 @@
     }
   },
   {
-    "__docId__": 100,
+    "__docId__": 102,
     "kind": "variable",
     "name": "darkBlack",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1960,7 +2015,7 @@
     }
   },
   {
-    "__docId__": 101,
+    "__docId__": 103,
     "kind": "variable",
     "name": "darkRed",
     "memberof": "src/Badger/Utils/Color.js",
@@ -1980,7 +2035,7 @@
     }
   },
   {
-    "__docId__": 102,
+    "__docId__": 104,
     "kind": "variable",
     "name": "darkGreen",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2000,7 +2055,7 @@
     }
   },
   {
-    "__docId__": 103,
+    "__docId__": 105,
     "kind": "variable",
     "name": "darkYellow",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2020,7 +2075,7 @@
     }
   },
   {
-    "__docId__": 104,
+    "__docId__": 106,
     "kind": "variable",
     "name": "darkBlue",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2040,7 +2095,7 @@
     }
   },
   {
-    "__docId__": 105,
+    "__docId__": 107,
     "kind": "variable",
     "name": "darkMagenta",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2060,7 +2115,7 @@
     }
   },
   {
-    "__docId__": 106,
+    "__docId__": 108,
     "kind": "variable",
     "name": "darkCyan",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2080,7 +2135,7 @@
     }
   },
   {
-    "__docId__": 107,
+    "__docId__": 109,
     "kind": "variable",
     "name": "darkGrey",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2100,7 +2155,7 @@
     }
   },
   {
-    "__docId__": 108,
+    "__docId__": 110,
     "kind": "variable",
     "name": "darkWhite",
     "memberof": "src/Badger/Utils/Color.js",
@@ -2120,7 +2175,7 @@
     }
   },
   {
-    "__docId__": 109,
+    "__docId__": 111,
     "kind": "file",
     "name": "src/Badger/Utils/DataPath.js",
     "content": "import { fail, hasValue, isArray, noValue } from \"@abw/badger-utils\";\n\n/**\n * Characters that can be escaped in quoted strings.\n */\nconst quotedEscapes = {\n  b: \"\\b\",\n  f: \"\\f\",\n  n: \"\\n\",\n  r: \"\\r\",\n  t: \"\\t\",\n  v: \"\\v\",\n  '\"': '\"',\n  \"'\": \"'\",\n  '\\\\': '\\\\',\n}\n\n/**\n * Match a double quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchDoubleQuotedString = string => {\n  const regex = /^\"((?:\\\\[\\\\\"nrt]|.)*?)\"$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Match a single quoted string and expand escaped characters\n * @param {String} [string] - the string to match\n */\nexport const matchSingleQuotedString = string => {\n  const regex = /^'((?:\\\\[\\\\']|.)*?)'$/\n  const match = string.match(regex);\n  return match\n    ? match[1].replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`)\n    : null;\n}\n\n/**\n * Split a data path into component parts\n * @param {String} [path] - the path to split\n */\nexport const splitDataPath = path => {\n  // * match a slash: \\/\n  // * match a single quoted string: '...'\n  // * match a double quoted string: \"...\"\n  // * match anything else: hello world!\n  let parts = [ ];\n  const regex = /(?:(\\/)|'((?:\\\\[\\\\']|.)*?)'|\"((?:\\\\[\\\\\"nrt]|.)*?)\"|([^/?]+))(\\??)/g;\n  const matches = [...path.matchAll(regex)];\n\n  matches.map(\n    ([ , , single, double, other, optional]) => {\n      let part;\n      // console.log('match [slash:%s] [single:%s] [double:%s] [other:%s]', slash, single, double, other);\n\n      if (single) {\n        part = single.replace(/\\\\([\\\\'bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (double) {\n        part = double.replace(/\\\\([\\\\\"bfnrtv])/g, (all, one) => quotedEscapes[one] || `\\\\${one}`);\n      }\n      else if (other) {\n        part = other\n      }\n      if (hasValue(part)) {\n        parts.push(optional ? [part, {optional:true}] : part);\n      }\n    }\n  )\n  // console.log('MATCHED ', parts);\n\n  return parts;\n}\n\n/**\n * Traverse a data structure using a path.\n * @param {Object} [data] - the data to traverse\n * @param {String} [path] - the data path\n */\nexport const dataPath = (data, path) => {\n  let root  = data;\n  let parts = splitDataPath(path);\n  let done  = [ ];\n  // console.log('parts: ', parts);\n\n  for (let part of parts) {\n    const [word, opts] = isArray(part) ? part : [part, {}];\n    root = root[word];\n    done.push(word);\n    if (noValue(root)) {\n      if (opts.optional) {\n        return root;\n      }\n      else {\n        fail(\"No value for data at path: \", done.join('/'));\n      }\n    }\n  }\n  return root;\n}\n",
@@ -2131,7 +2186,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 110,
+    "__docId__": 112,
     "kind": "variable",
     "name": "quotedEscapes",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -2151,7 +2206,7 @@
     "ignore": true
   },
   {
-    "__docId__": 111,
+    "__docId__": 113,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -2184,7 +2239,7 @@
     }
   },
   {
-    "__docId__": 112,
+    "__docId__": 114,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -2217,7 +2272,7 @@
     }
   },
   {
-    "__docId__": 113,
+    "__docId__": 115,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -2250,7 +2305,7 @@
     }
   },
   {
-    "__docId__": 114,
+    "__docId__": 116,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger/Utils/DataPath.js",
@@ -2293,10 +2348,10 @@
     }
   },
   {
-    "__docId__": 115,
+    "__docId__": 117,
     "kind": "file",
     "name": "src/Badger/Utils/Debug.js",
-    "content": "import { ANSIescape, ANSIreset } from './Color.js'\nimport { doNothing } from '@abw/badger-utils';\n\n/**\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function Debugger(enabled, prefix='', color) {\n  return enabled\n    ? prefix\n      ? (format, ...args) =>\n        console.log(\n          '%s' + prefix + '%s' + format,\n          color ? ANSIescape(color) : '',\n          ANSIreset(),\n          ...args,\n        )\n      : console.log.bind(console)\n    : doNothing;\n}\n\n/**\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function addDebug(obj, enabled, prefix='', color) {\n  obj.debug = Debugger(enabled, prefix, color);\n}\n",
+    "content": "import { ANSIescape, ANSIreset } from './Color.js'\nimport { doNothing } from '@abw/badger-utils';\n\n/**\n * Returns a debugging function which is enabled by the first `enabled` argument.\n * If this is `false` then it returns a function which does nothing.  If it is\n * true then it returns a function that forwards all arguments to `console.log`.\n * An optional `prefix` be be specified to prefix each debugging line.  The\n * optional third argument `color` can be used to specify a color for the prefix.\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @return {Function} a debugging function\n * @example\n * const debug = Debugger(true)\n * @example\n * const debug = Debugger(true, 'Debug > ')\n * @example\n * const debug = Debugger(true, 'Debug > ', 'blue')\n * @example\n * const debug = Debugger(true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function Debugger(enabled, prefix='', color) {\n  return enabled\n    ? prefix\n      ? (format, ...args) =>\n          console.log(\n            '%s' + prefix + '%s' + format,\n            color ? ANSIescape(color) : '',\n            ANSIreset(),\n            ...args,\n          )\n      : console.log.bind(console)\n    : doNothing;\n}\n\n/**\n * Creates a debugging function via {@link Debugger} and attaches it to the object\n * passed as the first argument as the `debug` function.\n * @param {Object} obj - the object to receive the `debug` function\n * @param {Boolean} enabled - is debugging enabled?\n * @param {String} [prefix] - optional prefix for debugging messages\n * @param {String|Object} [color] - a color name or object (see {@link Badger/Utils/Color})\n * @param {String} [color.fg] - foreground color\n * @param {String} [color.bg] - background color\n * @example\n * const debug = addDebug(myObject, true)\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', 'blue')\n * @example\n * const debug = addDebug(myObject, true, 'Debug > ', { bg: 'blue', fg: 'bright yellow' })\n */\nexport function addDebug(obj, enabled, prefix='', color) {\n  obj.debug = Debugger(enabled, prefix, color);\n}\n",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Debug.js",
     "access": "public",
@@ -2304,7 +2359,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 116,
+    "__docId__": 118,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -2387,7 +2442,7 @@
     }
   },
   {
-    "__docId__": 117,
+    "__docId__": 119,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/Debug.js",
@@ -2473,7 +2528,7 @@
     "return": null
   },
   {
-    "__docId__": 118,
+    "__docId__": 120,
     "kind": "file",
     "name": "src/Badger/Utils/Exit.js",
     "content": "import process from 'node:process'\n\nexport function exit(value, message) {\n  if (message) {\n    console.log(message);\n  }\n  process.exit(value);\n}\n\nexport function quit(message) {\n  exit(0, message);\n}\n\nexport function abort(message) {\n  exit(1, message);\n}",
@@ -2484,7 +2539,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 119,
+    "__docId__": 121,
     "kind": "function",
     "name": "exit",
     "memberof": "src/Badger/Utils/Exit.js",
@@ -2516,7 +2571,7 @@
     "return": null
   },
   {
-    "__docId__": 120,
+    "__docId__": 122,
     "kind": "function",
     "name": "quit",
     "memberof": "src/Badger/Utils/Exit.js",
@@ -2542,7 +2597,7 @@
     "return": null
   },
   {
-    "__docId__": 121,
+    "__docId__": 123,
     "kind": "function",
     "name": "abort",
     "memberof": "src/Badger/Utils/Exit.js",
@@ -2568,7 +2623,7 @@
     "return": null
   },
   {
-    "__docId__": 122,
+    "__docId__": 124,
     "kind": "file",
     "name": "src/Badger/Utils/Misc.js",
     "content": "import process from \"node:process\"\n\n/**\n * Returns an array of the `process.argv` array from offset 2 onwards,\n * i.e. removing the node path and script name.\n * @param {Array} argv - list of arguments, defaults to `process.argv`\n * @return {Array} array of arguments excluding the first two\n */\nexport function args(argv=process.argv) {\n  return argv.slice(2);\n}\n",
@@ -2579,7 +2634,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 123,
+    "__docId__": 125,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger/Utils/Misc.js",
@@ -2615,10 +2670,10 @@
     }
   },
   {
-    "__docId__": 124,
+    "__docId__": 126,
     "kind": "file",
     "name": "src/Badger/Utils/Options.js",
-    "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { fail, hasValue, splitList } from '@abw/badger-utils';\n\nexport const defaults = {\n  verboseColor:     'magenta',\n  titleColor:       'bright yellow',\n  underlineColor:   'dark yellow',\n  infoColor:        'cyan',\n  tickColor:        'green',\n  questionColor:    'bright white',\n  answerColor:      'bright green',\n  sectionNewlines:  true\n};\n\nexport const options = async config => {\n  const vcol = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n  if (config.quiet) {\n    command.option('-q, --quiet', 'Quiet output')\n  }\n\n  // add in other command line options\n  config.options\n    ?.filter(\n      option => {\n        if (hasValue(option.arg) && ! option.arg) {\n          // allow arg: false to indicate no command line argument\n          return false;\n        }\n        if (option.title) {\n          // section break\n          return;\n        }\n        return hasValue(option.name);\n      }\n    )\n    .forEach(\n      option => {\n        const name    = option.name;\n        const about   = option.about;\n        const deflt   = option.default;\n        const handler = option.handler;\n        const short   = option.short;\n        const type    = option.type;\n        const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n        let string    = `--${name}`;\n        let args      = [];\n        if (hasValue(short)) {\n          string = `-${short}, ${string}`;\n        }\n        if (hasValue(pattern)) {\n          string = `${string} ${pattern}`;\n        }\n        args.push(string);\n        if (hasValue(about)) {\n          args.push(about);\n        }\n        if (hasValue(handler)) {\n          args.push(handler);\n        }\n        if (hasValue(deflt)) {\n          args.push(deflt);\n        }\n        command.option(...args)\n      }\n    )\n\n  let commands = { };\n\n  config.commands?.forEach(\n    option => {\n      const name    = option.name;\n      const about   = option.about;\n      const type    = option.type;\n      const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n      let   args    = [];\n      let   string  = name;\n      let   cmd     = command.command(string)\n      if (hasValue(pattern)) {\n        cmd.argument(pattern);\n      }\n      if (hasValue(about)) {\n        cmd.description(about);\n      }\n      if (hasValue(option.arguments)) {\n        splitList(option.arguments).forEach(\n          argument => {\n            args.push(matchArgName(argument));\n            cmd.argument(argument)\n          }\n        )\n      }\n      cmd.action(\n        (...values) => {\n          commands[name] = args.length\n            ? args.reduce(\n              (opts, arg) => {\n                opts[arg] = values.shift()\n                return opts;\n              },\n              { }\n            )\n            : values[0]\n        }\n      )\n      //console.log({ args });\n      //command.command(...args)\n    }\n  )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  const yes     = config.yes && cmdline.yes;\n  const verbose = config.verbose && cmdline.verbose;\n  const quiet   = config.quiet && cmdline.quiet;\n\n  if (yes) {\n    if (verbose && ! quiet) {\n      process.stdout.write(vcol('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options?.forEach(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.toString().length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          // console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type: (\n              hasValue(initial)\n                ? () => {\n                  yes && (quiet || answer({ question: prompt, answer: initial }));\n                  return type;\n                }\n                : type\n            ),\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n      else if (option.title || option.info) {\n        prompts.push(\n          {\n            type: () => {\n              quiet || section(option);\n              return false;\n            }\n          }\n        );\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  const answers = await prompter(prompts);\n\n  return {\n    ...cmdline, ...answers, ...commands\n  }\n}\n\nfunction matchArgName(argument) {\n  const match = argument.match(/(\\w+)/);\n  if (! match) {\n    fail(\"Can't parse argument name: \", argument);\n  }\n  return match[1];\n}\n\nexport const section = option => {\n  const title = option.title;\n  const tcol  = color(option.titleColor || defaults.titleColor);\n  const ucol  = color(option.underlineColor || defaults.underlineColor);\n  const icol  = color(option.infoColor || defaults.infoColor);\n  const nl    = (hasValue(option.newlines) ? option.newlines : defaults.sectionNewlines) ? \"\\n\" : \"\";\n\n  if (title) {\n    const uline = '-'.repeat(title.length);\n    process.stdout.write(nl + tcol(title) + \"\\n\" + ucol(uline) + \"\\n\" + nl);\n  }\n\n  if (option.info) {\n    process.stdout.write(icol(option.info) + \"\\n\" + nl);\n  }\n}\n\nexport const answer = option => {\n  const tcol  = color(option.tickColor || defaults.tickColor);\n  const qcol  = color(option.questionColor || defaults.questionColor);\n  const acol  = color(option.answerColor || defaults.answerColor);\n  process.stdout.write(tcol(\"✔ \") + qcol(option.question) + \" \" + acol(option.answer) + \"\\n\");\n}\n\nexport default options",
+    "content": "import process from 'node:process';\nimport prompter from 'prompts'\nimport { Command } from 'commander';\nimport { color } from './Color.js';\nimport { fail, hasValue, splitList } from '@abw/badger-utils';\n\nexport const defaults = {\n  verboseColor:     'magenta',\n  titleColor:       'bright yellow',\n  underlineColor:   'dark yellow',\n  infoColor:        'cyan',\n  tickColor:        'green',\n  questionColor:    'bright white',\n  answerColor:      'bright green',\n  sectionNewlines:  true\n};\n\nexport const options = async config => {\n  const vcol = color(options.verboseColor || defaults.verboseColor);\n  const command = new Command;\n\n  // set command name, description and version\n  if (config.name) {\n    command.name(config.name);\n  }\n  if (config.description) {\n    command.description(config.description);\n  }\n  if (config.version) {\n    command.version(config.version);\n  }\n\n  // define the -y / -yes and -v / --verbose options\n  if (config.yes) {\n    command.option('-y, --yes', 'Accept default answers')\n  }\n  if (config.verbose) {\n    command.option('-v, --verbose', 'Verbose output')\n  }\n  if (config.quiet) {\n    command.option('-q, --quiet', 'Quiet output')\n  }\n\n  // add in other command line options\n  config.options\n    ?.filter(\n      option => {\n        if (hasValue(option.arg) && ! option.arg) {\n          // allow arg: false to indicate no command line argument\n          return false;\n        }\n        if (option.title) {\n          // section break\n          return;\n        }\n        return hasValue(option.name);\n      }\n    )\n    .forEach(\n      option => {\n        const name    = option.name;\n        const about   = option.about;\n        const deflt   = option.default;\n        const handler = option.handler;\n        const short   = option.short;\n        const type    = option.type;\n        const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n        let string    = `--${name}`;\n        let args      = [];\n        if (hasValue(short)) {\n          string = `-${short}, ${string}`;\n        }\n        if (hasValue(pattern)) {\n          string = `${string} ${pattern}`;\n        }\n        args.push(string);\n        if (hasValue(about)) {\n          args.push(about);\n        }\n        if (hasValue(handler)) {\n          args.push(handler);\n        }\n        if (hasValue(deflt)) {\n          args.push(deflt);\n        }\n        command.option(...args)\n      }\n    )\n\n  let commands = { };\n\n  config.commands?.forEach(\n    option => {\n      const name    = option.name;\n      const about   = option.about;\n      const type    = option.type;\n      const pattern = option.pattern || (hasValue(type) ? `<${type}>` : undefined);\n      let   args    = [];\n      let   string  = name;\n      let   cmd     = command.command(string)\n      if (hasValue(pattern)) {\n        cmd.argument(pattern);\n      }\n      if (hasValue(about)) {\n        cmd.description(about);\n      }\n      if (hasValue(option.arguments)) {\n        splitList(option.arguments).forEach(\n          argument => {\n            args.push(matchArgName(argument));\n            cmd.argument(argument)\n          }\n        )\n      }\n      cmd.action(\n        (...values) => {\n          commands[name] = args.length\n            ? args.reduce(\n              (opts, arg) => {\n                opts[arg] = values.shift()\n                return opts;\n              },\n              { }\n            )\n            : values[0]\n        }\n      )\n      //console.log({ args });\n      //command.command(...args)\n    }\n  )\n\n  // parse the command line arguments\n  command.parse();\n  const cmdline = command.opts();\n\n  // if the -y / --yes option has been specified then accept all\n  // default answers automatically\n  const yes     = config.yes && cmdline.yes;\n  const verbose = config.verbose && cmdline.verbose;\n  const quiet   = config.quiet && cmdline.quiet;\n\n  if (yes) {\n    if (verbose && ! quiet) {\n      process.stdout.write(vcol('Accepting default answers (-y option is set)\\n'))\n    }\n    prompter.override(cmdline);\n  }\n\n  // build up the list of prompts for interactive questions\n  let prompts = [ ];\n  config.options?.forEach(\n    option => {\n      const type     = option.type || 'text';\n      const name     = option.name;\n      const prompt   = option.prompt;\n      const noArg    = hasValue(option.arg) && ! option.arg;\n      const validate = option.validate ||\n        (option.required\n          ? value => (hasValue(value) && value.toString().length)\n            ? true\n            : (options.invalid || `You must enter a value for ${name}`)\n          : undefined\n        )\n\n      // special process for initial\n      // - use cmdline[name]\n      // - or if noArg, use option.default\n      // - if a select list and not a number, find the index\n      let initial = noArg ? option.default : cmdline[name];\n      if (type === 'select' && hasValue(initial)) {\n        if (! Number.isInteger(initial)) {\n          // console.log('looking up select option for [%s]', initial);\n          initial = option.choices?.findIndex( i => i.value === initial );\n          if (initial < 0) {\n            initial = 0;\n          }\n        }\n      }\n\n      if (hasValue(prompt)) {\n        prompts.push(\n          {\n            ...option,\n            type: (\n              hasValue(initial)\n                ? () => {\n                    yes && (quiet || answer({ question: prompt, answer: initial }));\n                    return type;\n                  }\n                : type\n            ),\n            name,\n            message: prompt,\n            initial: initial,\n            validate: validate,\n          },\n        )\n      }\n      else if (option.title || option.info) {\n        prompts.push(\n          {\n            type: () => {\n              quiet || section(option);\n              return false;\n            }\n          }\n        );\n      }\n    }\n  );\n\n  // prompt the user to answer/confirm questions\n  const answers = await prompter(prompts);\n\n  return {\n    ...cmdline, ...answers, ...commands\n  }\n}\n\nfunction matchArgName(argument) {\n  const match = argument.match(/(\\w+)/);\n  if (! match) {\n    fail(\"Can't parse argument name: \", argument);\n  }\n  return match[1];\n}\n\nexport const section = option => {\n  const title = option.title;\n  const tcol  = color(option.titleColor || defaults.titleColor);\n  const ucol  = color(option.underlineColor || defaults.underlineColor);\n  const icol  = color(option.infoColor || defaults.infoColor);\n  const nl    = (hasValue(option.newlines) ? option.newlines : defaults.sectionNewlines) ? \"\\n\" : \"\";\n\n  if (title) {\n    const uline = '-'.repeat(title.length);\n    process.stdout.write(nl + tcol(title) + \"\\n\" + ucol(uline) + \"\\n\" + nl);\n  }\n\n  if (option.info) {\n    process.stdout.write(icol(option.info) + \"\\n\" + nl);\n  }\n}\n\nexport const answer = option => {\n  const tcol  = color(option.tickColor || defaults.tickColor);\n  const qcol  = color(option.questionColor || defaults.questionColor);\n  const acol  = color(option.answerColor || defaults.answerColor);\n  process.stdout.write(tcol(\"✔ \") + qcol(option.question) + \" \" + acol(option.answer) + \"\\n\");\n}\n\nexport default options",
     "static": true,
     "longname": "/Users/abw/js/badger-js/src/Badger/Utils/Options.js",
     "access": "public",
@@ -2626,7 +2681,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 125,
+    "__docId__": 127,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Utils/Options.js",
@@ -2646,7 +2701,7 @@
     }
   },
   {
-    "__docId__": 126,
+    "__docId__": 128,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger/Utils/Options.js",
@@ -2676,7 +2731,7 @@
     }
   },
   {
-    "__docId__": 127,
+    "__docId__": 129,
     "kind": "function",
     "name": "matchArgName",
     "memberof": "src/Badger/Utils/Options.js",
@@ -2707,7 +2762,7 @@
     "ignore": true
   },
   {
-    "__docId__": 128,
+    "__docId__": 130,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger/Utils/Options.js",
@@ -2733,7 +2788,7 @@
     "return": null
   },
   {
-    "__docId__": 129,
+    "__docId__": 131,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger/Utils/Options.js",
@@ -2759,7 +2814,7 @@
     "return": null
   },
   {
-    "__docId__": 130,
+    "__docId__": 132,
     "kind": "file",
     "name": "src/Badger/Utils/Params.js",
     "content": "import { joinListOr, splitList, hasValue, fail } from \"@abw/badger-utils\";\n\n/**\n * Assert that a parameter object contains an item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {String} name - parameter that must be included\n * @return {any} the parameter value\n * @throws {Error} if the parameter is not defined or null\n * @example\n * const foo = requiredParam({ foo: 10 }, 'foo');\n */\nexport function requiredParam(params={}, name) {\n  const value = params[name];\n  if (hasValue(value)) {\n    return value;\n  }\n  else {\n    fail(\"Missing value for required parameter: \", name);\n  }\n}\n\n/**\n * Assert that a parameter object contains all specified item with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters that must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = requiredParams({ foo: 10, bar: 20 }, 'foo bar');\n */\nexport function requiredParams(params={}, names) {\n  return splitList(names).map( name => requiredParam(params, name) );\n}\n\n/**\n * An alias for {@link requiredParams} for people who don't like typing long names (and for symmetry with {@link anyParams}))\n */\nexport const allParams=requiredParams;\n\n/**\n * Assert that a parameter object contains any of the specified items with a defined/non-null value\n * @param {Object} params={} - parameters object\n * @param {Array|String} names - parameters of which at least one must be included, as an Array or whitespace/comma delimited string (see {@link splitList})\n * @return {Array} the parameter values\n * @throws {Error} if any parameter is not defined or null\n * @example\n * const [foo, bar] = anyParams({ foo: 10, wiz: 99 }, 'foo bar');\n */\nexport function anyParams(params, names) {\n  let found = false;\n  const nlist  = splitList(names);\n  const values = nlist.map(\n    name => {\n      const value = params[name];\n      if (hasValue(value)) {\n        found = true;\n      }\n      return value;\n    }\n  );\n  return found\n    ? values\n    : fail(\"Missing value for one of: \", joinListOr(nlist));\n}\n",
@@ -2770,7 +2825,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 131,
+    "__docId__": 133,
     "kind": "function",
     "name": "requiredParam",
     "memberof": "src/Badger/Utils/Params.js",
@@ -2829,7 +2884,7 @@
     ]
   },
   {
-    "__docId__": 132,
+    "__docId__": 134,
     "kind": "function",
     "name": "requiredParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -2889,7 +2944,7 @@
     ]
   },
   {
-    "__docId__": 133,
+    "__docId__": 135,
     "kind": "variable",
     "name": "allParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -2908,7 +2963,7 @@
     }
   },
   {
-    "__docId__": 134,
+    "__docId__": 136,
     "kind": "function",
     "name": "anyParams",
     "memberof": "src/Badger/Utils/Params.js",
@@ -2968,7 +3023,7 @@
     ]
   },
   {
-    "__docId__": 135,
+    "__docId__": 137,
     "kind": "file",
     "name": "src/Badger/Utils/Progress.js",
     "content": "import { now } from '@abw/badger-timestamp';\nimport { isInteger, isString } from '@abw/badger-utils';\nimport { addDebug } from './Debug.js';\nimport { color } from './Color.js';\nimport process from 'node:process';\n\nexport const charTypes = {\n  border: '┌─┐│└─┘|-',\n  background: '+∙',\n  fill: '*',\n};\n\nexport const colours = {\n  border:     'green',\n  background: 'dark grey',\n  foreground: 'blue',\n  fill:       'bright yellow'\n};\n\nexport const picture = {\n  charTypes,\n  source: `\n┌────────────────────────────────────────────────────────────────┐\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n└────────────────────────────────────────────────────────────────┘\n`\n};\n\nconst defaults = {\n  size:    100,\n  elapsed: false,\n  picture,\n  colours\n}\n\nexport function preparePicture(config) {\n  const { source, charTypes={ background: '' } } = config\n  const picture  = source.trim() + \"\\n\";\n  const length   = picture.length;\n  const charType = Object\n    .entries(charTypes)\n    .reduce(\n      (types, [type, chars]) => {\n        chars.split('').forEach(\n          char => types[char] = type\n        );\n        return types\n      },\n      { }\n    )\n  const lineLength = source\n    .split(\"\\n\")\n    .reduce(\n      (longest, line) => Math.max(longest, line.length),\n      0\n    )\n  return { picture, length, lineLength, charType };\n}\n\nexport function prepareColours(colours) {\n  return Object.entries(colours).reduce(\n    (formatters, [type, colour]) => {\n      formatters[type] = color(colour);\n      return formatters;\n    },\n    { }\n  )\n}\n\nexport function formatPicture(config) {\n  const { picture, charType={}, colours={} } = config;\n  return picture\n    .split('')\n    .map(\n      char => {\n        const type = charType[char] || 'foreground'\n        const col  = colours[type];\n        return col ? col(char) : char;\n      }\n    )\n    .join('')\n}\n\nexport function formatElapsed(elapsed) {\n  const s = elapsed % 60;\n  const m = Math.floor(elapsed / 60);\n  const h = Math.floor(elapsed / 3600);\n  return [h, m, s].map( x => x.toString().padStart(2, '0') ).join(':');\n}\n\nexport class Progress {\n  constructor(params={}) {\n    const config = {\n      ...defaults,\n      ...(\n        // you wouldn't believe the number of times I've tried to create a\n        // progress object passing only the size as an argument instead of\n        // { size: N } so this de-numpties my numptiness\n        isInteger(params)\n          ? { size: params }\n          : params\n      )\n    };\n    const { size, colours, colors, debug, elapsed } = config;\n    const { picture, length, lineLength, charType } =\n      preparePicture(\n        isString(config.picture)\n          ? { source: config.picture, charTypes }\n          : config.picture\n      );\n    this.size        = size;\n    this.picture     = picture;\n    this.pixels      = this.picture.split('');\n    this.length      = length;\n    this.lineLength  = lineLength;\n    this.charType    = charType;\n    this.colours     = prepareColours(colors || colours);\n    this.count       = 0;\n    this.lastCount   = 0;\n    this.lastPixel   = 0;\n    this.startTime   = now().epochSeconds();\n    this.elapsed     = 0;\n    this.elapsedCol  = color('dark grey');\n    this.showElapsed = elapsed;\n    this.debugging   = debug;\n    addDebug(this, debug, 'Progress > ', 'blue');\n  }\n\n  progress(n=1) {\n    this.count += n;\n\n    const time     = now().epochSeconds();\n    const elapsed  = time - this.startTime;\n    this.elapsed   = elapsed;\n    // const duration = elapsed - this.elapsed;\n\n    const end = Math.floor(this.length * this.count / this.size);\n    if (end > this.lastPixel) {\n      const start = this.lastPixel;\n      this.lastPixel = end;\n      this.debug(`count: ${this.count}/${this.size}  pixels from ${start} to ${end}`);\n      return this.pictureSegment(start, end);\n    }\n    else {\n      return '';\n    }\n  }\n\n  remains() {\n    this.count  = this.size;\n    const start = this.lastPixel;\n    const end   = this.length;\n    if (end > start) {\n      this.lastPixel = this.length;\n      return this.pictureSegment(start, end);\n    }\n    else {\n      return '';\n    }\n  }\n  pictureSegment(start, end) {\n    if (this.debugging) {\n      return '';\n    }\n\n    let slice = formatPicture({\n      picture:  this.picture.substring(start, end),\n      charType: this.charType,\n      colours:  this.colours,\n    });\n\n    // this.picture.substring(start, end);\n    if (this.showElapsed && slice.match(\"\\n\")) {\n      const lines = slice.split(\"\\n\");\n      const last = lines.pop();\n      slice = lines\n        .map( line => line + ` ` + this.elapsedCol(formatElapsed(this.elapsed)) )\n        .join(\"\\n\")\n        .concat(\"\\n\", last)\n    }\n    return slice;\n  }\n\n  printProgress(n=1) {\n    process.stdout.write(this.progress(n));\n  }\n\n  printRemains() {\n    process.stdout.write(this.remains());\n  }\n}\n\nexport const progress = config => new Progress(config);\n\nexport default progress\n",
@@ -2979,7 +3034,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 136,
+    "__docId__": 138,
     "kind": "variable",
     "name": "charTypes",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -2999,7 +3054,7 @@
     }
   },
   {
-    "__docId__": 137,
+    "__docId__": 139,
     "kind": "variable",
     "name": "colours",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3019,7 +3074,7 @@
     }
   },
   {
-    "__docId__": 138,
+    "__docId__": 140,
     "kind": "variable",
     "name": "picture",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3039,7 +3094,7 @@
     }
   },
   {
-    "__docId__": 139,
+    "__docId__": 141,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3060,7 +3115,7 @@
     "ignore": true
   },
   {
-    "__docId__": 140,
+    "__docId__": 142,
     "kind": "function",
     "name": "preparePicture",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3090,7 +3145,7 @@
     }
   },
   {
-    "__docId__": 141,
+    "__docId__": 143,
     "kind": "function",
     "name": "prepareColours",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3120,7 +3175,7 @@
     }
   },
   {
-    "__docId__": 142,
+    "__docId__": 144,
     "kind": "function",
     "name": "formatPicture",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3150,7 +3205,7 @@
     }
   },
   {
-    "__docId__": 143,
+    "__docId__": 145,
     "kind": "function",
     "name": "formatElapsed",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3180,7 +3235,7 @@
     }
   },
   {
-    "__docId__": 144,
+    "__docId__": 146,
     "kind": "class",
     "name": "Progress",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3196,7 +3251,7 @@
     "interface": false
   },
   {
-    "__docId__": 145,
+    "__docId__": 147,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3210,7 +3265,7 @@
     "undocument": true
   },
   {
-    "__docId__": 146,
+    "__docId__": 148,
     "kind": "member",
     "name": "size",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3227,7 +3282,7 @@
     }
   },
   {
-    "__docId__": 147,
+    "__docId__": 149,
     "kind": "member",
     "name": "picture",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3244,7 +3299,7 @@
     }
   },
   {
-    "__docId__": 148,
+    "__docId__": 150,
     "kind": "member",
     "name": "pixels",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3261,7 +3316,7 @@
     }
   },
   {
-    "__docId__": 149,
+    "__docId__": 151,
     "kind": "member",
     "name": "length",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3278,7 +3333,7 @@
     }
   },
   {
-    "__docId__": 150,
+    "__docId__": 152,
     "kind": "member",
     "name": "lineLength",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3295,7 +3350,7 @@
     }
   },
   {
-    "__docId__": 151,
+    "__docId__": 153,
     "kind": "member",
     "name": "charType",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3312,7 +3367,7 @@
     }
   },
   {
-    "__docId__": 152,
+    "__docId__": 154,
     "kind": "member",
     "name": "colours",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3329,7 +3384,7 @@
     }
   },
   {
-    "__docId__": 153,
+    "__docId__": 155,
     "kind": "member",
     "name": "count",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3346,7 +3401,7 @@
     }
   },
   {
-    "__docId__": 154,
+    "__docId__": 156,
     "kind": "member",
     "name": "lastCount",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3363,7 +3418,7 @@
     }
   },
   {
-    "__docId__": 155,
+    "__docId__": 157,
     "kind": "member",
     "name": "lastPixel",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3380,7 +3435,7 @@
     }
   },
   {
-    "__docId__": 156,
+    "__docId__": 158,
     "kind": "member",
     "name": "startTime",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3397,7 +3452,7 @@
     }
   },
   {
-    "__docId__": 157,
+    "__docId__": 159,
     "kind": "member",
     "name": "elapsed",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3414,7 +3469,7 @@
     }
   },
   {
-    "__docId__": 158,
+    "__docId__": 160,
     "kind": "member",
     "name": "elapsedCol",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3431,7 +3486,7 @@
     }
   },
   {
-    "__docId__": 159,
+    "__docId__": 161,
     "kind": "member",
     "name": "showElapsed",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3448,7 +3503,7 @@
     }
   },
   {
-    "__docId__": 160,
+    "__docId__": 162,
     "kind": "member",
     "name": "debugging",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3465,7 +3520,7 @@
     }
   },
   {
-    "__docId__": 161,
+    "__docId__": 163,
     "kind": "method",
     "name": "progress",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3495,7 +3550,7 @@
     }
   },
   {
-    "__docId__": 165,
+    "__docId__": 167,
     "kind": "method",
     "name": "remains",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3515,7 +3570,7 @@
     }
   },
   {
-    "__docId__": 168,
+    "__docId__": 170,
     "kind": "method",
     "name": "pictureSegment",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3548,7 +3603,7 @@
     }
   },
   {
-    "__docId__": 169,
+    "__docId__": 171,
     "kind": "method",
     "name": "printProgress",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3574,7 +3629,7 @@
     "return": null
   },
   {
-    "__docId__": 170,
+    "__docId__": 172,
     "kind": "method",
     "name": "printRemains",
     "memberof": "src/Badger/Utils/Progress.js~Progress",
@@ -3590,7 +3645,7 @@
     "return": null
   },
   {
-    "__docId__": 171,
+    "__docId__": 173,
     "kind": "function",
     "name": "progress",
     "memberof": "src/Badger/Utils/Progress.js",
@@ -3616,7 +3671,7 @@
     "return": null
   },
   {
-    "__docId__": 172,
+    "__docId__": 174,
     "kind": "file",
     "name": "src/Badger/Utils/Prompt.js",
     "content": "import { isArray, isBoolean, isString } from '@abw/badger-utils';\nimport prompts from 'prompts'\n\n/**\n * Prompt user to enter a value.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * prompt(\"What is your name?\")\n *   .then( name => console.log(`Hello ${name}`) );\n * @example\n * prompt(\"What is your name?\", { default: 'Mr.Badger' })\n *   .then( name => console.log(`Hello ${name}`) );\n */\nexport const prompt = async (question, options={}) => {\n  options = isString(options)\n    ? { default: options }\n    : options;\n\n  const name = options.name || 'answer';\n  const answers = await prompts([\n    {\n      name,\n      type: options.type || 'text',\n      message: question,\n      initial: options.default,\n    },\n  ]);\n  return answers[name];\n}\n\n/**\n * Prompt user to confirm a choice.\n * @param {String} question - question to prompt user to answer\n * @param {Object} [options] - optional options\n * @param {String} [options.default] - default value returned if user presses RETURN\n * @return {Promise} fulfills with response to question or default value\n * @example\n * confirm(\"Are you sure?\")\n *   .then( yes => console.log('You said \"%s\"', yes ? 'YES' : 'NO') );\n */\nexport const confirm = async (question, options={}) => {\n  options = isBoolean(options)\n    ? { default: options }\n    : options;\n  return prompt(\n    question,\n    { ...options, type: 'confirm' });\n}\n\n/**\n * Prompt user to select an option.\n * @param {String} message - question to prompt user to answer\n * @param {Object} choices - array of title and value or object mapping value to title\n * @param {String} [initial] - initial value\n * @return {Promise} fulfills with selected option value\n * @example\n * select(\"Pick a colour\", { red: 'Red', green: 'Green', blue: 'Blue'})\n *   .then( colour => console.log('You chose \"%s\"', colour) );\n * @example\n * select(\n *   \"Pick a colour\",\n *   [\n *     { value: 'red':   title: 'Red' },\n *     { value: 'green', title: 'Green' },\n *     { value: 'blue',  title: 'Blue' },\n *   ],\n *   0\n * ).then( colour => console.log('You chose \"%s\"', colour) );\n */\n\nexport const select = async (message, choices, initial) => {\n  const choice = await prompts([\n    {\n      type: 'select',\n      name: 'selected',\n      message,\n      initial,\n      choices: isArray(choices)\n        ? choices\n        : Object.entries(choices).map(\n          ([value, title]) => ({ value, title }),\n        )\n    }\n  ]);\n  return choice.selected;\n}\n",
@@ -3627,7 +3682,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 173,
+    "__docId__": 175,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger/Utils/Prompt.js",
@@ -3687,7 +3742,7 @@
     }
   },
   {
-    "__docId__": 174,
+    "__docId__": 176,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger/Utils/Prompt.js",
@@ -3746,7 +3801,7 @@
     }
   },
   {
-    "__docId__": 175,
+    "__docId__": 177,
     "kind": "function",
     "name": "select",
     "memberof": "src/Badger/Utils/Prompt.js",
@@ -3806,7 +3861,7 @@
     }
   },
   {
-    "__docId__": 188,
+    "__docId__": 190,
     "kind": "file",
     "name": "src/Badger/Utils/index.js",
     "content": "export * from './AppStatus.js';\nexport * from './CmdLine.js';\nexport * from './Color.js';\nexport * from './DataPath.js';\nexport * from './Debug.js';\nexport * from './Exit.js';\nexport * from './Misc.js';\nexport * from './Options.js';\nexport * from './Params.js';\nexport * from './Params.js';\nexport * from './Progress.js';\nexport * from './Prompt.js';",
@@ -3817,7 +3872,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 189,
+    "__docId__": 191,
     "kind": "function",
     "name": "appStatus",
     "memberof": "src/Badger/Utils/index.js",
@@ -3847,7 +3902,62 @@
     }
   },
   {
-    "__docId__": 190,
+    "__docId__": 192,
+    "kind": "function",
+    "name": "cmdLine",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~cmdLine",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLine}",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 193,
+    "kind": "function",
+    "name": "cmdLineFlags",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~cmdLineFlags",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLineFlags}",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{\"flags\": *, \"args\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 194,
     "kind": "function",
     "name": "cmdLineArg",
     "memberof": "src/Badger/Utils/index.js",
@@ -3860,7 +3970,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArg}",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 72,
     "undocument": true,
     "params": [
       {
@@ -3884,7 +3994,7 @@
     }
   },
   {
-    "__docId__": 191,
+    "__docId__": 195,
     "kind": "function",
     "name": "cmdLineArgs",
     "memberof": "src/Badger/Utils/index.js",
@@ -3897,7 +4007,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArgs}",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 82,
     "undocument": true,
     "params": [
       {
@@ -3921,7 +4031,7 @@
     }
   },
   {
-    "__docId__": 192,
+    "__docId__": 196,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger/Utils/index.js",
@@ -3960,7 +4070,7 @@
     }
   },
   {
-    "__docId__": 193,
+    "__docId__": 197,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger/Utils/index.js",
@@ -3993,7 +4103,7 @@
     }
   },
   {
-    "__docId__": 194,
+    "__docId__": 198,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger/Utils/index.js",
@@ -4012,7 +4122,7 @@
     "return": null
   },
   {
-    "__docId__": 195,
+    "__docId__": 199,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger/Utils/index.js",
@@ -4038,7 +4148,7 @@
     "return": null
   },
   {
-    "__docId__": 196,
+    "__docId__": 200,
     "kind": "variable",
     "name": "black",
     "memberof": "src/Badger/Utils/index.js",
@@ -4058,7 +4168,7 @@
     }
   },
   {
-    "__docId__": 197,
+    "__docId__": 201,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Badger/Utils/index.js",
@@ -4078,7 +4188,7 @@
     }
   },
   {
-    "__docId__": 198,
+    "__docId__": 202,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Badger/Utils/index.js",
@@ -4098,7 +4208,7 @@
     }
   },
   {
-    "__docId__": 199,
+    "__docId__": 203,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4118,7 +4228,7 @@
     }
   },
   {
-    "__docId__": 200,
+    "__docId__": 204,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4138,7 +4248,7 @@
     }
   },
   {
-    "__docId__": 201,
+    "__docId__": 205,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4158,7 +4268,7 @@
     }
   },
   {
-    "__docId__": 202,
+    "__docId__": 206,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4178,7 +4288,7 @@
     }
   },
   {
-    "__docId__": 203,
+    "__docId__": 207,
     "kind": "variable",
     "name": "grey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4198,7 +4308,7 @@
     }
   },
   {
-    "__docId__": 204,
+    "__docId__": 208,
     "kind": "variable",
     "name": "white",
     "memberof": "src/Badger/Utils/index.js",
@@ -4218,7 +4328,7 @@
     }
   },
   {
-    "__docId__": 205,
+    "__docId__": 209,
     "kind": "variable",
     "name": "brightBlack",
     "memberof": "src/Badger/Utils/index.js",
@@ -4238,7 +4348,7 @@
     }
   },
   {
-    "__docId__": 206,
+    "__docId__": 210,
     "kind": "variable",
     "name": "brightRed",
     "memberof": "src/Badger/Utils/index.js",
@@ -4258,7 +4368,7 @@
     }
   },
   {
-    "__docId__": 207,
+    "__docId__": 211,
     "kind": "variable",
     "name": "brightGreen",
     "memberof": "src/Badger/Utils/index.js",
@@ -4278,7 +4388,7 @@
     }
   },
   {
-    "__docId__": 208,
+    "__docId__": 212,
     "kind": "variable",
     "name": "brightYellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4298,7 +4408,7 @@
     }
   },
   {
-    "__docId__": 209,
+    "__docId__": 213,
     "kind": "variable",
     "name": "brightBlue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4318,7 +4428,7 @@
     }
   },
   {
-    "__docId__": 210,
+    "__docId__": 214,
     "kind": "variable",
     "name": "brightMagenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4338,7 +4448,7 @@
     }
   },
   {
-    "__docId__": 211,
+    "__docId__": 215,
     "kind": "variable",
     "name": "brightCyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4358,7 +4468,7 @@
     }
   },
   {
-    "__docId__": 212,
+    "__docId__": 216,
     "kind": "variable",
     "name": "brightGrey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4378,7 +4488,7 @@
     }
   },
   {
-    "__docId__": 213,
+    "__docId__": 217,
     "kind": "variable",
     "name": "brightWhite",
     "memberof": "src/Badger/Utils/index.js",
@@ -4398,7 +4508,7 @@
     }
   },
   {
-    "__docId__": 214,
+    "__docId__": 218,
     "kind": "variable",
     "name": "darkBlack",
     "memberof": "src/Badger/Utils/index.js",
@@ -4418,7 +4528,7 @@
     }
   },
   {
-    "__docId__": 215,
+    "__docId__": 219,
     "kind": "variable",
     "name": "darkRed",
     "memberof": "src/Badger/Utils/index.js",
@@ -4438,7 +4548,7 @@
     }
   },
   {
-    "__docId__": 216,
+    "__docId__": 220,
     "kind": "variable",
     "name": "darkGreen",
     "memberof": "src/Badger/Utils/index.js",
@@ -4458,7 +4568,7 @@
     }
   },
   {
-    "__docId__": 217,
+    "__docId__": 221,
     "kind": "variable",
     "name": "darkYellow",
     "memberof": "src/Badger/Utils/index.js",
@@ -4478,7 +4588,7 @@
     }
   },
   {
-    "__docId__": 218,
+    "__docId__": 222,
     "kind": "variable",
     "name": "darkBlue",
     "memberof": "src/Badger/Utils/index.js",
@@ -4498,7 +4608,7 @@
     }
   },
   {
-    "__docId__": 219,
+    "__docId__": 223,
     "kind": "variable",
     "name": "darkMagenta",
     "memberof": "src/Badger/Utils/index.js",
@@ -4518,7 +4628,7 @@
     }
   },
   {
-    "__docId__": 220,
+    "__docId__": 224,
     "kind": "variable",
     "name": "darkCyan",
     "memberof": "src/Badger/Utils/index.js",
@@ -4538,7 +4648,7 @@
     }
   },
   {
-    "__docId__": 221,
+    "__docId__": 225,
     "kind": "variable",
     "name": "darkGrey",
     "memberof": "src/Badger/Utils/index.js",
@@ -4558,7 +4668,7 @@
     }
   },
   {
-    "__docId__": 222,
+    "__docId__": 226,
     "kind": "variable",
     "name": "darkWhite",
     "memberof": "src/Badger/Utils/index.js",
@@ -4578,7 +4688,7 @@
     }
   },
   {
-    "__docId__": 223,
+    "__docId__": 227,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger/Utils/index.js",
@@ -4608,7 +4718,7 @@
     }
   },
   {
-    "__docId__": 224,
+    "__docId__": 228,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger/Utils/index.js",
@@ -4638,7 +4748,7 @@
     }
   },
   {
-    "__docId__": 225,
+    "__docId__": 229,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger/Utils/index.js",
@@ -4668,7 +4778,7 @@
     }
   },
   {
-    "__docId__": 226,
+    "__docId__": 230,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger/Utils/index.js",
@@ -4704,7 +4814,7 @@
     }
   },
   {
-    "__docId__": 227,
+    "__docId__": 231,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger/Utils/index.js",
@@ -4749,7 +4859,7 @@
     }
   },
   {
-    "__docId__": 228,
+    "__docId__": 232,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger/Utils/index.js",
@@ -4796,7 +4906,7 @@
     "return": null
   },
   {
-    "__docId__": 229,
+    "__docId__": 233,
     "kind": "function",
     "name": "exit",
     "memberof": "src/Badger/Utils/index.js",
@@ -4828,7 +4938,7 @@
     "return": null
   },
   {
-    "__docId__": 230,
+    "__docId__": 234,
     "kind": "function",
     "name": "quit",
     "memberof": "src/Badger/Utils/index.js",
@@ -4854,7 +4964,7 @@
     "return": null
   },
   {
-    "__docId__": 231,
+    "__docId__": 235,
     "kind": "function",
     "name": "abort",
     "memberof": "src/Badger/Utils/index.js",
@@ -4880,7 +4990,7 @@
     "return": null
   },
   {
-    "__docId__": 232,
+    "__docId__": 236,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger/Utils/index.js",
@@ -4911,7 +5021,7 @@
     }
   },
   {
-    "__docId__": 233,
+    "__docId__": 237,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Utils/index.js",
@@ -4931,7 +5041,7 @@
     }
   },
   {
-    "__docId__": 234,
+    "__docId__": 238,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger/Utils/index.js",
@@ -4961,7 +5071,7 @@
     }
   },
   {
-    "__docId__": 235,
+    "__docId__": 239,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger/Utils/index.js",
@@ -4987,7 +5097,7 @@
     "return": null
   },
   {
-    "__docId__": 236,
+    "__docId__": 240,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger/Utils/index.js",
@@ -5011,140 +5121,6 @@
       }
     ],
     "return": null
-  },
-  {
-    "__docId__": 237,
-    "kind": "function",
-    "name": "requiredParam",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParam",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParam}",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 238,
-    "kind": "function",
-    "name": "requiredParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~requiredParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParams}",
-    "description": null,
-    "lineNumber": 31,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 239,
-    "kind": "variable",
-    "name": "allParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~allParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{allParams}",
-    "description": null,
-    "lineNumber": 38,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 240,
-    "kind": "function",
-    "name": "anyParams",
-    "memberof": "src/Badger/Utils/index.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger/Utils/index.js~anyParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{anyParams}",
-    "description": null,
-    "lineNumber": 49,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
   },
   {
     "__docId__": 241,
@@ -5282,6 +5258,140 @@
   },
   {
     "__docId__": 245,
+    "kind": "function",
+    "name": "requiredParam",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~requiredParam",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParam}",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 246,
+    "kind": "function",
+    "name": "requiredParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~requiredParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParams}",
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 247,
+    "kind": "variable",
+    "name": "allParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~allParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{allParams}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 248,
+    "kind": "function",
+    "name": "anyParams",
+    "memberof": "src/Badger/Utils/index.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger/Utils/index.js~anyParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{anyParams}",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 249,
     "kind": "variable",
     "name": "charTypes",
     "memberof": "src/Badger/Utils/index.js",
@@ -5301,7 +5411,7 @@
     }
   },
   {
-    "__docId__": 246,
+    "__docId__": 250,
     "kind": "variable",
     "name": "colours",
     "memberof": "src/Badger/Utils/index.js",
@@ -5321,7 +5431,7 @@
     }
   },
   {
-    "__docId__": 247,
+    "__docId__": 251,
     "kind": "variable",
     "name": "picture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5341,7 +5451,7 @@
     }
   },
   {
-    "__docId__": 248,
+    "__docId__": 252,
     "kind": "function",
     "name": "preparePicture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5371,7 +5481,7 @@
     }
   },
   {
-    "__docId__": 249,
+    "__docId__": 253,
     "kind": "function",
     "name": "prepareColours",
     "memberof": "src/Badger/Utils/index.js",
@@ -5401,7 +5511,7 @@
     }
   },
   {
-    "__docId__": 250,
+    "__docId__": 254,
     "kind": "function",
     "name": "formatPicture",
     "memberof": "src/Badger/Utils/index.js",
@@ -5431,7 +5541,7 @@
     }
   },
   {
-    "__docId__": 251,
+    "__docId__": 255,
     "kind": "function",
     "name": "formatElapsed",
     "memberof": "src/Badger/Utils/index.js",
@@ -5461,7 +5571,7 @@
     }
   },
   {
-    "__docId__": 252,
+    "__docId__": 256,
     "kind": "class",
     "name": "Progress",
     "memberof": "src/Badger/Utils/index.js",
@@ -5477,7 +5587,7 @@
     "interface": false
   },
   {
-    "__docId__": 253,
+    "__docId__": 257,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5491,7 +5601,7 @@
     "undocument": true
   },
   {
-    "__docId__": 254,
+    "__docId__": 258,
     "kind": "member",
     "name": "size",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5508,7 +5618,7 @@
     }
   },
   {
-    "__docId__": 255,
+    "__docId__": 259,
     "kind": "member",
     "name": "picture",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5525,7 +5635,7 @@
     }
   },
   {
-    "__docId__": 256,
+    "__docId__": 260,
     "kind": "member",
     "name": "pixels",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5542,7 +5652,7 @@
     }
   },
   {
-    "__docId__": 257,
+    "__docId__": 261,
     "kind": "member",
     "name": "length",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5559,7 +5669,7 @@
     }
   },
   {
-    "__docId__": 258,
+    "__docId__": 262,
     "kind": "member",
     "name": "lineLength",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5576,7 +5686,7 @@
     }
   },
   {
-    "__docId__": 259,
+    "__docId__": 263,
     "kind": "member",
     "name": "charType",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5593,7 +5703,7 @@
     }
   },
   {
-    "__docId__": 260,
+    "__docId__": 264,
     "kind": "member",
     "name": "colours",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5610,7 +5720,7 @@
     }
   },
   {
-    "__docId__": 261,
+    "__docId__": 265,
     "kind": "member",
     "name": "count",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5627,7 +5737,7 @@
     }
   },
   {
-    "__docId__": 262,
+    "__docId__": 266,
     "kind": "member",
     "name": "lastCount",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5644,7 +5754,7 @@
     }
   },
   {
-    "__docId__": 263,
+    "__docId__": 267,
     "kind": "member",
     "name": "lastPixel",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5661,7 +5771,7 @@
     }
   },
   {
-    "__docId__": 264,
+    "__docId__": 268,
     "kind": "member",
     "name": "startTime",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5678,7 +5788,7 @@
     }
   },
   {
-    "__docId__": 265,
+    "__docId__": 269,
     "kind": "member",
     "name": "elapsed",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5695,7 +5805,7 @@
     }
   },
   {
-    "__docId__": 266,
+    "__docId__": 270,
     "kind": "member",
     "name": "elapsedCol",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5712,7 +5822,7 @@
     }
   },
   {
-    "__docId__": 267,
+    "__docId__": 271,
     "kind": "member",
     "name": "showElapsed",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5729,7 +5839,7 @@
     }
   },
   {
-    "__docId__": 268,
+    "__docId__": 272,
     "kind": "member",
     "name": "debugging",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5746,7 +5856,7 @@
     }
   },
   {
-    "__docId__": 269,
+    "__docId__": 273,
     "kind": "method",
     "name": "progress",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5776,7 +5886,7 @@
     }
   },
   {
-    "__docId__": 273,
+    "__docId__": 277,
     "kind": "method",
     "name": "remains",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5796,7 +5906,7 @@
     }
   },
   {
-    "__docId__": 276,
+    "__docId__": 280,
     "kind": "method",
     "name": "pictureSegment",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5829,7 +5939,7 @@
     }
   },
   {
-    "__docId__": 277,
+    "__docId__": 281,
     "kind": "method",
     "name": "printProgress",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5855,7 +5965,7 @@
     "return": null
   },
   {
-    "__docId__": 278,
+    "__docId__": 282,
     "kind": "method",
     "name": "printRemains",
     "memberof": "src/Badger/Utils/index.js~Progress",
@@ -5871,7 +5981,7 @@
     "return": null
   },
   {
-    "__docId__": 279,
+    "__docId__": 283,
     "kind": "function",
     "name": "progress",
     "memberof": "src/Badger/Utils/index.js",
@@ -5897,7 +6007,7 @@
     "return": null
   },
   {
-    "__docId__": 280,
+    "__docId__": 284,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger/Utils/index.js",
@@ -5936,7 +6046,7 @@
     }
   },
   {
-    "__docId__": 281,
+    "__docId__": 285,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger/Utils/index.js",
@@ -5975,7 +6085,7 @@
     }
   },
   {
-    "__docId__": 282,
+    "__docId__": 286,
     "kind": "function",
     "name": "select",
     "memberof": "src/Badger/Utils/index.js",
@@ -6017,7 +6127,7 @@
     }
   },
   {
-    "__docId__": 283,
+    "__docId__": 287,
     "kind": "file",
     "name": "src/Badger/Workspace.js",
     "content": "import { addDebug } from \"./Utils/Debug.js\";\nimport { Config } from \"./Config.js\";\nimport { Library } from \"./Library.js\";\nimport { dir as fsDir } from \"@abw/badger-filesystem\";\nimport { fail, hasValue, splitList } from \"@abw/badger-utils\";\n\n/**\n * Default configuration options.\n */\nconst defaults = {\n  config: {\n    dir: 'config',\n  },\n  library: {\n    dir: 'lib library src components',\n  },\n  case: {\n    // config and/or library case conversion functions\n  }\n}\n\n/**\n * The Workspace class implements an object which acts as a central repository\n * for your project, providing access to directories, files, configuration files,\n * Javascript libraries and components.\n */\nexport class Workspace {\n  /**\n   * Constructor for Workspace object.\n   * @param {String} dir - root directory for the workspace\n   * @param {Object} [options] - configuration options\n   * @param {Object} [options.config] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.config.dir] - configuration directory or directories relative to the workspace directory\n   * @param {Object} [options.library] - configuration options for a {@link Config} object\n   * @param {Array|String} [options.library.dir] - library directory or directories relative to the workspace directory\n   * @return {Object} the Workspace object\n   */\n  constructor(dir, options={}) {\n    const rootDir = fsDir(dir);\n    const cfgDir  = splitList(options.config?.dir || defaults.config.dir).map( dir => rootDir.dir(dir) );\n    const cfgOpts = { ...defaults.config, ...(options.config||{}) };\n    const config  = new Config(cfgDir, cfgOpts);\n    const libDirs = splitList(options.library?.dir || defaults.library.dir).map( dir => rootDir.dir(dir) );\n    const libOpts = { ...defaults.library, ...(options.library||{}) };\n    const library = new Library(libDirs, libOpts);\n\n    this.case = {\n      ...defaults.case,\n      ...(options.case||{})\n    };\n\n    this.state = {\n      rootDir,\n      config,\n      library\n    }\n\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n    this.debug('root dir: ', rootDir.path());\n    this.debug('config dir: ', cfgDir.map( d => d.path() ));\n    this.debug('libDirs: ', libDirs);\n    this.debug('libOpts: ', libOpts);\n  }\n\n  /**\n   * Fetch a new {@link Directory} object for a sub-directory of the workspace directory.\n   * @param {string} path - directory path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @return {Object} a {@link Directory} object\n   */\n  dir(path, options) {\n    this.debug(\"dir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.rootDir.dir(path, options)\n      : this.state.rootDir;\n  }\n\n  /**\n   * Fetch a new {@link File} object for a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - file configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Object} a {@link File} object\n   */\n  file(path, options) {\n    this.debug(\"file(%s, %o)\", path, options);\n    return this.state.rootDir.file(path, options)\n  }\n\n  /**\n   * Read the content of a file in the workspace.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - character encoding for the file\n   * @return {Promise} fulfills with the file content\n   * @example\n   * file('myfile.txt').read().then( text => console.log(text) );\n   * @example\n   * file('myfile.json', { codec: 'json' }).read().then( data => console.log(data) );\n   * @example\n   * file('myfile.json').read({ codec: 'json' }).then( data => console.log(data) );\n   */\n  read(path, options) {\n    this.debug(\"read(%s, %o)\", path, options);\n    return this.file(path, options).read();\n  }\n\n  /**\n   * Writes content to a file.  If a `codec` has been specified then the content will be encoded.\n   * @param {string} path - file path relative to the workspace directory\n   * @param {String|Object} data - directory configuration options\n   * @param {Object} [options] - directory configuration options\n   * @param {Boolean} [options.codec] - codec for encoding/decoding file data\n   * @param {Boolean} [options.encoding=utf8] - codec for encoding/decoding file data\n   * @return {Promise} fulfills with the file object\n   * @example\n   * file('myfile.txt').write('Hello World');\n   * @example\n   * file('myfile.json', { codec: 'json' }).write({ message: 'Hello World' });\n   * @example\n   * file('myfile.json').write({ message: 'Hello World' }, { codec: 'json' });\n   */\n  write(path, data, options) {\n    this.debug(\"write(%s, %o, %o)\", path, data, options);\n    return this.file(path, options).write(data);\n  }\n\n  /**\n   * Fetch the configuration directory or a directory relative to it\n   * @param {string} [path] - file path relative to the configuration directory\n   * @param {Object} [options] - directory configuration options\n   * @param {String} [options.codec] - codec for encoding/decoding data for files in the directory\n   * @param {Boolean} [options.encoding=utf8] - character encoding for files in the directory\n   * @return {Object} a {@link Directory} object\n   */\n  configDir(path, options) {\n    this.debug(\"configDir(%s, %o)\", path, options);\n    return hasValue(path)\n      ? this.state.configDir.dir(path, options)\n      : this.state.configDir;\n  }\n\n  /**\n   * Fetches configuration data from a file in the configuration directory or returns the\n   * {@link Config} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the configuration directory\n   * @param {Object} [defaults] - default configuration options if file isn't found\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.config('myfile').then(\n   *   config => console.log(\"Loaded myfile config: \", config)\n   * );\n   */\n  async config(uri, defaults) {\n    this.debug(\"config(%s, %o)\", uri, defaults);\n    return hasValue(uri)\n      ? this.state.config.config(uri, defaults)\n      : this.state.config;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory or returns the\n   * {@link Library} object itself if no file uri is specified.\n   * @param {string} [uri] - file path relative to the library directory\n   * @return {Promise} fulfills to the configuration data read from the file\n   * @example\n   * workspace.library('mylib').then(\n   *   exports => console.log(\"Loaded mylib exports: \", exports)\n   * );\n   */\n  async library(uri) {\n    this.debug(\"library(%s, %o)\", uri);\n    return hasValue(uri)\n      ? this.state.library.library(uri)\n      : this.state.library;\n  }\n\n  /**\n   * Loads a Javscript library from the library directory and instantiates a\n   * component.\n   * @param {String} uri - component base name\n   * @param {Object} [props] - optional configuration properties\n   * @return {Promise} fulfills to a newly instantiated component\n   * @example\n   * workspace.component('mycomp').then(\n   *   component => console.log(\"Created component: \", component)\n   * );\n   */\n  async component(uri, props) {\n    const [base, fragment] = uri.split('#', 2);\n    const cfgname = this.convertCase('config', base);\n    const config  = await this.config(cfgname, {});\n    const libname = config.component?.library || this.convertCase('library', base);\n    const lib     = await this.library(libname);\n    const exp     = fragment || config.component?.export || 'default';\n    const compcls = lib[exp] || fail(\"No '\", exp, \"' export from component library: \", uri);\n    const comp    = new compcls(this, { ...config, ...props });\n    return comp;\n  }\n\n  convertCase(type, uri) {\n    const fn = this.case[type];\n    return fn\n      ? fn(uri)\n      : uri;\n  }\n}\n\nexport const workspace = (dir, options) => new Workspace(dir, options);\n\nexport default Workspace;",
@@ -6028,7 +6138,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 284,
+    "__docId__": 288,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger/Workspace.js",
@@ -6048,7 +6158,7 @@
     "ignore": true
   },
   {
-    "__docId__": 285,
+    "__docId__": 289,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6063,7 +6173,7 @@
     "interface": false
   },
   {
-    "__docId__": 286,
+    "__docId__": 290,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6148,7 +6258,7 @@
     }
   },
   {
-    "__docId__": 287,
+    "__docId__": 291,
     "kind": "member",
     "name": "case",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6165,7 +6275,7 @@
     }
   },
   {
-    "__docId__": 288,
+    "__docId__": 292,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6182,7 +6292,7 @@
     }
   },
   {
-    "__docId__": 289,
+    "__docId__": 293,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6235,7 +6345,7 @@
     }
   },
   {
-    "__docId__": 290,
+    "__docId__": 294,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6300,7 +6410,7 @@
     }
   },
   {
-    "__docId__": 291,
+    "__docId__": 295,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6370,7 +6480,7 @@
     }
   },
   {
-    "__docId__": 292,
+    "__docId__": 296,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6451,7 +6561,7 @@
     }
   },
   {
-    "__docId__": 293,
+    "__docId__": 297,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6516,7 +6626,7 @@
     }
   },
   {
-    "__docId__": 294,
+    "__docId__": 298,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6562,7 +6672,7 @@
     }
   },
   {
-    "__docId__": 295,
+    "__docId__": 299,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6598,7 +6708,7 @@
     }
   },
   {
-    "__docId__": 296,
+    "__docId__": 300,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6644,7 +6754,7 @@
     }
   },
   {
-    "__docId__": 297,
+    "__docId__": 301,
     "kind": "method",
     "name": "convertCase",
     "memberof": "src/Badger/Workspace.js~Workspace",
@@ -6677,7 +6787,7 @@
     }
   },
   {
-    "__docId__": 298,
+    "__docId__": 302,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger/Workspace.js",
@@ -6709,7 +6819,7 @@
     "return": null
   },
   {
-    "__docId__": 316,
+    "__docId__": 320,
     "kind": "file",
     "name": "src/Badger.js",
     "content": "export * from './Badger/Component.js';\nexport * from './Badger/Config.js';\nexport * from './Badger/Library.js';\nexport * from './Badger/Utils/index.js';\nexport * from './Badger/Workspace.js';\n\n// These used to be part of badger but have been moved out to separate modules.\n// I'm re-exporting them here for backwards compatability but this will be\n// removed in a future version.\nexport * from '@abw/badger-filesystem'\nexport * from '@abw/badger-codecs'\n\n",
@@ -6720,7 +6830,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 317,
+    "__docId__": 321,
     "kind": "class",
     "name": "Component",
     "memberof": "src/Badger.js",
@@ -6736,7 +6846,7 @@
     "interface": false
   },
   {
-    "__docId__": 318,
+    "__docId__": 322,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Component",
@@ -6750,7 +6860,7 @@
     "undocument": true
   },
   {
-    "__docId__": 319,
+    "__docId__": 323,
     "kind": "member",
     "name": "workspace",
     "memberof": "src/Badger.js~Component",
@@ -6767,7 +6877,7 @@
     }
   },
   {
-    "__docId__": 320,
+    "__docId__": 324,
     "kind": "member",
     "name": "props",
     "memberof": "src/Badger.js~Component",
@@ -6784,7 +6894,7 @@
     }
   },
   {
-    "__docId__": 321,
+    "__docId__": 325,
     "kind": "method",
     "name": "initComponent",
     "memberof": "src/Badger.js~Component",
@@ -6800,7 +6910,7 @@
     "return": null
   },
   {
-    "__docId__": 322,
+    "__docId__": 326,
     "kind": "class",
     "name": "Config",
     "memberof": "src/Badger.js",
@@ -6819,7 +6929,7 @@
     ]
   },
   {
-    "__docId__": 323,
+    "__docId__": 327,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Config",
@@ -6888,7 +6998,7 @@
     }
   },
   {
-    "__docId__": 324,
+    "__docId__": 328,
     "kind": "method",
     "name": "firstFileWithExt",
     "memberof": "src/Badger.js~Config",
@@ -6941,7 +7051,7 @@
     }
   },
   {
-    "__docId__": 325,
+    "__docId__": 329,
     "kind": "method",
     "name": "jsFile",
     "memberof": "src/Badger.js~Config",
@@ -6974,7 +7084,7 @@
     }
   },
   {
-    "__docId__": 326,
+    "__docId__": 330,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Config",
@@ -7007,7 +7117,7 @@
     }
   },
   {
-    "__docId__": 327,
+    "__docId__": 331,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Config",
@@ -7050,7 +7160,7 @@
     }
   },
   {
-    "__docId__": 328,
+    "__docId__": 332,
     "kind": "function",
     "name": "config",
     "memberof": "src/Badger.js",
@@ -7082,7 +7192,7 @@
     "return": null
   },
   {
-    "__docId__": 329,
+    "__docId__": 333,
     "kind": "class",
     "name": "Library",
     "memberof": "src/Badger.js",
@@ -7101,7 +7211,7 @@
     ]
   },
   {
-    "__docId__": 330,
+    "__docId__": 334,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Library",
@@ -7157,7 +7267,7 @@
     }
   },
   {
-    "__docId__": 331,
+    "__docId__": 335,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Library",
@@ -7190,7 +7300,7 @@
     }
   },
   {
-    "__docId__": 332,
+    "__docId__": 336,
     "kind": "function",
     "name": "library",
     "memberof": "src/Badger.js",
@@ -7222,7 +7332,7 @@
     "return": null
   },
   {
-    "__docId__": 333,
+    "__docId__": 337,
     "kind": "function",
     "name": "appStatus",
     "memberof": "src/Badger.js",
@@ -7252,7 +7362,62 @@
     }
   },
   {
-    "__docId__": 334,
+    "__docId__": 338,
+    "kind": "function",
+    "name": "cmdLine",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~cmdLine",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLine}",
+    "description": null,
+    "lineNumber": 5,
+    "undocument": true,
+    "params": [],
+    "return": null
+  },
+  {
+    "__docId__": 339,
+    "kind": "function",
+    "name": "cmdLineFlags",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~cmdLineFlags",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{cmdLineFlags}",
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "params": [
+      {
+        "name": "config",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "args",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "{\"flags\": *, \"args\": *}"
+      ]
+    }
+  },
+  {
+    "__docId__": 340,
     "kind": "function",
     "name": "cmdLineArg",
     "memberof": "src/Badger.js",
@@ -7265,7 +7430,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArg}",
     "description": null,
-    "lineNumber": 5,
+    "lineNumber": 72,
     "undocument": true,
     "params": [
       {
@@ -7289,7 +7454,7 @@
     }
   },
   {
-    "__docId__": 335,
+    "__docId__": 341,
     "kind": "function",
     "name": "cmdLineArgs",
     "memberof": "src/Badger.js",
@@ -7302,7 +7467,7 @@
     "importPath": "@abw/badger",
     "importStyle": "{cmdLineArgs}",
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 82,
     "undocument": true,
     "params": [
       {
@@ -7326,7 +7491,7 @@
     }
   },
   {
-    "__docId__": 336,
+    "__docId__": 342,
     "kind": "function",
     "name": "ANSIescapeCode",
     "memberof": "src/Badger.js",
@@ -7365,7 +7530,7 @@
     }
   },
   {
-    "__docId__": 337,
+    "__docId__": 343,
     "kind": "function",
     "name": "ANSIescape",
     "memberof": "src/Badger.js",
@@ -7398,7 +7563,7 @@
     }
   },
   {
-    "__docId__": 338,
+    "__docId__": 344,
     "kind": "function",
     "name": "ANSIreset",
     "memberof": "src/Badger.js",
@@ -7417,7 +7582,7 @@
     "return": null
   },
   {
-    "__docId__": 339,
+    "__docId__": 345,
     "kind": "function",
     "name": "color",
     "memberof": "src/Badger.js",
@@ -7443,7 +7608,7 @@
     "return": null
   },
   {
-    "__docId__": 340,
+    "__docId__": 346,
     "kind": "variable",
     "name": "black",
     "memberof": "src/Badger.js",
@@ -7463,7 +7628,7 @@
     }
   },
   {
-    "__docId__": 341,
+    "__docId__": 347,
     "kind": "variable",
     "name": "red",
     "memberof": "src/Badger.js",
@@ -7483,7 +7648,7 @@
     }
   },
   {
-    "__docId__": 342,
+    "__docId__": 348,
     "kind": "variable",
     "name": "green",
     "memberof": "src/Badger.js",
@@ -7503,7 +7668,7 @@
     }
   },
   {
-    "__docId__": 343,
+    "__docId__": 349,
     "kind": "variable",
     "name": "yellow",
     "memberof": "src/Badger.js",
@@ -7523,7 +7688,7 @@
     }
   },
   {
-    "__docId__": 344,
+    "__docId__": 350,
     "kind": "variable",
     "name": "blue",
     "memberof": "src/Badger.js",
@@ -7543,7 +7708,7 @@
     }
   },
   {
-    "__docId__": 345,
+    "__docId__": 351,
     "kind": "variable",
     "name": "magenta",
     "memberof": "src/Badger.js",
@@ -7563,7 +7728,7 @@
     }
   },
   {
-    "__docId__": 346,
+    "__docId__": 352,
     "kind": "variable",
     "name": "cyan",
     "memberof": "src/Badger.js",
@@ -7583,7 +7748,7 @@
     }
   },
   {
-    "__docId__": 347,
+    "__docId__": 353,
     "kind": "variable",
     "name": "grey",
     "memberof": "src/Badger.js",
@@ -7603,7 +7768,7 @@
     }
   },
   {
-    "__docId__": 348,
+    "__docId__": 354,
     "kind": "variable",
     "name": "white",
     "memberof": "src/Badger.js",
@@ -7623,7 +7788,7 @@
     }
   },
   {
-    "__docId__": 349,
+    "__docId__": 355,
     "kind": "variable",
     "name": "brightBlack",
     "memberof": "src/Badger.js",
@@ -7643,7 +7808,7 @@
     }
   },
   {
-    "__docId__": 350,
+    "__docId__": 356,
     "kind": "variable",
     "name": "brightRed",
     "memberof": "src/Badger.js",
@@ -7663,7 +7828,7 @@
     }
   },
   {
-    "__docId__": 351,
+    "__docId__": 357,
     "kind": "variable",
     "name": "brightGreen",
     "memberof": "src/Badger.js",
@@ -7683,7 +7848,7 @@
     }
   },
   {
-    "__docId__": 352,
+    "__docId__": 358,
     "kind": "variable",
     "name": "brightYellow",
     "memberof": "src/Badger.js",
@@ -7703,7 +7868,7 @@
     }
   },
   {
-    "__docId__": 353,
+    "__docId__": 359,
     "kind": "variable",
     "name": "brightBlue",
     "memberof": "src/Badger.js",
@@ -7723,7 +7888,7 @@
     }
   },
   {
-    "__docId__": 354,
+    "__docId__": 360,
     "kind": "variable",
     "name": "brightMagenta",
     "memberof": "src/Badger.js",
@@ -7743,7 +7908,7 @@
     }
   },
   {
-    "__docId__": 355,
+    "__docId__": 361,
     "kind": "variable",
     "name": "brightCyan",
     "memberof": "src/Badger.js",
@@ -7763,7 +7928,7 @@
     }
   },
   {
-    "__docId__": 356,
+    "__docId__": 362,
     "kind": "variable",
     "name": "brightGrey",
     "memberof": "src/Badger.js",
@@ -7783,7 +7948,7 @@
     }
   },
   {
-    "__docId__": 357,
+    "__docId__": 363,
     "kind": "variable",
     "name": "brightWhite",
     "memberof": "src/Badger.js",
@@ -7803,7 +7968,7 @@
     }
   },
   {
-    "__docId__": 358,
+    "__docId__": 364,
     "kind": "variable",
     "name": "darkBlack",
     "memberof": "src/Badger.js",
@@ -7823,7 +7988,7 @@
     }
   },
   {
-    "__docId__": 359,
+    "__docId__": 365,
     "kind": "variable",
     "name": "darkRed",
     "memberof": "src/Badger.js",
@@ -7843,7 +8008,7 @@
     }
   },
   {
-    "__docId__": 360,
+    "__docId__": 366,
     "kind": "variable",
     "name": "darkGreen",
     "memberof": "src/Badger.js",
@@ -7863,7 +8028,7 @@
     }
   },
   {
-    "__docId__": 361,
+    "__docId__": 367,
     "kind": "variable",
     "name": "darkYellow",
     "memberof": "src/Badger.js",
@@ -7883,7 +8048,7 @@
     }
   },
   {
-    "__docId__": 362,
+    "__docId__": 368,
     "kind": "variable",
     "name": "darkBlue",
     "memberof": "src/Badger.js",
@@ -7903,7 +8068,7 @@
     }
   },
   {
-    "__docId__": 363,
+    "__docId__": 369,
     "kind": "variable",
     "name": "darkMagenta",
     "memberof": "src/Badger.js",
@@ -7923,7 +8088,7 @@
     }
   },
   {
-    "__docId__": 364,
+    "__docId__": 370,
     "kind": "variable",
     "name": "darkCyan",
     "memberof": "src/Badger.js",
@@ -7943,7 +8108,7 @@
     }
   },
   {
-    "__docId__": 365,
+    "__docId__": 371,
     "kind": "variable",
     "name": "darkGrey",
     "memberof": "src/Badger.js",
@@ -7963,7 +8128,7 @@
     }
   },
   {
-    "__docId__": 366,
+    "__docId__": 372,
     "kind": "variable",
     "name": "darkWhite",
     "memberof": "src/Badger.js",
@@ -7983,7 +8148,7 @@
     }
   },
   {
-    "__docId__": 367,
+    "__docId__": 373,
     "kind": "function",
     "name": "matchDoubleQuotedString",
     "memberof": "src/Badger.js",
@@ -8013,7 +8178,7 @@
     }
   },
   {
-    "__docId__": 368,
+    "__docId__": 374,
     "kind": "function",
     "name": "matchSingleQuotedString",
     "memberof": "src/Badger.js",
@@ -8043,7 +8208,7 @@
     }
   },
   {
-    "__docId__": 369,
+    "__docId__": 375,
     "kind": "function",
     "name": "splitDataPath",
     "memberof": "src/Badger.js",
@@ -8073,7 +8238,7 @@
     }
   },
   {
-    "__docId__": 370,
+    "__docId__": 376,
     "kind": "function",
     "name": "dataPath",
     "memberof": "src/Badger.js",
@@ -8109,7 +8274,7 @@
     }
   },
   {
-    "__docId__": 371,
+    "__docId__": 377,
     "kind": "function",
     "name": "Debugger",
     "memberof": "src/Badger.js",
@@ -8154,7 +8319,7 @@
     }
   },
   {
-    "__docId__": 372,
+    "__docId__": 378,
     "kind": "function",
     "name": "addDebug",
     "memberof": "src/Badger.js",
@@ -8201,7 +8366,7 @@
     "return": null
   },
   {
-    "__docId__": 373,
+    "__docId__": 379,
     "kind": "function",
     "name": "exit",
     "memberof": "src/Badger.js",
@@ -8233,7 +8398,7 @@
     "return": null
   },
   {
-    "__docId__": 374,
+    "__docId__": 380,
     "kind": "function",
     "name": "quit",
     "memberof": "src/Badger.js",
@@ -8259,7 +8424,7 @@
     "return": null
   },
   {
-    "__docId__": 375,
+    "__docId__": 381,
     "kind": "function",
     "name": "abort",
     "memberof": "src/Badger.js",
@@ -8285,7 +8450,7 @@
     "return": null
   },
   {
-    "__docId__": 376,
+    "__docId__": 382,
     "kind": "function",
     "name": "args",
     "memberof": "src/Badger.js",
@@ -8316,7 +8481,7 @@
     }
   },
   {
-    "__docId__": 377,
+    "__docId__": 383,
     "kind": "variable",
     "name": "defaults",
     "memberof": "src/Badger.js",
@@ -8336,7 +8501,7 @@
     }
   },
   {
-    "__docId__": 378,
+    "__docId__": 384,
     "kind": "function",
     "name": "options",
     "memberof": "src/Badger.js",
@@ -8366,7 +8531,7 @@
     }
   },
   {
-    "__docId__": 379,
+    "__docId__": 385,
     "kind": "function",
     "name": "section",
     "memberof": "src/Badger.js",
@@ -8392,7 +8557,7 @@
     "return": null
   },
   {
-    "__docId__": 380,
+    "__docId__": 386,
     "kind": "function",
     "name": "answer",
     "memberof": "src/Badger.js",
@@ -8418,232 +8583,39 @@
     "return": null
   },
   {
-    "__docId__": 381,
-    "kind": "function",
-    "name": "requiredParam",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~requiredParam",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParam}",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 382,
-    "kind": "function",
-    "name": "requiredParams",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~requiredParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParams}",
-    "description": null,
-    "lineNumber": 31,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 383,
-    "kind": "variable",
-    "name": "allParams",
-    "memberof": "src/Badger.js",
-    "static": true,
-    "longname": "src/Badger.js~allParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{allParams}",
-    "description": null,
-    "lineNumber": 38,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 384,
-    "kind": "function",
-    "name": "anyParams",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~anyParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{anyParams}",
-    "description": null,
-    "lineNumber": 49,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "types": [
-          "*"
-        ]
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 385,
-    "kind": "function",
-    "name": "requiredParam",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~requiredParam",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParam}",
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "name",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 386,
-    "kind": "function",
-    "name": "requiredParams",
-    "memberof": "src/Badger.js",
-    "generator": false,
-    "async": false,
-    "static": true,
-    "longname": "src/Badger.js~requiredParams",
-    "access": "public",
-    "export": true,
-    "importPath": "@abw/badger",
-    "importStyle": "{requiredParams}",
-    "description": null,
-    "lineNumber": 31,
-    "undocument": true,
-    "params": [
-      {
-        "name": "params",
-        "optional": true,
-        "types": [
-          "{}"
-        ],
-        "defaultRaw": {},
-        "defaultValue": "{}"
-      },
-      {
-        "name": "names",
-        "types": [
-          "*"
-        ]
-      }
-    ],
-    "return": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
     "__docId__": 387,
-    "kind": "variable",
-    "name": "allParams",
+    "kind": "function",
+    "name": "requiredParam",
     "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
     "static": true,
-    "longname": "src/Badger.js~allParams",
+    "longname": "src/Badger.js~requiredParam",
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "{allParams}",
+    "importStyle": "{requiredParam}",
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 12,
     "undocument": true,
-    "type": {
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
       "types": [
         "*"
       ]
@@ -8652,25 +8624,28 @@
   {
     "__docId__": 388,
     "kind": "function",
-    "name": "anyParams",
+    "name": "requiredParams",
     "memberof": "src/Badger.js",
     "generator": false,
     "async": false,
     "static": true,
-    "longname": "src/Badger.js~anyParams",
+    "longname": "src/Badger.js~requiredParams",
     "access": "public",
     "export": true,
     "importPath": "@abw/badger",
-    "importStyle": "{anyParams}",
+    "importStyle": "{requiredParams}",
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 31,
     "undocument": true,
     "params": [
       {
         "name": "params",
+        "optional": true,
         "types": [
-          "*"
-        ]
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
       },
       {
         "name": "names",
@@ -8687,6 +8662,196 @@
   },
   {
     "__docId__": 389,
+    "kind": "variable",
+    "name": "allParams",
+    "memberof": "src/Badger.js",
+    "static": true,
+    "longname": "src/Badger.js~allParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{allParams}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 390,
+    "kind": "function",
+    "name": "anyParams",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~anyParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{anyParams}",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 391,
+    "kind": "function",
+    "name": "requiredParam",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~requiredParam",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParam}",
+    "description": null,
+    "lineNumber": 12,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "name",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 392,
+    "kind": "function",
+    "name": "requiredParams",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~requiredParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{requiredParams}",
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "optional": true,
+        "types": [
+          "{}"
+        ],
+        "defaultRaw": {},
+        "defaultValue": "{}"
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 393,
+    "kind": "variable",
+    "name": "allParams",
+    "memberof": "src/Badger.js",
+    "static": true,
+    "longname": "src/Badger.js~allParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{allParams}",
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 394,
+    "kind": "function",
+    "name": "anyParams",
+    "memberof": "src/Badger.js",
+    "generator": false,
+    "async": false,
+    "static": true,
+    "longname": "src/Badger.js~anyParams",
+    "access": "public",
+    "export": true,
+    "importPath": "@abw/badger",
+    "importStyle": "{anyParams}",
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "params": [
+      {
+        "name": "params",
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "names",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 395,
     "kind": "variable",
     "name": "charTypes",
     "memberof": "src/Badger.js",
@@ -8706,7 +8871,7 @@
     }
   },
   {
-    "__docId__": 390,
+    "__docId__": 396,
     "kind": "variable",
     "name": "colours",
     "memberof": "src/Badger.js",
@@ -8726,7 +8891,7 @@
     }
   },
   {
-    "__docId__": 391,
+    "__docId__": 397,
     "kind": "variable",
     "name": "picture",
     "memberof": "src/Badger.js",
@@ -8746,7 +8911,7 @@
     }
   },
   {
-    "__docId__": 392,
+    "__docId__": 398,
     "kind": "function",
     "name": "preparePicture",
     "memberof": "src/Badger.js",
@@ -8776,7 +8941,7 @@
     }
   },
   {
-    "__docId__": 393,
+    "__docId__": 399,
     "kind": "function",
     "name": "prepareColours",
     "memberof": "src/Badger.js",
@@ -8806,7 +8971,7 @@
     }
   },
   {
-    "__docId__": 394,
+    "__docId__": 400,
     "kind": "function",
     "name": "formatPicture",
     "memberof": "src/Badger.js",
@@ -8836,7 +9001,7 @@
     }
   },
   {
-    "__docId__": 395,
+    "__docId__": 401,
     "kind": "function",
     "name": "formatElapsed",
     "memberof": "src/Badger.js",
@@ -8866,7 +9031,7 @@
     }
   },
   {
-    "__docId__": 396,
+    "__docId__": 402,
     "kind": "class",
     "name": "Progress",
     "memberof": "src/Badger.js",
@@ -8882,7 +9047,7 @@
     "interface": false
   },
   {
-    "__docId__": 397,
+    "__docId__": 403,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Progress",
@@ -8896,7 +9061,7 @@
     "undocument": true
   },
   {
-    "__docId__": 398,
+    "__docId__": 404,
     "kind": "member",
     "name": "size",
     "memberof": "src/Badger.js~Progress",
@@ -8913,7 +9078,7 @@
     }
   },
   {
-    "__docId__": 399,
+    "__docId__": 405,
     "kind": "member",
     "name": "picture",
     "memberof": "src/Badger.js~Progress",
@@ -8930,7 +9095,7 @@
     }
   },
   {
-    "__docId__": 400,
+    "__docId__": 406,
     "kind": "member",
     "name": "pixels",
     "memberof": "src/Badger.js~Progress",
@@ -8947,7 +9112,7 @@
     }
   },
   {
-    "__docId__": 401,
+    "__docId__": 407,
     "kind": "member",
     "name": "length",
     "memberof": "src/Badger.js~Progress",
@@ -8964,7 +9129,7 @@
     }
   },
   {
-    "__docId__": 402,
+    "__docId__": 408,
     "kind": "member",
     "name": "lineLength",
     "memberof": "src/Badger.js~Progress",
@@ -8981,7 +9146,7 @@
     }
   },
   {
-    "__docId__": 403,
+    "__docId__": 409,
     "kind": "member",
     "name": "charType",
     "memberof": "src/Badger.js~Progress",
@@ -8998,7 +9163,7 @@
     }
   },
   {
-    "__docId__": 404,
+    "__docId__": 410,
     "kind": "member",
     "name": "colours",
     "memberof": "src/Badger.js~Progress",
@@ -9015,7 +9180,7 @@
     }
   },
   {
-    "__docId__": 405,
+    "__docId__": 411,
     "kind": "member",
     "name": "count",
     "memberof": "src/Badger.js~Progress",
@@ -9032,7 +9197,7 @@
     }
   },
   {
-    "__docId__": 406,
+    "__docId__": 412,
     "kind": "member",
     "name": "lastCount",
     "memberof": "src/Badger.js~Progress",
@@ -9049,7 +9214,7 @@
     }
   },
   {
-    "__docId__": 407,
+    "__docId__": 413,
     "kind": "member",
     "name": "lastPixel",
     "memberof": "src/Badger.js~Progress",
@@ -9066,7 +9231,7 @@
     }
   },
   {
-    "__docId__": 408,
+    "__docId__": 414,
     "kind": "member",
     "name": "startTime",
     "memberof": "src/Badger.js~Progress",
@@ -9083,7 +9248,7 @@
     }
   },
   {
-    "__docId__": 409,
+    "__docId__": 415,
     "kind": "member",
     "name": "elapsed",
     "memberof": "src/Badger.js~Progress",
@@ -9100,7 +9265,7 @@
     }
   },
   {
-    "__docId__": 410,
+    "__docId__": 416,
     "kind": "member",
     "name": "elapsedCol",
     "memberof": "src/Badger.js~Progress",
@@ -9117,7 +9282,7 @@
     }
   },
   {
-    "__docId__": 411,
+    "__docId__": 417,
     "kind": "member",
     "name": "showElapsed",
     "memberof": "src/Badger.js~Progress",
@@ -9134,7 +9299,7 @@
     }
   },
   {
-    "__docId__": 412,
+    "__docId__": 418,
     "kind": "member",
     "name": "debugging",
     "memberof": "src/Badger.js~Progress",
@@ -9151,7 +9316,7 @@
     }
   },
   {
-    "__docId__": 413,
+    "__docId__": 419,
     "kind": "method",
     "name": "progress",
     "memberof": "src/Badger.js~Progress",
@@ -9181,7 +9346,7 @@
     }
   },
   {
-    "__docId__": 417,
+    "__docId__": 423,
     "kind": "method",
     "name": "remains",
     "memberof": "src/Badger.js~Progress",
@@ -9201,7 +9366,7 @@
     }
   },
   {
-    "__docId__": 420,
+    "__docId__": 426,
     "kind": "method",
     "name": "pictureSegment",
     "memberof": "src/Badger.js~Progress",
@@ -9234,7 +9399,7 @@
     }
   },
   {
-    "__docId__": 421,
+    "__docId__": 427,
     "kind": "method",
     "name": "printProgress",
     "memberof": "src/Badger.js~Progress",
@@ -9260,7 +9425,7 @@
     "return": null
   },
   {
-    "__docId__": 422,
+    "__docId__": 428,
     "kind": "method",
     "name": "printRemains",
     "memberof": "src/Badger.js~Progress",
@@ -9276,7 +9441,7 @@
     "return": null
   },
   {
-    "__docId__": 423,
+    "__docId__": 429,
     "kind": "function",
     "name": "progress",
     "memberof": "src/Badger.js",
@@ -9302,7 +9467,7 @@
     "return": null
   },
   {
-    "__docId__": 424,
+    "__docId__": 430,
     "kind": "function",
     "name": "prompt",
     "memberof": "src/Badger.js",
@@ -9341,7 +9506,7 @@
     }
   },
   {
-    "__docId__": 425,
+    "__docId__": 431,
     "kind": "function",
     "name": "confirm",
     "memberof": "src/Badger.js",
@@ -9380,7 +9545,7 @@
     }
   },
   {
-    "__docId__": 426,
+    "__docId__": 432,
     "kind": "function",
     "name": "select",
     "memberof": "src/Badger.js",
@@ -9422,7 +9587,7 @@
     }
   },
   {
-    "__docId__": 427,
+    "__docId__": 433,
     "kind": "class",
     "name": "Workspace",
     "memberof": "src/Badger.js",
@@ -9438,7 +9603,7 @@
     "interface": false
   },
   {
-    "__docId__": 428,
+    "__docId__": 434,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/Badger.js~Workspace",
@@ -9523,7 +9688,7 @@
     }
   },
   {
-    "__docId__": 429,
+    "__docId__": 435,
     "kind": "member",
     "name": "case",
     "memberof": "src/Badger.js~Workspace",
@@ -9540,7 +9705,7 @@
     }
   },
   {
-    "__docId__": 430,
+    "__docId__": 436,
     "kind": "member",
     "name": "state",
     "memberof": "src/Badger.js~Workspace",
@@ -9557,7 +9722,7 @@
     }
   },
   {
-    "__docId__": 431,
+    "__docId__": 437,
     "kind": "method",
     "name": "dir",
     "memberof": "src/Badger.js~Workspace",
@@ -9610,7 +9775,7 @@
     }
   },
   {
-    "__docId__": 432,
+    "__docId__": 438,
     "kind": "method",
     "name": "file",
     "memberof": "src/Badger.js~Workspace",
@@ -9675,7 +9840,7 @@
     }
   },
   {
-    "__docId__": 433,
+    "__docId__": 439,
     "kind": "method",
     "name": "read",
     "memberof": "src/Badger.js~Workspace",
@@ -9745,7 +9910,7 @@
     }
   },
   {
-    "__docId__": 434,
+    "__docId__": 440,
     "kind": "method",
     "name": "write",
     "memberof": "src/Badger.js~Workspace",
@@ -9826,7 +9991,7 @@
     }
   },
   {
-    "__docId__": 435,
+    "__docId__": 441,
     "kind": "method",
     "name": "configDir",
     "memberof": "src/Badger.js~Workspace",
@@ -9891,7 +10056,7 @@
     }
   },
   {
-    "__docId__": 436,
+    "__docId__": 442,
     "kind": "method",
     "name": "config",
     "memberof": "src/Badger.js~Workspace",
@@ -9937,7 +10102,7 @@
     }
   },
   {
-    "__docId__": 437,
+    "__docId__": 443,
     "kind": "method",
     "name": "library",
     "memberof": "src/Badger.js~Workspace",
@@ -9973,7 +10138,7 @@
     }
   },
   {
-    "__docId__": 438,
+    "__docId__": 444,
     "kind": "method",
     "name": "component",
     "memberof": "src/Badger.js~Workspace",
@@ -10019,7 +10184,7 @@
     }
   },
   {
-    "__docId__": 439,
+    "__docId__": 445,
     "kind": "method",
     "name": "convertCase",
     "memberof": "src/Badger.js~Workspace",
@@ -10052,7 +10217,7 @@
     }
   },
   {
-    "__docId__": 440,
+    "__docId__": 446,
     "kind": "function",
     "name": "workspace",
     "memberof": "src/Badger.js",
@@ -10101,7 +10266,7 @@
   },
   {
     "kind": "manualIndex",
-    "content": "# badger\n\n<img src=\"./manual/asset/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger` Javascript toolkit.\n\n* [Introduction](manual/introduction.html)\n* [Filesystem Utilities](manual/filesystem.html)\n* [Data Codecs](manual/codecs.html)\n* [Configuration Files](manual/config_files.html)\n* [Library Modules](manual/library_modules.html)\n* [Data Paths](manual/data_paths.html)\n* [Workspace](manual/workspace.html)\n* [Command Line Options](manual/command_line.html)\n* [Miscellaneous Functions](manual/miscellaneous.html)\n\n# Author\n[Andy Wardley](https://github.com/abw)\n",
+    "content": "# badger\n\n<img src=\"./manual/asset/badger2.svg\" width=\"300\"/>\n\nThis is the manual for the `badger` Javascript toolkit.\n\n* [Introduction](manual/introduction.html)\n* [Filesystem Utilities](manual/filesystem.html)\n* [Data Codecs](manual/codecs.html)\n* [Configuration Files](manual/config_files.html)\n* [Library Modules](manual/library_modules.html)\n* [Data Paths](manual/data_paths.html)\n* [Workspace](manual/workspace.html)\n* [User Input](manual/user_input.html)\n* [Miscellaneous Functions](manual/miscellaneous.html)\n\n# Author\n[Andy Wardley](https://github.com/abw)\n",
     "longname": "/Users/abw/js/badger-js/manual/index.md",
     "name": "./manual/index.md",
     "static": true,
@@ -10172,9 +10337,9 @@
   },
   {
     "kind": "manual",
-    "longname": "/Users/abw/js/badger-js/manual/command_line.md",
-    "name": "./manual/command_line.md",
-    "content": "# Command Line Options\n\nThe [options](function#static-function-options) function provides an\nintegrated way to process command line arguments (using [commander](https://www.npmjs.com/package/commander))\nand prompt the user for any missing configuration options (using [prompts](https://www.npmjs.com/package/prompts)).\n\n- [Simple Example](#simple-example)\n- [Special Options](#special-options)\n- [Commands](#commands)\n- [Sections](#sections)\n- [Generated Configuration](#generated-configuration)\n\n## Simple Example\n\nThis simple example shows how options are specified.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  version: '0.0.1',\n  description: 'Example showing command line options and prompting',\n  options: [\n    {\n      name:     'database',\n      short:    'd',\n      about:    'Database',\n      type:     'text',\n      prompt:   'What is the name of the database?',\n      required: true,\n    },\n    {\n      name:     'username',\n      short:    'u',\n      about:    'Username',\n      type:     'text',\n      prompt:   'What is the database username?',\n    },\n    {\n      name:     'password',\n      short:    'p',\n      about:    'Password',\n      type:     'password',\n      prompt:   'What is the database password?',\n    },\n  ]\n});\nconsole.log('config: ', config);\n```\n\nRun the script with the `-h` option to view the help.\n\n```sh\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\nThe `name`, `version` and `description` are optional items that will be displayed in\nthe help.\n\nThe `options` array defines the valid options.  Each can have a `name` which is\naccessible as the \"long option\", e.g. `--database`, `--username` and `--password`,\nand a `short` option, e.g. `-d`, `-u` and `-p`.  The `about` item provides information\nabout the option.\n\nAfter processing the command line arguments, the function will prompt the user to\nconfirm any values specified as arguments, and enter any missing values.  The `prompt`\nitem is used to prompt the user.  If this is omitted then the user will not be prompted\nto enter a value.  The `type` can be set to one of the [types provided by the prompts\npackage](https://www.npmjs.com/package/prompts#-types).  The `required` option can be\nset `true` to force the user to enter a value.\n\n```sh\n$ node examples/options.js -d wibble\n✔ What is the name of the database? … wibble\n✔ What is the database username? …\n✔ What is the database password? …\n```\n\n## Special Options\n\nThe `yes` configuration item can be specified to have the `-y` / `--yes`\noptional automatically added.  When this is specifed on the command line the\nfunction will automatically accept the default answer.\n\nThe `verbose` configuration item can be specified to have the `-v` / `--verbose`\noptional automatically added.  When this is specifed on the command line the\nfunction will print additional output.\n\nThe `quiet` configuration item can be specified to have the `-q` / `--quiet`\noptional automatically added.  When this is specifed on the command line the\nfunction will suppress any optional output.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  description: 'Example showing command line options and prompting',\n  version: '0.0.1',\n  yes: true,\n  verbose: true,\n  quiet: true,\n  options: [\n    ...\n  ]\n})\n```\n\n```sh\n$ node examples/options.js -h\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -y, --yes                  Accept default answers\n  -v, --verbose              Verbose output\n  -q, --quiet                Quiet output\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\n## Commands\n\nYou can also add `commands` to the configuration. For example, you might\nhave a script where you want to `start` or `stop` one or more services.\n\n```js\nconst config = await options({\n  name: 'commands.js',\n  description: 'Example showing command line commands',\n  version: '0.0.1',\n  verbose: true,\n  quiet: true,\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service&gt;',\n      about:   'Start a service'\n    },\n    {\n      name:     'stop',\n      pattern:  '&lt;service&gt;',\n      about:    'Stop a service'\n    },\n    {\n      name:     'status',\n      about:    'Show service status'\n    }\n  ]\n})\n```\n\nWhen run with the `-h` option the output will be:\n\n```sh\n$ node examples/commands.js -h\nUsage: commands.js [options] [command]\n\nExample showing command line commands.\n\nOptions:\n  -V, --version       output the version number\n  -v, --verbose       Verbose output\n  -q, --quiet         Quiet output\n  -h, --help          display help for command\n\nCommands:\n  start &lt;service&gt;  Start a service\n  stop &lt;service&gt;   Stop a service\n  status           Show service status\n  help [command]   display help for command\n```\n\nIf a command should accept multiple arguments then define the pattern\nusing ellipses.\n\n```js\nconst config = await options({\n  // ...etc...\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service...&gt;',\n      about:   'Start one or more services'\n    },\n    // ...etc...\n  ]\n})\n```\n\n## Sections\n\nIf you have lots of questions then you might want to break them up\ninto sections.  Add an item to the `options` array like the following\nto print a section title and information.  Both `title` and `info` are\noptional, so you can omit either one.\n\n```js\noptions: [\n  {\n    title: \"Configuration Options\",\n    info:  \"Please answer the following questions.\\nPress RETURN to accept defaults.\"\n  },\n  ...\n]\n```\n\nThis generates the following output:\n\n```sh\nConfiguration Options\n---------------------\n\nPlease answer the following questions.\nPress RETURN to accept defaults.\n```\n\n## Generated Configuration\n\nThe function returns a Promise which fulfills to an object containing the\nconfiguration values.  Each key will be the `name` of the option or command,\nand the corresponding value will be that read from the command line or by\nprompting the user.  In the case of [commands](#commands) with multiple values\nthey will be stored as an array.",
+    "longname": "/Users/abw/js/badger-js/manual/user_input.md",
+    "name": "./manual/user_input.md",
+    "content": "# User Input\n\nThere are a number of function to help with processing command line arguments\nand getting input from users. Some of them are quick and easy functions of\nconvenience to make simple things simple.  At the other end of the scale the\n[options](function#static-function-options) function provides an integrated\nway to process command line arguments\n(using [commander](https://www.npmjs.com/package/commander))\nand prompt the user for any missing configuration options\n(using [prompts](https://www.npmjs.com/package/prompts)).\n\n- [User Input](#user-input)\n- [Command Line Arguments](#command-line-arguments)\n- [Simple Options Example](#simple-example)\n- [Special Options](#special-options)\n- [Commands](#commands)\n- [Sections](#sections)\n- [Generated Configuration](#generated-configuration)\n\n## User Input\n\nThe [prompt()](function#static-function-prompt) is a quick-and-easy way to\nask a user to enter some input.  It is implemented as a wrapper around the\n[prompt](https://www.npmjs.com/package/prompts) module.\n\nThe first argument is the question to ask the user.\n\n```js\nimport { prompt } from '@abw/badger'\n\nconst name = await prompt(\"What is your name?\");\nconsole.log('Hello ', name);\n```\n\nAn optional second argument can be the default answer:\n\n```js\nconst name = await prompt(\"What is your name?\", 'Mr Badger');\n```\n\nThis is a convenient short-hand for passing an object with a `default`\nproperty.\n\n```js\nconst name = await prompt(\"What is your name?\", { default: 'Mr Badger' });\n```\n\nThe [confirm()](function#static-function-confirm) function allows you to\nprompt the user to confirm an action by pressing `y` for `yes` or `n` for\n`no`.\n\n```js\nimport { confirm } from '@abw/badger'\n\nconst yes = await confirm(\"Are you sure?\");\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe default answer is `N`, returning a `false` value, but you can pass\n`true` as the second argument to make `Y` the default.\n\n```js\nconst yes = await confirm(\"Are you sure?\", true);\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe [select()](function#static-function-select) function is another wrapper\nof convenience for getting the user to select an option from a list.  Here\nthe second argument should be an array of options, with each as an object\ncontaining a `title` and `value`, or you can pass an object where each keys\nis a `value` mapped to a `title`.\n\n```js\nimport { select } from '@abw/badger'\n\nconst animal = await select(\n  'What is your favourite animal?',\n  {\n    aardvark: 'An amazing aardvark',\n    badger:   'A brilliant badger',\n    cat:      'A cool cat',\n    dog:      'A dapper dog'\n  },\n  1\n);\nconsole.log('You chose:', animal);  // aardvark, badger, cat or dog\n```\n\nThese are the three functions that I find myself using a lot.  For anything\nmore complicated you should probably cut out the middle-man and go straight\nto [prompts](https://www.npmjs.com/package/prompts).\n\n## Command Line Arguments\n\nIf you've got a script that expects a command line argument then the\n[cmdLineArg()](function#static-function-cmdLineArg) function is your friend.\nIt will return the first argument from the command line after your script\nname.\n\n```js\nimport { cmdLineArg } from '@abw/badger'\n\nconst arg = await cmdLineArg();\n```\n\nIf the script is run like so:\n\n```bash\n$ node your-script.js foo\n```\n\nThen the `arg` variable will be set to `foo`.  If you don't specify any\ncommand line arguments after the script name then it will be `undefined`.\nIf the program can't continue without the argument then you might want to\nuse the [quit()](function#static-function-quit) function to exit with a\nhelpful message.\n\n```js\nconst arg = await cmdLineArg();\n  || quit('No argument provided')\n```\n\nIf you pass a message prompt as an argument then the function will prompt\nthe user to enter a value if there isn't one provided on the command line.\n\n```js\nconst name = await cmdLineArg('What is your name?')\n  || quit('No name provided')\nconsole.log(`Hello ${name}`)\n```\n\nRunning the script would look something like this:\n\n```bash\n$ node your-script.js\n✔ What is your name? … Bobby Badger\nHello Bobby Badger\n```\n\nIf you want to process several command line arguments then you can use the\n[cmdLineArgs()](function#static-function-cmdLineArgs) function (note the extra\n\"s\" on the end).  Here the first argument should be an array of prompts for\neach argument.\n\n```js\nconst [forename, surname] = await cmdLineArgs(\n  ['What is your first name?', 'What is your surname']\n) || quit('No name provided')\n\nconsole.log(`Hello ${forename} ${surname}`);\n```\n\nIf you don't specify an prompts then it returns all arguments.\n\nNote that both of the above functions take a copy of the command line\narguments to work with (`process.argv.slice(2)`).  They don't modify the\noriginal list of argument so if you call either function multiple times then\nyou'll end up with the same arguments being returned, starting from\n`process.argv[2]` each time.\n\nIn this case you should take your own copy of the arguments and pass that as\nthe second option to the function(s).  You can use the `process.argv.slice(2)`\ntrick, or call the `cmdLine()` function to do it for you with less typing.\n\n```js\nimport { cmdLine, cmdLineArg, cmdLineArgs, quit } from '@abw/badger';\n\n// take a copy of the command line arguments to work with\nconst args = cmdLine();\n\nconst [forename, surname] = await cmdLineArgs(\n  ['What is your first name?', 'What is your surname'],\n  args\n) || quit('No name provided')\n\nconst age = await cmdLineArg(\n  `Hello ${forename} ${surname}, how old are you?`,\n  args\n) || quit('No age provided')\n\nconsole.log(`${age} is a fine age`);\n```\n\nYou can run this script with no arguments, one argument (forename), two\narguments (forename, surname) or three (forename, surname, age).  It will\nprompt you to enter any that you omitted.\n\nIf your script supports command line flags (e.g. `-v` or `--verbose`) then\nthe [cmdLineFlags()](function#static-function-cmdLineFlags) function can\nbe used to remove them from an argument list in advance.  This should only\nbe used in simple cases where you want to detect the presence of a boolean\nflag.  It doesn't support flags that expect an argument (although you can\nhandle this yourself with an `on` handlers, shown below).\n\n```js\nimport { cmdLineFlags } from '@abw/badger';\n\nconst { flags, args } = cmdLineFlags()\nconsole.log('flags:', flags);\nconsole.log('args:', args);\n```\n\nHere's an example of the script being run:\n\n```\n$ node flags-example.js -d --verbose foo -x bar\nflags: { d: true, verbose: true, x: true }\nargs: [ 'foo', 'bar' ]\n```\n\nThere are a number of configuration options you can pass to the function.\nThe `short` option allows you to map short options (e.g. `-v`) to longer\nequivalents (e.g. `--verbose`).\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    short: {\n      v: 'verbose',\n      d: 'debug',\n    }\n  },\n);\n```\n\nIn this case, the `-v` or `--verbose` option will result in `verbose` being\nset `true` in the returned `flags`.\n\nThe `options` option allows you to specify which options are valid.  You\ncan specify this as an object, where the valid options are the keys and\ncorresponding values should be `true`:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: {\n      verbose: true,\n      debug:   true,\n    }\n  },\n);\n```\n\nOr you can use the short-hand form where you pass an array:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: ['verbose', 'debug'],\n  },\n);\n```\n\nOr the even shorter-hand form where you pass a whitespace delimited string:\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n  },\n);\n```\n\nIf you provide the `options` option then any flags that aren't explicitly\nnamed will cause an error to be throw.\n\nYou can specify the `others` option to change this behaviour.  Set it to\n`keep` to keep the rogue flag in the argument list, `remove` to remove it\naltogether and pretend it never happened, or `collect` to accept it and\nreturn it in the flags.  The default value is `error`.\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n    others:  'keep',\n  },\n);\n```\n\nHere's an example of the earlier script being run with this configuration:\n\n```\n$ node flags-example.js --verbose foo -x bar\nflags: { verbose: true }\nargs: [ 'foo','-x', 'bar' ]\n```\n\nThe `on` option can be used to trigger a function when a flag is detected.\n\n```js\nconst { flags, args } = cmdLineFlags(\n  {\n    options: 'verbose debug',\n    on: {\n      help:    () => quit(\"Help message...\"),\n      version: () => quit(\"Version 1.2.3\"),\n      n:       (name, arg, args, flags) => {\n        // Handle something like: -n <number>\n        flags.number = args.shift();\n      }\n    }\n  },\n);\n```\n\nThe `on` handler will be passed four arguments.  The first is the argument\nname with the leading hyphens removed.  If it's a `short` option (e.g. `-v`)\nwhich is mapped to a longer name (e.g. `verbose`) then the longer name will\nbe passed.  The second argument is the flag as it was specified (e.g. `-v`\nor `--verbose`).  The third argument is the array of remaining arguments\nremaining after the current argument.  The fourth argument is an object\ncontaining the flags collected so far.  You can modify the arguments list\nor the flags if you want to.\n\nThe function should return `true` if it has handled the argument and no\nfurther processing needs to be done.  If it doesn't return a true value then\nprocessing of the flag continues as normal.\n\nOptions that have `on` handlers don't need to be explicitly listed in the\n`options` list.\n\n## Simple Options Example\n\nWhen you have multiple arguments and/or flags then\n[options](function#static-function-options) function may be a better choice.\nIt handles the logic of processing flags, arguments and prompting the user\nto enter any that are missing.\n\nThis simple example shows how options are specified.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  version: '0.0.1',\n  description: 'Example showing command line options and prompting',\n  options: [\n    {\n      name:     'database',\n      short:    'd',\n      about:    'Database',\n      type:     'text',\n      prompt:   'What is the name of the database?',\n      required: true,\n    },\n    {\n      name:     'username',\n      short:    'u',\n      about:    'Username',\n      type:     'text',\n      prompt:   'What is the database username?',\n    },\n    {\n      name:     'password',\n      short:    'p',\n      about:    'Password',\n      type:     'password',\n      prompt:   'What is the database password?',\n    },\n  ]\n});\nconsole.log('config: ', config);\n```\n\nRun the script with the `-h` option to view the help.\n\n```sh\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\nThe `name`, `version` and `description` are optional items that will be displayed in\nthe help.\n\nThe `options` array defines the valid options.  Each can have a `name` which is\naccessible as the \"long option\", e.g. `--database`, `--username` and `--password`,\nand a `short` option, e.g. `-d`, `-u` and `-p`.  The `about` item provides information\nabout the option.\n\nAfter processing the command line arguments, the function will prompt the user to\nconfirm any values specified as arguments, and enter any missing values.  The `prompt`\nitem is used to prompt the user.  If this is omitted then the user will not be prompted\nto enter a value.  The `type` can be set to one of the [types provided by the prompts\npackage](https://www.npmjs.com/package/prompts#-types).  The `required` option can be\nset `true` to force the user to enter a value.\n\n```sh\n$ node examples/options.js -d wibble\n✔ What is the name of the database? … wibble\n✔ What is the database username? …\n✔ What is the database password? …\n```\n\n## Special Options\n\nThe `yes` configuration item can be specified to have the `-y` / `--yes`\noptional automatically added.  When this is specifed on the command line the\nfunction will automatically accept the default answer.\n\nThe `verbose` configuration item can be specified to have the `-v` / `--verbose`\noptional automatically added.  When this is specifed on the command line the\nfunction will print additional output.\n\nThe `quiet` configuration item can be specified to have the `-q` / `--quiet`\noptional automatically added.  When this is specifed on the command line the\nfunction will suppress any optional output.\n\n```js\nconst config = await options({\n  name: 'options.js',\n  description: 'Example showing command line options and prompting',\n  version: '0.0.1',\n  yes: true,\n  verbose: true,\n  quiet: true,\n  options: [\n    ...\n  ]\n})\n```\n\n```sh\n$ node examples/options.js -h\nUsage: options.js [options]\n\nExample showing command line options and prompting\n\nOptions:\n  -V, --version              output the version number\n  -y, --yes                  Accept default answers\n  -v, --verbose              Verbose output\n  -q, --quiet                Quiet output\n  -d, --database &lt;text&gt;      Database\n  -u, --username &lt;text&gt;      Username\n  -p, --password &lt;password&gt;  Password\n  -h, --help                 display help for command\n```\n\n## Commands\n\nYou can also add `commands` to the configuration. For example, you might\nhave a script where you want to `start` or `stop` one or more services.\n\n```js\nconst config = await options({\n  name: 'commands.js',\n  description: 'Example showing command line commands',\n  version: '0.0.1',\n  verbose: true,\n  quiet: true,\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service&gt;',\n      about:   'Start a service'\n    },\n    {\n      name:     'stop',\n      pattern:  '&lt;service&gt;',\n      about:    'Stop a service'\n    },\n    {\n      name:     'status',\n      about:    'Show service status'\n    }\n  ]\n})\n```\n\nWhen run with the `-h` option the output will be:\n\n```sh\n$ node examples/commands.js -h\nUsage: commands.js [options] [command]\n\nExample showing command line commands.\n\nOptions:\n  -V, --version       output the version number\n  -v, --verbose       Verbose output\n  -q, --quiet         Quiet output\n  -h, --help          display help for command\n\nCommands:\n  start &lt;service&gt;  Start a service\n  stop &lt;service&gt;   Stop a service\n  status           Show service status\n  help [command]   display help for command\n```\n\nIf a command should accept multiple arguments then define the pattern\nusing ellipses.\n\n```js\nconst config = await options({\n  // ...etc...\n  commands: [\n    {\n      name:    'start',\n      pattern: '&lt;service...&gt;',\n      about:   'Start one or more services'\n    },\n    // ...etc...\n  ]\n})\n```\n\n## Sections\n\nIf you have lots of questions then you might want to break them up\ninto sections.  Add an item to the `options` array like the following\nto print a section title and information.  Both `title` and `info` are\noptional, so you can omit either one.\n\n```js\noptions: [\n  {\n    title: \"Configuration Options\",\n    info:  \"Please answer the following questions.\\nPress RETURN to accept defaults.\"\n  },\n  ...\n]\n```\n\nThis generates the following output:\n\n```sh\nConfiguration Options\n---------------------\n\nPlease answer the following questions.\nPress RETURN to accept defaults.\n```\n\n## Generated Configuration\n\nThe function returns a Promise which fulfills to an object containing the\nconfiguration values.  Each key will be the `name` of the option or command,\nand the corresponding value will be that read from the command line or by\nprompting the user.  In the case of [commands](#commands) with multiple values\nthey will be stored as an array.",
     "static": true,
     "access": "public"
   },
@@ -10182,7 +10347,7 @@
     "kind": "manual",
     "longname": "/Users/abw/js/badger-js/manual/miscellaneous.md",
     "name": "./manual/miscellaneous.md",
-    "content": "# Miscellaneous Functions\n\n- [ANSI Colors](#ansi-colors)\n- [Debugging](#debugging)\n- [Exit](#exit)\n- [User Input](#user-input)\n- [Command Line Args](#command-line-args)\n- [App Status](#app-status)\n- [Progress](#progress)\n\n## ANSI Colors\n\nThe [color()](function#static-function-color) function provides a simple way\nto use ANSI escape codes to generate colored text.\n\nIt is super-simple and only exists in here from a time in the past when\n[chalk](https://www.npmjs.com/package/chalk) didn't play nicely with ESM\nmodules.  It looks like it does now, so if you want anything more than the\nbasic 16 ANSI colours, with `bright` and/or `bold` options then you should\nuse [chalk](https://www.npmjs.com/package/chalk).\n\n*My apologies to the Europeans, Canadians and others who know that the\ncorrect spelling is \"colour\", but I have reluctantly come to accept that\nthe \"programming\" spelling used in CSS, etc., is \"color\".**\n\nThere are functions defined for the basic colors:\n\n* `black()`\n* `red()`\n* `green()`\n* `yellow()`\n* `blue()`\n* `magenta()`\n* `cyan()`\n* `grey()`\n* `white()`\n\nAnd also for the \"bright\" variants:\n\n* `brightBlack()`\n* `brightRed()`\n* `brightGreen()`\n* `brightYellow()`\n* `brightBlue()`\n* `brightMagenta()`\n* `brightCyan()`\n* `brightGrey()`\n* `brightWhite()`\n\nAnd the \"dark\" variants:\n\n* `darkBlack()`\n* `darkRed()`\n* `darkGreen()`\n* `darkYellow()`\n* `darkBlue()`\n* `darkMagenta()`\n* `darkCyan()`\n* `darkGrey()`\n* `darkWhite()`\n\n```js\nimport { red } from '@abw/badger'\n\nconsole.log(red('some red text'));\n```\n\nThese are all implemented in terms of the [color()](function#static-function-color)\nfunction which accepts a string containing the color name along with an optional\n`bright` or `dark` prefix.\n\n```js\nimport { color } from '@abw/badger'\n\nconst brightRed = color('bright red');\n\nconsole.log(brightRed('some bright red text'));\n```\n\nYou can also pass an option containing separate colors for the foreground\n(`fg`) and background (`bg`).\n\n```js\nconst whiteOnRed = color({ bg: 'red', fg: 'white' });\nconsole.log(whiteOnRed('some white text on a red background'));\n```\n\n## Debugging\n\nThe [Debugger()](function#static-function-Debugger) function returns a\ndebugging function.  The first argument is a flag which determines if\ndebugging is enabled.  If this is `true` then the function will act as a\nwrapper around `console.log`.  If it is false then it is an alias for the\n[doNothing()](function#static-function-doNothing) function which, as the\nname suggests, does nothing.\n\n```js\nimport { Debugger } from '@abw/badger'\n\nconst debugOn  = Debugger(true);\nconst debugOff = Debugger(false);\n\ndebugOn('This message will be displayed: %s', 'Hello World!');\ndebugOff('This message will be NOT be displayed: %s', 'Hello World!');\n```\n\nThe second argument is an optional prefix for debugging messages.\n\n```js\nconst debugPrefix = Debugger(true, 'DEBUG > ');\ndebugPrefix('This message will have a prefix');\n```\n\nThe message will be displayed as:\n\n```\nDEBUG > This message will have a prefix\n```\n\nThe third option is a color.  This can be any of the color options supported\nby the [color()](function#static-function-color) described above.\n\n```js\nconst debugColor = Debugger(true, 'DEBUG > ', 'bright cyan');\ndebugColor('This message will have a bright cyan prefix');\n```\n\nThe [addDebug()](function#static-function-addDebug) function takes an object\nreference as the first argument, followed by the same three options as for\nthe [Debugger()](function#static-function-Debugger) function.\nIt adds the debugging function as the `debug` method in the object.\n\nIt can be used in the constructor method for an object like this:\n\n```js\nimport { addDebug } from '@abw/badger'\n\nclass MyClass {\n  constructor(options={}) {\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n  }\n  someMethod() {\n    this.debug('Hello World!')\n  }\n}\n```\n\nNow you can enable debugging message in your class by passing a `debug` flag,\nand optionally, a `debugPrefix` or `debugColor` parameter, to the constructor.\n\n```js\nconst myObj = new MyClass({ debug: true, debugPrefix: 'MyClass > ' });\nmyObj.someMethod();\n```\n\nWith this configuration a debugging message will be printed:\n\n```\nMyClass > Hello World!\n```\n\n## Exit\n\nThe [exit()](function#static-function-exit) function exits the current\nprocess.  It is a trivial wrapper around `process.exit()`.\n\nThe first argument is an exit code (0 for a sucessful exit,\nany other value to indicate an exceptional condition).  The second\noptional argument can be a message to display before exiting.\n\n```js\nimport { exit } from '@abw/badger'\n\nexit(0, 'Goodbye')\n```\n\nThe [quit()](function#static-function-quit) function is a wrapper around\nthe [exit()](function#static-function-exit) function that sets the exit code\nto 0 to indicate successful termination.\n\n```js\nimport { quit } from '@abw/badger'\n\nquit('Goodbye')\n```\n\nThe [abort()](function#static-function-abort) function is a wrapper around\nthe [exit()](function#static-function-exit) function that sets the exit\ncode to 1 to indicate an error condition.\n\n```js\nimport { abort } from '@abw/badger'\n\nabort('Big plate of failed')\n```\n\n## User Input\n\nThe [prompt()](function#static-function-prompt) is a quick-and-easy way to\nask a user to enter some input.  It is implemented as a wrapper around the\n[prompt](https://www.npmjs.com/package/prompts) module.\n\nThe first argument is the question to ask the user.\n\n```js\nimport { prompt } from '@abw/badger'\n\nconst name = await prompt(\"What is your name?\");\nconsole.log('Hello ', name);\n```\n\nAn optional second argument can be the default answer:\n\n```js\nconst name = await prompt(\"What is your name?\", 'Mr Badger');\n```\n\nThis is a convenient short-hand for passing an object with a `default`\nproperty.\n\n```js\nconst name = await prompt(\"What is your name?\", { default: 'Mr Badger' });\n```\n\nThe [confirm()](function#static-function-confirm) function allows you to\nprompt the user to confirm an action by pressing `y` for `yes` or `n` for\n`no`.\n\n```js\nimport { confirm } from '@abw/badger'\n\nconst yes = await confirm(\"Are you sure?\");\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe default answer is `N`, returning a `false` value, but you can pass\n`true` as the second argument to make `Y` the default.\n\n```js\nconst yes = await confirm(\"Are you sure?\", true);\nconsole.log('You said \"%s\"', yes ? 'YES' : 'NO');\n```\n\nThe [select()](function#static-function-select) function is another wrapper\nof convenience for getting the user to select an option from a list.  Here\nthe second argument should be an array of options, with each as an object\ncontaining a `title` and `value`, or you can pass an object where each keys\nis a `value` mapped to a `title`.\n\n```js\nimport { select } from '@abw/badger'\n\nconst animal = await select(\n  'What is your favourite animal?',\n  {\n    aardvark: 'An amazing aardvark',\n    badger:   'A brilliant badger',\n    cat:      'A cool cat',\n    dog:      'A dapper dog'\n  },\n  1\n);\nconsole.log('You chose:', animal);  // aardvark, badger, cat or dog\n```\n\nThese are the three functions that I find myself using a lot.  For anything\nmore complicated you should probably cut out the middle-man and go straight\nto [prompts](https://www.npmjs.com/package/prompts).\n\n## Command Line Args\n\nThe [cmdLineArg()](function#static-function-cmdLineArg) function is a\nquick and dirty hack to read an argument from the command line or prompt\nthe user to enter it.\n\n```js\nimport { cmdLineArg, quit } from '../src/Badger.js';\n\nconst name = await cmdLineArg('What is your name?')\n  || quit('No name provided')\n\nconsole.log(`Hello ${name}`);\n```\n\nThe [cmdLineArgs()](function#static-function-cmdLineArgs) function is another\nquick and dirty hack to read multiple argument from the command line or prompt\nthe user to enter them.\n\n```js\nimport { cmdLineArgs, quit } from '../src/Badger.js';\n\nconst [forename, surname] = await cmdLineArgs(\n  ['What is your first name?', 'What is your surname']\n) || quit('No name provided')\n\nconsole.log(`Hello ${forename} ${surname}`);\n```\n\nBe warned that these are one-shot functions that take a copy of the command\nline arguments in `process.argv` and then mutate that copy.  I did said they\nwere quick and dirty hacks.\n\nIf you want to call either function multiple times then you should first\ntake a copy of `process.argv` from the third argument onwards and pass them\nas the second argument.\n\n```js\nlet args = process.argv.slice(2);\n\nconst name = await cmdLineArg('What is your name?', args)\n  || quit('No name provided')\n\nconst animal = await cmdLineArg('What is your favourite animal?', args)\n  || quit('No animal provided')\n```\n\nSee the [Command Line Options](manual/command_line) section for information\nabout a more robust way to parse command line arguments.\n\n## App Status\n\nThe [appStatus()](function#static-function-appStatus) function is a simple\nwrapper around a function to either print a success message, or catch any\nerrors thrown and display the error message.\n\n```js\nimport { prompt, appStatus } from '../src/Badger.js';\n\nconst app = appStatus(\n  async () => {\n    const n = await prompt('Enter an even number');\n    if (n % 2) {\n      throw `${n} is not an even number`\n    }\n    return `You entered ${n}`;\n  }\n)\n\napp();\n```\n\nIf the function is successful it should return a message which will be\ndisplayed to the user (in bright green, although you can't see that here).\n\n```\n✔ Enter an even number … 2\n✓ You entered 2\n```\n\nIf an error is thrown then the error message will be displayed in bright\nred.\n\n```\n✔ Enter an even number … 3\n✗ 3 is not an even number\n```\n\n## Progress\n\nThe [progress()](function#static-function-progress) function returns an\nobject which can be used to give a visual display of the progress of a long\nrunning process.  It is intended to be used in cases where you know in advance\nhow many actions you need to complete (e.g. importing 1000 records into a\ndatabase).\n\n```js\nimport { progress } from '@abw/badger'\n\nconst records = [\n  // lots of records\n]\nconst p = progress(records.length);\n\nfor (record of records) {\n  // do something with record\n  p.printProgress();\n}\n```\n\nThe `printProgress()` method accepts an argument which is the number of\nitems you have processed in that loop (i.e. it's the delta, not the total\nnumber processed so far).  It defaults to 1.\n\nAs the method is called it will print a few more \"pixels\" to the screen to\ndisplay a nice colourful image of an hourglass.  I can't show you the pretty\ncolours here, so I suggest you run the [examples/progress.js](examples/progress.js)\nscript to see for yourself.\n\n```\n┌────────────────────────────────────────────────────────────────┐\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n└────────────────────────────────────────────────────────────────┘\n```\n\nYou can change the colours or use your own picture.  See the\n[examples/progress.js](examples/progress.js) file for examples.\n\n",
+    "content": "# Miscellaneous Functions\n\n- [ANSI Colors](#ansi-colors)\n- [Debugging](#debugging)\n- [Exit](#exit)\n- [User Input](#user-input)\n- [Command Line Args](#command-line-args)\n- [App Status](#app-status)\n- [Progress](#progress)\n\n## ANSI Colors\n\nThe [color()](function#static-function-color) function provides a simple way\nto use ANSI escape codes to generate colored text.\n\nIt is super-simple and only exists in here from a time in the past when\n[chalk](https://www.npmjs.com/package/chalk) didn't play nicely with ESM\nmodules.  It looks like it does now, so if you want anything more than the\nbasic 16 ANSI colours, with `bright` and/or `bold` options then you should\nuse [chalk](https://www.npmjs.com/package/chalk).\n\n*My apologies to the Europeans, Canadians and others who know that the\ncorrect spelling is \"colour\", but I have reluctantly come to accept that\nthe \"programming\" spelling used in CSS, etc., is \"color\".**\n\nThere are functions defined for the basic colors:\n\n* `black()`\n* `red()`\n* `green()`\n* `yellow()`\n* `blue()`\n* `magenta()`\n* `cyan()`\n* `grey()`\n* `white()`\n\nAnd also for the \"bright\" variants:\n\n* `brightBlack()`\n* `brightRed()`\n* `brightGreen()`\n* `brightYellow()`\n* `brightBlue()`\n* `brightMagenta()`\n* `brightCyan()`\n* `brightGrey()`\n* `brightWhite()`\n\nAnd the \"dark\" variants:\n\n* `darkBlack()`\n* `darkRed()`\n* `darkGreen()`\n* `darkYellow()`\n* `darkBlue()`\n* `darkMagenta()`\n* `darkCyan()`\n* `darkGrey()`\n* `darkWhite()`\n\n```js\nimport { red } from '@abw/badger'\n\nconsole.log(red('some red text'));\n```\n\nThese are all implemented in terms of the [color()](function#static-function-color)\nfunction which accepts a string containing the color name along with an optional\n`bright` or `dark` prefix.\n\n```js\nimport { color } from '@abw/badger'\n\nconst brightRed = color('bright red');\n\nconsole.log(brightRed('some bright red text'));\n```\n\nYou can also pass an option containing separate colors for the foreground\n(`fg`) and background (`bg`).\n\n```js\nconst whiteOnRed = color({ bg: 'red', fg: 'white' });\nconsole.log(whiteOnRed('some white text on a red background'));\n```\n\n## Debugging\n\nThe [Debugger()](function#static-function-Debugger) function returns a\ndebugging function.  The first argument is a flag which determines if\ndebugging is enabled.  If this is `true` then the function will act as a\nwrapper around `console.log`.  If it is false then it is an alias for the\n[doNothing()](function#static-function-doNothing) function which, as the\nname suggests, does nothing.\n\n```js\nimport { Debugger } from '@abw/badger'\n\nconst debugOn  = Debugger(true);\nconst debugOff = Debugger(false);\n\ndebugOn('This message will be displayed: %s', 'Hello World!');\ndebugOff('This message will be NOT be displayed: %s', 'Hello World!');\n```\n\nThe second argument is an optional prefix for debugging messages.\n\n```js\nconst debugPrefix = Debugger(true, 'DEBUG > ');\ndebugPrefix('This message will have a prefix');\n```\n\nThe message will be displayed as:\n\n```\nDEBUG > This message will have a prefix\n```\n\nThe third option is a color.  This can be any of the color options supported\nby the [color()](function#static-function-color) described above.\n\n```js\nconst debugColor = Debugger(true, 'DEBUG > ', 'bright cyan');\ndebugColor('This message will have a bright cyan prefix');\n```\n\nThe [addDebug()](function#static-function-addDebug) function takes an object\nreference as the first argument, followed by the same three options as for\nthe [Debugger()](function#static-function-Debugger) function.\nIt adds the debugging function as the `debug` method in the object.\n\nIt can be used in the constructor method for an object like this:\n\n```js\nimport { addDebug } from '@abw/badger'\n\nclass MyClass {\n  constructor(options={}) {\n    addDebug(this, options.debug, options.debugPrefix, options.debugColor);\n  }\n  someMethod() {\n    this.debug('Hello World!')\n  }\n}\n```\n\nNow you can enable debugging message in your class by passing a `debug` flag,\nand optionally, a `debugPrefix` or `debugColor` parameter, to the constructor.\n\n```js\nconst myObj = new MyClass({ debug: true, debugPrefix: 'MyClass > ' });\nmyObj.someMethod();\n```\n\nWith this configuration a debugging message will be printed:\n\n```\nMyClass > Hello World!\n```\n\n## Exit\n\nThe [exit()](function#static-function-exit) function exits the current\nprocess.  It is a trivial wrapper around `process.exit()`.\n\nThe first argument is an exit code (0 for a sucessful exit,\nany other value to indicate an exceptional condition).  The second\noptional argument can be a message to display before exiting.\n\n```js\nimport { exit } from '@abw/badger'\n\nexit(0, 'Goodbye')\n```\n\nThe [quit()](function#static-function-quit) function is a wrapper around\nthe [exit()](function#static-function-exit) function that sets the exit code\nto 0 to indicate successful termination.\n\n```js\nimport { quit } from '@abw/badger'\n\nquit('Goodbye')\n```\n\nThe [abort()](function#static-function-abort) function is a wrapper around\nthe [exit()](function#static-function-exit) function that sets the exit\ncode to 1 to indicate an error condition.\n\n```js\nimport { abort } from '@abw/badger'\n\nabort('Big plate of failed')\n```\n\n## App Status\n\nThe [appStatus()](function#static-function-appStatus) function is a simple\nwrapper around a function to either print a success message, or catch any\nerrors thrown and display the error message.\n\n```js\nimport { prompt, appStatus } from '../src/Badger.js';\n\nconst app = appStatus(\n  async () => {\n    const n = await prompt('Enter an even number');\n    if (n % 2) {\n      throw `${n} is not an even number`\n    }\n    return `You entered ${n}`;\n  }\n)\n\napp();\n```\n\nIf the function is successful it should return a message which will be\ndisplayed to the user (in bright green, although you can't see that here).\n\n```\n✔ Enter an even number … 2\n✓ You entered 2\n```\n\nIf an error is thrown then the error message will be displayed in bright\nred.\n\n```\n✔ Enter an even number … 3\n✗ 3 is not an even number\n```\n\n## Progress\n\nThe [progress()](function#static-function-progress) function returns an\nobject which can be used to give a visual display of the progress of a long\nrunning process.  It is intended to be used in cases where you know in advance\nhow many actions you need to complete (e.g. importing 1000 records into a\ndatabase).\n\n```js\nimport { progress } from '@abw/badger'\n\nconst records = [\n  // lots of records\n]\nconst p = progress(records.length);\n\nfor (record of records) {\n  // do something with record\n  p.printProgress();\n}\n```\n\nThe `printProgress()` method accepts an argument which is the number of\nitems you have processed in that loop (i.e. it's the delta, not the total\nnumber processed so far).  It defaults to 1.\n\nAs the method is called it will print a few more \"pixels\" to the screen to\ndisplay a nice colourful image of an hourglass.  I can't show you the pretty\ncolours here, so I suggest you run the [examples/progress.js](examples/progress.js)\nscript to see for yourself.\n\n```\n┌────────────────────────────────────────────────────────────────┐\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● *◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦* ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● **◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦** ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● *****◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦◦***** ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● *******◦◦◦◦◦◦◦◦◦◦******* ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****************** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ************ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ****** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● **** ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦****◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦****◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦****◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦******◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦********◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦◦************◦◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦◦******************◦◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙∙∙ │\n│ ∙∙∙∙∙∙ ●● ◦◦◦◦◦◦◦◦◦************************◦◦◦◦◦◦◦◦◦ ●● ∙∙∙∙∙∙ │\n│ ∙∙∙∙∙ ●● ◦◦◦◦◦◦◦******************************◦◦◦◦◦◦◦ ●● ∙∙∙∙∙ │\n│ ∙∙∙∙ ●● ◦◦◦◦◦************************************◦◦◦◦◦ ●● ∙∙∙∙ │\n│ ∙∙∙ ●● ◦◦◦◦****************************************◦◦◦◦ ●● ∙∙∙ │\n│ ∙∙ ●● ◦◦◦********************************************◦◦◦ ●● ∙∙ │\n│ ∙∙ ●● ◦◦**********************************************◦◦ ●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙ ●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●● ∙∙ │\n│ ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙ │\n└────────────────────────────────────────────────────────────────┘\n```\n\nYou can change the colours or use your own picture.  See the\n[examples/progress.js](examples/progress.js) file for examples.\n\n",
     "static": true,
     "access": "public"
   }
