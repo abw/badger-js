@@ -259,7 +259,7 @@ number processed so far).  It defaults to 1.
 As the method is called it will print a few more "pixels" to the screen to
 display a nice colourful image of an hourglass.
 
-![Progress](/manual/asset/progress.png)
+![Progress](manual/asset/progress.png)
 
 You can change the colours or use your own picture.  See the
 [examples/progress.js](https://github.com/abw/badger-js/blob/master/examples/progress.js)
