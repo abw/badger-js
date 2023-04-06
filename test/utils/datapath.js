@@ -1,6 +1,7 @@
 import test from 'ava';
 import { dataPath, matchDoubleQuotedString, matchSingleQuotedString, splitDataPath } from '../../src/Badger/Utils/DataPath.js';
 
+
 //console.log(matchDoubleQuotedString('"hello"'))
 //console.log(matchDoubleQuotedString('"hello\\nworld"'))
 
@@ -159,8 +160,12 @@ test(
   t => t.deepEqual( splitDataPath("foo?"), [["foo", { optional: true }]] )
 );
 test(
-  'splitDataPath("foo?bar") => [[foo", { optional: true}]]',
+  'splitDataPath("foo?bar") => [["foo", { optional: true}]]',
   t => t.deepEqual( splitDataPath("foo?bar"), [["foo", { optional: true }], "bar"] )
+);
+test(
+  'splitDataPath("foo/?bar") => ["foo", ["bar", { maybe: true}]]',
+  t => t.deepEqual( splitDataPath("foo/?bar"), ["foo", ["bar", { maybe: true }]] )
 );
 
 
@@ -292,3 +297,43 @@ test(
     t.is(error.message, "No value for data at path: foo/d");
   }
 )
+
+//-----------------------------------------------------------------------------
+// Maybe items
+//-----------------------------------------------------------------------------
+//const testData = {
+//  animal: [
+//    "aardvark",
+//    "badger",
+//    ["colin", "cat"],
+//    {
+//      name: "Derek",
+//      type: "Dog",
+//    }
+//  ]
+//}
+
+test(
+  'dataPath animal/3 returns hash',
+  t => t.deepEqual(
+    dataPath(testData, 'animal/3'),
+    { name: "Derek", type: "Dog" }
+  )
+)
+
+test(
+  'dataPath animal/3/thing? returns undef',
+  t => t.is(
+    dataPath(testData, 'animal/3/thing?'),
+    undefined
+  )
+)
+
+test(
+  'dataPath animal/3/?thing returns hash',
+  t => t.deepEqual(
+    dataPath(testData, 'animal/3/?thing'),
+    { name: "Derek", type: "Dog" }
+  )
+)
+
