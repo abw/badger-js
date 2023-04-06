@@ -140,12 +140,12 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="github-markdown" data-ice="content"><h1 id="data-paths">Data Paths</h1><p>Both the <a href="class/src/Badger/Config.js~Config">Config</a> and
-<a href="class/src/Badger/Library.js~Library">Library</a> modules provide a
-convenient way to drill down into the data returned to fetch a particular item.</p>
+<a href="class/src/Badger/Library.js~Library">Library</a> modules provide a convenient
+way to drill down into the data returned to fetch a particular item.</p>
 <p>This uses the <a href="function#static-function-dataPath">dataPath()</a> function which
-nagivates data using a URL-like path.  The data path syntax is intentionally simple and
-limited.  If you want to do anything more complicated then you should consider using JSON
-Path instead.</p>
+nagivates data using a URL-like path. The data path syntax is intentionally
+simple and limited. If you want to do anything more complicated then you
+should consider using JSON Path instead.</p>
 <ul>
 <li><a href="#config-files">Config Files</a></li>
 <li><a href="#optional-items">Optional Items</a></li>
@@ -161,23 +161,29 @@ Path instead.</p>
     name: Brian
   cat:
     name: Colin</code></code></pre>
-<p>If you have a Config object setup to read files from the <code>config</code> directory then
-you can read the whole of the <code>zoo</code> data set like this:</p>
+<p>If you have a Config object setup to read files from the <code>config</code> directory
+then you can read the whole of the <code>zoo</code> data set like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">use { Config } from '@abw/badger'
 
 const configDir = new Config('config');
 
 configDir.config('zoo').then(
-  zoo =&gt; console.log("The badger is called ", zoo.animals.badger.name) // The badger is called Brian
+  zoo =&gt; console.log(
+    "The badger is called ",
+    zoo.animals.badger.name
+  ) // The badger is called Brian
 )</code></code></pre>
-<p>If you're only looking for a particular item, in this case the name of the badger,
-then you can add a data path fragment to the file name, like this:</p>
+<p>If you're only looking for a particular item, in this case the name of the
+badger, then you can add a data path fragment to the file name, like this:</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">configDir.config('zoo#animals/badger/name').then(
-  name =&gt; console.log("The badger is called ", name) // The badger is called Brian
+  name =&gt; console.log(
+    "The badger is called ",
+    name
+  ) // The badger is called Brian
 )</code></code></pre>
-<p>Each element of the data path should be separated by a slash.  You can specify
-text elements to access items in an object (as shown above) or numerical elements to
-access items in an array.</p>
+<p>Each element of the data path should be separated by a slash. You can specify
+text elements to access items in an object (as shown above) or numerical
+elements to access items in an array.</p>
 <p>For example, if you have some data that looks like this:</p>
 <pre><code class="lang-json"><code class="source-code prettyprint">{
   "numbers": ["zero", "one", "two", "forty-two"],
@@ -187,31 +193,41 @@ access items in an array.</p>
     { "name": "Trillian" },
   ]
 }</code></code></pre>
-<p>Then a data path of <code>numbers/3</code> would return "forty-two", or <code>friends/0/name</code> would return
-"Ford Prefect".</p>
-<h2 id="optional-items">Optional Items</h2><p>If an item specified in the path is <code>undefined</code> or <code>null</code> then an error is thrown.  Using the
-above data this would happen if you tried to access <code>friends/12/name</code> or <code>friends/0/birthday</code></p>
-<p>You can add an question mark to the end of a path segment to make it silently return <code>undefined</code>
-instead, e.g. <code>friends/12?/name</code> or <code>friends/0/birthday?</code>.  Note that the question mark can only
-appear at the end of a segment.  If it appears anywhere else then it is assumed to be the same
-thing as <code>?/</code>.  e.g. <code>foo?bar</code> is the same as <code>foo?/bar</code>.</p>
-<h2 id="quoted-path-segments">Quoted Path Segments</h2><p>You can enclose any segment in single or double quotes if you happen to have data keys that include
-<code>/</code> or <code>?</code> characters in them.  For example, <code>question/"What is the answer?"</code> to access the value
-"42" in the following data:</p>
+<p>Then a data path of <code>numbers/3</code> would return "forty-two", or <code>friends/0/name</code>
+would return "Ford Prefect".</p>
+<h2 id="optional-items">Optional Items</h2><p>If an item specified in the path is <code>undefined</code> or <code>null</code> then an error is
+thrown. Using the above data this would happen if you tried to access
+<code>friends/12/name</code> or <code>friends/0/birthday</code></p>
+<p>You can add an question mark to the end of a path segment to make it silently
+return <code>undefined</code> instead, e.g. <code>friends/12?/name</code> or <code>friends/0/birthday?</code>.</p>
+<p>Or you can add a question mark to the start of a path segment and it will
+return whatever it has matched so far, e.g. <code>friends/?12/name</code> will return
+the <code>friends</code> array, or <code>friends/0/?birthday</code> will return the 0th friend,
+<code>{ "name": "Ford Prefect" }</code>.</p>
+<p>You can also use question marks as segment separators.  In this case they are
+assumed to be marking the end of the previous segment, e.g. <code>foo?bar</code> is the
+same as <code>foo?/bar</code>.</p>
+<h2 id="quoted-path-segments">Quoted Path Segments</h2><p>You can enclose any segment in single or double quotes if you happen to have
+data keys that include <code>/</code> or <code>?</code> characters in them. For example,
+<code>question/"What is the answer?"</code> to access the value "42" in the following
+data:</p>
 <pre><code class="lang-json"><code class="source-code prettyprint">{
   "question": {
     "What is the answer?": 42
   }
 }</code></code></pre>
-<p>If you want to make a quoted part optional then add the question mark after the closing quote, e.g.
-<code>question/"What is the question?"</code> would throw an error because it is not defined, but can be specified
-as <code>question/"What is the question?"?</code> to instead return <code>undefined</code>.</p>
-<p>Note that the usual Javascript rules for quoted strings apply.  e.g. use <code>\n</code> to encode a newline,
-<code>\"</code> to escape a double quote inside a double quoted string, and so on.</p>
-<h2 id="javascript-library-exports">Javascript Library Exports</h2><p>All of the above applies to the data returned by the Config and Library modules when loaded
-Javascript files.  By default they will return an object containing all exported values from the
-Javascript file.  If you want to access the <code>default</code> export, for example, then you can add a <code>#default</code> suffix
-to the file basename when loading it.</p>
+<p>If you want to make a quoted part optional then add the question mark after
+the closing quote, e.g. <code>question/"What is the question?"</code> would throw an
+error because it is not defined, but can be specified as <code>question/"What is
+the question?"?</code> to instead return <code>undefined</code>.</p>
+<p>Note that the usual Javascript rules for quoted strings apply. e.g. use <code>\n</code>
+to encode a newline, <code>\"</code> to escape a double quote inside a double quoted
+string, and so on.</p>
+<h2 id="javascript-library-exports">Javascript Library Exports</h2><p>All of the above applies to the data returned by the Config and Library
+modules when loaded Javascript files. By default they will return an object
+containing all exported values from the Javascript file. If you want to
+access the <code>default</code> export, for example, then you can add a <code>#default</code>
+suffix to the file basename when loading it.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">libraryDir.library('Example#default').then(
   default =&gt; {
     // do something with the default export here
