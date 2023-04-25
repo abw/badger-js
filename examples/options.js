@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { options } from '../src/Badger/Utils/Options.js'
 
 // example showing use of options()
@@ -11,6 +12,17 @@ const main = async () => {
     verbose: true,
     quiet: true,
     options: [
+      {
+        name:       "debug",
+        short:      "d",
+        about:      "Enable debugging",
+        save:       "false",
+        required:   "false",
+      },
+      {
+        title: "Configuration Options",
+        info:  "Please answer the following questions.\nPress RETURN to accept defaults."
+      },
       {
         title: "Configuration Options",
         info:  "Please answer the following questions.\nPress RETURN to accept defaults."
