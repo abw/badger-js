@@ -370,7 +370,7 @@ export async function runSetup(props) {
       option.default = data[name];
     }
     else if (hasValue(values[name])) {
-      // set the value from the data file
+      // set the value from the provided values
       option.default = values[name];
     }
     else if (option.program) {
