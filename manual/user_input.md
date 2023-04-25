@@ -336,8 +336,13 @@ const config = await options({
   description: 'Example showing command line options and prompting',
   options: [
     {
+      name:     'debug',
+      short:    'D',
+      about:    'Enable debugging'
+    },
+    {
       name:     'database',
-      short:    'd',
+      short:    'n',
       about:    'Database',
       type:     'text',
       prompt:   'What is the name of the database?',
@@ -371,7 +376,8 @@ Example showing command line options and prompting
 
 Options:
   -V, --version              output the version number
-  -d, --database &lt;text&gt;      Database
+  -D, --debug                Enable debugging
+  -n, --database &lt;text&gt;      Database
   -u, --username &lt;text&gt;      Username
   -p, --password &lt;password&gt;  Password
   -h, --help                 display help for command
@@ -381,16 +387,17 @@ The `name`, `version` and `description` are optional items that will be displaye
 the help.
 
 The `options` array defines the valid options.  Each can have a `name` which is
-accessible as the "long option", e.g. `--database`, `--username` and `--password`,
-and a `short` option, e.g. `-d`, `-u` and `-p`.  The `about` item provides information
-about the option.
+accessible as the "long option", e.g. `--debug`, `--database`, `--username`
+and `--password`, and a `short` option, e.g. `-D`, `-d`, `-u` and `-p`.
+The `about` item provides information about the option.
 
-After processing the command line arguments, the function will prompt the user to
-confirm any values specified as arguments, and enter any missing values.  The `prompt`
-item is used to prompt the user.  If this is omitted then the user will not be prompted
-to enter a value.  The `type` can be set to one of the [types provided by the prompts
-package](https://www.npmjs.com/package/prompts#-types).  The `required` option can be
-set `true` to force the user to enter a value.
+After processing the command line arguments, the function will prompt the
+user to confirm any values specified as arguments, and enter any missing
+values.  The `prompt` item is used to prompt the user.  If this is omitted
+then the user will not be prompted to enter a value.  The `type` can be set
+to one of the
+[types provided by the prompts package](https://www.npmjs.com/package/prompts#-types).
+The `required` option can be set `true` to force the user to enter a value.
 
 ```sh
 $ node examples/options.js -d wibble
