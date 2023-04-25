@@ -353,8 +353,10 @@ export async function runSetup(props) {
       continue;
     }
 
-    // the type is nearly always 'text'
-    option.type ||= 'text';
+    // if there's a pattern specified then the type can default to text
+    if (option.pattern) {
+      option.type ||= 'text';
+    }
 
     // look to see if we've got a value in the environment or data file
     const envVar  = option.envvar ||= name.toUpperCase();

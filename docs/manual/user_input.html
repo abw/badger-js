@@ -366,8 +366,13 @@ to enter any that are missing.</p>
   description: 'Example showing command line options and prompting',
   options: [
     {
+      name:     'debug',
+      short:    'D',
+      about:    'Enable debugging'
+    },
+    {
       name:     'database',
-      short:    'd',
+      short:    'n',
       about:    'Database',
       type:     'text',
       prompt:   'What is the name of the database?',
@@ -397,22 +402,24 @@ Example showing command line options and prompting
 
 Options:
   -V, --version              output the version number
-  -d, --database &lt;text&gt;      Database
+  -D, --debug                Enable debugging
+  -n, --database &lt;text&gt;      Database
   -u, --username &lt;text&gt;      Username
   -p, --password &lt;password&gt;  Password
   -h, --help                 display help for command</code></code></pre>
 <p>The <code>name</code>, <code>version</code> and <code>description</code> are optional items that will be displayed in
 the help.</p>
 <p>The <code>options</code> array defines the valid options.  Each can have a <code>name</code> which is
-accessible as the "long option", e.g. <code>--database</code>, <code>--username</code> and <code>--password</code>,
-and a <code>short</code> option, e.g. <code>-d</code>, <code>-u</code> and <code>-p</code>.  The <code>about</code> item provides information
-about the option.</p>
-<p>After processing the command line arguments, the function will prompt the user to
-confirm any values specified as arguments, and enter any missing values.  The <code>prompt</code>
-item is used to prompt the user.  If this is omitted then the user will not be prompted
-to enter a value.  The <code>type</code> can be set to one of the <a href="https://www.npmjs.com/package/prompts#-types">types provided by the prompts
-package</a>.  The <code>required</code> option can be
-set <code>true</code> to force the user to enter a value.</p>
+accessible as the "long option", e.g. <code>--debug</code>, <code>--database</code>, <code>--username</code>
+and <code>--password</code>, and a <code>short</code> option, e.g. <code>-D</code>, <code>-d</code>, <code>-u</code> and <code>-p</code>.
+The <code>about</code> item provides information about the option.</p>
+<p>After processing the command line arguments, the function will prompt the
+user to confirm any values specified as arguments, and enter any missing
+values.  The <code>prompt</code> item is used to prompt the user.  If this is omitted
+then the user will not be prompted to enter a value.  The <code>type</code> can be set
+to one of the
+<a href="https://www.npmjs.com/package/prompts#-types">types provided by the prompts package</a>.
+The <code>required</code> option can be set <code>true</code> to force the user to enter a value.</p>
 <pre><code class="lang-sh"><code class="source-code prettyprint">$ node examples/options.js -d wibble
 ✔ What is the name of the database? … wibble
 ✔ What is the database username? …
