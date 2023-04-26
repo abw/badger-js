@@ -268,7 +268,7 @@
 import process from 'node:process'
 import dotenv from 'dotenv'
 import { cwd, dir } from '@abw/badger-filesystem';
-import { fail, hasValue, isBoolean, splitLines, splitList } from '@abw/badger-utils';
+import { extract, fail, hasValue, isBoolean, splitLines, splitList } from '@abw/badger-utils';
 import { brightGreen, brightRed, brightYellow } from './Color.js';
 import { now } from '@abw/badger-timestamp';
 import { quit } from './Exit.js';
@@ -343,10 +343,20 @@ export async function runSetup(props) {
     root: rootDir.path(),
     ...(config.values || { })
   };
+  const nonsave = {
+    quiet:    true,
+    verbose:  true,
+    yes:      true
+  }
 
   // process the options
   for (let option of setup.options) {
-    const name = option.name;
+    const { name, save } = option;
+
+    // make an index of options we don't want saved in .env or .env.yaml
+    if (isBoolean(save) &amp;&amp; ! save) {
+      nonsave[name] = true
+    }
 
     // section headings don't have names
     if (! name) {
@@ -388,19 +398,14 @@ export async function runSetup(props) {
 
   // extract the options that shouldn't be preserved
   const { debug, verbose, quiet } = answers;
-  delete answers.quiet
-  delete answers.verbose
-  delete answers.yes
-
-  for (let option of setup.options) {
-    const { name, save } = option
-    if (isBoolean(save) &amp;&amp; ! save) {
-      delete answers[name];
-    }
-  }
 
   if (config.writeData) {
-    await dataFile.write(answers);
+    await dataFile.write(
+      extract(
+        answers,
+        key =&gt; ! nonsave[key]
+      )
+    );
     if (verbose) {
       console.log(brightGreen(`✓ Wrote data file: ${dataFile}`));
     }
@@ -416,12 +421,11 @@ export async function runSetup(props) {
   }
 
   if (debug) {
-    console.log('\nGenerated configuration:', data);
+    console.log('\nGenerated configuration:', answers);
   }
   if (config.allDone &amp;&amp; ! quiet) {
     console.log('\n👍 ', brightYellow(config.allDone), '\n');
   }
-
 
   return answers;
 }
