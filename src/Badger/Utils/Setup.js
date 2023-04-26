@@ -126,11 +126,11 @@ export async function runSetup(props) {
   delete answers.verbose
   delete answers.yes
 
-  if (debug) {
-    // console.log('\nGenerated configuration:', data);
-  }
-  if (config.allDone && ! quiet) {
-    console.log('\n👍 ', brightYellow(config.allDone), '\n');
+  for (let option of setup.options) {
+    const { name, save } = option
+    if (isBoolean(save) && ! save) {
+      delete answers[name];
+    }
   }
 
   if (config.writeData) {
@@ -148,6 +148,14 @@ export async function runSetup(props) {
       console.log(brightGreen(`✓ Wrote .env file: ${envFile}`));
     }
   }
+
+  if (debug) {
+    console.log('\nGenerated configuration:', data);
+  }
+  if (config.allDone && ! quiet) {
+    console.log('\n👍 ', brightYellow(config.allDone), '\n');
+  }
+
 
   return answers;
 }
@@ -184,6 +192,8 @@ async function envFileText(rootDir, config, setup, answers) {
   const line2 = '#' + '='.repeat(77)
   for (let option of setup.options) {
     const { name, envvar, title, about, save } = option
+    // belt and braces - we remove these above but it's possible this function
+    // is being called independently
     if (isBoolean(save) && ! save) {
       continue;
     }
