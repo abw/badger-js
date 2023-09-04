@@ -269,7 +269,7 @@ import process from 'node:process'
 import dotenv from 'dotenv'
 import { cwd, dir } from '@abw/badger-filesystem';
 import { extract, fail, hasValue, isBoolean, splitLines, splitList } from '@abw/badger-utils';
-import { brightGreen, brightRed, brightYellow } from './Color.js';
+import { brightGreen, brightRed } from './Color.js';
 import { now } from '@abw/badger-timestamp';
 import { quit } from './Exit.js';
 import { appStatus } from './AppStatus.js';
@@ -424,7 +424,7 @@ export async function runSetup(props) {
     console.log('\nGenerated configuration:', answers);
   }
   if (config.allDone &amp;&amp; ! quiet) {
-    console.log('\n👍 ', brightYellow(config.allDone), '\n');
+    console.log('\n👍 ', brightGreen(config.allDone), '\n');
   }
 
   return answers;
