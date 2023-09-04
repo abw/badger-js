@@ -74,7 +74,7 @@ export async function runSetup(props) {
 
   // hack to allow setup configuration to be pre-processed by a function
   if (props.preprocess) {
-    props.preprocess(setup)
+    await props.preprocess(setup)
   }
 
   // caller may have provided us with some values
