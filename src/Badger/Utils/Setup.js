@@ -72,6 +72,11 @@ export async function runSetup(props) {
   setup.version     ||= config.version;
   setup.description ||= config.description;
 
+  // hack to allow setup configuration to be pre-processed by a function
+  if (props.preprocess) {
+    props.preprocess(setup)
+  }
+
   // caller may have provided us with some values
   const values = {
     root: rootDir.path(),
