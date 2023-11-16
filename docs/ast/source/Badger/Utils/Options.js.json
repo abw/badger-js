@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 7288,
+  "end": 7291,
   "loc": {
     "start": {
       "line": 1,
@@ -10,15 +10,15 @@
     },
     "end": {
       "line": 264,
-      "column": 22,
-      "index": 7288
+      "column": 25,
+      "index": 7291
     }
   },
   "errors": [],
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 7288,
+    "end": 7291,
     "loc": {
       "start": {
         "line": 1,
@@ -27,8 +27,8 @@
       },
       "end": {
         "line": 264,
-        "column": 22,
-        "index": 7288
+        "column": 25,
+        "index": 7291
       }
     },
     "sourceType": "module",
@@ -20029,46 +20029,47 @@
           ],
           "kind": "const",
           "leadingComments": [],
-          "trailingComments": []
-        }
-      },
-      {
-        "type": "ExportDefaultDeclaration",
-        "start": 7266,
-        "end": 7288,
-        "loc": {
-          "start": {
-            "line": 264,
-            "column": 0,
-            "index": 7266
-          },
-          "end": {
-            "line": 264,
-            "column": 22,
-            "index": 7288
-          }
+          "trailingComments": [
+            {
+              "type": "CommentLine",
+              "value": " export default options",
+              "start": 7266,
+              "end": 7291,
+              "loc": {
+                "start": {
+                  "line": 264,
+                  "column": 0,
+                  "index": 7266
+                },
+                "end": {
+                  "line": 264,
+                  "column": 25,
+                  "index": 7291
+                }
+              }
+            }
+          ]
         },
-        "declaration": {
-          "type": "Identifier",
-          "start": 7281,
-          "end": 7288,
-          "loc": {
-            "start": {
-              "line": 264,
-              "column": 15,
-              "index": 7281
-            },
-            "end": {
-              "line": 264,
-              "column": 22,
-              "index": 7288
-            },
-            "identifierName": "options"
-          },
-          "name": "options",
-          "leadingComments": [],
-          "trailingComments": []
-        }
+        "trailingComments": [
+          {
+            "type": "CommentLine",
+            "value": " export default options",
+            "start": 7266,
+            "end": 7291,
+            "loc": {
+              "start": {
+                "line": 264,
+                "column": 0,
+                "index": 7266
+              },
+              "end": {
+                "line": 264,
+                "column": 25,
+                "index": 7291
+              }
+            }
+          }
+        ]
       }
     ],
     "directives": []
@@ -20377,6 +20378,24 @@
           "line": 213,
           "column": 48,
           "index": 5900
+        }
+      }
+    },
+    {
+      "type": "CommentLine",
+      "value": " export default options",
+      "start": 7266,
+      "end": 7291,
+      "loc": {
+        "start": {
+          "line": 264,
+          "column": 0,
+          "index": 7266
+        },
+        "end": {
+          "line": 264,
+          "column": 25,
+          "index": 7291
         }
       }
     }

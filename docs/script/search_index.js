@@ -1068,6 +1068,24 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~palette",
+    "function/index.html#static-function-palette",
+    "<span>palette</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~palette",
+    "function/index.html#static-function-palette",
+    "<span>palette</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~palette",
+    "function/index.html#static-function-palette",
+    "<span>palette</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
     "@abw/badger~picture",
     "variable/index.html#static-variable-picture",
     "<span>picture</span> <span class=\"search-result-import-path\">@abw/badger</span>",
@@ -1341,6 +1359,78 @@ window.esdocSearchIndex = [
     "@abw/badger~splitdatapath",
     "function/index.html#static-function-splitDataPath",
     "<span>splitDataPath</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watch",
+    "function/index.html#static-function-watch",
+    "<span>watch</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watch",
+    "function/index.html#static-function-watch",
+    "<span>watch</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watch",
+    "function/index.html#static-function-watch",
+    "<span>watch</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherfunctions",
+    "function/index.html#static-function-watcherFunctions",
+    "<span>watcherFunctions</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherfunctions",
+    "function/index.html#static-function-watcherFunctions",
+    "<span>watcherFunctions</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherfunctions",
+    "function/index.html#static-function-watcherFunctions",
+    "<span>watcherFunctions</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherhelptext",
+    "function/index.html#static-function-watcherHelpText",
+    "<span>watcherHelpText</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherhelptext",
+    "function/index.html#static-function-watcherHelpText",
+    "<span>watcherHelpText</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherhelptext",
+    "function/index.html#static-function-watcherHelpText",
+    "<span>watcherHelpText</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherstatus",
+    "function/index.html#static-function-watcherStatus",
+    "<span>watcherStatus</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherstatus",
+    "function/index.html#static-function-watcherStatus",
+    "<span>watcherStatus</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "function"
+  ],
+  [
+    "@abw/badger~watcherstatus",
+    "function/index.html#static-function-watcherStatus",
+    "<span>watcherStatus</span> <span class=\"search-result-import-path\">@abw/badger</span>",
     "function"
   ],
   [
@@ -2223,6 +2313,12 @@ window.esdocSearchIndex = [
     "src/badger/utils/setup.js",
     "file/src/Badger/Utils/Setup.js.html",
     "src/Badger/Utils/Setup.js",
+    "file"
+  ],
+  [
+    "src/badger/utils/watch.js",
+    "file/src/Badger/Utils/Watch.js.html",
+    "src/Badger/Utils/Watch.js",
     "file"
   ],
   [

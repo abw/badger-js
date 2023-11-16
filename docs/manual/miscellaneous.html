@@ -134,6 +134,7 @@
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#exit" data-ice="link">Exit</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#app-status" data-ice="link">App Status</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#progress" data-ice="link">Progress</a></li>
+<li data-ice="manualNav" class="indent-h2" data-link="manual/miscellaneous.html"><a href="manual/miscellaneous.html#watch" data-ice="link">Watch</a></li>
 </ul>
   </div>
 </div>
@@ -145,6 +146,7 @@
 <li><a href="#exit">Exit</a></li>
 <li><a href="#app-status">App Status</a></li>
 <li><a href="#progress">Progress</a></li>
+<li><a href="#watch">File Watching</a></li>
 </ul>
 <h2 id="ansi-colors">ANSI Colors</h2><p>The <a href="function#static-function-color">color()</a> function provides a simple way
 to use ANSI escape codes to generate colored text.</p>
@@ -207,6 +209,25 @@ console.log(brightRed('some bright red text'));</code></code></pre>
 (<code>fg</code>) and background (<code>bg</code>).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const whiteOnRed = color({ bg: 'red', fg: 'white' });
 console.log(whiteOnRed('some white text on a red background'));</code></code></pre>
+<p>The <a href="function#static-function-palette">palette()</a> function allows you to
+create a palette of "semantic" colors using the above.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const status = palette({
+  valid:   'bright green',
+  invalid: 'bright red',
+  comment: 'cyan'
+})</code></code></pre>
+<p>Using this you can render text in different colors using semantic names.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">console.log(
+  status.valid('This is valid')
+);
+
+console.log(
+  status.invalid('This is invalid')
+);
+
+console.log(
+  status.comment('This is a comment')
+);</code></code></pre>
 <h2 id="debugging">Debugging</h2><p>The <a href="function#static-function-Debugger">Debugger()</a> function returns a
 debugging function.  The first argument is a flag which determines if
 debugging is enabled.  If this is <code>true</code> then the function will act as a
@@ -315,6 +336,24 @@ display a nice colourful image of an hourglass.</p>
 <p>You can change the colours or use your own picture.  See the
 <a href="https://github.com/abw/badger-js/blob/master/examples/progress.js">examples/progress.js</a>
 file for examples.</p>
+<h2 id="watch">Watch</h2><p>The <a href="function#static-function-watch">watch()</a> function implements a command
+line program for running another program while watching one or more files or
+directories.  If any of the watched files change then it restarts the program.</p>
+<p>It's implemented as a wrapper around
+<a href="https://www.npmjs.com/package/chokidar">chokidar</a> with some additional
+command line processing.</p>
+<p>Create a simple script like this and run it with the <code>-h</code> command line option
+for help.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">import { watch } from '@abw/badger'
+
+watch()</code></code></pre>
+<p>You can run <code>badger-watch</code> as a script from your <code>package.json</code> file.</p>
+<pre><code class="lang-json"><code class="source-code prettyprint">"scripts": {
+  "watch": "badger-watch -v -r -w lib -w config my-program.js arg1 arg2"
+}</code></code></pre>
+<p>In this example, running the command <code>npm watch</code> will run
+<code>my-program.js arg1 arg2</code> and if any of the files in the <code>lib</code> or <code>config</code>
+directories change the program will be restarted.</p>
 </div>
 </div>
 
