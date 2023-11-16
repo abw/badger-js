@@ -261,4 +261,4 @@ export const answer = option => {
   process.stdout.write(tcol("✔ ") + qcol(option.question) + " " + acol(option.answer) + "\n");
 }
 
-export default options
+// export default options

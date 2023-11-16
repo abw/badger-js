@@ -8,7 +8,7 @@ import { quit, abort, exit } from './Exit.js'
 import { cmdLineFlags } from './CmdLine.js'
 import { palette } from './Color.js'
 
-export const defaults = {
+const defaults = {
   script: process.argv[1].split('/').at(-1),
   prefix: 'watcher >',
   colors: {

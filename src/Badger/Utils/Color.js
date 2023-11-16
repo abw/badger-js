@@ -91,8 +91,8 @@ export const color = (colors) =>
 
 /**
  * Expand an object of color names into color functions.
- * @param {Object} colors - mapping arbitrary keys to color names
- * @return {Function} object mapping keys to color functions
+ * @param {Object} palette - mapping arbitrary keys to color names
+ * @return {Object} object mapping keys to color functions
  */
 export const palette = palette =>
   Object.entries(palette).reduce(
