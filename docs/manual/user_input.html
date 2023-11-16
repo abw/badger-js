@@ -108,12 +108,19 @@
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/user_input.html"><a href="manual/user_input.html" data-ice="link">User Input</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#user-input" data-ice="link">User Input</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-prompt----code-" data-ice="link">prompt()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-confirm----code-" data-ice="link">confirm()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-select----code-" data-ice="link">select()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#command-line-arguments" data-ice="link">Command Line Arguments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlinearg----code-" data-ice="link">cmdLineArg()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlineargs----code-" data-ice="link">cmdLineArgs()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlineflags----code-" data-ice="link">cmdLineFlags()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#simple-options-example" data-ice="link">Simple Options Example</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#special-options" data-ice="link">Special Options</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#commands" data-ice="link">Commands</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#sections" data-ice="link">Sections</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-options----code-" data-ice="link">options()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#special-options" data-ice="link">Special Options</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#commands" data-ice="link">Commands</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#sections" data-ice="link">Sections</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -157,7 +164,7 @@ and prompt the user for any missing configuration options
 <li><a href="#sections">Sections</a></li>
 <li><a href="#generated-configuration">Generated Configuration</a></li>
 </ul>
-<h2 id="user-input">User Input</h2><p>The <a href="function#static-function-prompt">prompt()</a> is a quick-and-easy way to
+<h2 id="user-input">User Input</h2><h3 id="-code-prompt----code-"><code>prompt()</code></h3><p>The <a href="function#static-function-prompt">prompt()</a> is a quick-and-easy way to
 ask a user to enter some input.  It is implemented as a wrapper around the
 <a href="https://www.npmjs.com/package/prompts">prompt</a> module.</p>
 <p>The first argument is the question to ask the user.</p>
@@ -170,7 +177,7 @@ console.log('Hello ', name);</code></code></pre>
 <p>This is a convenient short-hand for passing an object with a <code>default</code>
 property.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const name = await prompt("What is your name?", { default: 'Mr Badger' });</code></code></pre>
-<p>The <a href="function#static-function-confirm">confirm()</a> function allows you to
+<h3 id="-code-confirm----code-"><code>confirm()</code></h3><p>The <a href="function#static-function-confirm">confirm()</a> function allows you to
 prompt the user to confirm an action by pressing <code>y</code> for <code>yes</code> or <code>n</code> for
 <code>no</code>.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">import { confirm } from '@abw/badger'
@@ -181,7 +188,7 @@ console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
 <code>true</code> as the second argument to make <code>Y</code> the default.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const yes = await confirm("Are you sure?", true);
 console.log('You said "%s"', yes ? 'YES' : 'NO');</code></code></pre>
-<p>The <a href="function#static-function-select">select()</a> function is another wrapper
+<h3 id="-code-select----code-"><code>select()</code></h3><p>The <a href="function#static-function-select">select()</a> function is another wrapper
 of convenience for getting the user to select an option from a list.  Here
 the second argument should be an array of options, with each as an object
 containing a <code>title</code> and <code>value</code>, or you can pass an object where each keys
@@ -202,7 +209,7 @@ console.log('You chose:', animal);  // aardvark, badger, cat or dog</code></code
 <p>These are the three functions that I find myself using a lot.  For anything
 more complicated you should probably cut out the middle-man and go straight
 to <a href="https://www.npmjs.com/package/prompts">prompts</a>.</p>
-<h2 id="command-line-arguments">Command Line Arguments</h2><p>If you've got a script that expects a command line argument then the
+<h2 id="command-line-arguments">Command Line Arguments</h2><h3 id="-code-cmdlinearg----code-"><code>cmdLineArg()</code></h3><p>If you've got a script that expects a command line argument then the
 <a href="function#static-function-cmdLineArg">cmdLineArg()</a> function is your friend.
 It will return the first argument from the command line after your script
 name.</p>
@@ -227,7 +234,7 @@ console.log(`Hello ${name}`)</code></code></pre>
 <pre><code class="lang-bash"><code class="source-code prettyprint">$ node your-script.js
 ✔ What is your name? … Bobby Badger
 Hello Bobby Badger</code></code></pre>
-<p>If you want to process several command line arguments then you can use the
+<h3 id="-code-cmdlineargs----code-"><code>cmdLineArgs()</code></h3><p>If you want to process several command line arguments then you can use the
 <a href="function#static-function-cmdLineArgs">cmdLineArgs()</a> function (note the extra
 "s" on the end).  Here the first argument should be an array of prompts for
 each argument.</p>
@@ -264,7 +271,7 @@ console.log(`${age} is a fine age`);</code></code></pre>
 <p>You can run this script with no arguments, one argument (forename), two
 arguments (forename, surname) or three (forename, surname, age).  It will
 prompt you to enter any that you omitted.</p>
-<p>If your script supports command line flags (e.g. <code>-v</code> or <code>--verbose</code>) then
+<h3 id="-code-cmdlineflags----code-"><code>cmdLineFlags()</code></h3><p>If your script supports command line flags (e.g. <code>-v</code> or <code>--verbose</code>) then
 the <a href="function#static-function-cmdLineFlags">cmdLineFlags()</a> function can
 be used to remove them from an argument list in advance.  This should only
 be used in simple cases where you want to detect the presence of a boolean
@@ -329,7 +336,12 @@ return it in the flags.  The default value is <code>error</code>.</p>
 <p>Here's an example of the earlier script being run with this configuration:</p>
 <pre><code><code class="source-code prettyprint">$ node flags-example.js --verbose foo -x bar
 flags: { verbose: true }
-args: [ 'foo','-x', 'bar' ]</code></code></pre><p>The <code>on</code> option can be used to trigger a function when a flag is detected.</p>
+args: [ 'foo','-x', 'bar' ]</code></code></pre><p>You can specify <code>--</code> as an argument to indicate that the function should stop
+processing any further arguments.  In this case any subsequent arguments will
+be kept in the <code>args</code> list.</p>
+<pre><code><code class="source-code prettyprint">$ node flags-example.js --verbose -- -x foo -y bar -z baz
+flags: { verbose: true }
+args: [ '-x', 'foo', '-y', 'bar', '-z', 'baz' ]</code></code></pre><p>The <code>on</code> option can be used to trigger a function when a flag is detected.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const { flags, args } = cmdLineFlags(
   {
     options: 'verbose debug',
@@ -356,7 +368,7 @@ further processing needs to be done.  If it doesn't return a true value then
 processing of the flag continues as normal.</p>
 <p>Options that have <code>on</code> handlers don't need to be explicitly listed in the
 <code>options</code> list.</p>
-<h2 id="simple-options-example">Simple Options Example</h2><p>When you have multiple arguments and/or flags then
+<h2 id="simple-options-example">Simple Options Example</h2><h3 id="-code-options----code-"><code>options()</code></h3><p>When you have multiple arguments and/or flags then
 <a href="function#static-function-options">options</a> function may be a better choice.
 It handles the logic of processing flags, arguments and prompting the user
 to enter any that are missing.</p>
@@ -425,7 +437,7 @@ The <code>required</code> option can be set <code>true</code> to force the user 
 ✔ What is the name of the database? … wibble
 ✔ What is the database username? …
 ✔ What is the database password? …</code></code></pre>
-<h2 id="special-options">Special Options</h2><p>The <code>yes</code> configuration item can be specified to have the <code>-y</code> / <code>--yes</code>
+<h3 id="special-options">Special Options</h3><p>The <code>yes</code> configuration item can be specified to have the <code>-y</code> / <code>--yes</code>
 optional automatically added.  When this is specifed on the command line the
 function will automatically accept the default answer.</p>
 <p>The <code>verbose</code> configuration item can be specified to have the <code>-v</code> / <code>--verbose</code>
@@ -459,7 +471,7 @@ Options:
   -u, --username &lt;text&gt;      Username
   -p, --password &lt;password&gt;  Password
   -h, --help                 display help for command</code></code></pre>
-<h2 id="commands">Commands</h2><p>You can also add <code>commands</code> to the configuration. For example, you might
+<h3 id="commands">Commands</h3><p>You can also add <code>commands</code> to the configuration. For example, you might
 have a script where you want to <code>start</code> or <code>stop</code> one or more services.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const config = await options({
   name: 'commands.js',
@@ -514,7 +526,7 @@ using ellipses.</p>
     // ...etc...
   ]
 })</code></code></pre>
-<h2 id="sections">Sections</h2><p>If you have lots of questions then you might want to break them up
+<h3 id="sections">Sections</h3><p>If you have lots of questions then you might want to break them up
 into sections.  Add an item to the <code>options</code> array like the following
 to print a section title and information.  Both <code>title</code> and <code>info</code> are
 optional, so you can omit either one.</p>
@@ -531,7 +543,7 @@ optional, so you can omit either one.</p>
 
 Please answer the following questions.
 Press RETURN to accept defaults.</code></code></pre>
-<h2 id="generated-configuration">Generated Configuration</h2><p>The function returns a Promise which fulfills to an object containing the
+<h3 id="generated-configuration">Generated Configuration</h3><p>The function returns a Promise which fulfills to an object containing the
 configuration values.  Each key will be the <code>name</code> of the option or command,
 and the corresponding value will be that read from the command line or by
 prompting the user.  In the case of <a href="#commands">commands</a> with multiple values

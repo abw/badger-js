@@ -108,12 +108,19 @@
       
     <li data-ice="manualNav" class="indent-h1" data-link="manual/user_input.html"><a href="manual/user_input.html" data-ice="link">User Input</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#user-input" data-ice="link">User Input</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-prompt----code-" data-ice="link">prompt()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-confirm----code-" data-ice="link">confirm()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-select----code-" data-ice="link">select()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#command-line-arguments" data-ice="link">Command Line Arguments</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlinearg----code-" data-ice="link">cmdLineArg()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlineargs----code-" data-ice="link">cmdLineArgs()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-cmdlineflags----code-" data-ice="link">cmdLineFlags()</a></li>
 <li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#simple-options-example" data-ice="link">Simple Options Example</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#special-options" data-ice="link">Special Options</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#commands" data-ice="link">Commands</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#sections" data-ice="link">Sections</a></li>
-<li data-ice="manualNav" class="indent-h2" data-link="manual/user_input.html"><a href="manual/user_input.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#-code-options----code-" data-ice="link">options()</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#special-options" data-ice="link">Special Options</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#commands" data-ice="link">Commands</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#sections" data-ice="link">Sections</a></li>
+<li data-ice="manualNav" class="indent-h3" data-link="manual/user_input.html"><a href="manual/user_input.html#generated-configuration" data-ice="link">Generated Configuration</a></li>
 </ul>
   </div>
 <div data-ice="manual">
@@ -354,6 +361,18 @@ watch()</code></code></pre>
 <p>In this example, running the command <code>npm watch</code> will run
 <code>my-program.js arg1 arg2</code> and if any of the files in the <code>lib</code> or <code>config</code>
 directories change the program will be restarted.</p>
+<p>The <code>-v</code> or <code>--verbose</code> option enables verbose mode.  The <code>-r</code> or <code>--restart</code>
+option will restart the program whenever it exits.  The <code>-w &lt;path&gt;</code> or
+<code>--watch &lt;path&gt;</code> option watches a path (e.g. a file or directory) for changes.
+The <code>-h</code> or <code>--help</code> option displays the help.</p>
+<p>You can pass additional arguments to your program (e.g. <code>arg1</code> and <code>arg2</code> as
+shown above).  These can include arguments with dashes (e.g. <code>-foo</code>, <code>--bar</code>,
+etc).  If any of the arguments you want to pass to your program are those
+accepted by the watch command (e.g. <code>-v</code>, <code>--verbose</code>, etc.) then you should
+use the <code>--</code> option just before your program so that they don't conflict.</p>
+<p>For example, if your program accepts a <code>-v</code> option then you should invoke it
+like this:</p>
+<pre><code class="lang-bash"><code class="source-code prettyprint">badger-watch -v -r -w lib -w config -- my-program.js -v arg1 arg2"</code></code></pre>
 </div>
 </div>
 

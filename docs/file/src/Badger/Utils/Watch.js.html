@@ -418,6 +418,7 @@ export const watcherFunctions = (props) =&gt; {
     const { flags, args } = cmdLineFlags(
       {
         options: 'watch restart verbose help',
+        others: 'keep',
         short: {
           w: 'watch',
           r: 'restart',
