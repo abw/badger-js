@@ -22,12 +22,17 @@ export function cmdLineFlags(config, args) {
   const others  = config.others || 'error';
   const short   = config.short || { };
   const on      = config.on || { }
+  let   done    = false;
   let   n       = 0;
   let   flags   = { };
 
   while (n < args.length) {
     const match = args[n].match(/^-(-)?(.*)/);
-    if (match) {
+    if (args[n] === '--') {
+      done = true;
+      args.splice(n, 1);
+    }
+    if (match && ! done) {
       const long = match[1] === '-';
       const name = (! long && hasValue(short[match[2]]))
         ? short[match[2]]
