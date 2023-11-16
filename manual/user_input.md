@@ -19,6 +19,8 @@ and prompt the user for any missing configuration options
 
 ## User Input
 
+### `prompt()`
+
 The [prompt()](function#static-function-prompt) is a quick-and-easy way to
 ask a user to enter some input.  It is implemented as a wrapper around the
 [prompt](https://www.npmjs.com/package/prompts) module.
@@ -45,6 +47,8 @@ property.
 const name = await prompt("What is your name?", { default: 'Mr Badger' });
 ```
 
+### `confirm()`
+
 The [confirm()](function#static-function-confirm) function allows you to
 prompt the user to confirm an action by pressing `y` for `yes` or `n` for
 `no`.
@@ -63,6 +67,8 @@ The default answer is `N`, returning a `false` value, but you can pass
 const yes = await confirm("Are you sure?", true);
 console.log('You said "%s"', yes ? 'YES' : 'NO');
 ```
+
+### `select()`
 
 The [select()](function#static-function-select) function is another wrapper
 of convenience for getting the user to select an option from a list.  Here
@@ -91,6 +97,8 @@ more complicated you should probably cut out the middle-man and go straight
 to [prompts](https://www.npmjs.com/package/prompts).
 
 ## Command Line Arguments
+
+### `cmdLineArg()`
 
 If you've got a script that expects a command line argument then the
 [cmdLineArg()](function#static-function-cmdLineArg) function is your friend.
@@ -136,6 +144,8 @@ $ node your-script.js
 ✔ What is your name? … Bobby Badger
 Hello Bobby Badger
 ```
+
+### `cmdLineArgs()`
 
 If you want to process several command line arguments then you can use the
 [cmdLineArgs()](function#static-function-cmdLineArgs) function (note the extra
@@ -184,6 +194,8 @@ console.log(`${age} is a fine age`);
 You can run this script with no arguments, one argument (forename), two
 arguments (forename, surname) or three (forename, surname, age).  It will
 prompt you to enter any that you omitted.
+
+### `cmdLineFlags()`
 
 If your script supports command line flags (e.g. `-v` or `--verbose`) then
 the [cmdLineFlags()](function#static-function-cmdLineFlags) function can
@@ -286,6 +298,10 @@ flags: { verbose: true }
 args: [ 'foo','-x', 'bar' ]
 ```
 
+You can specify `--` as an argument to indicate that the function should stop
+processing any further arguments.  In this case any subsequent arguments will
+be kept in the `args` list.
+
 The `on` option can be used to trigger a function when a flag is detected.
 
 ```js
@@ -321,6 +337,8 @@ Options that have `on` handlers don't need to be explicitly listed in the
 `options` list.
 
 ## Simple Options Example
+
+### `options()`
 
 When you have multiple arguments and/or flags then
 [options](function#static-function-options) function may be a better choice.
@@ -406,7 +424,7 @@ $ node examples/options.js -d wibble
 ✔ What is the database password? …
 ```
 
-## Special Options
+### Special Options
 
 The `yes` configuration item can be specified to have the `-y` / `--yes`
 optional automatically added.  When this is specifed on the command line the
@@ -451,7 +469,7 @@ Options:
   -h, --help                 display help for command
 ```
 
-## Commands
+### Commands
 
 You can also add `commands` to the configuration. For example, you might
 have a script where you want to `start` or `stop` one or more services.
@@ -520,7 +538,7 @@ const config = await options({
 })
 ```
 
-## Sections
+### Sections
 
 If you have lots of questions then you might want to break them up
 into sections.  Add an item to the `options` array like the following
@@ -547,7 +565,7 @@ Please answer the following questions.
 Press RETURN to accept defaults.
 ```
 
-## Generated Configuration
+### Generated Configuration
 
 The function returns a Promise which fulfills to an object containing the
 configuration values.  Each key will be the `name` of the option or command,
