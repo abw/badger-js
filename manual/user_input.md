@@ -302,6 +302,12 @@ You can specify `--` as an argument to indicate that the function should stop
 processing any further arguments.  In this case any subsequent arguments will
 be kept in the `args` list.
 
+```
+$ node flags-example.js --verbose -- -x foo -y bar -z baz
+flags: { verbose: true }
+args: [ '-x', 'foo', '-y', 'bar', '-z', 'baz' ]
+```
+
 The `on` option can be used to trigger a function when a flag is detected.
 
 ```js
