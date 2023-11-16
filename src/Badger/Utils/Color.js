@@ -89,6 +89,20 @@ export const ANSIreset = () => ANSIescapeCode('reset', false)
 export const color = (colors) =>
   (...text) => ANSIescape(colors) + text.join('') + ANSIreset();
 
+/**
+ * Expand an object of color names into color functions.
+ * @param {Object} colors - mapping arbitrary keys to color names
+ * @return {Function} object mapping keys to color functions
+ */
+export const palette = palette =>
+  Object.entries(palette).reduce(
+    (palette, [key, value]) => {
+      palette[key] = color(value)
+      return palette
+    },
+    { }
+  )
+
 export const black         = color('black');
 export const red           = color('red');
 export const green         = color('green');

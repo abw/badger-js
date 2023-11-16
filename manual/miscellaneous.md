@@ -5,6 +5,7 @@
 - [Exit](#exit)
 - [App Status](#app-status)
 - [Progress](#progress)
+- [File Watching](#watch)
 
 ## ANSI Colors
 
@@ -81,6 +82,33 @@ You can also pass an option containing separate colors for the foreground
 ```js
 const whiteOnRed = color({ bg: 'red', fg: 'white' });
 console.log(whiteOnRed('some white text on a red background'));
+```
+
+The [palette()](function#static-function-palette) function allows you to
+create a palette of "semantic" colors using the above.
+
+```js
+const status = palette({
+  valid:   'bright green',
+  invalid: 'bright red',
+  comment: 'cyan'
+})
+```
+
+Using this you can render text in different colors using semantic names.
+
+```js
+console.log(
+  status.valid('This is valid')
+);
+
+console.log(
+  status.invalid('This is invalid')
+);
+
+console.log(
+  status.comment('This is a comment')
+);
 ```
 
 ## Debugging
@@ -265,3 +293,33 @@ You can change the colours or use your own picture.  See the
 [examples/progress.js](https://github.com/abw/badger-js/blob/master/examples/progress.js)
 file for examples.
 
+## Watch
+
+The [watch()](function#static-function-watch) function implements a command
+line program for running another program while watching one or more files or
+directories.  If any of the watched files change then it restarts the program.
+
+It's implemented as a wrapper around
+[chokidar](https://www.npmjs.com/package/chokidar) with some additional
+command line processing.
+
+Create a simple script like this and run it with the `-h` command line option
+for help.
+
+```js
+import { watch } from '@abw/badger'
+
+watch()
+```
+
+You can run `badger-watch` as a script from your `package.json` file.
+
+```json
+"scripts": {
+  "watch": "badger-watch -v -r -w lib -w config my-program.js arg1 arg2"
+}
+```
+
+In this example, running the command `npm watch` will run
+`my-program.js arg1 arg2` and if any of the files in the `lib` or `config`
+directories change the program will be restarted.
