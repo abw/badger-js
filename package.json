@@ -1,16 +1,24 @@
 {
   "name": "@abw/badger",
-  "version": "1.1.18",
+  "version": "1.1.19",
   "description": "Component based framework and utility modules",
   "type": "module",
   "main": "dist/badger.cjs.js",
   "module": "dist/badger.esm.js",
-  "exports": "./dist/badger.esm.js",
   "author": "Andy Wardley",
   "license": "MIT",
+  "exports": {
+    ".": {
+      "import": "./dist/badger.esm.js",
+      "require": "./dist/badger.cjs.js"
+    }
+  },
   "files": [
     "dist"
   ],
+  "bin": {
+    "badger-watch": "./dist/bin/watch.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abw/badger-js.git"
@@ -44,13 +52,15 @@
     "@rollup/plugin-terser": "^0.4.3",
     "ava": "^5.3.1",
     "eslint": "^8.48.0",
-    "rollup": "^3.28.1"
+    "rollup": "^3.28.1",
+    "rollup-plugin-copy": "^3.5.0"
   },
   "dependencies": {
     "@abw/badger-codecs": "^1.0.3",
     "@abw/badger-filesystem": "^1.0.4",
     "@abw/badger-timestamp": "^1.0.4",
     "@abw/badger-utils": "^1.0.21",
+    "chokidar": "^3.5.3",
     "commander": "^10.0.1",
     "dotenv": "^16.3.1",
     "js-yaml": "^4.1.0",
