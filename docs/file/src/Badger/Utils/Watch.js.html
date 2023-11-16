@@ -362,7 +362,7 @@ export async function watch(options) {
   }
 
   const stop = () =&gt; {
-    if (child) {
+    if (! child) {
       return
     }
     stopping()
