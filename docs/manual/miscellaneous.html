@@ -157,11 +157,9 @@
 </ul>
 <h2 id="ansi-colors">ANSI Colors</h2><p>The <a href="function#static-function-color">color()</a> function provides a simple way
 to use ANSI escape codes to generate colored text.</p>
-<p>It is super-simple and only exists in here from a time in the past when
+<p>It is quite simple and only exists in here from a time in the past when
 <a href="https://www.npmjs.com/package/chalk">chalk</a> didn't play nicely with ESM
-modules.  It looks like it does now, so if you want anything more than the
-basic 16 ANSI colours, with <code>bright</code> and/or <code>bold</code> options then you should
-use <a href="https://www.npmjs.com/package/chalk">chalk</a>.</p>
+modules.  It looks like it does now, so you might want to use that instead.</p>
 <p><em>My apologies to the Europeans, Canadians and others who know that the
 correct spelling is "colour", but I have reluctantly come to accept that
 the "programming" spelling used in CSS, etc., is "color".*</em></p>
@@ -216,6 +214,17 @@ console.log(brightRed('some bright red text'));</code></code></pre>
 (<code>fg</code>) and background (<code>bg</code>).</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const whiteOnRed = color({ bg: 'red', fg: 'white' });
 console.log(whiteOnRed('some white text on a red background'));</code></code></pre>
+<p>You can also define colors using RGB triples.  The argument should be a string
+containing three numbers (each from 0 to 255), separated by commas and/or
+whitespace.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const lightBlue = color('0 128 255'); // or '0,128,255' or '0, 138, 255'
+console.log(lightblue('some light blue text'));</code></code></pre>
+<p>Or you can use an RGB hex string.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const orange = color('#ff7f00');
+console.log(orange('some orange text'));</code></code></pre>
+<p>Both formats can be used to set foreground and background colors.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">const whiteOnBlue = color({ fg: '200,200,255', bg: '#007fff' })
+console.log(whiteOnBlue('some (near) white text on blue'));</code></code></pre>
 <p>The <a href="function#static-function-palette">palette()</a> function allows you to
 create a palette of "semantic" colors using the above.</p>
 <pre><code class="lang-js"><code class="source-code prettyprint">const status = palette({

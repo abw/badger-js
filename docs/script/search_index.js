@@ -54,6 +54,24 @@ window.esdocSearchIndex = [
     "function"
   ],
   [
+    "@abw/badger~ansiresetcode",
+    "variable/index.html#static-variable-ANSIresetCode",
+    "<span>ANSIresetCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~ansiresetcode",
+    "variable/index.html#static-variable-ANSIresetCode",
+    "<span>ANSIresetCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
+    "@abw/badger~ansiresetcode",
+    "variable/index.html#static-variable-ANSIresetCode",
+    "<span>ANSIresetCode</span> <span class=\"search-result-import-path\">@abw/badger</span>",
+    "variable"
+  ],
+  [
     "@abw/badger~component",
     "class/src/Badger/Component.js~Component.html",
     "<span>Component</span> <span class=\"search-result-import-path\">@abw/badger</span>",
