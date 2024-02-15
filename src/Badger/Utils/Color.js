@@ -1,4 +1,4 @@
-import { isObject } from "@abw/badger-utils";
+import { isObject, splitList } from "@abw/badger-utils";
 
 const ANSIStart  = '\u001B[';
 const ANSIEnd    = 'm';
@@ -19,6 +19,45 @@ const ANSIColors = {
   fg:      30,
   bg:      40,
 };
+const ANSIRGB = {
+  fg: rgb => `38;2;${rgb.r};${rgb.g};${rgb.b}`,
+  bg: rgb => `48;2;${rgb.r};${rgb.g};${rgb.b}`,
+}
+
+const isRGB = color => {
+  const triple = splitList(color)
+  return triple.length === 3
+    ? { r: triple[0], g: triple[1], b: triple[2]}
+    : null
+}
+
+const isHex = color => {
+  const match = color.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i)
+  return match
+    ? {
+        r: parseInt(match[1], 16),
+        g: parseInt(match[2], 16),
+        b: parseInt(match[3], 16)
+      }
+    : null;
+}
+
+const ANSIescapeCodes = (color, base='fg') => {
+  let   codes = [ ];
+  let   pair  = color.split(/ /, 2);
+  const hue   = pair.pop();
+  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];
+  codes.push(code);
+  if (pair.length) {
+    const shade = pair.length ? pair.shift() : 'dark';
+    codes.push(ANSIColors[shade])
+  }
+  return ANSIStart + codes.join(';') + ANSIEnd;
+}
+
+const ANSIRGBescapeCodes = (color, base='fg') =>
+  ANSIStart + ANSIRGB[base](color) + ANSIEnd;
+
 
 /**
  * Returns an ANSI escape code for a color string.  This can be a single color
@@ -36,17 +75,10 @@ const ANSIColors = {
  * const str = escapeCode('bright red', 'bg')
  */
 export const ANSIescapeCode = (color, base='fg') => {
-  let   codes = [ ];
-  let   pair  = color.split(/ /, 2);
-  const hue   = pair.pop();
-  const code  = (base ? ANSIColors[base] : 0) + ANSIColors[hue];
-  codes.push(code);
-  if (pair.length) {
-    const shade = pair.length ? pair.shift() : 'dark';
-    codes.push(ANSIColors[shade])
-  }
-  // console.log('escapeCode(%s, %s) => ', color, base, codes.join(';'));
-  return ANSIStart + codes.join(';') + ANSIEnd;
+  const rgb = isHex(color) || isRGB(color)
+  return rgb
+    ? ANSIRGBescapeCodes(rgb, base)
+    : ANSIescapeCodes(color, base)
 }
 
 /**
@@ -79,7 +111,14 @@ export const ANSIescape = (colors={}) => {
  * Returns an ANSI escape code to reset all colors.
  * @return {String} ANSI escape reset string
  */
-export const ANSIreset = () => ANSIescapeCode('reset', false)
+export const ANSIresetCode = ANSIescapeCode('reset', false)
+
+
+/**
+ * Returns an ANSI escape code to reset all colors.
+ * @return {String} ANSI escape reset string
+ */
+export const ANSIreset = () => ANSIresetCode
 
 /**
  * Returns a function to display strings in a particular color.
@@ -87,7 +126,7 @@ export const ANSIreset = () => ANSIescapeCode('reset', false)
  * @return {Function} function to display strings in the pre-defined color(s)
  */
 export const color = (colors) =>
-  (...text) => ANSIescape(colors) + text.join('') + ANSIreset();
+  (...text) => ANSIescape(colors) + text.join('') + ANSIresetCode;
 
 /**
  * Expand an object of color names into color functions.
