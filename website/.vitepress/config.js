@@ -21,7 +21,7 @@ const menuItems = [
 export default defineConfig({
   title: "Badger JS",
   description: "Javascript Project Toolkit",
-  head: [['link', { rel: 'icon', href: '/badger-filesystem-js/images/badger3.svg' }]],
+  head: [['link', { rel: 'icon', href: '/badger-js/images/badger3.svg' }]],
   base: '/badger-js/',
   outDir: '../docs',
   lastUpdated: true,
