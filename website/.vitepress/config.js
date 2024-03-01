@@ -8,6 +8,7 @@ const menuItems = [
   { text: 'Library Modules', link: '/library-modules' },
   { text: 'Data Paths', link: '/data-paths' },
   { text: 'Workspace', link: '/workspace' },
+  { text: 'Components', link: '/components' },
   { text: 'User Input', link: '/user-input' },
   { text: 'Project Setup', link: '/setup' },
   { text: 'Colors', link: '/colors' },
