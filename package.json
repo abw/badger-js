@@ -19,6 +19,7 @@
   "bin": {
     "badger-watch": "./dist/bin/watch.js"
   },
+  "homepage": "https://abw.github.io/badger-js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abw/badger-js.git"
@@ -30,8 +31,9 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "lint": "eslint 'src/**/*'",
-    "docs:build": "esdoc",
-    "docs:serve": "serve docs",
+    "docs:dev": "vitepress dev website",
+    "docs:build": "vitepress build website",
+    "docs:preview": "vitepress preview website",
     "test": "ava --serial",
     "pretest": "pnpm run build"
   },
@@ -42,24 +44,20 @@
     "utility"
   ],
   "devDependencies": {
-    "@itsjamie/esdoc-cli": "^0.5.0",
-    "@itsjamie/esdoc-core": "^0.5.0",
-    "@itsjamie/esdoc-importpath-plugin": "^0.5.0",
-    "@itsjamie/esdoc-inject-style-plugin": "^0.5.0",
-    "@itsjamie/esdoc-standard-plugin": "^0.5.0",
     "@rollup/plugin-commonjs": "^24.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "ava": "^5.3.1",
     "eslint": "^8.55.0",
     "rollup": "^3.29.4",
-    "rollup-plugin-copy": "^3.5.0"
+    "rollup-plugin-copy": "^3.5.0",
+    "vitepress": "1.0.0-rc.44"
   },
   "dependencies": {
     "@abw/badger-codecs": "^1.0.3",
-    "@abw/badger-filesystem": "^1.0.5",
-    "@abw/badger-timestamp": "^1.0.4",
-    "@abw/badger-utils": "^1.0.21",
+    "@abw/badger-filesystem": "^1.0.6",
+    "@abw/badger-timestamp": "^1.0.5",
+    "@abw/badger-utils": "^1.0.24",
     "chokidar": "^3.5.3",
     "commander": "^11.1.0",
     "dotenv": "^16.3.1",
