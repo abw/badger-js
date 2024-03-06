@@ -314,6 +314,7 @@ const { flags, args } = cmdLineFlags(
       n:       (name, arg, args, flags) => {
         // Handle something like: -n <number>
         flags.number = args.shift();
+        return true
       }
     }
   },
