@@ -201,7 +201,7 @@ yourself with an `on` handler, as shown below.
 ```js
 import { cmdLineFlags } from '@abw/badger';
 
-const { flags, args } = cmdLineFlags()
+const { flags, args } = await cmdLineFlags()
 console.log('flags:', flags);
 console.log('args:', args);
 ```
