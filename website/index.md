@@ -85,5 +85,5 @@ https://freeasinweekend.org/open-source-open-mind
 :::
 
 <center>
-<img src="./public/images/oss.svg" width="150" height="150" style="margin-top: 4rem">
+<img src="/images/oss.svg" width="150" height="150" style="margin-top: 4rem">
 </center>
