@@ -24,7 +24,7 @@ Install `badger` using your favourite package manager.
 
 ## Manual
 
-See the [website](https://abw.github.io/badger-js/) for documentation and
+See the [website](https://badgerpower.com/badger-js/) for documentation and
 examples.
 
 ## Author
