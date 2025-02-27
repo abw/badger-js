@@ -437,6 +437,7 @@ function.
 |description|A description for the help text|Project setup script.|
 |version|The version number for the help text||
 |configFile|The path to your setup configuration file, relative to `rootDir`|`config/setup.yaml`, `config/setup.json`, `setup.yaml`, `setup.json`, `.setup.yaml` or `.setup.json`|
+|values|Default answers for values||
 |preprocess|A function to pre-process the setup configuration file after loading|`false`|
 |envFile|The name of your environment file, relative to `rootDir`|`.env`|
 |writeEnv|Should it automatically write the `envFile` file?|`false`|
