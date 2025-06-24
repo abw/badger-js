@@ -444,6 +444,7 @@ function.
 |envExtra|Additional file to append to `envFile`, e.g. `.env.extra`||
 |envSections|Add section block comments to `envFile`|`true`|
 |envComments|Add item comments to `envFile`|`true`|
+|envPrefix|Add a prefix to all environment variable written to the `envFile`||
 |compact|Don't add blank spacing lines in `envFile`|`false`|
 |dataFile|JSON or YAML file for caching answers|`.env.yaml`|
 |writeData|Should it automatically write the `dataFile` file?|`true`|

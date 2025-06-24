@@ -11,6 +11,7 @@ const config = await runSetup({
   //   dataFile:     '.env.yaml',
   //   writeData:    true,
   //   envFile:      '.env',
+  //   envPrefix:    'MY_APP_',
   //   writeEnv:     false,
   //   envComments:  true,
   //   envSections:  true,

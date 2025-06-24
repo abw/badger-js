@@ -192,7 +192,7 @@ export async function findProgram(names) {
 }
 
 async function envFileText(rootDir, config, setup, answers) {
-  const { compact, envComments, envSections } = config;
+  const { compact, envComments, envSections, envPrefix='' } = config;
   const gap = compact ? '' : "\n";
   let output = [
     comment(config.warning(config))
@@ -222,7 +222,7 @@ async function envFileText(rootDir, config, setup, answers) {
       const value = answers[name];
       if (hasValue(value)) {
         const safe = value.toString().match(/[#\r\n]/) ? `"$value"` : value;
-        output.push(`${envvar || name.toUpperCase()}=${safe}`)
+        output.push(`${envPrefix}${envvar || name.toUpperCase()}=${safe}`)
       }
       else {
         output.push(comment(`No value for ${envvar || name.toUpperCase()}`))
