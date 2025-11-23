@@ -3,6 +3,7 @@ export * from './CmdLine.js';
 export * from './Color.js';
 export * from './DataPath.js';
 export * from './Debug.js';
+export * from './Dotenv.js';
 export * from './Exit.js';
 export * from './Misc.js';
 export * from './Options.js';

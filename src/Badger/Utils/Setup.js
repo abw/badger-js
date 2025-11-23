@@ -1,5 +1,4 @@
 import process from 'node:process'
-import dotenv from 'dotenv'
 import { options } from './Options.js';
 import { cwd, dir } from '@abw/badger-filesystem';
 import { extract, fail, hasValue, isBoolean, splitLines, splitList } from '@abw/badger-utils';
@@ -7,6 +6,7 @@ import { brightGreen, brightRed } from './Color.js';
 import { now } from '@abw/badger-timestamp';
 import { quit } from './Exit.js';
 import { appStatus } from './AppStatus.js';
+import { dotenv } from './Dotenv.js';
 
 const defaults = {
   description:  'Project setup script.',
@@ -49,8 +49,7 @@ export async function runSetup(props) {
 
   // read the environment file (.env) if it exists
   const envFile  = rootDir.file(config.envFile);
-  dotenv.config({ path: envFile.path() });
-  const env = process.env;
+  const env = dotenv({ path: envFile.path() });
 
   // read the data file (.env.yaml) if it exists
   const dataFile = rootDir.file(config.dataFile, { codec: 'auto' });

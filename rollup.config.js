@@ -32,8 +32,6 @@ export default {
     "node:path",
     "node:process",
     "node:fs/promises",
-    "dotenv",
-    "js-yaml",
     "commander",
     "prompts",
     "chokidar"
