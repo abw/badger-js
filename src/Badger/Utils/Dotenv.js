@@ -110,7 +110,7 @@ export async function dotenv({
   dirs,
   addToProcessEnv=true,
   debug=false
-}) {
+} = { }) {
   path ||= await findDotenv({ filename, dirs })
   if (debug) {
     console.log(`Loading environment from ${path}`)
