@@ -2,7 +2,7 @@ import terser from '@rollup/plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import pkg from './package.json' assert { type: 'json' };
+import pkg from './package.json' with { type: 'json' };
 
 export default {
   // CommonJS (for Node) and ES module (for bundlers) build.
