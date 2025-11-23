@@ -49,7 +49,7 @@ const main = async () => {
       },
       {
         name:     'database',
-        short:    'd',
+        // short:    'b',
         about:    'Database',
         type:     'text',
         prompt:   'What is the name of the database?',
