@@ -225,7 +225,7 @@ options:
     prompt:     Where is the project root directory on this machine?
     pattern:    <dir>
     required:   true
-    envvar:     MYAPP_ROOT_DIR
+    env_var:    MYAPP_ROOT_DIR
   -
     name:       deployment
     about:      Deployment type
@@ -324,7 +324,7 @@ Following that we have the `options` section.  Each option must contain a
 options:
   -
     name:       root
-    envvar:     MYAPP_ROOT_DIR
+    env_var:    MYAPP_ROOT_DIR
     about:      Project directory
     prompt:     Where is the project root directory on this machine?
     required:   true
@@ -332,10 +332,31 @@ options:
   # ...etc.
 ```
 
+### name
+
 The `name` is used as the command line option for the script, e.g. `--root`.
-If an `envvar` is defined then this will be the name used for the environment
+
+### env_var
+
+If an `env_var` (or `envvar` for backwards compatibility with previous versions)
+is defined then this will be the name used for the environment
 variable in the `.env` file (`MYAPP_ROOT_DIR` in this example).  Otherwise it
-defaults to an upper can version of the `name` (e.g. `ROOT`).
+defaults to an upper case version of the `name` (e.g. `ROOT`).
+
+### env_prefix
+
+The global `envPrefix` option (see below) allows you to specify a prefix to be
+added to all environment variables.  This is not applied to any options that
+explicitly declare their own `env_var` (see above).  Alternately, you can
+specify a custom `env_prefix` for an option to override any global `envPrefix`.
+This can be an empty string to override any global `envPrefix`.
+
+### no_prefix
+
+You can add this to any option to prevent it from automatically adding any
+global `envPrefix` prefix to the environment variable name.
+
+### save
 
 If you don't want an answer to be saved either in the `.env` file or in the
 cached answers file then set the `save` property to `false`.
@@ -344,10 +365,28 @@ cached answers file then set the `save` property to `false`.
     save:       false
 ```
 
+### save_env
+
+If you don't want an answer to be saved in the `.env` file then set the
+`save_env` property to `false`.
+
+```yaml
+    save_env:   false
+```
+
+### about
+
 The `about` property is displayed in the help text.  It will also be added as
-a comment to the `.env` file.  The `prompt` is the prompt used to request user
-input.  If this is not defined then the user will not be prompted to enter a
-value for it.  The `pattern` is displayed against the option in the help text,
+a comment to the `.env` file.
+
+### prompt
+
+The `prompt` is the prompt used to request user input.  If this is not defined
+then the user will not be prompted to enter a value for it.
+
+### pattern
+
+The `pattern` is displayed against the option in the help text,
 e.g.
 
 ```bash
@@ -357,7 +396,11 @@ e.g.
 If you don't specify it then it defaults to `<text>` (or `<path>` for program
 options)
 
+### required
+
 The `required` flag indicates that a value must be provided.
+
+### type
 
 The default input type is `text`, but you can explicitly set it to `password`
 where appropriate:
@@ -395,6 +438,8 @@ The `select` type can be be used to provide a list of values to select from:
         value:  production
 ```
 
+### program
+
 The `program` option provides some extra magic.  It will look for the named
 program in your `PATH` and set the default value to be the first location
 it finds.
@@ -416,6 +461,8 @@ and `zcat` both do the same thing.
 ```yaml
     program:    gzcat zcat
 ```
+
+### title
 
 Lots of questions can be a bit overwhelming to a user.  You can break them
 up into sections to relieve the monotony by defining a `title` option.
@@ -444,7 +491,7 @@ function.
 |envExtra|Additional file to append to `envFile`, e.g. `.env.extra`||
 |envSections|Add section block comments to `envFile`|`true`|
 |envComments|Add item comments to `envFile`|`true`|
-|envPrefix|Add a prefix to all environment variable written to the `envFile`||
+|envPrefix|Add a prefix to all environment variable written to the `envFile`.  This is ignored for options that define their own `env_prefix` or set the `no_prefix` option||
 |compact|Don't add blank spacing lines in `envFile`|`false`|
 |dataFile|JSON or YAML file for caching answers|`.env.yaml`|
 |writeData|Should it automatically write the `dataFile` file?|`true`|

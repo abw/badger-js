@@ -11,6 +11,7 @@ await setup({
   //   dataFile:     '.env.yaml',
   //   writeData:    true,
   //   envFile:      '.env',
+  //   envPrefix: 'MY_PUBLIC_',
   //   writeEnv:     false,
   //   envComments:  true,
   //   envSections:  true,

@@ -44,6 +44,7 @@ options:
     pattern:    <type>
     required:   true
     default:    development
+    env_prefix: false
     choices:
       -
         title:  development
@@ -96,6 +97,7 @@ options:
     pattern:    <password>
     type:       password
     required:   true
+    save_env:   false
 
   -
     title:      Programs
@@ -106,9 +108,11 @@ options:
     program:    gzip
     prompt:     Enter the full path to the gzip program
     mandatory:  true
+    no_prefix:  true
   -
     name:       gzcat
     about:      Path to gzcat (or zcat)
     program:    gzcat zcat
     prompt:     Enter the full path to the gzcat (or zcat) program
     mandatory:  true
+    env_prefix: SPECIAL_CASE_

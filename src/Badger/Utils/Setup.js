@@ -22,6 +22,7 @@ const defaults = {
   writeData:    true,
   writeEnv:     false,
   compact:      false,
+  scriptName:   'scaffolding',
   cancelled:    'Setup cancelled',
   allDone:      'All configuration options have been set',
   warning:      config => `
@@ -107,7 +108,11 @@ export async function runSetup(props) {
     }
 
     // look to see if we've got a value in the environment or data file
-    const envVar  = option.envvar ||= name.toUpperCase();
+    const noPrefix = option.no_prefix || (isBoolean(option.env_prefix) && ! option.env_prefix)
+    const prefix = noPrefix
+      ? ''
+      : (option.env_prefix ?? config.envPrefix ?? '')
+    const envVar = option.envvar ??= option.env_var ?? `${prefix}${name.toUpperCase()}`
 
     if (hasValue(env[envVar])) {
       // set the value from the environment
@@ -199,10 +204,13 @@ async function envFileText(rootDir, config, setup, answers) {
   const line  = '#' + '-'.repeat(77)
   const line2 = '#' + '='.repeat(77)
   for (let option of setup.options) {
-    const { name, envvar, title, about, save } = option
+    const { name, envvar, env_var, title, about, save, save_env } = option
     // belt and braces - we remove these above but it's possible this function
     // is being called independently
     if (isBoolean(save) && ! save) {
+      continue;
+    }
+    if (isBoolean(save_env) && ! save_env) {
       continue;
     }
     if (title && envSections) {
@@ -221,7 +229,12 @@ async function envFileText(rootDir, config, setup, answers) {
       const value = answers[name];
       if (hasValue(value)) {
         const safe = value.toString().match(/[#\r\n]/) ? `"$value"` : value;
-        output.push(`${envPrefix}${envvar || name.toUpperCase()}=${safe}`)
+        const no_prefix = option.no_prefix || (isBoolean(option.env_prefix) && ! option.env_prefix)
+        const prefix = no_prefix
+          ? ''
+          : (option.env_prefix ?? envPrefix)
+        const envName = envvar ?? env_var ?? `${prefix}${name.toUpperCase()}`
+        output.push(`${envName}=${safe}`)
       }
       else {
         output.push(comment(`No value for ${envvar || name.toUpperCase()}`))
