@@ -49,12 +49,10 @@ export async function runSetup(props) {
     : cwd();
 
   // read the environment file (.env) if it exists
-  const envFile   = rootDir.file(config.envFile);
-  const exists    = await envFile.exists();
-  const dotenvCfg = exists
-    ? { path: envFile.path() }
+  const envFile = rootDir.file(config.envFile);
+  const env     = (await envFile.exists())
+    ? await dotenv({ path: envFile.path() })
     : { };
-  const env = dotenv(dotenvCfg);
 
   // read the data file (.env.yaml) if it exists
   const dataFile = rootDir.file(config.dataFile, { codec: 'auto' });
